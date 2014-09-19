@@ -5,17 +5,17 @@ namespace Damienbod.AnimalProvider
 {
 	public class AnimalElasticSearchSerializerMapping : ElasticSearchSerializerMapping<Animal>
 	{
-		public override void WriteJsonEntry(Animal entity)
+		public override void MapEntityValues(Animal entity)
 		{
-			WriteValue("Id", entity.Id);
-			WriteValue("AnimalType", entity.AnimalType);
-			WriteValue("TypeSpecificForAnimalType", entity.TypeSpecificForAnimalType);
-			WriteValue("Description", entity.Description);
-			WriteValue("Gender", entity.Gender);
-			WriteValue("LastLocation", entity.LastLocation);
-			WriteValue("DateOfBirth", entity.DateOfBirth.UtcDateTime);
-			WriteValue("CreatedTimestamp", entity.CreatedTimestamp.UtcDateTime);
-			WriteValue("UpdatedTimestamp", entity.UpdatedTimestamp.UtcDateTime);
+			MapValue("Id", entity.Id);
+			MapValue("AnimalType", entity.AnimalType);
+			MapValue("TypeSpecificForAnimalType", entity.TypeSpecificForAnimalType);
+			MapValue("Description", entity.Description);
+			MapValue("Gender", entity.Gender);
+			MapValue("LastLocation", entity.LastLocation);
+			MapValue("DateOfBirth", entity.DateOfBirth.UtcDateTime);
+			MapValue("CreatedTimestamp", entity.CreatedTimestamp.UtcDateTime);
+			MapValue("UpdatedTimestamp", entity.UpdatedTimestamp.UtcDateTime);
 		}
 	}
 
