@@ -35,13 +35,37 @@ namespace Damienbod.ElasticSearchProvider
 				{
 					throw new ArgumentException(string.Format("index is not allowed in Elasticsearch: {0}", entity.Item1.Index));
 				}
-				AddUpdateEntity(entity.Item2, entity.Item1, _elasticSearchSerializerMapping);
+				if (entity.Item1.DeleteEntity)
+				{
+					DeleteEntity(entity.Item1, _elasticSearchSerializerMapping);
+				}
+				else
+				{
+					AddUpdateEntity(entity.Item2, entity.Item1, _elasticSearchSerializerMapping);
+				}
 			}
 
 			_writer.Close();
 			_writer = null;
 
 			return sb.ToString();
+		}
+
+		private void DeleteEntity(EntityContextInfo entityInfo, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
+		{
+			_writer.WriteStartObject();
+
+			_writer.WritePropertyName("delete");
+
+			// Write the batch "index" operation header
+			_writer.WriteStartObject();
+			WriteValue("_index", entityInfo.Index);
+			WriteValue("_type", typeof(T).ToString());
+			WriteValue("_id", entityInfo.Id);
+			_writer.WriteEndObject();
+			_writer.WriteEndObject();
+		
+			_writer.WriteRaw("\n");
 		}
 
 		private void AddUpdateEntity(T entity, EntityContextInfo entityInfo, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)

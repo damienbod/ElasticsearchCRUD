@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Globalization;
 using System.Linq;
 using Damienbod.BusinessLayer.Attributes;
 using Damienbod.BusinessLayer.DomainModel;
@@ -11,17 +10,17 @@ namespace Damienbod.AnimalProvider
     [TransientLifetime]
 	public class SearchProvider : ISearchProvider
     {
-		ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", new AnimalElasticSearchSerializerMapping());
+	    readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", new AnimalElasticSearchSerializerMapping());
 
         public void CreateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(), Animal.SearchIndex);
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture), Animal.SearchIndex);
 			var ret = _elasticSearchContext.SaveChangesAsync();    
         }
 
         public void UpdateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(), Animal.SearchIndex);
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture), Animal.SearchIndex);
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
@@ -32,7 +31,8 @@ namespace Damienbod.AnimalProvider
 
         public void DeleteById(int id)
         {
-           // _elasticsearchClient.DeleteById("animals", "animal", id);
+			_elasticSearchContext.DeleteEntity(id.ToString(CultureInfo.InvariantCulture), Animal.SearchIndex);
+			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
         public void DeleteIndex(string index)
