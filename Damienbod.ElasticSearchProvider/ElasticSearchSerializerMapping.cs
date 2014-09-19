@@ -6,7 +6,7 @@ namespace Damienbod.ElasticSearchProvider
 	{
 		protected JsonWriter Writer;
 
-		public virtual void WriteJsonEntry(T entity)
+		public virtual void MapEntityValues(T entity)
 		{
 		}
 
@@ -15,7 +15,7 @@ namespace Damienbod.ElasticSearchProvider
 			Writer = writer;
 		}
 
-		protected void WriteValue(string key, object valueObj)
+		protected void MapValue(string key, object valueObj)
 		{
 			Writer.WritePropertyName(key);
 			Writer.WriteValue(valueObj);

@@ -62,7 +62,7 @@ namespace Damienbod.ElasticSearchProvider
 			_writer.WriteStartObject();
 
 			elasticSearchSerializerMapping.AddWriter(_writer);
-			elasticSearchSerializerMapping.WriteJsonEntry(entity);
+			elasticSearchSerializerMapping.MapEntityValues(entity);
 
 			_writer.WriteEndObject();
 			_writer.WriteRaw("\n");
