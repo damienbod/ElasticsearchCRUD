@@ -5,3 +5,5 @@ Damienbod.BusinessLayer/bin
 WebApiODataElasticsearch/bin
 WebApiODataElasticsearch/obj
 WebApiODataElasticsearch/WebApiODataElasticsearch.csproj.user
+Damienbod.AnimalProvider/obj
+Damienbod.AnimalProvider/bin

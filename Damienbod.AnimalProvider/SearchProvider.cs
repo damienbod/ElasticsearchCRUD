@@ -1,26 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Damienbod.BusinessLayer.Attributes;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.BusinessLayer.Providers;
-using ElasticLinq;
+using Damienbod.ElasticSearchProvider;
 
-namespace Damienbod.ElasticSearchProvider
+namespace Damienbod.AnimalProvider
 {
     [TransientLifetime]
     public class SearchProvider : ISearchProvider
     {
-	    readonly ElasticConnection connection = new ElasticConnection(new Uri("http://localhost:9201/"),null,null,null,"animals");
-	    private readonly ElasticContext _context;
 
         public SearchProvider()
         {
-			_context = new ElasticContext(connection);
-
-			//var uri = new Uri("http://localhost:9201");
-			//var settings = new ConnectionSettings(uri).SetDefaultIndex("animals");
-			//_elasticsearchClient = new ElasticClient(settings);
 
         }
 
@@ -50,7 +42,6 @@ namespace Damienbod.ElasticSearchProvider
 
 		public IQueryable<Animal> GetAnimals()
 		{
-			var tt = _context.Query<Animal>().ToList();
 			return null;
 		}
 
@@ -66,7 +57,7 @@ namespace Damienbod.ElasticSearchProvider
 
         public Animal GetAnimal(int id)
         {
-	        return _context.Query<Animal>().FirstOrDefault(t => t.Id == id);
+	        return null;
         }
     }
 }

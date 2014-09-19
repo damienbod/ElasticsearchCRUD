@@ -4,6 +4,7 @@ using System.Web.Http;
 using System.Web.OData;
 using System.Web.OData.Query;
 using System.Web.OData.Routing;
+using Damienbod.AnimalProvider;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.BusinessLayer.Managers;
 using Damienbod.ElasticSearchProvider;

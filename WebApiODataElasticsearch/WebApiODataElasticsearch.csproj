@@ -167,6 +167,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Damienbod.AnimalProvider\Damienbod.AnimalProvider.csproj">
+      <Project>{B77C46C2-82AB-4871-8ED3-2521512D30C6}</Project>
+      <Name>Damienbod.AnimalProvider</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Damienbod.BusinessLayer\Damienbod.BusinessLayer.csproj">
       <Project>{54eb8e81-0898-4a74-bbed-9779d87c01ad}</Project>
       <Name>Damienbod.BusinessLayer</Name>

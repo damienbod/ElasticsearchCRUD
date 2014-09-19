@@ -1,6 +1,7 @@
 using Damienbod.BusinessLayer.DomainModel;
+using Damienbod.ElasticSearchProvider;
 
-namespace Damienbod.ElasticSearchProvider
+namespace Damienbod.AnimalProvider
 {
 	public class AnimalElasticSearchSerializerMapping : ElasticSearchSerializerMapping<Animal>
 	{
