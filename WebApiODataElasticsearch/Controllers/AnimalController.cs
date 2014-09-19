@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Web.Http;
 using System.Web.OData;
 using System.Web.OData.Query;
@@ -27,6 +28,15 @@ namespace WebApiODataElasticsearch.Controllers
 		[EnableQuery(PageSize = 20, AllowedQueryOptions = AllowedQueryOptions.All)]
 		public IHttpActionResult Get([FromODataUri] int key)
 		{
+
+			Animal animal = new Animal();
+			animal.Id = 1;
+			animal.Description = "test";
+			animal.DateOfBirth = new DateTimeOffset(DateTime.UtcNow.AddYears(-10));
+			animal.CreatedTimestamp = new DateTimeOffset(DateTime.UtcNow);
+			animal.UpdatedTimestamp = new DateTimeOffset(DateTime.UtcNow);
+			return Ok(animal);
+
 			return Ok(_animalManager.GetAnimal(key));
 		}
 
@@ -45,25 +55,25 @@ namespace WebApiODataElasticsearch.Controllers
 		}
 
 
-		[ODataRoute("({key})")]
-		[HttpPut]
-		[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All)]
-		public IHttpActionResult Put([FromODataUri] int key, Animal animal)
-		{
-			if (!ModelState.IsValid)
-			{
-				return BadRequest(ModelState);
-			}
+		//[ODataRoute("({key})")]
+		//[HttpPut]
+		//[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All)]
+		//public IHttpActionResult Put([FromODataUri] int key, Animal animal)
+		//{
+		//	if (!ModelState.IsValid)
+		//	{
+		//		return BadRequest(ModelState);
+		//	}
 
-			if (key != animal.Id)
-			{
-				return BadRequest();
-			}
+		//	if (key != animal.Id)
+		//	{
+		//		return BadRequest();
+		//	}
 
-			_animalManager.UpdateAnimal(animal);
+		//	_animalManager.UpdateAnimal(animal);
 
-			return Updated(animal);
-		}
+		//	return Updated(animal);
+		//}
 
 		[ODataRoute("")]
 		[HttpDelete]

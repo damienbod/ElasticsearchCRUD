@@ -1,0 +1,13 @@
+POST http://localhost:60096/odata/Animal
+Content-Type: application/json
+
+{
+"Id":2,
+"AnimalType":"dog",
+"TypeSpecificForAnimalType":"silly",
+"Description":"test","Gender":"male",
+"LastLocation":"unknown",
+"DateOfBirth":"2004-09-19T07:54:08.2583077Z",
+"CreatedTimestamp":"2014-09-19T07:54:08.2583077Z",
+"UpdatedTimestamp":"2014-09-19T07:54:08.2583077Z"
+}
