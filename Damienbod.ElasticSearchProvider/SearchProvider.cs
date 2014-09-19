@@ -26,7 +26,7 @@ namespace Damienbod.ElasticSearchProvider
 
         public void CreateAnimal(Animal animal)
         {
-	        ElasticSearchContext elasticSearchContext = new ElasticSearchContext("http://localhost:9201/");
+	        var elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", new AnimalElasticSearchSerializerMapping());
 	        var ret = elasticSearchContext.SendEntitiesAsync(new List<Animal> {animal}, Animal.SearchIndex);
 
 	        //ValidateIfIdIsAlreadyUsedForIndex(animal.Id.ToString(CultureInfo.InvariantCulture));               

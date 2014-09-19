@@ -28,15 +28,6 @@ namespace WebApiODataElasticsearch.Controllers
 		[EnableQuery(PageSize = 20, AllowedQueryOptions = AllowedQueryOptions.All)]
 		public IHttpActionResult Get([FromODataUri] int key)
 		{
-
-			Animal animal = new Animal();
-			animal.Id = 1;
-			animal.Description = "test";
-			animal.DateOfBirth = new DateTimeOffset(DateTime.UtcNow.AddYears(-10));
-			animal.CreatedTimestamp = new DateTimeOffset(DateTime.UtcNow);
-			animal.UpdatedTimestamp = new DateTimeOffset(DateTime.UtcNow);
-			return Ok(animal);
-
 			return Ok(_animalManager.GetAnimal(key));
 		}
 

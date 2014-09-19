@@ -4,23 +4,29 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Damienbod.BusinessLayer.DomainModel;
 using Newtonsoft.Json;
 
 namespace Damienbod.ElasticSearchProvider
 {
-	public class ElasticsearchSerializer : IDisposable
+	public class ElasticsearchSerializer<T>  : IDisposable where T : class
 	{
+		private readonly ElasticSearchSerializerMapping<T> _elasticSearchSerializerMapping;
+
+		public ElasticsearchSerializer(ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
+		{
+			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
+		}
+
 		private JsonWriter _writer;
 
-		internal string Serialize(IEnumerable<Animal> entries, string index)
+		public string Serialize(IEnumerable<T> entities, string index)
 		{
 			if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 			{
-				throw new ArgumentException("bad index");
+				throw new ArgumentException(string.Format("index is not allowed in Elasticsearch: {0}", index));
 			}
 
-			if (entries == null)
+			if (entities == null)
 			{
 				return null;
 			}
@@ -28,9 +34,9 @@ namespace Damienbod.ElasticSearchProvider
 			var sb = new StringBuilder();
 			_writer = new JsonTextWriter(new StringWriter(sb, CultureInfo.InvariantCulture)) { CloseOutput = true };
 
-			foreach (var entry in entries)
+			foreach (var entry in entities)
 			{
-				WriteJsonEntry(entry, index);
+				WriteJsonEntry(entry, index, _elasticSearchSerializerMapping);
 			}
 
 			_writer.Close();
@@ -39,7 +45,7 @@ namespace Damienbod.ElasticSearchProvider
 			return sb.ToString();
 		}
 
-		private void WriteJsonEntry(Animal entry, string index)
+		private void WriteJsonEntry(T entity, string index, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
 		{
 			_writer.WriteStartObject();
 
@@ -48,23 +54,15 @@ namespace Damienbod.ElasticSearchProvider
 			// Write the batch "index" operation header
 			_writer.WriteStartObject();
 			WriteValue("_index", index);
-			WriteValue("_type", typeof(Animal).ToString());
+			WriteValue("_type", typeof(T).ToString());
 			_writer.WriteEndObject();
 			_writer.WriteEndObject();
 			_writer.WriteRaw("\n");  //ES requires this \n separator
 
 			_writer.WriteStartObject();
-			WriteValue("Id", entry.Id);
-			
-			WriteValue("AnimalType", entry.AnimalType);
-			WriteValue("TypeSpecificForAnimalType", entry.TypeSpecificForAnimalType);
-			WriteValue("Description", entry.Description);
-			WriteValue("Gender", entry.Gender);
-			WriteValue("LastLocation", entry.LastLocation);
 
-			WriteValue("DateOfBirth", entry.DateOfBirth.UtcDateTime);
-			WriteValue("CreatedTimestamp", entry.CreatedTimestamp.UtcDateTime);
-			WriteValue("UpdatedTimestamp", entry.UpdatedTimestamp.UtcDateTime);
+			elasticSearchSerializerMapping.AddWriter(_writer);
+			elasticSearchSerializerMapping.WriteJsonEntry(entity);
 
 			_writer.WriteEndObject();
 			_writer.WriteRaw("\n");

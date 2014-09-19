@@ -5,24 +5,26 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Damienbod.BusinessLayer.DomainModel;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
 namespace Damienbod.ElasticSearchProvider
 {
-	public class ElasticSearchContext
+	public class ElasticSearchContext<T> where T : class
 	{
+		private readonly ElasticSearchSerializerMapping<T> _elasticSearchSerializerMapping;
+
 		private const string BulkServiceOperationPath = "/_bulk";
 		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		private readonly Uri _elasticsearchUrl;
 
-		public ElasticSearchContext(string connectionString)
+		public ElasticSearchContext(string connectionString, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
         {
             _elasticsearchUrl = new Uri(new Uri(connectionString), BulkServiceOperationPath);
+			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
         }
 
-		public async Task<int> SendEntitiesAsync(IList<Animal> collection, string index)
+		public async Task<int> SendEntitiesAsync(IList<T> collection, string index)
 		{
 			HttpClient client = null;
 
@@ -30,14 +32,14 @@ namespace Damienbod.ElasticSearchProvider
 			{
 				client = new HttpClient();
 
-				string logMessages;
-				using (var serializer = new ElasticsearchSerializer())
+				string serializedEntities;
+				using (var serializer = new ElasticsearchSerializer<T>(_elasticSearchSerializerMapping))
 				{
-					logMessages = serializer.Serialize(collection, index);
+					serializedEntities = serializer.Serialize(collection, index);
 				}
-				var content = new StringContent(logMessages);
+				var content = new StringContent(serializedEntities);
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-				var response = await client.PostAsync(this._elasticsearchUrl, content, _cancellationTokenSource.Token).ConfigureAwait(false);
+				var response = await client.PostAsync(_elasticsearchUrl, content, _cancellationTokenSource.Token).ConfigureAwait(false);
 
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
@@ -74,13 +76,7 @@ namespace Damienbod.ElasticSearchProvider
 				// If the response return items collection
 				if (items != null)
 				{
-					// NOTE: This only works with Elasticsearch 1.0
-					// Alternatively we could query ES as part of initialization check results or fall back to trying <1.0 parsing
-					// We should also consider logging errors for individual entries
 					return items.Count(t => t["create"]["status"].Value<int>().Equals(201));
-
-					// Pre-1.0 Elasticsearch
-					// return items.Count(t => t["create"]["ok"].Value<bool>().Equals(true));
 				}
 
 				return 0;
