@@ -11,6 +11,7 @@ using Damienbod.ElasticSearchProvider;
 
 namespace WebApiODataElasticsearch.Controllers
 {
+	[ODataRoutePrefix("Animal")]
 	public class AnimalController : ODataController
 	{
 		private readonly IAnimalManager _animalManager;
@@ -47,25 +48,25 @@ namespace WebApiODataElasticsearch.Controllers
 		}
 
 
-		//[ODataRoute("({key})")]
-		//[HttpPut]
-		//[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All)]
-		//public IHttpActionResult Put([FromODataUri] int key, Animal animal)
-		//{
-		//	if (!ModelState.IsValid)
-		//	{
-		//		return BadRequest(ModelState);
-		//	}
+		[ODataRoute("({key})")]
+		[HttpPut]
+		[EnableQuery(AllowedQueryOptions = AllowedQueryOptions.All)]
+		public IHttpActionResult Put([FromODataUri]int key, [FromBody]Animal animal)
+		{
+			if (!ModelState.IsValid)
+			{
+				return BadRequest(ModelState);
+			}
 
-		//	if (key != animal.Id)
-		//	{
-		//		return BadRequest();
-		//	}
+			if (key != animal.Id)
+			{
+				return BadRequest();
+			}
 
-		//	_animalManager.UpdateAnimal(animal);
+			_animalManager.UpdateAnimal(animal);
 
-		//	return Updated(animal);
-		//}
+			return Updated(animal);
+		}
 
 		[ODataRoute("")]
 		[HttpDelete]

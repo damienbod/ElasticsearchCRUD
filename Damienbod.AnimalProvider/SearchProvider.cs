@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Damienbod.BusinessLayer.Attributes;
 using Damienbod.BusinessLayer.DomainModel;
@@ -8,36 +9,20 @@ using Damienbod.ElasticSearchProvider;
 namespace Damienbod.AnimalProvider
 {
     [TransientLifetime]
-    public class SearchProvider : ISearchProvider
+	public class SearchProvider : ISearchProvider
     {
-
-        public SearchProvider()
-        {
-
-        }
+		ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", new AnimalElasticSearchSerializerMapping());
 
         public void CreateAnimal(Animal animal)
         {
-	        var elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", new AnimalElasticSearchSerializerMapping());
-	        var ret = elasticSearchContext.SendEntitiesAsync(new List<Animal> {animal}, Animal.SearchIndex);
-
-	        //ValidateIfIdIsAlreadyUsedForIndex(animal.Id.ToString(CultureInfo.InvariantCulture));               
-	        //_elasticsearchClient.Index(animal, Animal.SearchIndex, "animal");          
-        }
-
-        private void ValidateIfIdIsAlreadyUsedForIndex(string id)
-        {
-			//var idsList = new List<string> { id};
-			//var result = _elasticsearchClient.Search<Animal>(s => s
-			//	.Index("animals")
-			//	.AllTypes()
-			//	.Query(p => p.Ids(idsList)));
-			//if (result.Documents.Any()) throw new ArgumentException("Id already exists in store");
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(), Animal.SearchIndex);
+			var ret = _elasticSearchContext.SaveChangesAsync();    
         }
 
         public void UpdateAnimal(Animal animal)
         {
-            //_elasticsearchClient.Index(animal, Animal.SearchIndex, "animal");
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(), Animal.SearchIndex);
+			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
 		public IQueryable<Animal> GetAnimals()

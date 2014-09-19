@@ -18,13 +18,20 @@ namespace Damienbod.ElasticSearchProvider
 		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		private readonly Uri _elasticsearchUrl;
 
+		private readonly List<Tuple<EntityContextInfo, T>>  _entityPendingChanges = new List<Tuple<EntityContextInfo, T>>(); 
+		
 		public ElasticSearchContext(string connectionString, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
         {
             _elasticsearchUrl = new Uri(new Uri(connectionString), BulkServiceOperationPath);
 			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
         }
 
-		public async Task<int> SendEntitiesAsync(IList<T> collection, string index)
+		public void AddUpdateEntity(T entity, string id, string index)
+		{
+			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo(){Id=id,Index = index}, entity));
+		}
+
+		public async Task<int> SaveChangesAsync()
 		{
 			HttpClient client = null;
 
@@ -35,7 +42,7 @@ namespace Damienbod.ElasticSearchProvider
 				string serializedEntities;
 				using (var serializer = new ElasticsearchSerializer<T>(_elasticSearchSerializerMapping))
 				{
-					serializedEntities = serializer.Serialize(collection, index);
+					serializedEntities = serializer.Serialize(_entityPendingChanges);
 				}
 				var content = new StringContent(serializedEntities);
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -45,7 +52,7 @@ namespace Damienbod.ElasticSearchProvider
 				{
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
-						var messagesDiscarded = collection.Count();
+						var messagesDiscarded = _entityPendingChanges.Count();
 						var errorContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 						string serverErrorMessage;
 

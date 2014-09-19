@@ -50,6 +50,7 @@
     <Compile Include="ElasticSearchContext.cs" />
     <Compile Include="ElasticsearchSerializer.cs" />
     <Compile Include="ElasticSearchSerializerMapping.cs" />
+    <Compile Include="EntityContextInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
