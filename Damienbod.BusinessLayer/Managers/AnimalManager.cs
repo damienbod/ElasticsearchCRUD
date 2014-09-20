@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using System.Linq;
+using System.Threading.Tasks;
 using Damienbod.BusinessLayer.Attributes;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.BusinessLayer.Providers;
@@ -22,7 +23,7 @@ namespace Damienbod.BusinessLayer.Managers
             return _searchProvider.GetAnimals();
         }
 
-        public Animal GetAnimal(int id)
+		public Task<Animal> GetAnimal(int id)
         {
             return _searchProvider.GetAnimal(id);
         }
@@ -40,11 +41,6 @@ namespace Damienbod.BusinessLayer.Managers
         public void CreateAnimal(Animal value)
         {
             _searchProvider.CreateAnimal(value);
-        }
-
-        public void DeleteIndex(string index)
-        {
-            _searchProvider.DeleteIndex(index);
         }
     }
 }

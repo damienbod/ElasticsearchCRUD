@@ -54,12 +54,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Damienbod.BusinessLayer\Damienbod.BusinessLayer.csproj">
-      <Project>{54eb8e81-0898-4a74-bbed-9779d87c01ad}</Project>
-      <Name>Damienbod.BusinessLayer</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

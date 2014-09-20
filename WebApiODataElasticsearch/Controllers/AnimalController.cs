@@ -89,8 +89,8 @@ namespace WebApiODataElasticsearch.Controllers
 
 			var animal = _animalManager.GetAnimal(key);
 
-			delta.Patch(animal);
-			_animalManager.UpdateAnimal(animal);
+			delta.Patch(animal.Result);
+			_animalManager.UpdateAnimal(animal.Result);
 			return Updated(animal);
 		}
     }

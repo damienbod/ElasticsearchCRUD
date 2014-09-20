@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using Damienbod.BusinessLayer.Attributes;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.BusinessLayer.Providers;
@@ -10,17 +11,17 @@ namespace Damienbod.AnimalProvider
     [TransientLifetime]
 	public class SearchProvider : ISearchProvider
     {
-	    readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", new AnimalElasticSearchSerializerMapping());
+	    readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", Animal.SearchIndex, new AnimalElasticSearchSerializerMapping());
 
         public void CreateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture), Animal.SearchIndex);
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture));
 			var ret = _elasticSearchContext.SaveChangesAsync();    
         }
 
         public void UpdateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture), Animal.SearchIndex);
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture));
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
@@ -31,18 +32,13 @@ namespace Damienbod.AnimalProvider
 
         public void DeleteById(int id)
         {
-			_elasticSearchContext.DeleteEntity(id.ToString(CultureInfo.InvariantCulture), Animal.SearchIndex);
+			_elasticSearchContext.DeleteEntity(id.ToString(CultureInfo.InvariantCulture));
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
-        public void DeleteIndex(string index)
+        public Task<Animal> GetAnimal(int id)
         {
-            //_elasticsearchClient.DeleteIndex(index);
-        }
-
-        public Animal GetAnimal(int id)
-        {
-	        return null;
+	        return  _elasticSearchContext.GetEntity(id.ToString(CultureInfo.InvariantCulture));
         }
     }
 }
