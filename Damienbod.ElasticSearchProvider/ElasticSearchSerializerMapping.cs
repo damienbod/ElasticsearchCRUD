@@ -2,14 +2,13 @@
 
 namespace Damienbod.ElasticSearchProvider
 {
-	public class ElasticSearchSerializerMapping<T>
+	public abstract class ElasticSearchSerializerMapping<T>
 	{
 		protected JsonWriter Writer;
 
-		public virtual void MapEntityValues(T entity)
-		{
-		}
-
+		public abstract void MapEntityValues(T entity);
+		public abstract T ParseEntity(Newtonsoft.Json.Linq.JToken source);
+	
 		public void AddWriter(JsonWriter writer)
 		{
 			Writer = writer;
@@ -20,5 +19,7 @@ namespace Damienbod.ElasticSearchProvider
 			Writer.WritePropertyName(key);
 			Writer.WriteValue(valueObj);
 		}
+
+
 	}
 }

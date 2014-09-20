@@ -36,9 +36,9 @@ namespace Damienbod.AnimalProvider
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
-        public Task<Animal> GetAnimal(int id)
+        public Animal GetAnimal(int id)
         {
-	        return  _elasticSearchContext.GetEntity(id.ToString(CultureInfo.InvariantCulture));
+	        return  _elasticSearchContext.GetEntity(id.ToString(CultureInfo.InvariantCulture)).Result.PayloadResult;
         }
     }
 }

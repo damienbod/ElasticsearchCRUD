@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -27,7 +28,7 @@ namespace Damienbod.ElasticSearchProvider
 		{
 			_index = index;
             _elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
-			_elasticsearchUrlForEntityGet = connectionString + "/" + typeof (T) + "/";
+			_elasticsearchUrlForEntityGet = connectionString + index + "/" + typeof (T) + "/";
 			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
         }
 
@@ -41,8 +42,9 @@ namespace Damienbod.ElasticSearchProvider
 			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo { Id = id, Index = _index, DeleteEntity = true}, null));
 		}
 
-		public async Task<bool> SaveChangesAsync()
+		public async Task<ResultDetails<T>> SaveChangesAsync()
 		{
+			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
 				string serializedEntities;
@@ -54,31 +56,34 @@ namespace Damienbod.ElasticSearchProvider
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 				var response = await _client.PostAsync(_elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(false);
 
+				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
-						// TODO add tracing or logging
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-						return false;
+						resultDetails.Description = errorInfo;
+						return resultDetails;
 					}
 
-					return true;
+					return resultDetails;
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				var responseObject = JObject.Parse(responseString);
 
 				var items = responseObject["items"] as JArray;
-				var createCount = items.Count(t => t["create"]["status"].Value<int>().Equals(201));
-				// TODO log or trace
-
-				return true;
+				if (items != null)
+				{
+					var createCount = items.Count(t => t["create"]["status"].Value<int>().Equals(201));
+					resultDetails.Description = createCount.ToString(CultureInfo.InvariantCulture);
+				}
+				return resultDetails;
 			}
 			catch (OperationCanceledException)
 			{
-				return true;
+				resultDetails.Description = "OperationCanceledException";
+				return resultDetails;
 			}
 
 			finally
@@ -87,37 +92,40 @@ namespace Damienbod.ElasticSearchProvider
 			}
 		}
 
-		public async Task<T> GetEntity(string entityId)
+		public async Task<ResultDetails<T>> GetEntity(string entityId)
 		{
+			var resultDetails = new ResultDetails<T>{Status=HttpStatusCode.InternalServerError};
 			try
 			{
 				var uri = new Uri(_elasticsearchUrlForEntityGet + entityId);
 				var response = await _client.GetAsync(uri,  _cancellationTokenSource.Token).ConfigureAwait(false);
 
+				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
-						// TODO add tracing or logging
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-						throw new Exception("Status code ... TODO");
+						resultDetails.Description = errorInfo;
+						return resultDetails;
 					}
-
-					throw new Exception("Status code ... TODO");
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				var responseObject = JObject.Parse(responseString);
 
-				var items = responseObject["items"] as JArray;
-				var createCount = items.Count(t => t["create"]["status"].Value<int>().Equals(201));
+				var source = responseObject["_source"];
+				if (source != null)
+				{
+					var result = _elasticSearchSerializerMapping.ParseEntity(source);
+					resultDetails.PayloadResult = result;
+				}
 
-				return null;
+				return resultDetails;
 			}
 			catch (OperationCanceledException)
 			{
-				return null;
+				return resultDetails;
 			}
 		}
 

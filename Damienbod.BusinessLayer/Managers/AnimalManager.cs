@@ -23,7 +23,7 @@ namespace Damienbod.BusinessLayer.Managers
             return _searchProvider.GetAnimals();
         }
 
-		public Task<Animal> GetAnimal(int id)
+		public Animal GetAnimal(int id)
         {
             return _searchProvider.GetAnimal(id);
         }

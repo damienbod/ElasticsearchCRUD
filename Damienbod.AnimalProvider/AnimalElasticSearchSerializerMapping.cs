@@ -1,5 +1,7 @@
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.ElasticSearchProvider;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Damienbod.AnimalProvider
 {
@@ -16,6 +18,11 @@ namespace Damienbod.AnimalProvider
 			MapValue("DateOfBirth", entity.DateOfBirth.UtcDateTime);
 			MapValue("CreatedTimestamp", entity.CreatedTimestamp.UtcDateTime);
 			MapValue("UpdatedTimestamp", entity.UpdatedTimestamp.UtcDateTime);
+		}
+
+		public override Animal ParseEntity(JToken source)
+		{
+			return JsonConvert.DeserializeObject(source.ToString(), typeof(Animal)) as Animal;
 		}
 	}
 

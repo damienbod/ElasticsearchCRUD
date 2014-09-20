@@ -7,7 +7,7 @@ namespace Damienbod.BusinessLayer.Managers
     public interface IAnimalManager
     {
         IQueryable<Animal> GetAnimals();
-		Task<Animal> GetAnimal(int id);
+		Animal GetAnimal(int id);
         void UpdateAnimal(Animal value);
         void DeleteAnimal(int id);
         void CreateAnimal(Animal value);
