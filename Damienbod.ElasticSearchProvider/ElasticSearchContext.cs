@@ -114,6 +114,7 @@ namespace Damienbod.ElasticSearchProvider
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				var responseObject = JObject.Parse(responseString);
 
+			    // TODO http://localhost:9201/animals/Damienbod.BusinessLayer.DomainModel.Animal/_search?q=Id:*
 				var source = responseObject["_source"];
 				if (source != null)
 				{
