@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using Damienbod.BusinessLayer.Attributes;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.BusinessLayer.Providers;
@@ -11,7 +10,7 @@ namespace Damienbod.AnimalProvider
     [TransientLifetime]
 	public class SearchProvider : ISearchProvider
     {
-	    readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", Animal.SearchIndex, new AnimalElasticSearchSerializerMapping());
+	    readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", Animal.SearchIndex, new AnimalElasticSearchMapping());
 
         public void CreateAnimal(Animal animal)
         {

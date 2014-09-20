@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Damienbod.AnimalProvider
 {
-	public class AnimalElasticSearchSerializerMapping : ElasticSearchSerializerMapping<Animal>
+	public class AnimalElasticSearchMapping : ElasticSearchSerializerMapping<Animal>
 	{
 		public override void MapEntityValues(Animal entity)
 		{
