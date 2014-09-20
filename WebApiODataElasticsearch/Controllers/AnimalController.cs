@@ -7,7 +7,6 @@ using System.Web.OData.Routing;
 using Damienbod.AnimalProvider;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.BusinessLayer.Managers;
-using Damienbod.ElasticSearchProvider;
 
 namespace WebApiODataElasticsearch.Controllers
 {
