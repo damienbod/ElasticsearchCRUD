@@ -46,7 +46,7 @@
     <Compile Include="Managers\IAnimalManager.cs" />
     <Compile Include="DomainModel\Animal.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Providers\ISearchProvider.cs" />
+    <Compile Include="Providers\IElasticsearchCrudProvider.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.ElasticSearchProv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.AnimalProvider", "Damienbod.AnimalProvider\Damienbod.AnimalProvider.csproj", "{B77C46C2-82AB-4871-8ED3-2521512D30C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticLINQ", "ElasticLINQ\ElasticLINQ.csproj", "{875E1599-5B7F-4084-BBE0-0D70C3C80428}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{875E1599-5B7F-4084-BBE0-0D70C3C80428}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{875E1599-5B7F-4084-BBE0-0D70C3C80428}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{875E1599-5B7F-4084-BBE0-0D70C3C80428}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{875E1599-5B7F-4084-BBE0-0D70C3C80428}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

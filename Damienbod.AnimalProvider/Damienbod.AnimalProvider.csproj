@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="AnimalElasticSearchMapping.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchProvider.cs" />
+    <Compile Include="ElasticsearchCrudProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Damienbod.BusinessLayer\Damienbod.BusinessLayer.csproj">

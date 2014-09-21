@@ -11,16 +11,11 @@ namespace Damienbod.BusinessLayer.Managers
     [TransientLifetime]
     public class AnimalManager : IAnimalManager
     {
-        private readonly ISearchProvider _searchProvider;
+        private readonly IElasticsearchCrudProvider _searchProvider;
 
-        public AnimalManager(ISearchProvider searchProvider)
+        public AnimalManager(IElasticsearchCrudProvider searchProvider)
         {
             _searchProvider = searchProvider;
-        }
-
-        public IQueryable<Animal> GetAnimals()
-        {
-            return _searchProvider.GetAnimals();
         }
 
 		public Animal GetAnimal(int id)

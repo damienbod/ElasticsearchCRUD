@@ -179,6 +179,10 @@
       <Project>{d40fd7b8-3fbc-4f06-88ed-704e60b1a3af}</Project>
       <Name>Damienbod.ElasticSearchProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ElasticLINQ\ElasticLINQ.csproj">
+      <Project>{875e1599-5b7f-4084-bbe0-0d70c3c80428}</Project>
+      <Name>ElasticLINQ</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.OData;
@@ -7,22 +8,30 @@ using System.Web.OData.Routing;
 using Damienbod.AnimalProvider;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.BusinessLayer.Managers;
+using ElasticLinq;
+using ElasticLinq.Mapping;
 
 namespace WebApiODataElasticsearch.Controllers
 {
 	[ODataRoutePrefix("Animal")]
 	public class AnimalController : ODataController
 	{
+		readonly ElasticConnection _elasticLinqConnection = new ElasticConnection(new Uri("http://localhost:9201"), null, null, null, Animal.SearchIndex);
 		private readonly IAnimalManager _animalManager;
 
 		public AnimalController()
 		{
 			// TODO add this with DI
-			_animalManager = new AnimalManager(new SearchProvider());
+			_animalManager = new AnimalManager(new ElasticsearchCrudProvider());
 		}
+
 		public IHttpActionResult Get()
 		{
-			return Ok(_animalManager.GetAnimals());
+			var elasticMapping = new ElasticMapping(false, true, true, false, true);
+			var context = new ElasticContext(_elasticLinqConnection, elasticMapping);
+
+			// TODO map OData to query
+			return Ok(context.Query<Animal>());
 		}
 
 		[ODataRoute()]

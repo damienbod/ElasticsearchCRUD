@@ -6,9 +6,7 @@ namespace Damienbod.ElasticSearchProvider
 	{
 		protected JsonWriter Writer;
 
-		public abstract void MapEntityValues(T entity);
-		public abstract T ParseEntity(Newtonsoft.Json.Linq.JToken source);
-	
+		public abstract void MapEntityValues(T entity);	
 		public void AddWriter(JsonWriter writer)
 		{
 			Writer = writer;
@@ -18,6 +16,11 @@ namespace Damienbod.ElasticSearchProvider
 		{
 			Writer.WritePropertyName(key);
 			Writer.WriteValue(valueObj);
+		}
+
+		public virtual T ParseEntity(Newtonsoft.Json.Linq.JToken source)
+		{
+			return (T)JsonConvert.DeserializeObject(source.ToString(), typeof(T));
 		}
 
 

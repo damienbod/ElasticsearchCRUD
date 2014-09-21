@@ -1,7 +1,5 @@
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.ElasticSearchProvider;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Damienbod.AnimalProvider
 {
@@ -20,10 +18,13 @@ namespace Damienbod.AnimalProvider
 			MapValue("UpdatedTimestamp", entity.UpdatedTimestamp.UtcDateTime);
 		}
 
-		public override Animal ParseEntity(JToken source)
-		{
-			return JsonConvert.DeserializeObject(source.ToString(), typeof(Animal)) as Animal;
-		}
+		//
+		// Only required if you have some special logic.
+		//
+		//public override Animal ParseEntity(JToken source)
+		//{
+		//	return JsonConvert.DeserializeObject(source.ToString(), typeof(Animal)) as Animal;
+		//}
 	}
 
 }
