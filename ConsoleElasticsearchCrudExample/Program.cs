@@ -12,7 +12,8 @@ namespace ConsoleElasticsearchCrudExample
 	{
 		static void Main(string[] args)
 		{
-			var elasticSearchContext = new ElasticSearchContext<Skill>("http://localhost:9201/", "skill", new SkillElasticSearchMapping());
+			//var elasticSearchContext = new ElasticSearchContext<Skill>("http://localhost:9201/", "skill", new SkillElasticSearchMapping());
+			var elasticSearchContext = new ElasticSearchContext<Skill>("http://localhost:9201/", "skill");
 			elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 			var skillEf = new Skill
 			{

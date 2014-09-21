@@ -11,10 +11,12 @@ namespace Damienbod.ElasticSearchProvider
 	public class ElasticsearchSerializer<T>  : IDisposable where T : class
 	{
 		private readonly ElasticSearchSerializerMapping<T> _elasticSearchSerializerMapping;
+		private readonly ITraceProvider _traceProvider;
 
-		public ElasticsearchSerializer(ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
+		public ElasticsearchSerializer(ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping, ITraceProvider traceProvider)
 		{
 			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
+			_traceProvider = traceProvider;
 		}
 
 		private JsonWriter _writer;
@@ -33,11 +35,12 @@ namespace Damienbod.ElasticSearchProvider
 			{
 				if (Regex.IsMatch(entity.Item1.Index, "[\\\\/*?\",<>|\\sA-Z]"))
 				{
+					_traceProvider.Trace(string.Format("index is not allowed in Elasticsearch: {0}", entity.Item1.Index));
 					throw new ArgumentException(string.Format("index is not allowed in Elasticsearch: {0}", entity.Item1.Index));
 				}
 				if (entity.Item1.DeleteEntity)
 				{
-					DeleteEntity(entity.Item1, _elasticSearchSerializerMapping);
+					DeleteEntity(entity.Item1);
 				}
 				else
 				{
@@ -51,7 +54,7 @@ namespace Damienbod.ElasticSearchProvider
 			return sb.ToString();
 		}
 
-		private void DeleteEntity(EntityContextInfo entityInfo, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
+		private void DeleteEntity(EntityContextInfo entityInfo)
 		{
 			_writer.WriteStartObject();
 
