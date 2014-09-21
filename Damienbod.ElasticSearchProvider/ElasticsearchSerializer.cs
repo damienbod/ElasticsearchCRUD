@@ -60,7 +60,7 @@ namespace Damienbod.ElasticSearchProvider
 			// Write the batch "index" operation header
 			_writer.WriteStartObject();
 			WriteValue("_index", entityInfo.Index);
-			WriteValue("_type", typeof(T).ToString());
+			WriteValue("_type", _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
 			WriteValue("_id", entityInfo.Id);
 			_writer.WriteEndObject();
 			_writer.WriteEndObject();
@@ -77,7 +77,7 @@ namespace Damienbod.ElasticSearchProvider
 			// Write the batch "index" operation header
 			_writer.WriteStartObject();
 			WriteValue("_index", entityInfo.Index);
-			WriteValue("_type", typeof(T).ToString());
+			WriteValue("_type", _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
 			WriteValue("_id", entityInfo.Id);
 			_writer.WriteEndObject();
 			_writer.WriteEndObject();

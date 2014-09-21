@@ -28,8 +28,8 @@ namespace Damienbod.ElasticSearchProvider
 		{
 			_index = index;
             _elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
-			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, typeof (T));
 			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
+			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
         }
 
 		public void AddUpdateEntity(T entity, string id)

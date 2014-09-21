@@ -1,13 +1,10 @@
 ﻿using System.Globalization;
-using Damienbod.BusinessLayer.Attributes;
 using Damienbod.BusinessLayer.DomainModel;
-using Damienbod.BusinessLayer.Providers;
 using Damienbod.ElasticSearchProvider;
 
 namespace Damienbod.AnimalProvider
 {
-    [TransientLifetime]
-	public class ElasticsearchCrudProvider : IElasticsearchCrudProvider
+	public class ElasticsearchCrudProvider 
     {
 	    readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", Animal.SearchIndex, new AnimalElasticSearchMapping());
 
