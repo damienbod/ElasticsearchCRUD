@@ -61,17 +61,20 @@ namespace Damienbod.ElasticSearchProvider
 			try
 			{
 				string serializedEntities;
-				using (var serializer = new ElasticsearchSerializer<T>(_elasticSearchSerializerMapping))
+				using (var serializer = new ElasticsearchSerializer<T>(_elasticSearchSerializerMapping, TraceProvider))
 				{
 					serializedEntities = serializer.Serialize(_entityPendingChanges);
 				}
 				var content = new StringContent(serializedEntities);
+				TraceProvider.Trace(string.Format("sending bulk request: {0}", serializedEntities));
+				TraceProvider.Trace(string.Format("Request HTTP POST uri: {0}", _elasticsearchUrlBatch.AbsoluteUri));
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 				var response = await _client.PostAsync(_elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(false);
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
+					TraceProvider.Trace(string.Format("response status code: {0}", response.StatusCode));
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -83,6 +86,7 @@ namespace Damienbod.ElasticSearchProvider
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				TraceProvider.Trace(string.Format("response: {0}", responseString));
 				resultDetails.Description = responseString;
 				return resultDetails;
 			}
@@ -106,6 +110,7 @@ namespace Damienbod.ElasticSearchProvider
 			try
 			{
 				var uri = new Uri(_elasticsearchUrlForEntityGet + entityId);
+				TraceProvider.Trace(string.Format("Request HTTP GET uri: {0}", uri.AbsoluteUri));
 				var response = await _client.GetAsync(uri,  _cancellationTokenSource.Token).ConfigureAwait(false);
 
 				resultDetails.Status = response.StatusCode;
