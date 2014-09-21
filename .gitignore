@@ -13,3 +13,6 @@ ElasticLINQ/obj
 ConsoleElasticsearchCrudExample/bin
 ConsoleElasticsearchCrudExample/obj
 ElasticsearchCrud.v12.suo
+WebApiElasticsearchCrudExample/bin
+WebApiElasticsearchCrudExample/obj
+WebApiElasticsearchCrudExample/WebApiElasticsearchCrudExample.csproj.user
