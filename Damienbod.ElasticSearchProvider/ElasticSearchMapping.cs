@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Newtonsoft.Json;
 
 namespace Damienbod.ElasticSearchProvider
@@ -13,7 +14,11 @@ namespace Damienbod.ElasticSearchProvider
 
 		public virtual void MapEntityValues(T entity)
 		{
-			// TODO implement reflection mappings, default
+			var propertyInfo = entity.GetType().GetProperties();
+			foreach (var prop in propertyInfo)
+			{
+				MapValue(prop.Name, prop.GetValue(entity));
+			}
 		}
 
 		public void AddWriter(JsonWriter writer)

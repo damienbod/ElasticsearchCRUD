@@ -40,8 +40,8 @@ namespace ConsoleElasticsearchCrudExample
 			Console.ReadLine();
 
 			// get a entity and update it, then delete an entity
-			 Skill getFirstWithId = elasticSearchContext.GetEntity("2").Result.PayloadResult;
-			getFirstWithId.Updated = DateTime.UtcNow;
+			Skill singleEntityWithId = elasticSearchContext.GetEntity("2").Result.PayloadResult;
+			singleEntityWithId.Updated = DateTime.UtcNow;
 			elasticSearchContext.AddUpdateEntity(skillOrm, skillOrm.Id.ToString(CultureInfo.InvariantCulture));
 			elasticSearchContext.DeleteEntity("1");
 			ret = elasticSearchContext.SaveChangesAsync();

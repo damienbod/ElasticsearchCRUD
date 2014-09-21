@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -24,13 +22,22 @@ namespace Damienbod.ElasticSearchProvider
 
 		private readonly List<Tuple<EntityContextInfo, T>>  _entityPendingChanges = new List<Tuple<EntityContextInfo, T>>(); 
 		
-		public ElasticSearchContext(string connectionString, string index, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
+		public ElasticSearchContext(string connectionString, string index, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping )
 		{
 			_index = index;
             _elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
 			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
 			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
         }
+
+		public ElasticSearchContext(string connectionString, string index)
+		{
+			_index = index;
+			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
+			_elasticSearchSerializerMapping = new ElasticSearchSerializerMapping<T>();
+			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
+		}
+
 
 		public void AddUpdateEntity(T entity, string id)
 		{
@@ -70,14 +77,7 @@ namespace Damienbod.ElasticSearchProvider
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-				var responseObject = JObject.Parse(responseString);
-
-				var items = responseObject["items"] as JArray;
-				if (items != null)
-				{
-					var createCount = items.Count(t => t["create"]["status"].Value<int>().Equals(201));
-					resultDetails.Description = createCount.ToString(CultureInfo.InvariantCulture);
-				}
+				resultDetails.Description = responseString;
 				return resultDetails;
 			}
 			catch (OperationCanceledException)

@@ -1,4 +1,5 @@
 using System;
+using System.Reflection;
 using Damienbod.BusinessLayer.DomainModel;
 using Damienbod.ElasticSearchProvider;
 
