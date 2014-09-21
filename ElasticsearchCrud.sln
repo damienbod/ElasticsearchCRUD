@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.AnimalProvider", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleElasticsearchCrudExample", "ConsoleElasticsearchCrudExample\ConsoleElasticsearchCrudExample.csproj", "{1E850A6D-11E5-45E1-AE91-7930F908554A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiElasticsearchCrudExample", "WebApiElasticsearchCrudExample\WebApiElasticsearchCrudExample.csproj", "{F32E948D-41C9-47C7-B305-6BB18997B19A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
