@@ -10,25 +10,25 @@ namespace Damienbod.AnimalProvider
 
         public void CreateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture));
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id);
 			var ret = _elasticSearchContext.SaveChangesAsync();    
         }
 
         public void UpdateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id.ToString(CultureInfo.InvariantCulture));
+			_elasticSearchContext.AddUpdateEntity(animal, animal.Id);
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
         public void DeleteById(int id)
         {
-			_elasticSearchContext.DeleteEntity(id.ToString(CultureInfo.InvariantCulture));
+			_elasticSearchContext.DeleteEntity(id);
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
         public Animal GetAnimal(int id)
         {
-	        return  _elasticSearchContext.GetEntity(id.ToString(CultureInfo.InvariantCulture)).Result.PayloadResult;
+	        return  _elasticSearchContext.GetEntity(id).Result.PayloadResult;
         }
     }
 }

@@ -41,22 +41,22 @@ namespace Damienbod.ElasticSearchProvider
 			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
 		}
 
-		public void AddUpdateEntity(T entity, string id)
+		public void AddUpdateEntity(T entity, object id)
 		{
 			TraceProvider.Trace(string.Format("Adding entity: {0}, {1} to pending list", entity.GetType().Name, id ));
-			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo{Id=id,Index = _index}, entity));
+			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo { Id = id.ToString(), Index = _index }, entity));
 		}
 
-		public void DeleteEntity(string id)
+		public void DeleteEntity(object id)
 		{
-			TraceProvider.Trace(string.Format("Request to delete entity with id: {0}, Type: {1}, adding to pending list", id, typeof(T)));
-			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo { Id = id, Index = _index, DeleteEntity = true}, null));
+			TraceProvider.Trace(string.Format("Request to delete entity with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name));
+			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo { Id = id.ToString(), Index = _index, DeleteEntity = true}, null));
 		}
 
-		public async Task<ResultDetails<T>> SaveChangesAsync()
+		public async Task<ResultDetails<string>> SaveChangesAsync()
 		{
 			TraceProvider.Trace("Save changes to Elasticsearch started");
-			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
+			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
 				string serializedEntities;
@@ -87,6 +87,7 @@ namespace Damienbod.ElasticSearchProvider
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				TraceProvider.Trace(string.Format("response: {0}", responseString));
 				resultDetails.Description = responseString;
+				resultDetails.PayloadResult = serializedEntities;
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)
@@ -102,7 +103,7 @@ namespace Damienbod.ElasticSearchProvider
 			}
 		}
 
-		public async Task<ResultDetails<T>> GetEntity(string entityId)
+		public async Task<ResultDetails<T>> GetEntity(object entityId)
 		{
 			TraceProvider.Trace(string.Format("Request for select entity with id: {0}, Type: {1}", entityId, typeof(T)));
 			var resultDetails = new ResultDetails<T>{Status=HttpStatusCode.InternalServerError};
