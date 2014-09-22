@@ -6,7 +6,7 @@
     <version>1.0.1</version>
     <authors>damienbod</authors>
     <owners>damienbod</owners>
-    <projectUrl>http://damienbod.wordpress.com</projectUrl>
+    <projectUrl>http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Elasticsearch simple CRUD operations</description>
 	<iconUrl>http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png</iconUrl>
