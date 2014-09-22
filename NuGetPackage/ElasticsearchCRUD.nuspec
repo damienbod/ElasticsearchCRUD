@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>ElasticsearchCRUD</id>
+    <title>ElasticsearchCRUD</title>
+    <version>1.0.0</version>
+    <authors>damienbod</authors>
+    <owners>damienbod</owners>
+    <projectUrl>http://damienbod.wordpress.com</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Elasticsearch simple CRUD operations</description>
+	<iconUrl>http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png</iconUrl>
+	<language>en-US</language>
+	<tags>Elasticsearch HttpClient</tags>
+	<dependencies>
+      <dependency id="Newtonsoft.Json" version="6.0.5"  />
+	</dependencies>
+  </metadata>
+  </package>
+ 
