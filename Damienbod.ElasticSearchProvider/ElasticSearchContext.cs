@@ -41,7 +41,6 @@ namespace Damienbod.ElasticSearchProvider
 			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
 		}
 
-
 		public void AddUpdateEntity(T entity, string id)
 		{
 			TraceProvider.Trace(string.Format("Adding entity: {0}, {1} to pending list", entity.GetType().Name, id ));

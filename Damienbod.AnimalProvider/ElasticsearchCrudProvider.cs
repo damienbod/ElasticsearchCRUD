@@ -6,7 +6,7 @@ namespace Damienbod.AnimalProvider
 {
 	public class ElasticsearchCrudProvider 
     {
-		readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9201/", Animal.SearchIndex, new AnimalToLowerExampleElasticSearchMapping());
+		readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9200/", Animal.SearchIndex, new AnimalToLowerExampleElasticSearchMapping());
 
         public void CreateAnimal(Animal animal)
         {
