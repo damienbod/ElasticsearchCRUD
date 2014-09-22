@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 
-namespace Damienbod.ElasticSearchProvider
+namespace ElasticsearchCRUD
 {
 	public class ElasticSearchContext<T> : IDisposable where T : class
 	{

@@ -1,5 +1,5 @@
 ﻿using System;
-using Damienbod.ElasticSearchProvider;
+using ElasticsearchCRUD;
 
 namespace ConsoleElasticsearchCrudExample
 {

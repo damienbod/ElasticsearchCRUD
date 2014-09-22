@@ -1,6 +1,5 @@
-﻿using System.Globalization;
-using Damienbod.BusinessLayer.DomainModel;
-using Damienbod.ElasticSearchProvider;
+﻿using Damienbod.BusinessLayer.DomainModel;
+using ElasticsearchCRUD;
 
 namespace Damienbod.AnimalProvider
 {

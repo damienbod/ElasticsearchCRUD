@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.ElasticSearchProvider", "Damienbod.ElasticSearchProvider\Damienbod.ElasticSearchProvider.csproj", "{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.AnimalProvider", "Damienbod.AnimalProvider\Damienbod.AnimalProvider.csproj", "{B77C46C2-82AB-4871-8ED3-2521512D30C6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleElasticsearchCrudExample", "ConsoleElasticsearchCrudExample\ConsoleElasticsearchCrudExample.csproj", "{1E850A6D-11E5-45E1-AE91-7930F908554A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiElasticsearchCrudExample", "WebApiElasticsearchCrudExample\WebApiElasticsearchCrudExample.csproj", "{F32E948D-41C9-47C7-B305-6BB18997B19A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticsearchCRUD", "ElasticsearchCRUD\ElasticsearchCRUD.csproj", "{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

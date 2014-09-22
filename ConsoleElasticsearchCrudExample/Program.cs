@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Damienbod.ElasticSearchProvider;
+using ElasticsearchCRUD;
 
 namespace ConsoleElasticsearchCrudExample
 {

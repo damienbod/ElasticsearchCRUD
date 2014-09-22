@@ -1,2 +1,2 @@
-WebApiODataElasticsearch
+ElasticsearchCRUD
 ========================

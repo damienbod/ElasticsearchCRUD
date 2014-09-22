@@ -1,4 +1,4 @@
-﻿namespace Damienbod.ElasticSearchProvider
+﻿namespace ElasticsearchCRUD
 {
 	public class EntityContextInfo
 	{

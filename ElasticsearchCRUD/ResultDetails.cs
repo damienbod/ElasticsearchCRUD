@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Damienbod.ElasticSearchProvider
+namespace ElasticsearchCRUD
 {
 	public class ResultDetails<T>
 	{

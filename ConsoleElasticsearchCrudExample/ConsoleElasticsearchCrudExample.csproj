@@ -51,9 +51,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Damienbod.ElasticSearchProvider\Damienbod.ElasticSearchProvider.csproj">
+    <ProjectReference Include="..\ElasticsearchCRUD\ElasticsearchCRUD.csproj">
       <Project>{d40fd7b8-3fbc-4f06-88ed-704e60b1a3af}</Project>
-      <Name>Damienbod.ElasticSearchProvider</Name>
+      <Name>ElasticsearchCRUD</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

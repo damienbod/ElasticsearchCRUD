@@ -7,8 +7,8 @@
     <ProjectGuid>{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Damienbod.ElasticSearchProvider</RootNamespace>
-    <AssemblyName>Damienbod.ElasticSearchProvider</AssemblyName>
+    <RootNamespace>ElasticsearchCRUD</RootNamespace>
+    <AssemblyName>ElasticsearchCRUD</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

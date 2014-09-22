@@ -50,13 +50,13 @@
     <Compile Include="ElasticsearchCrudProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Damienbod.ElasticSearchProvider\Damienbod.ElasticSearchProvider.csproj">
-      <Project>{d40fd7b8-3fbc-4f06-88ed-704e60b1a3af}</Project>
-      <Name>Damienbod.ElasticSearchProvider</Name>
-    </ProjectReference>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <ProjectReference Include="..\ElasticsearchCRUD\ElasticsearchCRUD.csproj">
+      <Project>{d40fd7b8-3fbc-4f06-88ed-704e60b1a3af}</Project>
+      <Name>ElasticsearchCRUD</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

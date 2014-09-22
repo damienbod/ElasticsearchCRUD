@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Reflection;
 using Newtonsoft.Json;
 
-namespace Damienbod.ElasticSearchProvider
+namespace ElasticsearchCRUD
 {
 	/// <summary>
 	/// Default mapping for your Entity. You can implement this clas to implement your specific mapping if required

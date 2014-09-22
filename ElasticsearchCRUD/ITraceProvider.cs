@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Damienbod.ElasticSearchProvider
+namespace ElasticsearchCRUD
 {
 	public interface ITraceProvider
 	{
