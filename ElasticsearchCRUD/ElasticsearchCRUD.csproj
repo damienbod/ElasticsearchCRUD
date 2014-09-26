@@ -53,6 +53,7 @@
     <Compile Include="ElasticsearchSerializer.cs" />
     <Compile Include="ElasticSearchMapping.cs" />
     <Compile Include="EntityContextInfo.cs" />
+    <Compile Include="IElasticSearchMappingResolver.cs" />
     <Compile Include="ITraceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultDetails.cs" />
