@@ -13,9 +13,6 @@ namespace Damienbod.AnimalProvider
 			_elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver);
 		}
 
-		
-
-		
         public void CreateAnimal(Animal animal)
         {
 			_elasticSearchContext.AddUpdateEntity(animal, animal.Id);

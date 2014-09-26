@@ -13,7 +13,9 @@ namespace ConsoleElasticsearchCrudExample
 		static void Main(string[] args)
 		{
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-			elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
+
+			// You only require a mapping if the default settings are not good enough
+			//elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
 			var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver);
 
 			elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
@@ -89,6 +91,14 @@ namespace ConsoleElasticsearchCrudExample
 			Console.WriteLine(ret.Result.PayloadResult);
 			Console.WriteLine(ret.Result.Status);
 			Console.WriteLine(ret.Result.Description);
+			Console.ReadLine();
+
+			// deleting indexes are usually not required...
+			elasticSearchContext.AllowDeleteForIndex = true;
+			var result = elasticSearchContext.DeleteIndex<SkillLevel>();
+			Console.WriteLine(result.Result.PayloadResult);
+			Console.WriteLine(result.Result.Status);
+			Console.WriteLine(result.Result.Description);
 			Console.ReadLine();
 		}
 	}

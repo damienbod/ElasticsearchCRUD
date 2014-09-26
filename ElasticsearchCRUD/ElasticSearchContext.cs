@@ -21,7 +21,9 @@ namespace ElasticsearchCRUD
 		private readonly List<Tuple<EntityContextInfo, object>> _entityPendingChanges = new List<Tuple<EntityContextInfo, object>>();
 
 		public ITraceProvider TraceProvider = new NullTraceProvider();
-		private string _connectionString;
+		private readonly string _connectionString;
+
+		public bool AllowDeleteForIndex { get; set; }
 
 		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver)
 		{
@@ -127,6 +129,47 @@ namespace ElasticsearchCRUD
 					var result = _elasticSearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(source, typeof(T));
 					resultDetails.PayloadResult = (T)result;
 				}
+
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				TraceProvider.Trace(string.Format("Get Request OperationCanceledException: {0}", oex.Message));
+				return resultDetails;
+			}
+		}
+
+		public async Task<ResultDetails<T>> DeleteIndex<T>()
+		{
+			if (!AllowDeleteForIndex)
+			{
+				throw new ElasticsearchCrudException("Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
+			}
+			TraceProvider.Trace(string.Format("Request to delete complete index for Type: {0}", typeof(T)));
+
+			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
+			try
+			{
+				var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticsearchUrlForIndexDelete = string.Format("{0}{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
+				var uri = new Uri(elasticsearchUrlForIndexDelete );
+				TraceProvider.Trace(string.Format("Request HTTP Delete uri: {0}", uri.AbsoluteUri));
+				var response = await _client.DeleteAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+				resultDetails.Status = response.StatusCode;
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					if (response.StatusCode == HttpStatusCode.BadRequest)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+						resultDetails.Description = errorInfo;
+						return resultDetails;
+					}
+				}
+
+				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				TraceProvider.Trace(string.Format("Delete Index Request response: {0}", responseString));
+				resultDetails.Description = responseString;
 
 				return resultDetails;
 			}
