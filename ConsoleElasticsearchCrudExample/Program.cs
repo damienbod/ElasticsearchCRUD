@@ -76,15 +76,12 @@ namespace ConsoleElasticsearchCrudExample
 			Console.WriteLine(ret.Result.Status);
 			Console.WriteLine(ret.Result.Description);
 			
-
 			// get a entity and update it, then delete an entity
 			Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("14").Result.PayloadResult;
 			singleEntityWithId.Updated = DateTime.UtcNow;
 			elasticSearchContext.AddUpdateEntity(skillOrm, skillOrm.Id);
 			elasticSearchContext.DeleteEntity<Skill>("11");
 			ret = elasticSearchContext.SaveChangesAsync();
-
-
 
 			elasticSearchContext.AddUpdateEntity(skillEf, skillEf.Id);
 			ret = elasticSearchContext.SaveChangesAsync();
@@ -94,12 +91,12 @@ namespace ConsoleElasticsearchCrudExample
 			Console.ReadLine();
 
 			// deleting indexes are usually not required...
-			elasticSearchContext.AllowDeleteForIndex = true;
-			var result = elasticSearchContext.DeleteIndex<SkillLevel>();
-			Console.WriteLine(result.Result.PayloadResult);
-			Console.WriteLine(result.Result.Status);
-			Console.WriteLine(result.Result.Description);
-			Console.ReadLine();
+			//elasticSearchContext.AllowDeleteForIndex = true;
+			//var result = elasticSearchContext.DeleteIndex<SkillLevel>();
+			//Console.WriteLine(result.Result.PayloadResult);
+			//Console.WriteLine(result.Result.Status);
+			//Console.WriteLine(result.Result.Description);
+			//Console.ReadLine();
 		}
 	}
 }

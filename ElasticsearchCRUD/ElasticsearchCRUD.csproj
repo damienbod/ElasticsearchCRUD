@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ElasticSearchContext.cs" />
-    <Compile Include="ElasticsearchCRUDException.cs" />
+    <Compile Include="ElasticsearchCrudException.cs" />
     <Compile Include="ElasticSearchMappingResolver.cs" />
     <Compile Include="ElasticsearchSerializer.cs" />
     <Compile Include="ElasticSearchMapping.cs" />
