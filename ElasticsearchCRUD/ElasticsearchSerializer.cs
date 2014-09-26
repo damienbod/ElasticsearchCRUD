@@ -8,20 +8,20 @@ using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD
 {
-	public class ElasticsearchSerializer<T>  : IDisposable where T : class
+	public class ElasticsearchSerializer  : IDisposable
 	{
-		private readonly ElasticSearchSerializerMapping<T> _elasticSearchSerializerMapping;
+		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver;
 		private readonly ITraceProvider _traceProvider;
 
-		public ElasticsearchSerializer(ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping, ITraceProvider traceProvider)
+		public ElasticsearchSerializer( ITraceProvider traceProvider, IElasticSearchMappingResolver elasticSearchMappingResolver)
 		{
-			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
+			_elasticSearchMappingResolver = elasticSearchMappingResolver;
 			_traceProvider = traceProvider;
 		}
 
 		private JsonWriter _writer;
 
-		public string Serialize(IEnumerable<Tuple<EntityContextInfo, T>> entities)
+		public string Serialize(IEnumerable<Tuple<EntityContextInfo, object>> entities)
 		{
 			if (entities == null)
 			{
@@ -33,10 +33,11 @@ namespace ElasticsearchCRUD
 
 			foreach (var entity in entities)
 			{
-				if (Regex.IsMatch(entity.Item1.Index, "[\\\\/*?\",<>|\\sA-Z]"))
+				string index = _elasticSearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
+				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 				{
-					_traceProvider.Trace(string.Format("index is not allowed in Elasticsearch: {0}", entity.Item1.Index));
-					throw new ArgumentException(string.Format("index is not allowed in Elasticsearch: {0}", entity.Item1.Index));
+					_traceProvider.Trace(string.Format("index is not allowed in Elasticsearch: {0}", index));
+					throw new ElasticsearchCrudException(string.Format("index is not allowed in Elasticsearch: {0}", index));
 				}
 				if (entity.Item1.DeleteEntity)
 				{
@@ -44,7 +45,7 @@ namespace ElasticsearchCRUD
 				}
 				else
 				{
-					AddUpdateEntity(entity.Item2, entity.Item1, _elasticSearchSerializerMapping);
+					AddUpdateEntity(entity.Item2, entity.Item1);
 				}
 			}
 
@@ -56,14 +57,15 @@ namespace ElasticsearchCRUD
 
 		private void DeleteEntity(EntityContextInfo entityInfo)
 		{
+			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			_writer.WriteStartObject();
 
 			_writer.WritePropertyName("delete");
 
 			// Write the batch "index" operation header
 			_writer.WriteStartObject();
-			WriteValue("_index", entityInfo.Index);
-			WriteValue("_type", _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
+			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
+			WriteValue("_type", elasticSearchMapping.GetDocumentType(entityInfo.EntityType));
 			WriteValue("_id", entityInfo.Id);
 			_writer.WriteEndObject();
 			_writer.WriteEndObject();
@@ -71,16 +73,17 @@ namespace ElasticsearchCRUD
 			_writer.WriteRaw("\n");
 		}
 
-		private void AddUpdateEntity(T entity, EntityContextInfo entityInfo, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping)
+		private void AddUpdateEntity(object entity, EntityContextInfo entityInfo)
 		{
+			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			_writer.WriteStartObject();
 
 			_writer.WritePropertyName("index");
 
 			// Write the batch "index" operation header
 			_writer.WriteStartObject();
-			WriteValue("_index", entityInfo.Index);
-			WriteValue("_type", _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
+			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
+			WriteValue("_type", elasticSearchMapping.GetDocumentType(entityInfo.EntityType));
 			WriteValue("_id", entityInfo.Id);
 			_writer.WriteEndObject();
 			_writer.WriteEndObject();
@@ -88,8 +91,8 @@ namespace ElasticsearchCRUD
 
 			_writer.WriteStartObject();
 
-			elasticSearchSerializerMapping.AddWriter(_writer);
-			elasticSearchSerializerMapping.MapEntityValues(entity);
+			elasticSearchMapping.AddWriter(_writer);
+			elasticSearchMapping.MapEntityValues(entity);
 
 			_writer.WriteEndObject();
 			_writer.WriteRaw("\n");

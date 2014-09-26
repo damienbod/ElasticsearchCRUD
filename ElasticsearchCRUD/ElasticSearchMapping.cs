@@ -6,12 +6,11 @@ namespace ElasticsearchCRUD
 	/// <summary>
 	/// Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public class ElasticSearchSerializerMapping<T>
+	public class ElasticSearchMapping
 	{
 		protected JsonWriter Writer;
 
-		public virtual void MapEntityValues(T entity)
+		public virtual void MapEntityValues(object entity)
 		{
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
@@ -31,16 +30,20 @@ namespace ElasticsearchCRUD
 			Writer.WriteValue(valueObj);
 		}
 
-		public virtual T ParseEntity(Newtonsoft.Json.Linq.JToken source)
+		public virtual object ParseEntity(Newtonsoft.Json.Linq.JToken source, Type type)
 		{
-			return (T)JsonConvert.DeserializeObject(source.ToString(), typeof(T));
+			return JsonConvert.DeserializeObject(source.ToString(), type);
 		}
 
 		public virtual string GetDocumentType(Type type)
 		{
-			return type.Name;
+			return type.Name.ToLower();
 		}
 
-
+		public virtual string GetIndexForType(Type type)
+		{
+			return type.Name.ToLower();
+		}
 	}
+
 }

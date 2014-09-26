@@ -3,15 +3,16 @@ using ElasticsearchCRUD;
 
 namespace ConsoleElasticsearchCrudExample
 {
-	public class SkillElasticSearchMapping : ElasticSearchSerializerMapping<Skill>
+	public class SkillElasticSearchMapping : ElasticSearchMapping
 	{
-		public override void MapEntityValues(Skill entity)
+		public override void MapEntityValues(object entity)
 		{
-			MapValue("id", entity.Id);
-			MapValue("name", entity.Name);
-			MapValue("description", entity.Description);
-			MapValue("created", entity.Created.UtcDateTime);
-			MapValue("updated", entity.Updated.UtcDateTime);
+			Skill skillEntity = entity as Skill;
+			MapValue("id", skillEntity.Id);
+			MapValue("name", skillEntity.Name);
+			MapValue("description", skillEntity.Description);
+			MapValue("created", skillEntity.Created.UtcDateTime);
+			MapValue("updated", skillEntity.Updated.UtcDateTime);
 		}
 
 		//
@@ -29,7 +30,17 @@ namespace ConsoleElasticsearchCrudExample
 		/// <returns></returns>
 		public override string GetDocumentType(Type type)
 		{
-			return type.Name.ToLower();
+			return "cooltype";
+		}
+
+		/// <summary>
+		/// Use this if the index is named differently to the default type.Name.ToLower
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns></returns>
+		public override string GetIndexForType(Type type)
+		{
+			return "skills";
 		}
 	}
 }

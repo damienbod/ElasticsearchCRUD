@@ -4,13 +4,13 @@ using ElasticsearchCRUD;
 
 namespace Damienbod.AnimalProvider
 {
-	public class AnimalToLowerExampleElasticSearchMapping : ElasticSearchSerializerMapping<Animal>
+	public class AnimalToLowerExampleElasticSearchMapping : ElasticSearchMapping
 	{
 		/// <summary>
 		/// Here you can do any type of entity mapping
 		/// </summary>
 		/// <param name="entity"></param>
-		public override void MapEntityValues(Animal entity)
+		public override void MapEntityValues(Object entity)
 		{
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)

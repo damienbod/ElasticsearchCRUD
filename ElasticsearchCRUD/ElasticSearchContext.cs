@@ -9,48 +9,39 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD
 {
-	public class ElasticSearchContext<T> : IDisposable where T : class
+	public class ElasticSearchContext : IDisposable 
 	{
-		private readonly ElasticSearchSerializerMapping<T> _elasticSearchSerializerMapping;
+		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver;
 
 		private const string BatchOperationPath = "/_bulk";
 		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		private readonly Uri _elasticsearchUrlBatch;
-		private readonly string _elasticsearchUrlForEntityGet;
-		private readonly string  _index;
 		private readonly HttpClient _client = new HttpClient();
 
-		private readonly List<Tuple<EntityContextInfo, T>>  _entityPendingChanges = new List<Tuple<EntityContextInfo, T>>();
+		private readonly List<Tuple<EntityContextInfo, object>> _entityPendingChanges = new List<Tuple<EntityContextInfo, object>>();
 
 		public ITraceProvider TraceProvider = new NullTraceProvider();
+		private string _connectionString;
 
-		public ElasticSearchContext(string connectionString, string index, ElasticSearchSerializerMapping<T> elasticSearchSerializerMapping )
+		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver)
 		{
-			_index = index;
-            _elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
-			_elasticSearchSerializerMapping = elasticSearchSerializerMapping;
-			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
-        }
-
-		public ElasticSearchContext(string connectionString, string index)
-		{
+			_connectionString = connectionString;
 			TraceProvider.Trace(string.Format("new ElasticSearchContext with connection string: {0}", connectionString));
-			_index = index;
+			_elasticSearchMappingResolver = elasticSearchMappingResolver;
 			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
-			_elasticSearchSerializerMapping = new ElasticSearchSerializerMapping<T>();
-			_elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", connectionString, index, _elasticSearchSerializerMapping.GetDocumentType(typeof(T)));
+		
 		}
 
-		public void AddUpdateEntity(T entity, object id)
+		public void AddUpdateEntity(object entity, object id)
 		{
 			TraceProvider.Trace(string.Format("Adding entity: {0}, {1} to pending list", entity.GetType().Name, id ));
-			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo { Id = id.ToString(), Index = _index }, entity));
+			_entityPendingChanges.Add(new Tuple<EntityContextInfo, object>(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType() }, entity));
 		}
 
-		public void DeleteEntity(object id)
+		public void DeleteEntity<T>(object id)
 		{
 			TraceProvider.Trace(string.Format("Request to delete entity with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name));
-			_entityPendingChanges.Add(new Tuple<EntityContextInfo, T>(new EntityContextInfo { Id = id.ToString(), Index = _index, DeleteEntity = true}, null));
+			_entityPendingChanges.Add(new Tuple<EntityContextInfo, object>(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T)}, null));
 		}
 
 		public async Task<ResultDetails<string>> SaveChangesAsync()
@@ -60,7 +51,7 @@ namespace ElasticsearchCRUD
 			try
 			{
 				string serializedEntities;
-				using (var serializer = new ElasticsearchSerializer<T>(_elasticSearchSerializerMapping, TraceProvider))
+				using (var serializer = new ElasticsearchSerializer(TraceProvider,_elasticSearchMappingResolver))
 				{
 					serializedEntities = serializer.Serialize(_entityPendingChanges);
 				}
@@ -103,13 +94,15 @@ namespace ElasticsearchCRUD
 			}
 		}
 
-		public async Task<ResultDetails<T>> GetEntity(object entityId)
+		public async Task<ResultDetails<T>> GetEntity<T>(object entityId)
 		{
 			TraceProvider.Trace(string.Format("Request for select entity with id: {0}, Type: {1}", entityId, typeof(T)));
 			var resultDetails = new ResultDetails<T>{Status=HttpStatusCode.InternalServerError};
 			try
 			{
-				var uri = new Uri(_elasticsearchUrlForEntityGet + entityId);
+				var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticsearchUrlForEntityGet = string.Format("{0}{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+				var uri = new Uri(elasticsearchUrlForEntityGet + entityId);
 				TraceProvider.Trace(string.Format("Request HTTP GET uri: {0}", uri.AbsoluteUri));
 				var response = await _client.GetAsync(uri,  _cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -131,8 +124,8 @@ namespace ElasticsearchCRUD
 				var source = responseObject["_source"];
 				if (source != null)
 				{
-					var result = _elasticSearchSerializerMapping.ParseEntity(source);
-					resultDetails.PayloadResult = result;
+					var result = _elasticSearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(source, typeof(T));
+					resultDetails.PayloadResult = (T)result;
 				}
 
 				return resultDetails;

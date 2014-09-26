@@ -12,15 +12,17 @@ namespace ConsoleElasticsearchCrudExample
 	{
 		static void Main(string[] args)
 		{
-			//var elasticSearchContext = new ElasticSearchContext<Skill>("http://localhost:9200/", "skill", new SkillElasticSearchMapping());
-			var elasticSearchContext = new ElasticSearchContext<Skill>("http://localhost:9200/", "skill");
+			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
+			elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
+			var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver);
+
 			elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 			var skillEf = new Skill
 			{
 				Created = DateTime.UtcNow,
 				Updated = DateTime.UtcNow,
 				Description = "C# Entity Framework V6, .NET 4.5",
-				Id = 1,
+				Id = 11,
 				Name = "C# Entity Framework"
 			};
 
@@ -29,7 +31,7 @@ namespace ConsoleElasticsearchCrudExample
 				Created = DateTime.UtcNow,
 				Updated = DateTime.UtcNow,
 				Description = "ORM frameworks in .NET",
-				Id = 2,
+				Id = 12,
 				Name = "ORM"
 			};
 
@@ -38,7 +40,7 @@ namespace ConsoleElasticsearchCrudExample
 				Created = DateTime.UtcNow,
 				Updated = DateTime.UtcNow,
 				Description = "MS SQL Server 2014",
-				Id = 3,
+				Id = 13,
 				Name = "MS SQL Server 2014"
 			};
 
@@ -47,8 +49,16 @@ namespace ConsoleElasticsearchCrudExample
 				Created = DateTime.UtcNow,
 				Updated = DateTime.UtcNow,
 				Description = "Deutsch öäü",
-				Id = 4,
+				Id = 14,
 				Name = "German languages skills"
+			};
+
+			var skillLevel = new SkillLevel()
+			{
+				Created = DateTime.UtcNow,
+				Updated = DateTime.UtcNow,
+				Description = "expert",
+				Id = 1,
 			};
 
 			// Add 2 new entities
@@ -56,6 +66,7 @@ namespace ConsoleElasticsearchCrudExample
 			elasticSearchContext.AddUpdateEntity(skillOrm, skillOrm.Id);
 			elasticSearchContext.AddUpdateEntity(skillSQLServer, skillSQLServer.Id);
 			elasticSearchContext.AddUpdateEntity(skillGermanWithFunnyLetters, skillGermanWithFunnyLetters.Id);
+			elasticSearchContext.AddUpdateEntity(skillLevel, skillLevel.Id);
 
 			var ret =  elasticSearchContext.SaveChangesAsync();
 
@@ -65,10 +76,10 @@ namespace ConsoleElasticsearchCrudExample
 			
 
 			// get a entity and update it, then delete an entity
-			Skill singleEntityWithId = elasticSearchContext.GetEntity("4").Result.PayloadResult;
+			Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("14").Result.PayloadResult;
 			singleEntityWithId.Updated = DateTime.UtcNow;
 			elasticSearchContext.AddUpdateEntity(skillOrm, skillOrm.Id);
-			elasticSearchContext.DeleteEntity("1");
+			elasticSearchContext.DeleteEntity<Skill>("11");
 			ret = elasticSearchContext.SaveChangesAsync();
 
 

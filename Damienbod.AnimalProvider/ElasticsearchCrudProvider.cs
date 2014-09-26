@@ -5,8 +5,17 @@ namespace Damienbod.AnimalProvider
 {
 	public class ElasticsearchCrudProvider 
     {
-		readonly ElasticSearchContext<Animal> _elasticSearchContext = new ElasticSearchContext<Animal>("http://localhost:9200/", Animal.SearchIndex, new AnimalToLowerExampleElasticSearchMapping());
+		readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
+		private readonly ElasticSearchContext _elasticSearchContext;
+		public ElasticsearchCrudProvider()
+		{
+			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Animal), new AnimalToLowerExampleElasticSearchMapping());
+			_elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver);
+		}
 
+		
+
+		
         public void CreateAnimal(Animal animal)
         {
 			_elasticSearchContext.AddUpdateEntity(animal, animal.Id);
@@ -21,13 +30,13 @@ namespace Damienbod.AnimalProvider
 
         public void DeleteById(int id)
         {
-			_elasticSearchContext.DeleteEntity(id);
+			_elasticSearchContext.DeleteEntity<Animal>(id);
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
         public Animal GetAnimal(int id)
         {
-	        return  _elasticSearchContext.GetEntity(id).Result.PayloadResult;
+	        return  _elasticSearchContext.GetEntity<Animal>(id).Result.PayloadResult;
         }
     }
 }
