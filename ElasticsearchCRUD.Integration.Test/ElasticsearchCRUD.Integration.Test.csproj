@@ -44,6 +44,11 @@
   <ItemGroup>
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SkillTestEntity.cs" />
+    <Compile Include="SkillTestEntityElasticSearchMapping.cs" />
+    <Compile Include="SkillTestEntityNoIndex.cs" />
+    <Compile Include="SkillTestEntityTwo.cs" />
+    <Compile Include="SpecialMappingElasticsearchCRUDTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

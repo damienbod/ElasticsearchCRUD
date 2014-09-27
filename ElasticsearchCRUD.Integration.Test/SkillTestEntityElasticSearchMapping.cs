@@ -1,24 +1,22 @@
 ﻿using System;
-using ElasticsearchCRUD;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ConsoleElasticsearchCrudExample
+namespace ElasticsearchCRUD.Integration.Test
 {
-	public class SkillElasticSearchMapping : ElasticSearchMapping
+	public class SkillTestEntityElasticSearchMapping : ElasticSearchMapping
 	{
-		/// <summary>
-		/// Only required if you have some special mapping or want to remove some properties or use attributes..
-		/// </summary>
-		/// <param name="entity"></param>
 		public override void MapEntityValues(object entity)
 		{
-			Skill skillEntity = entity as Skill;
-			MapValue("id", skillEntity.Id);
-			MapValue("name", skillEntity.Name);
-			MapValue("description", skillEntity.Description);
-			MapValue("created", skillEntity.Created.UtcDateTime);
-			MapValue("updated", skillEntity.Updated.UtcDateTime);
+			// Map entities to exact name, not lower case
+			var propertyInfo = entity.GetType().GetProperties();
+			foreach (var prop in propertyInfo)
+			{
+				MapValue(prop.Name, prop.GetValue(entity));
+			}
 		}
-
 
 		/// <summary>
 		/// Use this if you require special mapping for the elasticsearch document type. For example you could pluralize your Type or set everything to lowercase
@@ -37,7 +35,7 @@ namespace ConsoleElasticsearchCrudExample
 		/// <returns></returns>
 		public override string GetIndexForType(Type type)
 		{
-			return "skills";
+			return "coolindex";
 		}
 	}
 }

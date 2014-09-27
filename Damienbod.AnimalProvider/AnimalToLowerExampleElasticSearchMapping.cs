@@ -1,5 +1,4 @@
 using System;
-using Damienbod.BusinessLayer.DomainModel;
 using ElasticsearchCRUD;
 
 namespace Damienbod.AnimalProvider
@@ -18,15 +17,6 @@ namespace Damienbod.AnimalProvider
 				MapValue(prop.Name.ToLower(), prop.GetValue(entity));
 			}
 		}
-
-		//
-		// Only required if you have some special logic.
-		//
-		//public override Animal ParseEntity(JToken source)
-		//{
-		//	return JsonConvert.DeserializeObject(source.ToString(), typeof(Animal)) as Animal;
-		//}
-
 
 		/// <summary>
 		/// Use this if you require special mapping for the elasticsearch document type. For example you could pluralize your Type or set everything to lowercase
