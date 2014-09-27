@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -13,11 +9,13 @@ namespace ElasticsearchCRUD.Integration.Test
     public class DefaultElasticsearchCRUDTests
 	{
 		private List<SkillTestEntity> _entitiesForTests;
+		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 		[SetUp]
 		public void SetUp()
 		{
 			_entitiesForTests = new List<SkillTestEntity>();
+			_entitiesForTestsTypeTwo = new List<SkillTestEntityTwo>();
 			// Create a 100 entities
 			for (int i = 0; i < 100; i++)
 			{
@@ -31,6 +29,17 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				_entitiesForTests.Add(entity);
+
+				var entityTwo = new SkillTestEntityTwo
+				{
+					Created = DateTime.UtcNow,
+					Updated = DateTime.UtcNow,
+					Description = "A test entity description",
+					Id = i,
+					Name = "cool"
+				};
+
+				_entitiesForTestsTypeTwo.Add(entityTwo);
 			}
 		}
 
@@ -38,6 +47,16 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TearDown()
 		{
 			_entitiesForTests = null;
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndex<SkillTestEntity>();
+
+				entityResult.Wait();
+				var secondDelete = context.DeleteIndex<SkillTestEntityTwo>();
+				secondDelete.Wait();
+			}
 		}
 
 		[Test]
@@ -166,9 +185,7 @@ namespace ElasticsearchCRUD.Integration.Test
 						}
 						return false; // stop.
 					});
-
 				}
-
 			}
 		}
 
@@ -194,9 +211,110 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 			}
 		}
+
+		[Test]
+		public void TestDefaultContextDeleteIndex()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					context.AddUpdateEntity(_entitiesForTests[i], i);
+				}
+
+				// Save to Elasticsearch
+				var ret = context.SaveChangesAsync();
+				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
+			}
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndex<SkillTestEntityNoIndex>();
+				entityResult.Wait();
+				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.NotFound);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextDeleteIndexNotFound()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndex<SkillTestEntityNoIndex>();
+				entityResult.Wait();
+				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.NotFound);
+			}
+		}
+
+		[Test]
+		[ExpectedException(typeof(ElasticsearchCrudException))]
+		public void TestDefaultContextDeleteIndexNotActivated()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var entityResult = context.DeleteIndex<SkillTestEntity>();
+
+				try
+				{
+					entityResult.Wait();
+				}
+				catch (AggregateException ae)
+				{
+
+					ae.Handle((x) =>
+					{
+						if (x is ElasticsearchCrudException) // This is what we expect.
+						{
+							throw x;
+						}
+						return false; // stop.
+					});
+				}
+
+				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextAdd100EntitiesForTwoTypes()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				for (int i = 0; i < 100; i++)
+				{
+					context.AddUpdateEntity(_entitiesForTests[i], i);
+					context.AddUpdateEntity(_entitiesForTestsTypeTwo[i], i);
+				}
+
+				// Save to Elasticsearch
+				var ret = context.SaveChangesAsync();
+				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
+			}
+		}
+
 	}
 
 	public class SkillTestEntity
+	{
+		public long Id { get; set; }
+		public string Name { get; set; }
+		public string Description { get; set; }
+		public DateTimeOffset Created { get; set; }
+		public DateTimeOffset Updated { get; set; }
+	}
+
+	public class SkillTestEntityTwo
+	{
+		public long Id { get; set; }
+		public string Name { get; set; }
+		public string Description { get; set; }
+		public DateTimeOffset Created { get; set; }
+		public DateTimeOffset Updated { get; set; }
+	}
+
+	public class SkillTestEntityNoIndex
 	{
 		public long Id { get; set; }
 		public string Name { get; set; }
