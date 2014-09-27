@@ -70,24 +70,27 @@ namespace ConsoleElasticsearchCrudExample
 			elasticSearchContext.AddUpdateEntity(skillGermanWithFunnyLetters, skillGermanWithFunnyLetters.Id);
 			elasticSearchContext.AddUpdateEntity(skillLevel, skillLevel.Id);
 
-			var ret =  elasticSearchContext.SaveChangesAsync();
+			var task1 = elasticSearchContext.SaveChangesAsync();
+			task1.Wait();
 
-			Console.WriteLine(ret.Result.PayloadResult);
-			Console.WriteLine(ret.Result.Status);
-			Console.WriteLine(ret.Result.Description);
+			Console.WriteLine(task1.Result.PayloadResult);
+			Console.WriteLine(task1.Result.Status);
+			Console.WriteLine(task1.Result.Description);
 			
 			// get a entity and update it, then delete an entity
 			Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("14").Result.PayloadResult;
 			singleEntityWithId.Updated = DateTime.UtcNow;
 			elasticSearchContext.AddUpdateEntity(skillOrm, skillOrm.Id);
 			elasticSearchContext.DeleteEntity<Skill>("11");
-			ret = elasticSearchContext.SaveChangesAsync();
+			var task2 = elasticSearchContext.SaveChangesAsync();
+			task2.Wait();
 
 			elasticSearchContext.AddUpdateEntity(skillEf, skillEf.Id);
-			ret = elasticSearchContext.SaveChangesAsync();
-			Console.WriteLine(ret.Result.PayloadResult);
-			Console.WriteLine(ret.Result.Status);
-			Console.WriteLine(ret.Result.Description);
+			var nextResult = elasticSearchContext.SaveChangesAsync();
+			nextResult.Wait();
+			Console.WriteLine(nextResult.Result.PayloadResult);
+			Console.WriteLine(nextResult.Result.Status);
+			Console.WriteLine(nextResult.Result.Description);
 			Console.ReadLine();
 
 			// deleting indexes are usually not required...

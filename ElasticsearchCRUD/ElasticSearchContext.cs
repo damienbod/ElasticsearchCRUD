@@ -61,7 +61,7 @@ namespace ElasticsearchCRUD
 				TraceProvider.Trace(string.Format("sending bulk request: {0}", serializedEntities));
 				TraceProvider.Trace(string.Format("Request HTTP POST uri: {0}", _elasticsearchUrlBatch.AbsoluteUri));
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-				var response = await _client.PostAsync(_elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(false);
+				var response = await _client.PostAsync(_elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(true);
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
@@ -78,9 +78,35 @@ namespace ElasticsearchCRUD
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+				var responseObject = JObject.Parse(responseString);
 				TraceProvider.Trace(string.Format("response: {0}", responseString));
+				string errors = String.Empty; 
+				var items = responseObject["items"];
+				if (items != null)
+				{
+					foreach (var item in items)
+					{
+						if (item["delete"] != null && item["delete"]["status"] != null)
+						{
+							if (item["delete"]["status"].ToString() == "404")
+							{
+								resultDetails.Status = HttpStatusCode.NotFound;
+								errors = errors + string.Format("Delete failed for item: {0}, {1}, {2}  :", item["delete"]["_index"],
+									item["delete"]["_type"], item["delete"]["_id"]);
+							}
+						}
+					}	
+				}
+
 				resultDetails.Description = responseString;
 				resultDetails.PayloadResult = serializedEntities;
+
+				if (!String.IsNullOrEmpty(errors))
+				{
+					throw new ElasticsearchCrudException(errors);
+				}
+
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)
