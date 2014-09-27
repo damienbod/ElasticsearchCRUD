@@ -88,6 +88,7 @@ namespace ConsoleElasticsearchCrudExample
 			elasticSearchContext.AddUpdateEntity(skillEf, skillEf.Id);
 			var nextResult = elasticSearchContext.SaveChangesAsync();
 			nextResult.Wait();
+
 			Console.WriteLine(nextResult.Result.PayloadResult);
 			Console.WriteLine(nextResult.Result.Status);
 			Console.WriteLine(nextResult.Result.Description);

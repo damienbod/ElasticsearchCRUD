@@ -50,6 +50,14 @@ namespace ElasticsearchCRUD
 		{
 			TraceProvider.Trace("Save changes to Elasticsearch started");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
+
+			if (_entityPendingChanges.Count == 0)
+			{
+				resultDetails = new ResultDetails<string> { Status = HttpStatusCode.OK };
+				resultDetails.Description = "Nothing to save";
+				return resultDetails;
+			}
+
 			try
 			{
 				string serializedEntities;

@@ -164,11 +164,34 @@ namespace ElasticsearchCRUD.Integration.Test
 						{
 							throw x;
 						}
-						return false; // Let anything else stop the application.
+						return false; // stop.
 					});
 
 				}
 
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextGetEntityWhichDoesNotExist()
+		{
+			const int entityId = 3004;
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				entityResult.Wait();
+				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.NotFound);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextSaveWithNoChanges()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var entityResult = context.SaveChangesAsync();
+				entityResult.Wait();
+				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 			}
 		}
 	}
