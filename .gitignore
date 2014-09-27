@@ -18,3 +18,5 @@ WebApiElasticsearchCrudExample/obj
 WebApiElasticsearchCrudExample/WebApiElasticsearchCrudExample.csproj.user
 ElasticsearchCRUD/obj
 ElasticsearchCRUD/bin
+ElasticsearchCRUD.Integration.Test/obj
+ElasticsearchCRUD.Integration.Test/bin
