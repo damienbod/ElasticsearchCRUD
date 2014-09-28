@@ -46,6 +46,30 @@ namespace ElasticsearchCRUD
 			_entityPendingChanges.Add(new Tuple<EntityContextInfo, object>(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T)}, null));
 		}
 
+		public ResultDetails<string> SaveChanges()
+		{
+			var task = SaveChangesAsync();
+
+			try
+			{
+				task.Wait();
+			}
+			catch (AggregateException ae)
+			{
+
+				ae.Handle((x) =>
+				{
+					if (x is ElasticsearchCrudException) // This is what we expect.
+					{
+						throw x;
+					}
+					return false; // stop.
+				});
+			}
+
+			return task.Result;
+		}
+
 		public async Task<ResultDetails<string>> SaveChangesAsync()
 		{
 			TraceProvider.Trace("Save changes to Elasticsearch started");
