@@ -9,7 +9,7 @@ https://github.com/damienbod/ElasticsearchCRUD
 <strong>NuGet Package:</strong> 
 https://www.nuget.org/packages/ElasticsearchCRUD/
 
-
+========================
 <strong>History</strong>
 
 <strong>Version 1.0.3</strong><em> 2014.09.30</em>
