@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -169,11 +170,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.DeleteEntity<SkillTestEntity>(6433);
 				context.DeleteEntity<SkillTestEntity>(22222);
 
-				var task1 = context.SaveChangesAsync();
+				var task = Task.Run(() => context.SaveChangesAsync());
 
-				try
-				{
-					task1.Wait();
+			try
+			{
+				task.Wait();
 				}
 				catch (AggregateException ae)
 				{
