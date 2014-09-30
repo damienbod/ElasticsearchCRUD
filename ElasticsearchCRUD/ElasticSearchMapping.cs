@@ -5,17 +5,19 @@ namespace ElasticsearchCRUD
 {
 	/// <summary>
 	/// Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
+	/// Everything is lowercase and the index is pluralized
 	/// </summary>
 	public class ElasticSearchMapping
 	{
 		protected JsonWriter Writer;
 
-		public virtual void MapEntityValues(object entity)
+		// default type is lowercase for properties
+		public virtual void MapEntityValues(Object entity)
 		{
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
 			{
-				MapValue(prop.Name, prop.GetValue(entity));
+				MapValue(prop.Name.ToLower(), prop.GetValue(entity));
 			}
 		}
 
@@ -40,9 +42,10 @@ namespace ElasticsearchCRUD
 			return type.Name.ToLower();
 		}
 
+		// pluralize the default type
 		public virtual string GetIndexForType(Type type)
 		{
-			return type.Name.ToLower();
+			return type.Name.ToLower() + "s";
 		}
 	}
 

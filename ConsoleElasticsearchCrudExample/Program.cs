@@ -15,7 +15,7 @@ namespace ConsoleElasticsearchCrudExample
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
 			// You only require a mapping if the default settings are not good enough
-			//elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
+			elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
 			var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver);
 
 			elasticSearchContext.TraceProvider = new ConsoleTraceProvider();

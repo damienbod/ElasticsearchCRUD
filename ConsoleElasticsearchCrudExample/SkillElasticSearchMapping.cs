@@ -27,7 +27,7 @@ namespace ConsoleElasticsearchCrudExample
 		/// <returns></returns>
 		public override string GetDocumentType(Type type)
 		{
-			return "cooltype";
+			return "skill";
 		}
 
 		/// <summary>

@@ -48,7 +48,7 @@ namespace ElasticsearchCRUD
 
 		public ResultDetails<string> SaveChanges()
 		{
-			var task = SaveChangesAsync();
+			var task = Task.Run(() => SaveChangesAsync());
 
 			try
 			{

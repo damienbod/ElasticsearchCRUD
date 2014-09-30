@@ -14,7 +14,7 @@ namespace Damienbod.AnimalProvider
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
 			{
-				MapValue(prop.Name.ToLower(), prop.GetValue(entity));
+				MapValue(prop.Name, prop.GetValue(entity));
 			}
 		}
 
