@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ElasticsearchCRUD;
 
 namespace ConsoleElasticsearchCrudExample
@@ -13,94 +8,57 @@ namespace ConsoleElasticsearchCrudExample
 		static void Main(string[] args)
 		{
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-
 			// You only require a mapping if the default settings are not good enough
-			elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
-			var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver);
+			//elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
 
-			elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
-			var skillEf = new Skill
+			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				Created = DateTime.UtcNow,
-				Updated = DateTime.UtcNow,
-				Description = "C# Entity Framework V6, .NET 4.5",
-				Id = 11,
-				Name = "C# Entity Framework"
-			};
+				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				elasticSearchContext.AddUpdateEntity(TestData.SkillEf, TestData.SkillEf.Id);
+				elasticSearchContext.AddUpdateEntity(TestData.SkillOrm, TestData.SkillOrm.Id);
+				elasticSearchContext.AddUpdateEntity(TestData.SkillSQLServer, TestData.SkillSQLServer.Id);
+				elasticSearchContext.AddUpdateEntity(TestData.SkillGermanWithFunnyLetters, TestData.SkillGermanWithFunnyLetters.Id);
+				elasticSearchContext.AddUpdateEntity(TestData.SkillLevel, TestData.SkillLevel.Id);
 
-			var skillOrm = new Skill
+				var addEntitiesResult = elasticSearchContext.SaveChanges();
+
+				Console.WriteLine(addEntitiesResult.PayloadResult);
+				Console.WriteLine(addEntitiesResult.Status);
+				Console.WriteLine(addEntitiesResult.Description);
+			}
+
+			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				Created = DateTime.UtcNow,
-				Updated = DateTime.UtcNow,
-				Description = "ORM frameworks in .NET",
-				Id = 12,
-				Name = "ORM"
-			};
+				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				// get a entity and update it, then delete an entity
+				Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("14").Result.PayloadResult;
+				singleEntityWithId.Updated = DateTime.UtcNow;
+				elasticSearchContext.AddUpdateEntity(TestData.SkillOrm, TestData.SkillOrm.Id);
+				elasticSearchContext.DeleteEntity<Skill>("11");
+				elasticSearchContext.SaveChanges();
 
-			var skillSQLServer = new Skill
+				elasticSearchContext.AddUpdateEntity(TestData.SkillEf, TestData.SkillEf.Id);
+				var nextResult = elasticSearchContext.SaveChanges();
+
+				Console.WriteLine(nextResult.PayloadResult);
+				Console.WriteLine(nextResult.Status);
+				Console.WriteLine(nextResult.Description);
+				Console.ReadLine();
+			}
+
+			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				Created = DateTime.UtcNow,
-				Updated = DateTime.UtcNow,
-				Description = "MS SQL Server 2014",
-				Id = 13,
-				Name = "MS SQL Server 2014"
-			};
-
-			var skillGermanWithFunnyLetters = new Skill
-			{
-				Created = DateTime.UtcNow,
-				Updated = DateTime.UtcNow,
-				Description = "Deutsch öäü",
-				Id = 14,
-				Name = "German languages skills"
-			};
-
-			var skillLevel = new SkillLevel()
-			{
-				Created = DateTime.UtcNow,
-				Updated = DateTime.UtcNow,
-				Description = "expert",
-				Id = 1,
-			};
-
-			// Add 2 new entities
-			elasticSearchContext.AddUpdateEntity(skillEf, skillEf.Id);
-			elasticSearchContext.AddUpdateEntity(skillOrm, skillOrm.Id);
-			elasticSearchContext.AddUpdateEntity(skillSQLServer, skillSQLServer.Id);
-			elasticSearchContext.AddUpdateEntity(skillGermanWithFunnyLetters, skillGermanWithFunnyLetters.Id);
-			elasticSearchContext.AddUpdateEntity(skillLevel, skillLevel.Id);
-
-			var task1 = elasticSearchContext.SaveChangesAsync();
-			task1.Wait();
-
-			Console.WriteLine(task1.Result.PayloadResult);
-			Console.WriteLine(task1.Result.Status);
-			Console.WriteLine(task1.Result.Description);
-			
-			// get a entity and update it, then delete an entity
-			Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("14").Result.PayloadResult;
-			singleEntityWithId.Updated = DateTime.UtcNow;
-			elasticSearchContext.AddUpdateEntity(skillOrm, skillOrm.Id);
-			elasticSearchContext.DeleteEntity<Skill>("11");
-			var task2 = elasticSearchContext.SaveChangesAsync();
-			task2.Wait();
-
-			elasticSearchContext.AddUpdateEntity(skillEf, skillEf.Id);
-			var nextResult = elasticSearchContext.SaveChangesAsync();
-			nextResult.Wait();
-
-			Console.WriteLine(nextResult.Result.PayloadResult);
-			Console.WriteLine(nextResult.Result.Status);
-			Console.WriteLine(nextResult.Result.Description);
-			Console.ReadLine();
-
-			// deleting indexes are usually not required...
-			//elasticSearchContext.AllowDeleteForIndex = true;
-			//var result = elasticSearchContext.DeleteIndex<SkillLevel>();
-			//Console.WriteLine(result.Result.PayloadResult);
-			//Console.WriteLine(result.Result.Status);
-			//Console.WriteLine(result.Result.Description);
-			//Console.ReadLine();
+				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				// deleting indexes are usually not required...
+				elasticSearchContext.AllowDeleteForIndex = true;
+				var result = elasticSearchContext.DeleteIndex<SkillLevel>();
+				//var result = elasticSearchContext.DeleteIndex<Skill>();
+				elasticSearchContext.SaveChanges();
+				//Console.WriteLine(result.Result.PayloadResult);
+				//Console.WriteLine(result.Result.Status);
+				//Console.WriteLine(result.Result.Description);
+				//Console.ReadLine();
+			}
 		}
 	}
 }
