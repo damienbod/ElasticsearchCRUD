@@ -8,3 +8,18 @@ https://github.com/damienbod/ElasticsearchCRUD
 
 <strong>NuGet Package:</strong> 
 https://www.nuget.org/packages/ElasticsearchCRUD/
+
+========================
+<strong>History</strong>
+
+<strong>Version 1.0.3</strong><em> 2014.09.30</em>
+- sync save changes added
+- default mapping settings changed, lowercase for everything and index = plural 
+
+<strong>Version 1.0.2</strong><em> 2014.09.27</em>
+- support for multiple Entity/Document Types
+- Error handling improvements 
+- Delete index
+
+<strong>Version 1.0.1</strong>
+Support for single entity, initial version.
