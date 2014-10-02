@@ -48,26 +48,26 @@ namespace ElasticsearchCRUD
 
 		public ResultDetails<string> SaveChanges()
 		{
-			var task = Task.Run(() => SaveChangesAsync());
-
 			try
 			{
+				var task = Task.Run(() => SaveChangesAsync());
 				task.Wait();
+				return task.Result;
 			}
 			catch (AggregateException ae)
 			{
-
 				ae.Handle((x) =>
 				{
-					if (x is ElasticsearchCrudException) // This is what we expect.
+					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
 					}
-					return false; // stop.
+
+					throw new ElasticsearchCrudException(x.Message);
 				});
 			}
 
-			return task.Result;
+			throw new ElasticsearchCrudException("Unknown error for SaveChanges");
 		}
 
 		public async Task<ResultDetails<string>> SaveChangesAsync()
@@ -154,7 +154,35 @@ namespace ElasticsearchCRUD
 			}
 		}
 
-		public async Task<ResultDetails<T>> GetEntity<T>(object entityId)
+		public T GetEntity<T>(object entityId)
+		{
+			try
+			{
+				var task = Task.Run(() => GetEntityAsync<T>(entityId));
+				task.Wait();
+				if (task.Result.Status == HttpStatusCode.NotFound)
+				{
+					throw new ElasticsearchCrudException("HttpStatusCode.NotFound");
+				}
+				return task.Result.PayloadResult;
+			}
+			catch (AggregateException ae)
+			{
+				ae.Handle((x) =>
+				{
+					if (x is ElasticsearchCrudException || x is HttpRequestException)
+					{
+						throw x;
+					}
+
+					throw new ElasticsearchCrudException(x.Message);
+				});
+			}
+
+			throw new ElasticsearchCrudException(string.Format("Unknown error for GetEntity {0}, Type {1}", entityId, typeof(T)));
+		}
+
+		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId)
 		{
 			TraceProvider.Trace(string.Format("Request for select entity with id: {0}, Type: {1}", entityId, typeof(T)));
 			var resultDetails = new ResultDetails<T>{Status=HttpStatusCode.InternalServerError};

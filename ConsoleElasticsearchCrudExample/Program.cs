@@ -31,7 +31,7 @@ namespace ConsoleElasticsearchCrudExample
 			{
 				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				// get a entity and update it, then delete an entity
-				Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("14").Result.PayloadResult;
+				Skill singleEntityWithId = elasticSearchContext.GetEntityAsync<Skill>("67").Result.PayloadResult;
 				singleEntityWithId.Updated = DateTime.UtcNow;
 				elasticSearchContext.AddUpdateEntity(TestData.SkillOrm, TestData.SkillOrm.Id);
 				elasticSearchContext.DeleteEntity<Skill>("11");

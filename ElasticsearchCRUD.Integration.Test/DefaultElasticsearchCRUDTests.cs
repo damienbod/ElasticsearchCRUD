@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
@@ -78,7 +79,31 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		public void TestDefaultContextGetEntity()
+		[ExpectedException(typeof(AggregateException))]
+		public void TestDefaultContextAddEntitySaveChangesAsyncBadUrl()
+		{
+			using (var context = new ElasticSearchContext("http://locaghghghlhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AddUpdateEntity(_entitiesForTests[1], 1);
+				var ret = context.SaveChangesAsync();
+				Console.WriteLine(ret.Result.Status);
+			}
+		}
+
+		[Test]
+		[ExpectedException(typeof(HttpRequestException))]
+		public void TestDefaultContextAddEntitySaveChangesBadUrl()
+		{
+			using (var context = new ElasticSearchContext("http://locaghghghlhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(_entitiesForTests[1], 1);
+				context.SaveChanges();
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextGetEntityAsync()
 		{
 			const int entityId = 34;
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
@@ -90,10 +115,65 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				var entityResult = context.GetEntityAsync<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
 				Assert.IsNotNull(entityResult.Result.PayloadResult as SkillTestEntity);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextGetEntity()
+		{
+			const int entityId = 34;
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AddUpdateEntity(_entitiesForTests[entityId], entityId);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				// Get the entity
+				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				Assert.AreEqual(entityResult.Id, entityId);
+			}
+		}
+
+		[Test]
+		[ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "HttpStatusCode.NotFound")]
+		public void TestDefaultContextGetEntityNotFound()
+		{
+			const int entityId = 39994;
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				// Get the entity
+				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				Assert.AreEqual(entityResult.Id, entityId);
+			}
+		}
+
+		[Test]
+		[ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "HttpStatusCode.NotFound")]
+		public void TestDefaultContextGetEntityIndexNotFound()
+		{
+			const int entityId = 39994;
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				// Get the entity
+				var entityResult = context.GetEntity<SkillTestEntityNoIndex>(entityId);
+				Assert.AreEqual(entityResult.Id, entityId);
+			}
+		}
+
+		[Test]
+		[ExpectedException(typeof(HttpRequestException))]
+		public void TestDefaultContextGetEntityBadUrl()
+		{
+			const int entityId = 34;
+			using (var context = new ElasticSearchContext("http://localghghghhost:9200/", _elasticSearchMappingResolver))
+			{
+				var entityResult = context.GetEntity<SkillTestEntity>(entityId);;
 			}
 		}
 
@@ -112,7 +192,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				resultfromGet = context.GetEntity<SkillTestEntity>(entityId).Result.PayloadResult;
+				resultfromGet = context.GetEntityAsync<SkillTestEntity>(entityId).Result.PayloadResult;
 
 			}
 
@@ -127,7 +207,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				var readEntity = context.GetEntity<SkillTestEntity>(entityId).Result.PayloadResult;
+				var readEntity = context.GetEntityAsync<SkillTestEntity>(entityId).Result.PayloadResult;
 				Assert.AreEqual(readEntity.Name, resultfromGet.Name);
 				Assert.AreNotEqual(readEntity.Name, _entitiesForTests[entityId]);
 			}
@@ -146,7 +226,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				var entityResult = context.GetEntityAsync<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
 				Assert.IsNotNull(entityResult.Result.PayloadResult as SkillTestEntity);
@@ -197,7 +277,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			const int entityId = 3004;
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				var entityResult = context.GetEntityAsync<SkillTestEntity>(entityId);
 				entityResult.Wait();
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.NotFound);
 			}
