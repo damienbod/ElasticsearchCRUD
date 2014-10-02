@@ -53,10 +53,10 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndex<SkillTestEntity>();
+				var entityResult = context.DeleteIndexAsync<SkillTestEntity>();
 
 				entityResult.Wait();
-				var secondDelete = context.DeleteIndex<SkillTestEntityTwo>();
+				var secondDelete = context.DeleteIndexAsync<SkillTestEntityTwo>();
 				secondDelete.Wait();
 			}
 		}

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD
@@ -36,7 +38,7 @@ namespace ElasticsearchCRUD
 				string index = _elasticSearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
 				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 				{
-					_traceProvider.Trace(string.Format("index is not allowed in Elasticsearch: {0}", index));
+					_traceProvider.Trace(TraceLevel.Error, "index is not allowed in Elasticsearch: {0}", index);
 					throw new ElasticsearchCrudException(string.Format("index is not allowed in Elasticsearch: {0}", index));
 				}
 				if (entity.Item1.DeleteEntity)

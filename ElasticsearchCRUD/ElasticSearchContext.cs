@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Threading;
+using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD
@@ -28,7 +30,7 @@ namespace ElasticsearchCRUD
 		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver)
 		{
 			_connectionString = connectionString;
-			TraceProvider.Trace(string.Format("new ElasticSearchContext with connection string: {0}", connectionString));
+			TraceProvider.Trace(TraceLevel.Verbose, "new ElasticSearchContext with connection string: {0}", connectionString);
 			_elasticSearchMappingResolver = elasticSearchMappingResolver;
 			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
 		
@@ -36,13 +38,13 @@ namespace ElasticsearchCRUD
 
 		public void AddUpdateEntity(object entity, object id)
 		{
-			TraceProvider.Trace(string.Format("Adding entity: {0}, {1} to pending list", entity.GetType().Name, id ));
+			TraceProvider.Trace(TraceLevel.Verbose,"Adding entity: {0}, {1} to pending list", entity.GetType().Name, id );
 			_entityPendingChanges.Add(new Tuple<EntityContextInfo, object>(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType() }, entity));
 		}
 
 		public void DeleteEntity<T>(object id)
 		{
-			TraceProvider.Trace(string.Format("Request to delete entity with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name));
+			TraceProvider.Trace(TraceLevel.Verbose,"Request to delete entity with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name);
 			_entityPendingChanges.Add(new Tuple<EntityContextInfo, object>(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T)}, null));
 		}
 
@@ -56,8 +58,9 @@ namespace ElasticsearchCRUD
 			}
 			catch (AggregateException ae)
 			{
-				ae.Handle((x) =>
+				ae.Handle(x =>
 				{
+					TraceProvider.Trace(TraceLevel.Warning, x, "SaveChanges");
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
@@ -67,18 +70,18 @@ namespace ElasticsearchCRUD
 				});
 			}
 
+			TraceProvider.Trace(TraceLevel.Error, "Unknown error for SaveChanges");
 			throw new ElasticsearchCrudException("Unknown error for SaveChanges");
 		}
 
 		public async Task<ResultDetails<string>> SaveChangesAsync()
 		{
-			TraceProvider.Trace("Save changes to Elasticsearch started");
+			TraceProvider.Trace(TraceLevel.Verbose, "Save changes to Elasticsearch started");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 
 			if (_entityPendingChanges.Count == 0)
 			{
-				resultDetails = new ResultDetails<string> { Status = HttpStatusCode.OK };
-				resultDetails.Description = "Nothing to save";
+				resultDetails = new ResultDetails<string> {Status = HttpStatusCode.OK, Description = "Nothing to save"};
 				return resultDetails;
 			}
 
@@ -90,15 +93,15 @@ namespace ElasticsearchCRUD
 					serializedEntities = serializer.Serialize(_entityPendingChanges);
 				}
 				var content = new StringContent(serializedEntities);
-				TraceProvider.Trace(string.Format("sending bulk request: {0}", serializedEntities));
-				TraceProvider.Trace(string.Format("Request HTTP POST uri: {0}", _elasticsearchUrlBatch.AbsoluteUri));
+				TraceProvider.Trace(TraceLevel.Verbose, "sending bulk request: {0}", serializedEntities);
+				TraceProvider.Trace(TraceLevel.Verbose, "Request HTTP POST uri: {0}", _elasticsearchUrlBatch.AbsoluteUri);
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 				var response = await _client.PostAsync(_elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(true);
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
-					TraceProvider.Trace(string.Format("response status code: {0}", response.StatusCode));
+					TraceProvider.Trace(TraceLevel.Warning, "SaveChangesAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -112,7 +115,7 @@ namespace ElasticsearchCRUD
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 
 				var responseObject = JObject.Parse(responseString);
-				TraceProvider.Trace(string.Format("response: {0}", responseString));
+				TraceProvider.Trace(TraceLevel.Verbose, "response: {0}", responseString);
 				string errors = String.Empty; 
 				var items = responseObject["items"];
 				if (items != null)
@@ -136,6 +139,7 @@ namespace ElasticsearchCRUD
 
 				if (!String.IsNullOrEmpty(errors))
 				{
+					TraceProvider.Trace(TraceLevel.Warning, errors);
 					throw new ElasticsearchCrudException(errors);
 				}
 
@@ -143,7 +147,7 @@ namespace ElasticsearchCRUD
 			}
 			catch (OperationCanceledException oex)
 			{
-				TraceProvider.Trace(string.Format("Get Request OperationCanceledException: {0}", oex.Message));
+				TraceProvider.Trace(TraceLevel.Warning, oex, "Get Request OperationCanceledException: {0}", oex.Message);
 				resultDetails.Description = "OperationCanceledException";
 				return resultDetails;
 			}
@@ -162,14 +166,16 @@ namespace ElasticsearchCRUD
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
+					TraceProvider.Trace(TraceLevel.Warning, "HttpStatusCode.NotFound");
 					throw new ElasticsearchCrudException("HttpStatusCode.NotFound");
 				}
 				return task.Result.PayloadResult;
 			}
 			catch (AggregateException ae)
 			{
-				ae.Handle((x) =>
+				ae.Handle(x =>
 				{
+					TraceProvider.Trace(TraceLevel.Warning, x, "GetEntity {0}, {1}", typeof(T), entityId);
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
@@ -179,24 +185,26 @@ namespace ElasticsearchCRUD
 				});
 			}
 
+			TraceProvider.Trace(TraceLevel.Error, "Unknown error for GetEntity {0}, Type {1}", entityId, typeof(T));
 			throw new ElasticsearchCrudException(string.Format("Unknown error for GetEntity {0}, Type {1}", entityId, typeof(T)));
 		}
 
 		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId)
 		{
-			TraceProvider.Trace(string.Format("Request for select entity with id: {0}, Type: {1}", entityId, typeof(T)));
+			TraceProvider.Trace(TraceLevel.Verbose, "Request for select entity with id: {0}, Type: {1}", entityId, typeof(T));
 			var resultDetails = new ResultDetails<T>{Status=HttpStatusCode.InternalServerError};
 			try
 			{
 				var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
 				var uri = new Uri(elasticsearchUrlForEntityGet + entityId);
-				TraceProvider.Trace(string.Format("Request HTTP GET uri: {0}", uri.AbsoluteUri));
+				TraceProvider.Trace(TraceLevel.Verbose, "Request HTTP GET uri: {0}", uri.AbsoluteUri);
 				var response = await _client.GetAsync(uri,  _cancellationTokenSource.Token).ConfigureAwait(false);
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
+					TraceProvider.Trace(TraceLevel.Warning, "GetEntityAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -206,7 +214,7 @@ namespace ElasticsearchCRUD
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-				TraceProvider.Trace(string.Format("Get Request response: {0}", responseString));
+				TraceProvider.Trace(TraceLevel.Verbose, "Get Request response: {0}", responseString);
 				var responseObject = JObject.Parse(responseString);
 
 				var source = responseObject["_source"];
@@ -220,18 +228,19 @@ namespace ElasticsearchCRUD
 			}
 			catch (OperationCanceledException oex)
 			{
-				TraceProvider.Trace(string.Format("Get Request OperationCanceledException: {0}", oex.Message));
+				TraceProvider.Trace(TraceLevel.Verbose, oex, "Get Request OperationCanceledException: {0}", oex.Message);
 				return resultDetails;
 			}
 		}
 
-		public async Task<ResultDetails<T>> DeleteIndex<T>()
+		public async Task<ResultDetails<T>> DeleteIndexAsync<T>()
 		{
 			if (!AllowDeleteForIndex)
 			{
+				TraceProvider.Trace(TraceLevel.Error, "Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
 				throw new ElasticsearchCrudException("Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
 			}
-			TraceProvider.Trace(string.Format("Request to delete complete index for Type: {0}", typeof(T)));
+			TraceProvider.Trace(TraceLevel.Verbose, "Request to delete complete index for Type: {0}", typeof(T));
 
 			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
 			try
@@ -239,12 +248,13 @@ namespace ElasticsearchCRUD
 				var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForIndexDelete = string.Format("{0}{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
 				var uri = new Uri(elasticsearchUrlForIndexDelete );
-				TraceProvider.Trace(string.Format("Request HTTP Delete uri: {0}", uri.AbsoluteUri));
+				TraceProvider.Trace(TraceLevel.Warning, "Request HTTP Delete uri: {0}", uri.AbsoluteUri);
 				var response = await _client.DeleteAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
+					TraceProvider.Trace(TraceLevel.Warning, "DeleteIndexAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -254,14 +264,14 @@ namespace ElasticsearchCRUD
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-				TraceProvider.Trace(string.Format("Delete Index Request response: {0}", responseString));
+				TraceProvider.Trace(TraceLevel.Verbose, "Delete Index Request response: {0}", responseString);
 				resultDetails.Description = responseString;
 
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)
 			{
-				TraceProvider.Trace(string.Format("Get Request OperationCanceledException: {0}", oex.Message));
+				TraceProvider.Trace(TraceLevel.Warning,  oex, "Get Request OperationCanceledException: {0}", oex.Message);
 				return resultDetails;
 			}
 		}

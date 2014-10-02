@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticSearchContext.cs" />
     <Compile Include="ElasticsearchCrudException.cs" />
     <Compile Include="ElasticSearchMappingResolver.cs" />
@@ -54,9 +55,11 @@
     <Compile Include="ElasticSearchMapping.cs" />
     <Compile Include="EntityContextInfo.cs" />
     <Compile Include="IElasticSearchMappingResolver.cs" />
-    <Compile Include="ITraceProvider.cs" />
+    <Compile Include="Tracing\ITraceProvider.cs" />
+    <Compile Include="Tracing\NullTraceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultDetails.cs" />
+    <Compile Include="Tracing\TraceProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
