@@ -5,8 +5,8 @@ namespace ElasticsearchCRUD.Tracing
 {
 	public class NullTraceProvider : ITraceProvider
 	{
-		public void Trace(TraceLevel level, string message, params object[] args) { }
-		public void Trace(TraceLevel level, Exception ex, string message, params object[] args) { }
+		public void Trace(TraceEventType level, string message, params object[] args) { }
+		public void Trace(TraceEventType level, Exception ex, string message, params object[] args) { }
 
 	}
 }

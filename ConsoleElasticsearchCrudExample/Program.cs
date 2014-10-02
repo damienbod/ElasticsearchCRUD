@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using ElasticsearchCRUD;
 using ElasticsearchCRUD.Tracing;
 
@@ -14,7 +15,7 @@ namespace ConsoleElasticsearchCrudExample
 
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
 				elasticSearchContext.AddUpdateEntity(TestData.SkillEf, TestData.SkillEf.Id);
 				elasticSearchContext.AddUpdateEntity(TestData.SkillOrm, TestData.SkillOrm.Id);
 				elasticSearchContext.AddUpdateEntity(TestData.SkillSQLServer, TestData.SkillSQLServer.Id);
@@ -30,7 +31,7 @@ namespace ConsoleElasticsearchCrudExample
 
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
 				// get a entity and update it, then delete an entity
 				Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("11");
 				singleEntityWithId.Updated = DateTime.UtcNow;
@@ -48,7 +49,7 @@ namespace ConsoleElasticsearchCrudExample
 
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
 				// deleting indexes are usually not required...
 				elasticSearchContext.AllowDeleteForIndex = true;
 				var result = elasticSearchContext.DeleteIndexAsync<SkillLevel>();

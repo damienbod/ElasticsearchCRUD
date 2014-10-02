@@ -5,7 +5,7 @@ namespace ElasticsearchCRUD.Tracing
 {
 	public interface ITraceProvider
 	{
-		void Trace(TraceLevel level, string message, params object[] args);
-		void Trace(TraceLevel level, Exception ex, string message, params object[] args);
+		void Trace(TraceEventType level, string message, params object[] args);
+		void Trace(TraceEventType level, Exception ex, string message, params object[] args);
 	}
 }
