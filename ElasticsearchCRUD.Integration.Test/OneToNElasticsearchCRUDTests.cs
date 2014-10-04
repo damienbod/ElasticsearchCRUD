@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Damienbod.BusinessLayer.DomainModel;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -74,27 +75,31 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			//_entitiesForTests = null;
 			// SkillTestEntity SkillWithIntArray SkillWithSingleChild SkillSingleChildElement
-			//using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
-			//{
-			//	context.AllowDeleteForIndex = true;
-			//	var entityResult1 = context.DeleteIndexAsync<SkillTestEntity>();
-			//	entityResult1.Wait();
-			//	var entityResult2 = context.DeleteIndexAsync<SkillTestEntityTwo>();
-			//	entityResult2.Wait();
-			//	var entityResult3 = context.DeleteIndexAsync<SkillParent>();
-			//	entityResult3.Wait();
-			//	var entityResult4 = context.DeleteIndexAsync<SkillChild>();
-			//	entityResult4.Wait();
-			//	var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>();
-			//	entityResult5.Wait();
-			//	var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
-			//	entityResult6.Wait();
-			//	var entityResult7 = context.DeleteIndexAsync<SkillWithSingleChild>();
-			//	entityResult7.Wait();
-			//	var entityResult8 = context.DeleteIndexAsync<SkillSingleChildElement>();
-			//	entityResult8.Wait();
-			//}
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult1 = context.DeleteIndexAsync<SkillTestEntity>();
+				entityResult1.Wait();
+				var entityResult2 = context.DeleteIndexAsync<SkillTestEntityTwo>();
+				entityResult2.Wait();
+				var entityResult3 = context.DeleteIndexAsync<SkillParent>();
+				entityResult3.Wait();
+				var entityResult4 = context.DeleteIndexAsync<SkillChild>();
+				entityResult4.Wait();
+				var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>();
+				entityResult5.Wait();
+				//var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
+				//.Wait();
+				var entityResult7 = context.DeleteIndexAsync<SkillWithSingleChild>();
+				entityResult7.Wait();
+				var entityResult8 = context.DeleteIndexAsync<SkillSingleChildElement>();
+				entityResult8.Wait();
+				var entityResult9 = context.DeleteIndexAsync<Animal>();
+				entityResult9.Wait();
+			}
 		}
+
+
 
 		[Test]
 		public void TestDefaultContextParentWithTwoChildren()
@@ -118,7 +123,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var skillWithIntArray = new SkillWithIntArray
 				{
 					MyIntArray = new List<int> {2, 4, 6, 99, 7},
-					BlahBlah = "test with int array",
+					BlahBlah = "test2 with int array",
 					Id = 2
 				};
 				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
