@@ -129,6 +129,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var returned = context.GetEntity<SkillWithIntCollection>(2);
+				Assert.AreEqual(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
 			}
 		}
 
@@ -148,6 +151,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var returned = context.GetEntity<SkillWithIntArray>(2);
+				Assert.AreEqual(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
 			}
 		}
 
@@ -163,6 +169,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+
+				var returned = context.GetEntity<SkillWithIntCollection>(3);
+				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
+				Assert.IsNull(returned.MyIntArray);
 			}
 		}
 
@@ -173,12 +184,15 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				var skillWithIntArray = new SkillWithIntArray { BlahBlah = "test with no int array", Id = 3 };
-
 				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var returned = context.GetEntity<SkillWithIntArray>(3);
+				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
+				Assert.IsNull(returned.MyIntArray);
 			}
 		}
 
@@ -203,6 +217,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var returned = context.GetEntity<SkillWithStringLongAndDoubleCollection>(2);
+				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
+				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
+				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
 			}
 		}
 
@@ -227,6 +246,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var returned = context.GetEntity<SkillWithStringLongAndDoubleArray>(2);
+				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
+				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
+				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
 			}
 		}
 		

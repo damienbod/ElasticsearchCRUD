@@ -5,34 +5,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD
 {
-	public static class IEnumerableExtensions
-	{
-		public static void ForEachExceptTheLast<T>(
-			this IEnumerable<T> source,
-			Action<T> usualAction,
-			Action<T> lastAction
-		)
-		{
-			var e = source.GetEnumerator();
-			T penultimate;
-			T last;
-			if (e.MoveNext())
-			{
-				last = e.Current;
-				while (e.MoveNext())
-				{
-					penultimate = last;
-					last = e.Current;
-					usualAction(penultimate);
-				}
-				lastAction(last);
-			}
-		}
-	} 
-
 	/// <summary>
 	/// Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
 	/// Everything is lowercase and the index is pluralized
@@ -71,46 +47,23 @@ namespace ElasticsearchCRUD
 
 		// Nested
 		// "tags" : ["elasticsearch", "wow"], (string array or int array)
-		protected void MapSimpleArrayValue(PropertyInfo prop, object entity)
+		protected virtual void MapSimpleArrayValue(PropertyInfo prop, object entity)
 		{
-			var localArray = new StringBuilder();
 			Writer.WritePropertyName(prop.Name.ToLower());
-			//localArray.Append(",\"" + prop.Name.ToLower() + "\" : ");
-			localArray.Append("[");
 			Type type = prop.PropertyType;
+			string json = null;
 			if (type.HasElementType)
 			{
 				var ienumerable = (Array)prop.GetValue(entity);
-
-				if (ienumerable != null)
-				{
-					foreach (var item in ienumerable)
-					{
-						localArray.Append("\"" + item + "\",");
-					}
-
-					// remove the last comma
-					localArray.Remove(localArray.Length - 1, 1);
-				}
+				json = JsonConvert.SerializeObject(ienumerable);
 			}
 			else if (prop.PropertyType.IsGenericType)
 			{
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
-
-				if (ienumerable != null)
-				{
-					foreach (var item in ienumerable)
-					{
-						localArray.Append("\"" + item + "\",");
-					}
-
-					// remove the last comma
-					localArray.Remove(localArray.Length - 1, 1);
-				}
+				json = JsonConvert.SerializeObject(ienumerable);
 			}
-			
-			localArray.Append("]");
-			Writer.WriteValue(localArray.ToString());
+
+			Writer.WriteRawValue(json);
 		}
 
 		// Nested
@@ -135,7 +88,7 @@ namespace ElasticsearchCRUD
 			Writer.WriteValue(valueObj);
 		}
 
-		public bool IsPropertyACollection(PropertyInfo property)
+		protected bool IsPropertyACollection(PropertyInfo property)
 		{
 			if (property.PropertyType.FullName == "System.String")
 			{
