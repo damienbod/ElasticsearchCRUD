@@ -74,35 +74,43 @@ namespace ElasticsearchCRUD
 		protected void MapSimpleArrayValue(PropertyInfo prop, object entity)
 		{
 			var localArray = new StringBuilder();
-			localArray.Append(",\"" + prop.Name.ToLower() + "\" : ");
+			Writer.WritePropertyName(prop.Name.ToLower());
+			//localArray.Append(",\"" + prop.Name.ToLower() + "\" : ");
 			localArray.Append("[");
 			Type type = prop.PropertyType;
 			if (type.HasElementType)
 			{
 				var ienumerable = (Array)prop.GetValue(entity);
 
-				foreach (var item in ienumerable)
+				if (ienumerable != null)
 				{
-					Writer.WriteValue(item);
+					foreach (var item in ienumerable)
+					{
+						localArray.Append("\"" + item + "\",");
+					}
+
+					// remove the last comma
+					localArray.Remove(localArray.Length - 1, 1);
 				}
 			}
-
-			//// prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>)
-			if (prop.PropertyType.IsGenericType)
+			else if (prop.PropertyType.IsGenericType)
 			{
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
-		
-				
-				foreach (var item in ienumerable)
+
+				if (ienumerable != null)
 				{
-					localArray.Append("\"" + item + "\",");
+					foreach (var item in ienumerable)
+					{
+						localArray.Append("\"" + item + "\",");
+					}
+
+					// remove the last comma
+					localArray.Remove(localArray.Length - 1, 1);
 				}
 			}
-			// remove the last comma
-			localArray.Remove(localArray.Length - 1, 1);
-
+			
 			localArray.Append("]");
-			Writer.WriteRaw(localArray.ToString());
+			Writer.WriteValue(localArray.ToString());
 		}
 
 		// Nested

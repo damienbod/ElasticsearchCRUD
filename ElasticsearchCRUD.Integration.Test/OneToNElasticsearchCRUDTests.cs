@@ -99,8 +99,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-
-
 		[Test]
 		public void TestDefaultContextParentWithTwoChildren()
 		{
@@ -116,14 +114,14 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		public void TestDefaultContextParentNestedIntArray()
+		public void TestDefaultContextParentNestedIntCollection()
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var skillWithIntArray = new SkillWithIntArray
+				var skillWithIntArray = new SkillWithIntCollection
 				{
 					MyIntArray = new List<int> {2, 4, 6, 99, 7},
-					BlahBlah = "test2 with int array",
+					BlahBlah = "test3 with int array",
 					Id = 2
 				};
 				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
@@ -135,11 +133,30 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		public void TestDefaultContextParentNestedIntArrayArrayEqualsNull()
+		public void TestDefaultContextParentNestedIntArray()
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var skillWithIntArray = new SkillWithIntArray {BlahBlah = "test with no int array", Id = 3};
+				var skillWithIntArray = new SkillWithIntArray
+				{
+					MyIntArray = new int[] { 2, 4, 6, 99, 7 },
+					BlahBlah = "test3 with int array",
+					Id = 2
+				};
+				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentNestedIntCollectionEqualsNull()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skillWithIntArray = new SkillWithIntCollection {BlahBlah = "test with no int array", Id = 3};
 
 				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
 
@@ -148,6 +165,71 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 			}
 		}
+
+
+		[Test]
+		public void TestDefaultContextParentNestedIntArrayEqualsNull()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skillWithIntArray = new SkillWithIntArray { BlahBlah = "test with no int array", Id = 3 };
+
+				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentNestedSkillWithStringAndLongCollection()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skillWithIntArray = new SkillWithStringLongAndDoubleCollection
+				{
+					MyStringArray = new List<String>
+					{
+						"one", "two","three"
+					},
+					BlahBlah = "test3 with int array",
+					Id = 2,
+					MyDoubleArray = new List<double> {2.4, 5.7, 67.345 },
+					MyLongArray = new List<long> {34444445, 65432, 7889999 }
+				};
+				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentNestedSkillWithStringAndLongArray()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skillWithIntArray = new SkillWithStringLongAndDoubleArray
+				{
+					MyStringArray = new string[]
+					{
+						"one", "two","three"
+					},
+					BlahBlah = "test3 with int array",
+					Id = 2,
+					MyDoubleArray = new double[] { 2.4, 5.7, 67.345 },
+					MyLongArray = new long[] { 34444445, 65432, 7889999 }
+				};
+				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+		}
+		
 
 		[Test]
 		public void TestDefaultContextParentWithSingleChild()

@@ -31,11 +31,37 @@ namespace ElasticsearchCRUD.Integration.Test
 		public DateTimeOffset Updated { get; set; }
 	}
 
-	public class SkillWithIntArray
+	public class SkillWithIntCollection
 	{
 		public long Id { get; set; }
 		public String BlahBlah { get; set; }
 		public List<int> MyIntArray { get; set; }
+	}
+
+	public class SkillWithStringLongAndDoubleArray
+	{
+		public String[] MyStringArray { get; set; }
+		public double[] MyDoubleArray { get; set; }
+		public long Id { get; set; }
+		public long[] MyLongArray { get; set; }
+		public String BlahBlah { get; set; }
+	}
+
+	public class SkillWithIntArray
+	{
+		public long Id { get; set; }
+		public String BlahBlah { get; set; }
+		public int[] MyIntArray { get; set; }
+
+	}
+
+	public class SkillWithStringLongAndDoubleCollection
+	{
+		public List<String> MyStringArray { get; set; }
+		public List<double> MyDoubleArray { get; set; }
+		public long Id { get; set; }
+		public List<long> MyLongArray { get; set; }
+		public String BlahBlah { get; set; }
 	}
 
 	public class SkillWithSingleChild
