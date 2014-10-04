@@ -26,28 +26,38 @@ namespace ElasticsearchCRUD
 				if (IsPropertyACollection(prop))
 				{
 					// TODO test for object type or simple type
-					MapSimpleArrayValue(prop, entity);
+					MapCollectionOrArrayWithSimpleType(prop, entity);
 
 					// TODO
 					//if (object.IsElasticsearchDocumentType)
 					//{
 					//	// add to bulk insert as own index
 					//}
-					//else
-					//{
-					//	MapObjectArrayValue(prop);
-					//}
 				}
 				else
 				{
-					MapValue(prop.Name.ToLower(), prop.GetValue(entity));
+					if (prop.PropertyType.IsClass && prop.PropertyType.FullName != "System.String" && prop.PropertyType.FullName != "System.Decimal")
+					{
+						Writer.WritePropertyName(prop.Name.ToLower());
+						Writer.WriteStartObject();
+						// Do class mapping for nested type
+						MapEntityValues(prop.GetValue(entity));
+						Writer.WriteEndObject();
+						
+
+						// Add as document later
+					}
+					else
+					{
+						MapValue(prop.Name.ToLower(), prop.GetValue(entity));
+					}
 				}	
 			}
 		}
 
 		// Nested
 		// "tags" : ["elasticsearch", "wow"], (string array or int array)
-		protected virtual void MapSimpleArrayValue(PropertyInfo prop, object entity)
+		protected virtual void MapCollectionOrArrayWithSimpleType(PropertyInfo prop, object entity)
 		{
 			Writer.WritePropertyName(prop.Name.ToLower());
 			Type type = prop.PropertyType;
@@ -72,11 +82,7 @@ namespace ElasticsearchCRUD
 		//		"name" : "prog_list",
 		//		"description" : "programming list"
 		//	},
-		protected void MapObjectArrayValue(PropertyInfo prop, object entity)
-		{
-			//object[] ienumerable = (object[])prop.GetValue(entity);
-		}
-		
+	
 		public void AddWriter(JsonWriter writer)
 		{
 			Writer = writer;
@@ -90,7 +96,7 @@ namespace ElasticsearchCRUD
 
 		protected bool IsPropertyACollection(PropertyInfo property)
 		{
-			if (property.PropertyType.FullName == "System.String")
+			if (property.PropertyType.FullName == "System.String" || property.PropertyType.FullName == "System.Decimal")
 			{
 				return false;
 			}

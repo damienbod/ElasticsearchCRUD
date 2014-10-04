@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Damienbod.BusinessLayer.DomainModel;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -70,6 +66,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			_entitiesForSkillParent.Add(entity2);
 		}
 
+
 		[TearDown]
 		public void TearDown()
 		{
@@ -78,8 +75,8 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult1 = context.DeleteIndexAsync<SkillTestEntity>();
-				entityResult1.Wait();
+				//var entityResult1 = context.DeleteIndexAsync<SkillWithStringAndLongArray>();
+				//entityResult1.Wait();
 				var entityResult2 = context.DeleteIndexAsync<SkillTestEntityTwo>();
 				entityResult2.Wait();
 				var entityResult3 = context.DeleteIndexAsync<SkillParent>();
@@ -88,14 +85,18 @@ namespace ElasticsearchCRUD.Integration.Test
 				entityResult4.Wait();
 				var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>();
 				entityResult5.Wait();
-				//var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
-				//.Wait();
-				var entityResult7 = context.DeleteIndexAsync<SkillWithSingleChild>();
-				entityResult7.Wait();
-				var entityResult8 = context.DeleteIndexAsync<SkillSingleChildElement>();
-				entityResult8.Wait();
-				var entityResult9 = context.DeleteIndexAsync<Animal>();
+				var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
+				entityResult6.Wait();
+				//var entityResult7 = context.DeleteIndexAsync<SkillWithSingleChild>();
+				//entityResult7.Wait();
+				//var entityResult8 = context.DeleteIndexAsync<SkillSingleChildElement>();
+				//entityResult8.Wait();
+				var entityResult9 = context.DeleteIndexAsync<SkillWithIntCollection>();
 				entityResult9.Wait();
+				var entityResult10 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleArray>();
+				entityResult10.Wait();
+				var entityResult11 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleCollection>();
+				entityResult11.Wait();
 			}
 		}
 
@@ -105,7 +106,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 
-				context.AddUpdateEntity(_entitiesForSkillParent[1], 1);
+				context.AddUpdateEntity(_entitiesForSkillParent[0], _entitiesForSkillParent[0].Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();

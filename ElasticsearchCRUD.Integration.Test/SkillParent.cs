@@ -21,7 +21,5 @@ namespace ElasticsearchCRUD.Integration.Test
 		public string DescriptionSkillChild { get; set; }
 		public DateTimeOffset CreatedSkillChild { get; set; }
 		public DateTimeOffset UpdatedSkillChild { get; set; }
-
-		public virtual SkillParent SkillParent { get; set; }
 	}
 }
