@@ -54,6 +54,8 @@ namespace ConsoleElasticsearchCrudExample
 				elasticSearchContext.AllowDeleteForIndex = true;
 				var result = elasticSearchContext.DeleteIndexAsync<SkillLevel>();
 				result.Wait();
+				//var result1 = elasticSearchContext.DeleteIndexAsync<Skill>();
+				//result1.Wait();
 				//var result = elasticSearchContext.DeleteIndex<Skill>();
 				elasticSearchContext.SaveChanges();
 				//Console.WriteLine(result.Result.PayloadResult);
