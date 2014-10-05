@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -9,36 +12,13 @@ namespace ElasticsearchCRUD.Integration.Test
 	[TestFixture]
 	public class OneToNElasticsearchCRUDTests
 	{
-		private List<SkillParent> _entitiesForSkillParent;
 		private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
 		[SetUp]
 		public void SetUp()
 		{
-			_entitiesForSkillParent = new List<SkillParent>();
 			_entitiesForSkillChild = new List<SkillChild>();
-			// Create a 100 entities
-
-			var entity1 = new SkillParent
-			{
-
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 1,
-				NameSkillParent = "cool"
-			};
-
-			var entity2 = new SkillParent
-			{
-
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 2,
-				NameSkillParent = "cool"
-			};
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -53,17 +33,6 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				_entitiesForSkillChild.Add(entityTwo);
 			}
-
-			// a parent with one child
-			entity1.SkillChildren = new List<SkillChild>();
-			entity1.SkillChildren.Add(_entitiesForSkillChild[0]);
-			_entitiesForSkillParent.Add(entity1);
-
-			// a parent with two children
-			entity2.SkillChildren = new List<SkillChild>();
-			entity2.SkillChildren.Add(_entitiesForSkillChild[1]);
-			entity2.SkillChildren.Add(_entitiesForSkillChild[2]);
-			_entitiesForSkillParent.Add(entity2);
 		}
 
 
@@ -75,42 +44,123 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				//var entityResult1 = context.DeleteIndexAsync<SkillWithStringAndLongArray>();
-				//entityResult1.Wait();
+				//context.DeleteIndexAsync<SkillWithStringAndLongArray>();
 				var entityResult2 = context.DeleteIndexAsync<SkillTestEntityTwo>();
-				entityResult2.Wait();
 				//var entityResult3 = context.DeleteIndexAsync<SkillParent>();
-				//entityResult3.Wait();
-				//var entityResult4 = context.DeleteIndexAsync<SkillChild>();
-				//entityResult4.Wait();
+				var entityResult4 = context.DeleteIndexAsync<SkillChild>();
 				var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>();
-				entityResult5.Wait();
 				var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
-				entityResult6.Wait();
-				//var entityResult7 = context.DeleteIndexAsync<SkillWithSingleChild>();
-				//entityResult7.Wait();
-				//var entityResult8 = context.DeleteIndexAsync<SkillSingleChildElement>();
-				//entityResult8.Wait();
+				var entityResult7 = context.DeleteIndexAsync<SkillWithSingleChild>();
+				var entityResult8 = context.DeleteIndexAsync<SkillSingleChildElement>();
 				var entityResult9 = context.DeleteIndexAsync<SkillWithIntCollection>();
-				entityResult9.Wait();
 				var entityResult10 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleArray>();
-				entityResult10.Wait();
 				var entityResult11 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleCollection>();
-				entityResult11.Wait();
+				Task.WaitAll();
 			}
 		}
 
 		[Test]
-		public void TestDefaultContextParentWithTwoChildren()
+		public void TestDefaultContextParentWithACollectionOfOneChildObjectNested()
 		{
+			var testSkillParentObject = new SkillParent
+			{
+
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 7,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> {_entitiesForSkillChild[0]}
+			};
+
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 
-				context.AddUpdateEntity(_entitiesForSkillParent[0], _entitiesForSkillParent[0].Id);
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParent>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWithACollectionOfThreeChildObjectsNested()
+		{
+			var testSkillParentObject = new SkillParent
+			{
+
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 8,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParent>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
+				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWithACollectionOfNoChildObjectNested()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skill = new SkillParent();
+				skill.CreatedSkillParent = DateTime.UtcNow;
+				skill.UpdatedSkillParent = DateTime.UtcNow;
+				skill.Id = 34;
+				skill.NameSkillParent = "rr";
+				skill.DescriptionSkillParent = "ee";
+				skill.SkillChildren = new Collection<SkillChild>();
+				context.AddUpdateEntity(skill, skill.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParent>(skill.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWithNullCollectionNested()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skill = new SkillParent();
+				skill.CreatedSkillParent = DateTime.UtcNow;
+				skill.UpdatedSkillParent = DateTime.UtcNow;
+				skill.Id = 34;
+				skill.NameSkillParent = "rr";
+				skill.DescriptionSkillParent = "ee";
+				context.AddUpdateEntity(skill, skill.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParent>(skill.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
 

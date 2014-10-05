@@ -60,6 +60,7 @@ namespace ElasticsearchCRUD
 		// "tags" : ["elasticsearch", "wow"], (string array or int array)
 		protected virtual void MapCollectionOrArrayWithSimpleType(PropertyInfo prop, object entity, JsonWriter writer)
 		{
+			bool isSimpleArrayOrCollection = true;
 			writer.WritePropertyName(prop.Name.ToLower());
 			Type type = prop.PropertyType;
 			string json = null;
@@ -73,17 +74,18 @@ namespace ElasticsearchCRUD
 			{
 				// It is a collection
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
-				if (ienumerable != null)
+				if (ienumerable != null && (ienumerable as ICollection).Count != 0)
 				{
-					var sbCollection = new StringBuilder(); 
+					var sbCollection = new StringBuilder();
+					sbCollection.Append("[");
 					foreach (var item in ienumerable)
 					{
 						var childEntityWriter = new JsonTextWriter(new StringWriter(sbCollection, CultureInfo.InvariantCulture)) { CloseOutput = true };
 						var typeofArrayItem = item.GetType();
 						if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" && typeofArrayItem.FullName != "System.Decimal")
 						{
+							isSimpleArrayOrCollection = false;
 							// collection of Objects
-							childEntityWriter.WritePropertyName(prop.Name.ToLower());
 							childEntityWriter.WriteStartObject();
 							// Do class mapping for nested type
 							MapEntityValues(item, childEntityWriter);
@@ -94,13 +96,24 @@ namespace ElasticsearchCRUD
 						else
 						{
 							// collection of simple types, serialize all items in one go and break from the loop
-							sbCollection.Append(JsonConvert.SerializeObject(ienumerable));
+							json = JsonConvert.SerializeObject(ienumerable);
 							
 							break;
 						}
+						sbCollection.Append(",");
 					}
+					
 
-					writer.WriteRawValue(sbCollection.ToString());
+					if (isSimpleArrayOrCollection)
+					{
+						writer.WriteRawValue(json);
+					}
+					else
+					{
+						sbCollection.Remove(sbCollection.Length - 1, 1);
+						sbCollection.Append("]");
+						writer.WriteRawValue(sbCollection.ToString());	
+					}
 				}
 			}		
 		}
