@@ -39,12 +39,14 @@ namespace ElasticsearchCRUD
 				{
 					if (prop.PropertyType.IsClass && prop.PropertyType.FullName != "System.String" && prop.PropertyType.FullName != "System.Decimal")
 					{
-						writer.WritePropertyName(prop.Name.ToLower());
-						writer.WriteStartObject();
-						// Do class mapping for nested type
-						MapEntityValues(prop.GetValue(entity), writer);
-						writer.WriteEndObject();
-						
+						if (prop.GetValue(entity) != null)
+						{
+							writer.WritePropertyName(prop.Name.ToLower());
+							writer.WriteStartObject();
+							// Do class mapping for nested type
+							MapEntityValues(prop.GetValue(entity), writer);
+							writer.WriteEndObject();
+						}
 
 						// Add as separate document later
 					}
