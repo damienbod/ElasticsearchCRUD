@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test
 {
 	[TestFixture]
-	public class OneToNElasticsearchCrudTests
+	public class OneToNNestedElasticsearchCrudTests
 	{
 		private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
@@ -40,8 +40,9 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult2 = context.DeleteIndexAsync<SkillTestEntityTwo>();
-				//var entityResult3 = context.DeleteIndexAsync<SkillParent>();
+				var entityResult1 = context.DeleteIndexAsync<SkillTestEntityTwo>();
+				var entityResult2 = context.DeleteIndexAsync<SkillParentCollection>();
+				var entityResult3 = context.DeleteIndexAsync<SkillParentArray>();
 				var entityResult4 = context.DeleteIndexAsync<SkillChild>();
 				var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>();
 				var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
@@ -54,10 +55,12 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+		#region NESTED COLLECTION 1 to N
+
 		[Test]
 		public void TestDefaultContextParentWithACollectionOfOneChildObjectNested()
 		{
-			var testSkillParentObject = new SkillParent
+			var testSkillParentObject = new SkillParentCollection
 			{
 
 				CreatedSkillParent = DateTime.UtcNow,
@@ -77,7 +80,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParent>(testSkillParentObject.Id);
+				var roundTripResult = context.GetEntity<SkillParentCollection>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
 				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
 			}
@@ -86,7 +89,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentWithACollectionOfThreeChildObjectsNested()
 		{
-			var testSkillParentObject = new SkillParent
+			var testSkillParentObject = new SkillParentCollection
 			{
 
 				CreatedSkillParent = DateTime.UtcNow,
@@ -106,7 +109,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParent>(testSkillParentObject.Id);
+				var roundTripResult = context.GetEntity<SkillParentCollection>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
 				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
 				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
@@ -119,7 +122,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var skill = new SkillParent
+				var skill = new SkillParentCollection
 				{
 					CreatedSkillParent = DateTime.UtcNow,
 					UpdatedSkillParent = DateTime.UtcNow,
@@ -134,7 +137,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParent>(skill.Id);
+				var roundTripResult = context.GetEntity<SkillParentCollection>(skill.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
@@ -144,7 +147,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var skill = new SkillParent
+				var skill = new SkillParentCollection
 				{
 					CreatedSkillParent = DateTime.UtcNow,
 					UpdatedSkillParent = DateTime.UtcNow,
@@ -158,10 +161,103 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParent>(skill.Id);
+				var roundTripResult = context.GetEntity<SkillParentCollection>(skill.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
+
+		#endregion //NESTED COLLECTION 1 to N
+
+		#region NESTED Array 1 to N
+
+		[Test]
+		public void TestDefaultContextParentWithAnArrayOfOneChildObjectNested()
+		{
+			var testSkillParentObject = new SkillParentArray
+			{
+
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 7,
+				NameSkillParent = "cool",
+				SkillChildren = new[] { _entitiesForSkillChild[0] }
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParentArray>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.AreEqual(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWithAnArrayOfThreeChildObjectsNested()
+		{
+			var testSkillParentObject = new SkillParentArray
+			{
+
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 7,
+				NameSkillParent = "cool",
+				SkillChildren = new[] { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParentArray>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.AreEqual(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
+				Assert.AreEqual(roundTripResult.SkillChildren[1].DescriptionSkillChild, testSkillParentObject.SkillChildren[1].DescriptionSkillChild);
+				Assert.AreEqual(roundTripResult.SkillChildren[2].DescriptionSkillChild, testSkillParentObject.SkillChildren[2].DescriptionSkillChild);
+			}
+		}
+
+		// Note, Object arrays with null values are not supported
+		[Test]
+		public void TestDefaultContextParentWithNullArrayNested()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skill = new SkillParentArray
+				{
+					CreatedSkillParent = DateTime.UtcNow,
+					UpdatedSkillParent = DateTime.UtcNow,
+					Id = 34,
+					NameSkillParent = "rr",
+					DescriptionSkillParent = "ee"
+				};
+				context.AddUpdateEntity(skill, skill.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParentArray>(skill.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
+			}
+		}
+
+		#endregion //NESTED Array 1 to N
+
+		#region NESTED Simple collections
 
 		[Test]
 		public void TestDefaultContextParentNestedIntCollection()
@@ -186,6 +282,60 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void TestDefaultContextParentNestedIntCollectionEqualsNull()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skillWithIntArray = new SkillWithIntCollection { BlahBlah = "test with no int array", Id = 3 };
+
+				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+
+				var returned = context.GetEntity<SkillWithIntCollection>(3);
+				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
+				Assert.IsNull(returned.MyIntArray);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentNestedSkillWithStringAndLongCollection()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var skillWithIntArray = new SkillWithStringLongAndDoubleCollection
+				{
+					MyStringArray = new List<String>
+					{
+						"one", "two","three"
+					},
+					BlahBlah = "test3 with int array",
+					Id = 2,
+					MyDoubleArray = new List<double> { 2.4, 5.7, 67.345 },
+					MyLongArray = new List<long> { 34444445, 65432, 7889999 }
+				};
+				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var returned = context.GetEntity<SkillWithStringLongAndDoubleCollection>(2);
+				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
+				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
+				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
+			}
+		}
+
+
+		#endregion NESTED Simple collections
+
+		#region NESTED Simple Arrays
+
+		[Test]
 		public void TestDefaultContextParentNestedIntArray()
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
@@ -206,27 +356,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
 			}
 		}
-
-		[Test]
-		public void TestDefaultContextParentNestedIntCollectionEqualsNull()
-		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
-			{
-				var skillWithIntArray = new SkillWithIntCollection {BlahBlah = "test with no int array", Id = 3};
-
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
-
-				// Save to Elasticsearch
-				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-
-				var returned = context.GetEntity<SkillWithIntCollection>(3);
-				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
-				Assert.IsNull(returned.MyIntArray);
-			}
-		}
-
+	
 		[Test]
 		public void TestDefaultContextParentNestedIntArrayEqualsNull()
 		{
@@ -242,35 +372,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				var returned = context.GetEntity<SkillWithIntArray>(3);
 				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
 				Assert.IsNull(returned.MyIntArray);
-			}
-		}
-
-		[Test]
-		public void TestDefaultContextParentNestedSkillWithStringAndLongCollection()
-		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
-			{
-				var skillWithIntArray = new SkillWithStringLongAndDoubleCollection
-				{
-					MyStringArray = new List<String>
-					{
-						"one", "two","three"
-					},
-					BlahBlah = "test3 with int array",
-					Id = 2,
-					MyDoubleArray = new List<double> {2.4, 5.7, 67.345 },
-					MyLongArray = new List<long> {34444445, 65432, 7889999 }
-				};
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
-
-				// Save to Elasticsearch
-				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-				var returned = context.GetEntity<SkillWithStringLongAndDoubleCollection>(2);
-				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
-				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
-				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
 			}
 		}
 
@@ -302,7 +403,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
 			}
 		}
-		
+
+		#endregion NESTED Simple arrays
+
+		#region NESTED Object
+
 		[Test]
 		public void TestDefaultContextParentWithSingleChild()
 		{
@@ -341,5 +446,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(roundTripResult.BlahBlah, skillWithSingleChild.BlahBlah);
 			}
 		}
+
+		#endregion NESTED Object
 	}
 }

@@ -49,9 +49,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
-    <Compile Include="OneToNElasticsearchCRUDTests.cs" />
+    <Compile Include="OneToNNestedElasticsearchCrudTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SkillParent.cs" />
+    <Compile Include="SkillParentCollection.cs" />
     <Compile Include="SkillTestEntityElasticSearchMapping.cs" />
     <Compile Include="SpecialMappingElasticsearchCRUDTests.cs" />
     <Compile Include="TestEntities.cs" />

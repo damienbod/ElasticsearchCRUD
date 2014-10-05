@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
-	public class SkillParent
+	public class SkillParentCollection
 	{
 		public long Id { get; set; }
 		public string NameSkillParent { get; set; }
@@ -12,6 +12,17 @@ namespace ElasticsearchCRUD.Integration.Test
 		public DateTimeOffset UpdatedSkillParent { get; set; }
 
 		public virtual ICollection<SkillChild> SkillChildren { get; set; }
+	}
+
+	public class SkillParentArray
+	{
+		public long Id { get; set; }
+		public string NameSkillParent { get; set; }
+		public string DescriptionSkillParent { get; set; }
+		public DateTimeOffset CreatedSkillParent { get; set; }
+		public DateTimeOffset UpdatedSkillParent { get; set; }
+
+		public virtual SkillChild[] SkillChildren { get; set; }
 	}
 
 	public class SkillChild
