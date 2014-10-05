@@ -26,14 +26,7 @@ namespace ElasticsearchCRUD
 			{
 				if (IsPropertyACollection(prop))
 				{
-					// TODO test for object type or simple type
-					MapCollectionOrArrayWithSimpleType(prop, entity, writer);
-
-					// TODO
-					//if (object.IsElasticsearchDocumentType)
-					//{
-					//	// add to bulk insert as own index
-					//}
+					MapCollectionOrArray(prop, entity, writer);
 				}
 				else
 				{
@@ -48,7 +41,7 @@ namespace ElasticsearchCRUD
 							writer.WriteEndObject();
 						}
 
-						// Add as separate document later
+						// TODO Add as separate document later inn it's index
 					}
 					else
 					{
@@ -60,7 +53,13 @@ namespace ElasticsearchCRUD
 
 		// Nested
 		// "tags" : ["elasticsearch", "wow"], (string array or int array)
-		protected virtual void MapCollectionOrArrayWithSimpleType(PropertyInfo prop, object entity, JsonWriter writer)
+		// Nested
+		//"lists" : [
+		//	{
+		//		"name" : "prog_list",
+		//		"description" : "programming list"
+		//	},	
+		protected virtual void MapCollectionOrArray(PropertyInfo prop, object entity, JsonWriter writer)
 		{
 			bool isSimpleArrayOrCollection = true;
 			writer.WritePropertyName(prop.Name.ToLower());
@@ -68,9 +67,49 @@ namespace ElasticsearchCRUD
 			string json = null;
 			if (type.HasElementType)
 			{
+				// It is a collection
 				var ienumerable = (Array)prop.GetValue(entity);
-				json = JsonConvert.SerializeObject(ienumerable);
-				writer.WriteRawValue(json);					
+				if (ienumerable != null && ienumerable.Length != 0)
+				{
+					var sbCollection = new StringBuilder();
+					sbCollection.Append("[");
+					foreach (var item in ienumerable)
+					{
+						var childEntityWriter = new JsonTextWriter(new StringWriter(sbCollection, CultureInfo.InvariantCulture)) { CloseOutput = true };
+						var typeofArrayItem = item.GetType();
+						if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" && typeofArrayItem.FullName != "System.Decimal")
+						{
+							isSimpleArrayOrCollection = false;
+							// collection of Objects
+							childEntityWriter.WriteStartObject();
+							// Do class mapping for nested type
+							MapEntityValues(item, childEntityWriter);
+							childEntityWriter.WriteEndObject();
+
+							// Add as separate document later
+						}
+						else
+						{
+							// collection of simple types, serialize all items in one go and break from the loop
+							json = JsonConvert.SerializeObject(ienumerable);
+
+							break;
+						}
+						sbCollection.Append(",");
+					}
+
+
+					if (isSimpleArrayOrCollection)
+					{
+						writer.WriteRawValue(json);
+					}
+					else
+					{
+						sbCollection.Remove(sbCollection.Length - 1, 1);
+						sbCollection.Append("]");
+						writer.WriteRawValue(sbCollection.ToString());
+					}
+				}				
 			}
 			else if (prop.PropertyType.IsGenericType)
 			{
@@ -120,13 +159,6 @@ namespace ElasticsearchCRUD
 			}		
 		}
 
-		// Nested
-		//"lists" : [
-		//	{
-		//		"name" : "prog_list",
-		//		"description" : "programming list"
-		//	},
-	
 		protected void MapValue(string key, object valueObj, JsonWriter writer)
 		{
 			writer.WritePropertyName(key);
@@ -142,7 +174,7 @@ namespace ElasticsearchCRUD
 			return property.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null;
 		} 
 
-		public virtual object ParseEntity(Newtonsoft.Json.Linq.JToken source, Type type)
+		public virtual object ParseEntity(JToken source, Type type)
 		{
 			return JsonConvert.DeserializeObject(source.ToString(), type);
 		}
