@@ -1,5 +1,6 @@
 ﻿using System;
 using ElasticsearchCRUD;
+using Newtonsoft.Json;
 
 namespace ConsoleElasticsearchCrudExample
 {
@@ -9,14 +10,14 @@ namespace ConsoleElasticsearchCrudExample
 		/// Only required if you have some special mapping or want to remove some properties or use attributes..
 		/// </summary>
 		/// <param name="entity"></param>
-		public override void MapEntityValues(object entity)
+		public override void MapEntityValues(object entity, JsonWriter writer)
 		{
 			Skill skillEntity = entity as Skill;
-			MapValue("id", skillEntity.Id);
-			MapValue("name", skillEntity.Name);
-			MapValue("description", skillEntity.Description);
-			MapValue("created", skillEntity.Created.UtcDateTime);
-			MapValue("updated", skillEntity.Updated.UtcDateTime);
+			MapValue("id", skillEntity.Id, writer);
+			MapValue("name", skillEntity.Name, writer);
+			MapValue("description", skillEntity.Description, writer);
+			MapValue("created", skillEntity.Created.UtcDateTime, writer);
+			MapValue("updated", skillEntity.Updated.UtcDateTime, writer);
 		}
 
 

@@ -1,20 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
 	public class SkillTestEntityElasticSearchMapping : ElasticSearchMapping
 	{
-		public override void MapEntityValues(object entity)
+		public override void MapEntityValues(object entity, JsonWriter writer)
 		{
 			// Map entities to exact name, not lower case
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
 			{
-				MapValue(prop.Name, prop.GetValue(entity));
+				MapValue(prop.Name, prop.GetValue(entity), writer);
 			}
 		}
 

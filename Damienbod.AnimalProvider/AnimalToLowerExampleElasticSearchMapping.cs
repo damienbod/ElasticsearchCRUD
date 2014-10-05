@@ -1,5 +1,6 @@
 using System;
 using ElasticsearchCRUD;
+using Newtonsoft.Json;
 
 namespace Damienbod.AnimalProvider
 {
@@ -9,12 +10,12 @@ namespace Damienbod.AnimalProvider
 		/// Here you can do any type of entity mapping
 		/// </summary>
 		/// <param name="entity"></param>
-		public override void MapEntityValues(Object entity)
+		public override void MapEntityValues(Object entity, JsonWriter writer)
 		{
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
 			{
-				MapValue(prop.Name, prop.GetValue(entity));
+				MapValue(prop.Name, prop.GetValue(entity), writer);
 			}
 		}
 
