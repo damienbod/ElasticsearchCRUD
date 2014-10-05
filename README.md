@@ -12,6 +12,13 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.5</strong><em> 2014.10.05</em>
+- Support Array of Objects Property in entity as NESTED document
+- Support Collection of Objects Property in entity as NESTED documents 
+- Support Single Object Property in entity as NESTED document
+- Support for simple type List properties as NESTED document
+- Support for simple type Array properties as NESTED document
+
 <strong>Version 1.0.4</strong><em> 2014.10.02</em>
 - sync / async methods added for CRUD
 - Better Error handling
