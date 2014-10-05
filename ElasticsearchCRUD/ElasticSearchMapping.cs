@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -68,31 +71,36 @@ namespace ElasticsearchCRUD
 			}
 			else if (prop.PropertyType.IsGenericType)
 			{
+				// It is a collection
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
 				if (ienumerable != null)
 				{
+					var sbCollection = new StringBuilder(); 
 					foreach (var item in ienumerable)
 					{
+						var childEntityWriter = new JsonTextWriter(new StringWriter(sbCollection, CultureInfo.InvariantCulture)) { CloseOutput = true };
 						var typeofArrayItem = item.GetType();
-						if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" &&
-							typeofArrayItem.FullName != "System.Decimal")
+						if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" && typeofArrayItem.FullName != "System.Decimal")
 						{
-							writer.WritePropertyName(prop.Name.ToLower());
-							writer.WriteStartObject();
+							// collection of Objects
+							childEntityWriter.WritePropertyName(prop.Name.ToLower());
+							childEntityWriter.WriteStartObject();
 							// Do class mapping for nested type
-							MapEntityValues(prop.GetValue(entity), writer);
-							writer.WriteEndObject();
-
+							MapEntityValues(item, childEntityWriter);
+							childEntityWriter.WriteEndObject();
 
 							// Add as separate document later
 						}
 						else
 						{
-							json = JsonConvert.SerializeObject(ienumerable);
-							writer.WriteRawValue(json);
+							// collection of simple types, serialize all items in one go and break from the loop
+							sbCollection.Append(JsonConvert.SerializeObject(ienumerable));
+							
 							break;
 						}
 					}
+
+					writer.WriteRawValue(sbCollection.ToString());
 				}
 			}		
 		}
