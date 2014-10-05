@@ -15,10 +15,8 @@ namespace ElasticsearchCRUD
 	/// </summary>
 	public class ElasticSearchMapping
 	{
-		protected JsonWriter Writer;
-
 		// default type is lowercase for properties
-		public virtual void MapEntityValues(Object entity)
+		public virtual void MapEntityValues(Object entity, JsonWriter writer)
 		{
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
@@ -26,7 +24,7 @@ namespace ElasticsearchCRUD
 				if (IsPropertyACollection(prop))
 				{
 					// TODO test for object type or simple type
-					MapCollectionOrArrayWithSimpleType(prop, entity);
+					MapCollectionOrArrayWithSimpleType(prop, entity, writer);
 
 					// TODO
 					//if (object.IsElasticsearchDocumentType)
@@ -38,18 +36,18 @@ namespace ElasticsearchCRUD
 				{
 					if (prop.PropertyType.IsClass && prop.PropertyType.FullName != "System.String" && prop.PropertyType.FullName != "System.Decimal")
 					{
-						Writer.WritePropertyName(prop.Name.ToLower());
-						Writer.WriteStartObject();
+						writer.WritePropertyName(prop.Name.ToLower());
+						writer.WriteStartObject();
 						// Do class mapping for nested type
-						MapEntityValues(prop.GetValue(entity));
-						Writer.WriteEndObject();
+						MapEntityValues(prop.GetValue(entity), writer);
+						writer.WriteEndObject();
 						
 
-						// Add as document later
+						// Add as separate document later
 					}
 					else
 					{
-						MapValue(prop.Name.ToLower(), prop.GetValue(entity));
+						MapValue(prop.Name.ToLower(), prop.GetValue(entity), writer);
 					}
 				}	
 			}
@@ -57,23 +55,46 @@ namespace ElasticsearchCRUD
 
 		// Nested
 		// "tags" : ["elasticsearch", "wow"], (string array or int array)
-		protected virtual void MapCollectionOrArrayWithSimpleType(PropertyInfo prop, object entity)
+		protected virtual void MapCollectionOrArrayWithSimpleType(PropertyInfo prop, object entity, JsonWriter writer)
 		{
-			Writer.WritePropertyName(prop.Name.ToLower());
+			writer.WritePropertyName(prop.Name.ToLower());
 			Type type = prop.PropertyType;
 			string json = null;
 			if (type.HasElementType)
 			{
 				var ienumerable = (Array)prop.GetValue(entity);
 				json = JsonConvert.SerializeObject(ienumerable);
+				writer.WriteRawValue(json);					
 			}
 			else if (prop.PropertyType.IsGenericType)
 			{
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
-				json = JsonConvert.SerializeObject(ienumerable);
-			}
+				if (ienumerable != null)
+				{
+					foreach (var item in ienumerable)
+					{
+						var typeofArrayItem = item.GetType();
+						if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" &&
+							typeofArrayItem.FullName != "System.Decimal")
+						{
+							writer.WritePropertyName(prop.Name.ToLower());
+							writer.WriteStartObject();
+							// Do class mapping for nested type
+							MapEntityValues(prop.GetValue(entity), writer);
+							writer.WriteEndObject();
 
-			Writer.WriteRawValue(json);
+
+							// Add as separate document later
+						}
+						else
+						{
+							json = JsonConvert.SerializeObject(ienumerable);
+							writer.WriteRawValue(json);
+							break;
+						}
+					}
+				}
+			}		
 		}
 
 		// Nested
@@ -83,15 +104,10 @@ namespace ElasticsearchCRUD
 		//		"description" : "programming list"
 		//	},
 	
-		public void AddWriter(JsonWriter writer)
+		protected void MapValue(string key, object valueObj, JsonWriter writer)
 		{
-			Writer = writer;
-		}
-
-		protected void MapValue(string key, object valueObj)
-		{
-			Writer.WritePropertyName(key);
-			Writer.WriteValue(valueObj);
+			writer.WritePropertyName(key);
+			writer.WriteValue(valueObj);
 		}
 
 		protected bool IsPropertyACollection(PropertyInfo property)

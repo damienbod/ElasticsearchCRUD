@@ -79,10 +79,10 @@ namespace ElasticsearchCRUD.Integration.Test
 				//entityResult1.Wait();
 				var entityResult2 = context.DeleteIndexAsync<SkillTestEntityTwo>();
 				entityResult2.Wait();
-				var entityResult3 = context.DeleteIndexAsync<SkillParent>();
-				entityResult3.Wait();
-				var entityResult4 = context.DeleteIndexAsync<SkillChild>();
-				entityResult4.Wait();
+				//var entityResult3 = context.DeleteIndexAsync<SkillParent>();
+				//entityResult3.Wait();
+				//var entityResult4 = context.DeleteIndexAsync<SkillChild>();
+				//entityResult4.Wait();
 				var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>();
 				entityResult5.Wait();
 				var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
@@ -263,9 +263,9 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				var skillWithSingleChild = new SkillWithSingleChild
 				{
-					Id = 4,
+					Id = 5,
 					BlahBlah = "TEST",
-					MySkillSingleChildElement = new SkillSingleChildElement{ Id= 4, Details = "tteesstt"}
+					MySkillSingleChildElement = new SkillSingleChildElement{ Id= 5, Details = "tteesstt"}
 				};
 				context.AddUpdateEntity(skillWithSingleChild, skillWithSingleChild.Id);
 
