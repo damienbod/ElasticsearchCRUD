@@ -40,18 +40,18 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult1 = context.DeleteIndexAsync<SkillTestEntityTwo>();
-				var entityResult2 = context.DeleteIndexAsync<SkillParentCollection>();
-				var entityResult3 = context.DeleteIndexAsync<SkillParentArray>();
-				var entityResult4 = context.DeleteIndexAsync<SkillChild>();
-				var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>();
-				var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>();
-				var entityResult7 = context.DeleteIndexAsync<SkillWithSingleChild>();
-				var entityResult8 = context.DeleteIndexAsync<SkillSingleChildElement>();
-				var entityResult9 = context.DeleteIndexAsync<SkillWithIntCollection>();
-				var entityResult10 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleArray>();
-				var entityResult11 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleCollection>();
-				Task.WaitAll();
+				var entityResult1 = context.DeleteIndexAsync<SkillTestEntityTwo>();entityResult1.Wait();
+				var entityResult2 = context.DeleteIndexAsync<SkillParentCollection>(); entityResult2.Wait();
+				var entityResult3 = context.DeleteIndexAsync<SkillParentArray>(); entityResult3.Wait();
+				var entityResult4 = context.DeleteIndexAsync<SkillChild>(); entityResult4.Wait();
+				var entityResult5 = context.DeleteIndexAsync<SkillTestEntity>(); entityResult5.Wait();
+				var entityResult6 = context.DeleteIndexAsync<SkillWithIntArray>(); entityResult6.Wait();
+				var entityResult7 = context.DeleteIndexAsync<SkillWithIntCollection>(); entityResult7.Wait();
+				var entityResult8 = context.DeleteIndexAsync<SkillWithSingleChild>(); entityResult8.Wait();
+				var entityResult9 = context.DeleteIndexAsync<SkillSingleChildElement>(); entityResult9.Wait();
+				var entityResult10 = context.DeleteIndexAsync<SkillWithIntCollection>(); entityResult10.Wait();
+				var entityResult11 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleArray>(); entityResult11.Wait();
+				var entityResult12 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleCollection>(); entityResult12.Wait();
 			}
 		}
 
@@ -163,6 +163,49 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var roundTripResult = context.GetEntity<SkillParentCollection>(skill.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWith2LevelsOfNestedObjects()
+		{
+			var testSkillParentObject = new SkillDocument
+			{
+				Id = 7,
+				NameSkillParent = "cool",
+				SkillNestedDocumentLevelOne = new Collection<SkillNestedDocumentLevelOne>()
+				{
+					new SkillNestedDocumentLevelOne()
+					{
+						Id=1,
+						NameSkillParent="rr", 
+						SkillNestedDocumentLevelTwo= new Collection<SkillNestedDocumentLevelTwo>
+						{
+							new SkillNestedDocumentLevelTwo
+							{
+								Id=3, 
+								NameSkillParent="eee"
+							}
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillDocument>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelOne.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelOne.First().NameSkillParent);
+				Assert.AreEqual(
+					roundTripResult.SkillNestedDocumentLevelOne.First().SkillNestedDocumentLevelTwo.First().NameSkillParent,
+					testSkillParentObject.SkillNestedDocumentLevelOne.First().SkillNestedDocumentLevelTwo.First().NameSkillParent);
 			}
 		}
 
@@ -448,5 +491,6 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		#endregion NESTED Object
+
 	}
 }

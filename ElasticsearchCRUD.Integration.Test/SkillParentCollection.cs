@@ -33,4 +33,26 @@ namespace ElasticsearchCRUD.Integration.Test
 		public DateTimeOffset CreatedSkillChild { get; set; }
 		public DateTimeOffset UpdatedSkillChild { get; set; }
 	}
+
+	public class SkillDocument
+	{
+		public long Id { get; set; }
+		public string NameSkillParent { get; set; }
+
+		public virtual ICollection<SkillNestedDocumentLevelOne> SkillNestedDocumentLevelOne { get; set; }
+	}
+
+	public class SkillNestedDocumentLevelOne
+	{
+		public long Id { get; set; }
+		public string NameSkillParent { get; set; }
+
+		public virtual ICollection<SkillNestedDocumentLevelTwo> SkillNestedDocumentLevelTwo { get; set; }
+	}
+
+	public class SkillNestedDocumentLevelTwo
+	{
+		public long Id { get; set; }
+		public string NameSkillParent { get; set; }
+	}
 }
