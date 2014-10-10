@@ -12,6 +12,14 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD
 {
+	public static class Extensions
+	{
+		public static HashSet<T> ToHashSet<T>(this IEnumerable<T> source)
+		{
+			return new HashSet<T>(source);
+		}
+	}
+
 	/// <summary>
 	/// Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
 	/// Everything is lowercase and the index is pluralized
@@ -115,12 +123,18 @@ namespace ElasticsearchCRUD
 			{
 				// It is a collection
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
-				if (ienumerable != null && (ienumerable as ICollection).Count != 0)
+
+
+				bool doProccessingIfTheIEnumerableHasAtLeastOneItem = false;
+				//if (ienumerable != null && (ienumerable as ICollection).Count != 0)
+				//{
+				if (ienumerable != null)
 				{
 					var sbCollection = new StringBuilder();
 					sbCollection.Append("[");
 					foreach (var item in ienumerable)
 					{
+						doProccessingIfTheIEnumerableHasAtLeastOneItem = true;
 						var childEntityWriter = new JsonTextWriter(new StringWriter(sbCollection, CultureInfo.InvariantCulture)) { CloseOutput = true };
 						var typeofArrayItem = item.GetType();
 						if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" && typeofArrayItem.FullName != "System.Decimal")
@@ -143,17 +157,19 @@ namespace ElasticsearchCRUD
 						}
 						sbCollection.Append(",");
 					}
-					
 
-					if (isSimpleArrayOrCollection)
+					if (doProccessingIfTheIEnumerableHasAtLeastOneItem)
 					{
-						writer.WriteRawValue(json);
-					}
-					else
-					{
-						sbCollection.Remove(sbCollection.Length - 1, 1);
-						sbCollection.Append("]");
-						writer.WriteRawValue(sbCollection.ToString());	
+						if (isSimpleArrayOrCollection)
+						{
+							writer.WriteRawValue(json);
+						}
+						else
+						{
+							sbCollection.Remove(sbCollection.Length - 1, 1);
+							sbCollection.Append("]");
+							writer.WriteRawValue(sbCollection.ToString());
+						}
 					}
 				}
 			}		
