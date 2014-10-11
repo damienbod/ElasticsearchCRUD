@@ -167,49 +167,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		[Test]
-		public void TestDefaultContextParentWith2LevelsOfNestedObjects()
-		{
-			var testSkillParentObject = new SkillDocument
-			{
-				Id = 7,
-				NameSkillParent = "cool",
-				SkillNestedDocumentLevelOne = new Collection<SkillNestedDocumentLevelOne>()
-				{
-					new SkillNestedDocumentLevelOne()
-					{
-						Id=1,
-						NameSkillParent="rr", 
-						SkillNestedDocumentLevelTwo= new Collection<SkillNestedDocumentLevelTwo>
-						{
-							new SkillNestedDocumentLevelTwo
-							{
-								Id=3, 
-								NameSkillParent="eee"
-							}
-						}
-					}
-				}
-			};
-
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
-			{
-
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
-
-				// Save to Elasticsearch
-				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-				var roundTripResult = context.GetEntity<SkillDocument>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
-				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelOne.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelOne.First().NameSkillParent);
-				Assert.AreEqual(
-					roundTripResult.SkillNestedDocumentLevelOne.First().SkillNestedDocumentLevelTwo.First().NameSkillParent,
-					testSkillParentObject.SkillNestedDocumentLevelOne.First().SkillNestedDocumentLevelTwo.First().NameSkillParent);
-			}
-		}
-
+		
 		#endregion //NESTED COLLECTION 1 to N
 
 		#region NESTED HashSet 1 to N

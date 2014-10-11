@@ -33,10 +33,9 @@ namespace ElasticsearchCRUD
 			{				
 				if (IsPropertyACollection(prop))
 				{
-					writer.WritePropertyName(prop.Name.ToLower());
-
 					if (prop.GetValue(entity) != null)
 					{
+						writer.WritePropertyName(prop.Name.ToLower());
 						var typeOfEntity = prop.GetValue(entity).GetType().GetGenericArguments();
 						if (typeOfEntity.Length > 0)
 						{

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComplexRelationsTests.cs" />
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
     <Compile Include="OneToNNestedElasticsearchCrudTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
