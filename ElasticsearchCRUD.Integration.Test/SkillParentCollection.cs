@@ -55,4 +55,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		public long Id { get; set; }
 		public string NameSkillParent { get; set; }
 	}
+
+	public class SkillDocumentHastSet
+	{
+		public long Id { get; set; }
+		public string NameSkillParent { get; set; }
+
+		public virtual HashSet<SkillNestedDocumentLevelTwo> SkillNestedDocumentLevelTwoHashSet { get; set; }
+	}
 }

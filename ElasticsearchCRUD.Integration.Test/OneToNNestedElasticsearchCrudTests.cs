@@ -52,6 +52,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult10 = context.DeleteIndexAsync<SkillWithIntCollection>(); entityResult10.Wait();
 				var entityResult11 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleArray>(); entityResult11.Wait();
 				var entityResult12 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleCollection>(); entityResult12.Wait();
+				var entityResult13 = context.DeleteIndexAsync<SkillDocumentHastSet>(); entityResult13.Wait();				
 			}
 		}
 
@@ -210,6 +211,109 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		#endregion //NESTED COLLECTION 1 to N
+
+		#region NESTED HashSet 1 to N
+		//SkillDocumentHastSet
+
+		[Test]
+		public void TestDefaultContextParentWithAHashSetOfOneChildObjectNested()
+		{
+			var testSkillParentObject = new SkillDocumentHastSet
+			{
+				Id = 1,
+				NameSkillParent = "cool",
+				SkillNestedDocumentLevelTwoHashSet = new HashSet<SkillNestedDocumentLevelTwo>{ new SkillNestedDocumentLevelTwo{ Id = 1, NameSkillParent = "TestHashSet"} }
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWithAHashSetOfTwoChildObjectNested()
+		{
+			var testSkillParentObject = new SkillDocumentHastSet
+			{
+				Id = 1,
+				NameSkillParent = "cool",
+				SkillNestedDocumentLevelTwoHashSet = new HashSet<SkillNestedDocumentLevelTwo> { new SkillNestedDocumentLevelTwo { Id = 1, NameSkillParent = "TestHashSet" }, new SkillNestedDocumentLevelTwo { Id = 2, NameSkillParent = "TestHashSet2" } }
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
+				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWithAHashSetOfNoChildObjectNested()
+		{
+			var testSkillParentObject = new SkillDocumentHastSet
+			{
+				Id = 1,
+				NameSkillParent = "cool",
+				SkillNestedDocumentLevelTwoHashSet = new HashSet<SkillNestedDocumentLevelTwo>()
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextParentWithANullHashSetOfChildObjectNested()
+		{
+			var testSkillParentObject = new SkillDocumentHastSet
+			{
+				Id = 1,
+				NameSkillParent = "cool",
+			};
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+			}
+		}
+
+		#endregion NESTED HashSet 1 to N
 
 		#region NESTED Array 1 to N
 
