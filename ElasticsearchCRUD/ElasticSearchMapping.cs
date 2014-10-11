@@ -197,12 +197,22 @@ namespace ElasticsearchCRUD
 
 		public virtual string GetDocumentType(Type type)
 		{
+			// Adding support for EF types
+			if (type.BaseType != null && type.Namespace == "System.Data.Entity.DynamicProxies")
+			{
+				type = type.BaseType;
+			}
 			return type.Name.ToLower();
 		}
 
 		// pluralize the default type
 		public virtual string GetIndexForType(Type type)
 		{
+			// Adding support for EF types
+			if (type.BaseType != null && type.Namespace == "System.Data.Entity.DynamicProxies")
+			{
+				type = type.BaseType;
+			}
 			return type.Name.ToLower() + "s";
 		}
 	}
