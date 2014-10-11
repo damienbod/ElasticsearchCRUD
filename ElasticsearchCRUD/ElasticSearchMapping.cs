@@ -17,7 +17,7 @@ namespace ElasticsearchCRUD
 	public class ElasticSearchMapping
 	{
 		protected HashSet<string> SerializedTypes = new HashSet<string>();
- 
+
 		// default type is lowercase for properties
 		public virtual void MapEntityValues(Object entity, JsonWriter writer, bool beginMappingTree = false)
 		{
@@ -30,10 +30,27 @@ namespace ElasticsearchCRUD
 
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
-			{
+			{				
 				if (IsPropertyACollection(prop))
 				{
-					MapCollectionOrArray(prop, entity, writer);
+					writer.WritePropertyName(prop.Name.ToLower());
+
+					if (prop.GetValue(entity) != null)
+					{
+						var typeOfEntity = prop.GetValue(entity).GetType().GetGenericArguments();
+						if (typeOfEntity.Length > 0)
+						{
+							if (!SerializedTypes.Contains(GetDocumentType(typeOfEntity[0])))
+							{
+								MapCollectionOrArray(prop, entity, writer);
+							}
+						}
+						else
+						{
+							// Not a generic
+							MapCollectionOrArray(prop, entity, writer);
+						}
+					}
 				}
 				else
 				{
@@ -70,8 +87,7 @@ namespace ElasticsearchCRUD
 		//		"description" : "programming list"
 		//	},	
 		protected virtual void MapCollectionOrArray(PropertyInfo prop, object entity, JsonWriter writer)
-		{	
-			writer.WritePropertyName(prop.Name.ToLower());
+		{
 			Type type = prop.PropertyType;
 			
 			if (type.HasElementType)
@@ -84,7 +100,6 @@ namespace ElasticsearchCRUD
 			{
 				// It is a collection
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
-
 				MapIEnumerableEntities(writer, ienumerable);
 			}
 		}
@@ -100,6 +115,7 @@ namespace ElasticsearchCRUD
 				sbCollection.Append("[");
 				foreach (var item in ienumerable)
 				{
+
 					doProccessingIfTheIEnumerableHasAtLeastOneItem = true;
 					var childEntityWriter = new JsonTextWriter(new StringWriter(sbCollection, CultureInfo.InvariantCulture))
 					{
@@ -141,6 +157,7 @@ namespace ElasticsearchCRUD
 						writer.WriteRawValue(sbCollection.ToString());
 					}
 				}
+					
 			}
 		}
 
