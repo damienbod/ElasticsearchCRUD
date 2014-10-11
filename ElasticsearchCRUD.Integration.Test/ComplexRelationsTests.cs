@@ -11,9 +11,25 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
+		[TearDown]
+		public void TearDown()
+		{
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<TestNestedDocumentLevelOneHashSet>();
+
+				entityResult.Wait();
+				var secondDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneCollection>();
+				secondDelete.Wait();
+			}
+		}
+
 		[Test]
 		public void Test1_to_n_1_m_Array()
 		{
+			// TODO
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.SaveChanges();
@@ -23,9 +39,78 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void Test1_to_n_1_m_Collection()
 		{
+			var data = new TestNestedDocumentLevelOneCollection
+			{
+				DescriptionOne = "D1",
+				Id = 1,
+				TestNestedDocumentLevelTwoCollection = new Collection<TestNestedDocumentLevelTwoCollection>
+					{
+						new TestNestedDocumentLevelTwoCollection
+						{
+							DescriptionTwo = "D2", 
+							Id=1,
+							TestNestedDocumentLevelOneCollection = new TestNestedDocumentLevelOneCollection{
+								Id=1,
+								DescriptionOne="D1", 
+								TestNestedDocumentLevelTwoCollection = new Collection<TestNestedDocumentLevelTwoCollection>
+								{
+									new TestNestedDocumentLevelTwoCollection
+									{
+										DescriptionTwo="D1", 
+										Id=1
+									}
+								}
+							},
+							TestNestedDocumentLevelThreeCollection = new TestNestedDocumentLevelThreeCollection
+							{
+								DescriptionThree = "D3", 
+								Id=1, 
+								TestNestedDocumentLevelFourCollection = new Collection<TestNestedDocumentLevelFourCollection>
+								{
+									new TestNestedDocumentLevelFourCollection
+									{
+										DescriptionFour="D4", Id=1, 
+										TestNestedDocumentLevelThreeCollection = new TestNestedDocumentLevelThreeCollection
+										{
+											DescriptionThree="D3"
+										}
+									},
+									new TestNestedDocumentLevelFourCollection
+									{
+										DescriptionFour="D4", Id=2, 
+										TestNestedDocumentLevelThreeCollection = new TestNestedDocumentLevelThreeCollection
+										{
+											DescriptionThree="D3"
+										}
+									}
+								}
+							}
+						}
+					}
+			};
+
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.AddUpdateEntity(data, data.Id);
 				context.SaveChanges();
+			}
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var roundTripData = context.GetEntity<TestNestedDocumentLevelOneCollection>(data.Id);
+				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
+				Assert.AreEqual(
+					data.TestNestedDocumentLevelTwoCollection.First().DescriptionTwo,
+					roundTripData.TestNestedDocumentLevelTwoCollection.First().DescriptionTwo
+					);
+				Assert.AreEqual(
+					data.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.DescriptionThree,
+					roundTripData.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.DescriptionThree
+					);
+				Assert.AreEqual(
+					data.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.TestNestedDocumentLevelFourCollection.First().DescriptionFour,
+					roundTripData.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.TestNestedDocumentLevelFourCollection.First().DescriptionFour
+					);
 			}
 		}
 
@@ -191,5 +276,40 @@ namespace ElasticsearchCRUD.Integration.Test
 		public string DescriptionFour { get; set; }
 
 		public virtual TestNestedDocumentLevelThreeHashSet TestNestedDocumentLevelThreeHashSet { get; set; }
+	}
+
+	public class TestNestedDocumentLevelOneCollection
+	{
+		public long Id { get; set; }
+		public string DescriptionOne { get; set; }
+
+		public virtual Collection<TestNestedDocumentLevelTwoCollection> TestNestedDocumentLevelTwoCollection { get; set; }
+	}
+
+	public class TestNestedDocumentLevelTwoCollection
+	{
+		public long Id { get; set; }
+		public string DescriptionTwo { get; set; }
+
+		public virtual TestNestedDocumentLevelOneCollection TestNestedDocumentLevelOneCollection { get; set; }
+		public virtual TestNestedDocumentLevelThreeCollection TestNestedDocumentLevelThreeCollection { get; set; }
+	}
+
+	public class TestNestedDocumentLevelThreeCollection
+	{
+		public long Id { get; set; }
+		public string DescriptionThree { get; set; }
+
+		public virtual List<TestNestedDocumentLevelTwoCollection> TestNestedDocumentLevelTwoCollection { get; set; }
+
+		public virtual Collection<TestNestedDocumentLevelFourCollection> TestNestedDocumentLevelFourCollection { get; set; }
+	}
+
+	public class TestNestedDocumentLevelFourCollection
+	{
+		public long Id { get; set; }
+		public string DescriptionFour { get; set; }
+
+		public virtual TestNestedDocumentLevelThreeCollection TestNestedDocumentLevelThreeCollection { get; set; }
 	}
 }
