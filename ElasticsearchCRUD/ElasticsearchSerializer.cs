@@ -93,7 +93,7 @@ namespace ElasticsearchCRUD
 
 			_writer.WriteStartObject();
 
-			elasticSearchMapping.MapEntityValues(entity, _writer);
+			elasticSearchMapping.MapEntityValues(entity, _writer, true);
 
 			_writer.WriteEndObject();
 			_writer.WriteRaw("\n");

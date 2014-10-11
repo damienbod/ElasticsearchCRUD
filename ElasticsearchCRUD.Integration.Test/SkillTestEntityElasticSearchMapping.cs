@@ -5,7 +5,7 @@ namespace ElasticsearchCRUD.Integration.Test
 {
 	public class SkillTestEntityElasticSearchMapping : ElasticSearchMapping
 	{
-		public override void MapEntityValues(object entity, JsonWriter writer)
+		public override void MapEntityValues(object entity, JsonWriter writer, bool beginMappingTree = false)
 		{
 			// Map entities to exact name, not lower case
 			var propertyInfo = entity.GetType().GetProperties();

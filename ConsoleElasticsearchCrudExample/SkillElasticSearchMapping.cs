@@ -10,7 +10,7 @@ namespace ConsoleElasticsearchCrudExample
 		/// Only required if you have some special mapping or want to remove some properties or use attributes..
 		/// </summary>
 		/// <param name="entity"></param>
-		public override void MapEntityValues(object entity, JsonWriter writer)
+		public override void MapEntityValues(object entity, JsonWriter writer, bool beginMappingTree = false)
 		{
 			Skill skillEntity = entity as Skill;
 			MapValue("id", skillEntity.Id, writer);

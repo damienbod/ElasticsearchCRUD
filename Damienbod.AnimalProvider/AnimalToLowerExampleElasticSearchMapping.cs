@@ -10,7 +10,7 @@ namespace Damienbod.AnimalProvider
 		/// Here you can do any type of entity mapping
 		/// </summary>
 		/// <param name="entity"></param>
-		public override void MapEntityValues(Object entity, JsonWriter writer)
+		public override void MapEntityValues(Object entity, JsonWriter writer, bool beginMappingTree = false)
 		{
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
