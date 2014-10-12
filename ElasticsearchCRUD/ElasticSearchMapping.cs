@@ -18,6 +18,7 @@ namespace ElasticsearchCRUD
 	{
 		protected HashSet<string> SerializedTypes = new HashSet<string>();
 		public ITraceProvider TraceProvider = new NullTraceProvider();
+		public bool IncludeChildObjectsInDocument { get; set; }
 
 		// default type is lowercase for properties
 		public virtual void MapEntityValues(Object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
@@ -26,6 +27,7 @@ namespace ElasticsearchCRUD
 			{
 				SerializedTypes = new HashSet<string>();
 				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping, Serialize BEGIN for Type: {0}", entity.GetType());
+				//SerializedTypes.Add(GetDocumentType(entity.GetType()));
 			}
 
 			SerializedTypes.Add(GetDocumentType(entity.GetType()));
@@ -36,8 +38,10 @@ namespace ElasticsearchCRUD
 				if (IsPropertyACollection(prop))
 				{
 					TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping, IsPropertyACollection: {0}", prop.Name.ToLower());
-					if (prop.GetValue(entity) != null)
+					if (prop.GetValue(entity) != null && IncludeChildObjectsInDocument)
 					{
+						// TODO Add as separate child documents later in it's index Release V1.0.8
+
 						elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
 						TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping, BEGIN ARRAY or COLLECTION: {0}", prop.Name.ToLower());
 						var typeOfEntity = prop.GetValue(entity).GetType().GetGenericArguments();
@@ -47,7 +51,7 @@ namespace ElasticsearchCRUD
 							{
 								TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping, BEGIN ARRAY or COLLECTION: {0}", typeOfEntity[0]);
 								TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping, SerializedTypes new Type added: {0}", GetDocumentType(typeOfEntity[0]));
-								SerializedTypes.Add(GetDocumentType(typeOfEntity[0]));
+								//SerializedTypes.Add(GetDocumentType(typeOfEntity[0]));
 								MapCollectionOrArray(prop, entity, elasticsearchCrudJsonWriter);
 							}
 						}
@@ -65,9 +69,9 @@ namespace ElasticsearchCRUD
 					{
 						TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping, Property is an Object: {0}", prop.ToString());
 						// This is a single object and not a reference to it's parent
-						if (prop.GetValue(entity) != null && !SerializedTypes.Contains(GetDocumentType(prop.GetValue(entity).GetType())))
+						if (prop.GetValue(entity) != null && !SerializedTypes.Contains(GetDocumentType(prop.GetValue(entity).GetType())) && IncludeChildObjectsInDocument)
 						{
-							SerializedTypes.Add(GetDocumentType(prop.GetValue(entity).GetType()));
+							//SerializedTypes.Add(GetDocumentType(prop.GetValue(entity).GetType()));
 
 							elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
 							elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
@@ -76,7 +80,7 @@ namespace ElasticsearchCRUD
 							elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 						}
 
-						// TODO Add as separate document later inn it's index
+						// TODO Add as separate document later in it's index, Release V1.0.8
 					}
 					else
 					{

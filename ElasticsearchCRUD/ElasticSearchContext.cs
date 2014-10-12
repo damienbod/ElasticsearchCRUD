@@ -24,11 +24,13 @@ namespace ElasticsearchCRUD
 
 		public ITraceProvider TraceProvider = new NullTraceProvider();
 		private readonly string _connectionString;
+		private bool _includeChildObjectsInDocument;
 
 		public bool AllowDeleteForIndex { get; set; }
 
-		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver)
+		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver, bool includeChildObjectsInDocument = true)
 		{
+			_includeChildObjectsInDocument = includeChildObjectsInDocument;
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "new ElasticSearchContext with connection string: {0}", connectionString);
 			_elasticSearchMappingResolver = elasticSearchMappingResolver;
@@ -88,7 +90,7 @@ namespace ElasticsearchCRUD
 			try
 			{
 				string serializedEntities;
-				using (var serializer = new ElasticsearchSerializer(TraceProvider,_elasticSearchMappingResolver))
+				using (var serializer = new ElasticsearchSerializer(TraceProvider, _elasticSearchMappingResolver, _includeChildObjectsInDocument))
 				{
 					serializedEntities = serializer.Serialize(_entityPendingChanges);
 				}

@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using ElasticsearchCRUD.Tracing;
-using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD
 {
@@ -14,9 +10,11 @@ namespace ElasticsearchCRUD
 	{
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver;
 		private readonly ITraceProvider _traceProvider;
+		private readonly bool _includeChildObjectsInDocument;
 
-		public ElasticsearchSerializer( ITraceProvider traceProvider, IElasticSearchMappingResolver elasticSearchMappingResolver)
+		public ElasticsearchSerializer( ITraceProvider traceProvider, IElasticSearchMappingResolver elasticSearchMappingResolver, bool includeChildObjectsInDocument)
 		{
+			_includeChildObjectsInDocument = includeChildObjectsInDocument;
 			_elasticSearchMappingResolver = elasticSearchMappingResolver;
 			_traceProvider = traceProvider;
 		}
@@ -59,6 +57,7 @@ namespace ElasticsearchCRUD
 		{
 			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
+			elasticSearchMapping.IncludeChildObjectsInDocument = _includeChildObjectsInDocument;
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("delete");
@@ -78,6 +77,8 @@ namespace ElasticsearchCRUD
 		{
 			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
+			elasticSearchMapping.IncludeChildObjectsInDocument = _includeChildObjectsInDocument;
+			
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
