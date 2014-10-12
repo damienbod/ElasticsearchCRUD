@@ -14,25 +14,90 @@ namespace ElasticsearchCRUD.Integration.Test
 		[TearDown]
 		public void TearDown()
 		{
-
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<TestNestedDocumentLevelOneHashSet>();
-
-				entityResult.Wait();
-				var secondDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneCollection>();
-				secondDelete.Wait();
+				var entityResult = context.DeleteIndexAsync<TestNestedDocumentLevelOneHashSet>(); entityResult.Wait();
+				var secondDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneCollection>(); secondDelete.Wait();
+				var thirdDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneArray>(); thirdDelete.Wait();
 			}
 		}
 
 		[Test]
 		public void Test1_to_n_1_m_Array()
 		{
-			// TODO
+			var data = new TestNestedDocumentLevelOneArray
+			{
+				DescriptionOne = "D1",
+				Id = 1,
+				TestNestedDocumentLevelTwoArray = new TestNestedDocumentLevelTwoArray[]
+					{
+						new TestNestedDocumentLevelTwoArray
+						{
+							DescriptionTwo = "D2", 
+							Id=1,
+							TestNestedDocumentLevelOneArray = new TestNestedDocumentLevelOneArray{
+								Id=1,
+								DescriptionOne="D1", 
+								TestNestedDocumentLevelTwoArray = new TestNestedDocumentLevelTwoArray[]
+								{
+									new TestNestedDocumentLevelTwoArray
+									{
+										DescriptionTwo="D1", 
+										Id=1
+									}
+								}
+							},
+							TestNestedDocumentLevelThreeArray = new TestNestedDocumentLevelThreeArray
+							{
+								DescriptionThree = "D3", 
+								Id=1, 
+								TestNestedDocumentLevelFourArray = new TestNestedDocumentLevelFourArray[]
+								{
+									new TestNestedDocumentLevelFourArray
+									{
+										DescriptionFour="D4", Id=1, 
+										TestNestedDocumentLevelThreeArray = new TestNestedDocumentLevelThreeArray
+										{
+											DescriptionThree="D3"
+										}
+									},
+									new TestNestedDocumentLevelFourArray
+									{
+										DescriptionFour="D4", Id=2, 
+										TestNestedDocumentLevelThreeArray = new TestNestedDocumentLevelThreeArray
+										{
+											DescriptionThree="D3"
+										}
+									}
+								}
+							}
+						}
+					}
+			};
+
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.AddUpdateEntity(data, data.Id);
 				context.SaveChanges();
+			}
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				var roundTripData = context.GetEntity<TestNestedDocumentLevelOneArray>(data.Id);
+				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
+				Assert.AreEqual(
+					data.TestNestedDocumentLevelTwoArray.First().DescriptionTwo,
+					roundTripData.TestNestedDocumentLevelTwoArray.First().DescriptionTwo
+					);
+				Assert.AreEqual(
+					data.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.DescriptionThree,
+					roundTripData.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.DescriptionThree
+					);
+				Assert.AreEqual(
+					data.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.TestNestedDocumentLevelFourArray.First().DescriptionFour,
+					roundTripData.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.TestNestedDocumentLevelFourArray.First().DescriptionFour
+					);
 			}
 		}
 
@@ -243,6 +308,8 @@ namespace ElasticsearchCRUD.Integration.Test
 
 	}
 
+	#region test classes HastSet
+
 	public class TestNestedDocumentLevelOneHashSet
 	{
 		public long Id { get; set; }
@@ -278,6 +345,10 @@ namespace ElasticsearchCRUD.Integration.Test
 		public virtual TestNestedDocumentLevelThreeHashSet TestNestedDocumentLevelThreeHashSet { get; set; }
 	}
 
+	#endregion test classes HastSet
+
+	#region test classes Collection
+
 	public class TestNestedDocumentLevelOneCollection
 	{
 		public long Id { get; set; }
@@ -312,4 +383,45 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		public virtual TestNestedDocumentLevelThreeCollection TestNestedDocumentLevelThreeCollection { get; set; }
 	}
+
+	#endregion test classes Collection
+
+	#region test classes Object Array
+
+	public class TestNestedDocumentLevelOneArray
+	{
+		public long Id { get; set; }
+		public string DescriptionOne { get; set; }
+
+		public virtual TestNestedDocumentLevelTwoArray[] TestNestedDocumentLevelTwoArray { get; set; }
+	}
+
+	public class TestNestedDocumentLevelTwoArray
+	{
+		public long Id { get; set; }
+		public string DescriptionTwo { get; set; }
+
+		public virtual TestNestedDocumentLevelOneArray TestNestedDocumentLevelOneArray { get; set; }
+		public virtual TestNestedDocumentLevelThreeArray TestNestedDocumentLevelThreeArray { get; set; }
+	}
+
+	public class TestNestedDocumentLevelThreeArray
+	{
+		public long Id { get; set; }
+		public string DescriptionThree { get; set; }
+
+		public virtual TestNestedDocumentLevelTwoArray[] TestNestedDocumentLevelTwoArray { get; set; }
+
+		public virtual TestNestedDocumentLevelFourArray[] TestNestedDocumentLevelFourArray { get; set; }
+	}
+
+	public class TestNestedDocumentLevelFourArray
+	{
+		public long Id { get; set; }
+		public string DescriptionFour { get; set; }
+
+		public virtual TestNestedDocumentLevelThreeArray TestNestedDocumentLevelThreeArray { get; set; }
+	}
+
+	#endregion test classes Object Array
 }
