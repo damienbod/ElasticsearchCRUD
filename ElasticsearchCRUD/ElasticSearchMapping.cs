@@ -62,7 +62,7 @@ namespace ElasticsearchCRUD
 								}
 								else
 								{
-									elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("");
+									elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("null");
 								}
 							}
 							else
