@@ -11,8 +11,8 @@ namespace DataTransferSQLToEl
 		static void Main(string[] args)
 		{
 			Repo repo = new Repo();
-			repo.SaveToElasticsearchPerson();
-			//repo.SaveToElasticsearchAddress();
+			//repo.SaveToElasticsearchPerson();
+			repo.SaveToElasticsearchAddress();
 
 			var dd = repo.GetAddressFromElasticsearch("US");
 			Console.WriteLine(dd);
