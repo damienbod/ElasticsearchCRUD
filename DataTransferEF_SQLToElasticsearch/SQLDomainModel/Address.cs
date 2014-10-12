@@ -9,11 +9,6 @@ namespace DataTransferSQLToEl.SQLDomainModel
     [Table("Person.Address")]
     public partial class Address
     {
-        public Address()
-        {
-            BusinessEntityAddress = new HashSet<BusinessEntityAddress>();
-        }
-
         public int AddressID { get; set; }
 
         [Required]
@@ -40,7 +35,5 @@ namespace DataTransferSQLToEl.SQLDomainModel
         public DateTime ModifiedDate { get; set; }
 
         public virtual StateProvince StateProvince { get; set; }
-
-        public virtual ICollection<BusinessEntityAddress> BusinessEntityAddress { get; set; }
     }
 }

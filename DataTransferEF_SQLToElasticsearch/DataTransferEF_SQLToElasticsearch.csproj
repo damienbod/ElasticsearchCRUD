@@ -58,17 +58,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo.cs" />
     <Compile Include="SQLDomainModel\Address.cs" />
-    <Compile Include="SQLDomainModel\AddressType.cs" />
-    <Compile Include="SQLDomainModel\BusinessEntity.cs" />
-    <Compile Include="SQLDomainModel\BusinessEntityAddress.cs" />
-    <Compile Include="SQLDomainModel\BusinessEntityContact.cs" />
-    <Compile Include="SQLDomainModel\ContactType.cs" />
     <Compile Include="SQLDomainModel\CountryRegion.cs" />
     <Compile Include="SQLDomainModel\EmailAddress.cs" />
     <Compile Include="SQLDomainModel\Password.cs" />
     <Compile Include="SQLDomainModel\Person.cs" />
-    <Compile Include="SQLDomainModel\PersonPhone.cs" />
-    <Compile Include="SQLDomainModel\PhoneNumberType.cs" />
     <Compile Include="SQLDomainModel\SQLDataModel.cs" />
     <Compile Include="SQLDomainModel\StateProvince.cs" />
   </ItemGroup>

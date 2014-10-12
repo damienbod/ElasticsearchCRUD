@@ -14,7 +14,7 @@ namespace DataTransferSQLToEl
 			repo.SaveToElasticsearchPerson();
 			//repo.SaveToElasticsearchCountryRegion();
 
-			var dd = repo.GetCountryRegionFromElasticsearch("EN");
+			var dd = repo.GetCountryRegionFromElasticsearch("US");
 			Console.WriteLine(dd);
 		}
 	}

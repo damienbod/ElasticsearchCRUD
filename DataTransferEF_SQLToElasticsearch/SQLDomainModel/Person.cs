@@ -11,9 +11,7 @@ namespace DataTransferSQLToEl.SQLDomainModel
     {
         public Person()
         {
-            BusinessEntityContact = new HashSet<BusinessEntityContact>();
             EmailAddress = new HashSet<EmailAddress>();
-            PersonPhone = new HashSet<PersonPhone>();
         }
 
         [Key]
@@ -55,14 +53,8 @@ namespace DataTransferSQLToEl.SQLDomainModel
 
         public DateTime ModifiedDate { get; set; }
 
-        public virtual BusinessEntity BusinessEntity { get; set; }
-
-        public virtual ICollection<BusinessEntityContact> BusinessEntityContact { get; set; }
-
         public virtual ICollection<EmailAddress> EmailAddress { get; set; }
 
         public virtual Password Password { get; set; }
-
-        public virtual ICollection<PersonPhone> PersonPhone { get; set; }
     }
 }

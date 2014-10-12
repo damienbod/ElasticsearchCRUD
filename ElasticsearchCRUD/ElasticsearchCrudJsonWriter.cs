@@ -8,6 +8,7 @@ namespace ElasticsearchCRUD
 {
 	public class ElasticsearchCrudJsonWriter : IDisposable
 	{
+		// TODO add child ElasticsearchCrudJsonWriter for recursive string display
 		public ElasticsearchCrudJsonWriter()
 		{
 			Stringbuilder = new StringBuilder();

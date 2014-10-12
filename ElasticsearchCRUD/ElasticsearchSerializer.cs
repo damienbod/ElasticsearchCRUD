@@ -58,6 +58,7 @@ namespace ElasticsearchCRUD
 		private void DeleteEntity(EntityContextInfo entityInfo)
 		{
 			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
+			elasticSearchMapping.TraceProvider = _traceProvider;
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("delete");
@@ -76,6 +77,7 @@ namespace ElasticsearchCRUD
 		private void AddUpdateEntity(object entity, EntityContextInfo entityInfo)
 		{
 			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
+			elasticSearchMapping.TraceProvider = _traceProvider;
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");

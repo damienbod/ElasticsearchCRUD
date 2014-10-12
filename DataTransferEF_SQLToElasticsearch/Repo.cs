@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using DataTransferSQLToEl.SQLDomainModel;
 using ElasticsearchCRUD;
+using ElasticsearchCRUD.Tracing;
 
 namespace DataTransferSQLToEl
 {
@@ -14,6 +15,7 @@ namespace DataTransferSQLToEl
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
+				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				person = elasticSearchContext.GetEntity<Person>(id);
 			}
 
@@ -26,6 +28,7 @@ namespace DataTransferSQLToEl
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
+				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				countryRegion = elasticSearchContext.GetEntity<CountryRegion>(id);
 			}
 
@@ -37,11 +40,11 @@ namespace DataTransferSQLToEl
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				//elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				using (var databaseEfModel = new SQLDataModel())
 				{
 					int pointer = 0;
-					const int interval = 1000;
+					const int interval = 100;
 					int length = databaseEfModel.CountryRegion.Count();
 
 					while (pointer < length)
@@ -61,8 +64,8 @@ namespace DataTransferSQLToEl
 						elasticSearchContext.SaveChanges();
 						stopwatch.Stop();
 						Console.WriteLine("Time taken to insert {0} CountryRegionCode documents: {1}", interval, stopwatch.Elapsed);
-						stopwatch.Reset();						
-						pointer = pointer + 1000;
+						stopwatch.Reset();
+						pointer = pointer + interval;
 						Console.WriteLine("Transferred: {0} items", pointer);
 					}
 				}
@@ -72,6 +75,7 @@ namespace DataTransferSQLToEl
 		private Stopwatch stopwatch = new Stopwatch();
 		public void SaveToElasticsearchPerson()
 		{
+
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
@@ -99,8 +103,8 @@ namespace DataTransferSQLToEl
 						elasticSearchContext.SaveChanges();
 						stopwatch.Stop();
 						Console.WriteLine("Time taken to insert {0} person documents: {1}", interval, stopwatch.Elapsed);
-						stopwatch.Reset();						
-						pointer = pointer + 1000;
+						stopwatch.Reset();
+						pointer = pointer + interval;
 						Console.WriteLine("Transferred: {0} items", pointer);
 					}
 				}
