@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
+using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -78,6 +79,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(data, data.Id);
 				context.SaveChanges();
 			}

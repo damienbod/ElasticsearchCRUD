@@ -13,6 +13,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticsearchCRUD", "Elasti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticsearchCRUD.Integration.Test", "ElasticsearchCRUD.Integration.Test\ElasticsearchCRUD.Integration.Test.csproj", "{0871F436-A4A1-445C-BE17-98EBCCAF7973}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransferEF_SQLToElasticsearch", "DataTransferEF_SQLToElasticsearch\DataTransferEF_SQLToElasticsearch.csproj", "{5D2337D7-426B-4DF6-8237-0C7638DF757C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF} = {D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +44,10 @@ Global
 		{0871F436-A4A1-445C-BE17-98EBCCAF7973}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0871F436-A4A1-445C-BE17-98EBCCAF7973}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0871F436-A4A1-445C-BE17-98EBCCAF7973}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

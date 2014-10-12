@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using ElasticsearchCRUD.Tracing;
-using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD
 {
@@ -14,14 +10,16 @@ namespace ElasticsearchCRUD
 	{
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver;
 		private readonly ITraceProvider _traceProvider;
+		private readonly bool _includeChildObjectsInDocument;
 
-		public ElasticsearchSerializer( ITraceProvider traceProvider, IElasticSearchMappingResolver elasticSearchMappingResolver)
+		public ElasticsearchSerializer( ITraceProvider traceProvider, IElasticSearchMappingResolver elasticSearchMappingResolver, bool includeChildObjectsInDocument)
 		{
+			_includeChildObjectsInDocument = includeChildObjectsInDocument;
 			_elasticSearchMappingResolver = elasticSearchMappingResolver;
 			_traceProvider = traceProvider;
 		}
 
-		private JsonWriter _writer;
+		private ElasticsearchCrudJsonWriter _elasticsearchCrudJsonWriter;
 
 		public string Serialize(IEnumerable<Tuple<EntityContextInfo, object>> entities)
 		{
@@ -30,8 +28,7 @@ namespace ElasticsearchCRUD
 				return null;
 			}
 
-			var sb = new StringBuilder();
-			_writer = new JsonTextWriter(new StringWriter(sb, CultureInfo.InvariantCulture)) { CloseOutput = true };
+			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 
 			foreach (var entity in entities)
 			{
@@ -51,67 +48,67 @@ namespace ElasticsearchCRUD
 				}
 			}
 
-			_writer.Close();
-			_writer = null;
+			_elasticsearchCrudJsonWriter.Dispose();
 
-			return sb.ToString();
+			return _elasticsearchCrudJsonWriter.Stringbuilder.ToString();
 		}
 
 		private void DeleteEntity(EntityContextInfo entityInfo)
 		{
 			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
-			_writer.WriteStartObject();
+			elasticSearchMapping.TraceProvider = _traceProvider;
+			elasticSearchMapping.IncludeChildObjectsInDocument = _includeChildObjectsInDocument;
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			_writer.WritePropertyName("delete");
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("delete");
 
 			// Write the batch "index" operation header
-			_writer.WriteStartObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticSearchMapping.GetDocumentType(entityInfo.EntityType));
 			WriteValue("_id", entityInfo.Id);
-			_writer.WriteEndObject();
-			_writer.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		
-			_writer.WriteRaw("\n");
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 		}
 
 		private void AddUpdateEntity(object entity, EntityContextInfo entityInfo)
 		{
 			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
-			_writer.WriteStartObject();
+			elasticSearchMapping.TraceProvider = _traceProvider;
+			elasticSearchMapping.IncludeChildObjectsInDocument = _includeChildObjectsInDocument;
+			
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			_writer.WritePropertyName("index");
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
 
 			// Write the batch "index" operation header
-			_writer.WriteStartObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticSearchMapping.GetDocumentType(entityInfo.EntityType));
 			WriteValue("_id", entityInfo.Id);
-			_writer.WriteEndObject();
-			_writer.WriteEndObject();
-			_writer.WriteRaw("\n");  //ES requires this \n separator
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");  //ES requires this \n separator
 
-			_writer.WriteStartObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticSearchMapping.MapEntityValues(entity, _writer, true);
+			elasticSearchMapping.MapEntityValues(entity, _elasticsearchCrudJsonWriter, true);
 
-			_writer.WriteEndObject();
-			_writer.WriteRaw("\n");
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 		}
 
 		private void WriteValue(string key, object valueObj)
 		{
-			_writer.WritePropertyName(key);
-			_writer.WriteValue(valueObj);
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteValue(valueObj);
 		}
 
 		public void Dispose()
 		{
-			if (_writer != null)
-			{
-				_writer.Close();
-				_writer = null;
-			}
+			_elasticsearchCrudJsonWriter.Dispose();
 		}
 	}
 }

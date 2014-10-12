@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -63,7 +64,6 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var testSkillParentObject = new SkillParentCollection
 			{
-
 				CreatedSkillParent = DateTime.UtcNow,
 				UpdatedSkillParent = DateTime.UtcNow,
 				DescriptionSkillParent = "A test entity description",
@@ -74,7 +74,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -88,11 +88,39 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void TestDefaultContextParentWithACollectionOfOneChildObjectNestedIgnoreChildren()
+		{
+			var testSkillParentObject = new SkillParentCollection
+			{
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 7,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0] }
+			};
+
+			const bool includeChildObjects = false;
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver, includeChildObjects))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<SkillParentCollection>(testSkillParentObject.Id);
+				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.AreEqual(roundTripResult.SkillChildren, null);
+			}
+		}
+
+		[Test]
 		public void TestDefaultContextParentWithACollectionOfThreeChildObjectsNested()
 		{
 			var testSkillParentObject = new SkillParentCollection
 			{
-
 				CreatedSkillParent = DateTime.UtcNow,
 				UpdatedSkillParent = DateTime.UtcNow,
 				DescriptionSkillParent = "A test entity description",
@@ -103,7 +131,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -123,6 +151,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skill = new SkillParentCollection
 				{
 					CreatedSkillParent = DateTime.UtcNow,
@@ -148,6 +177,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skill = new SkillParentCollection
 				{
 					CreatedSkillParent = DateTime.UtcNow,
@@ -185,7 +215,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -210,7 +240,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -236,7 +266,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -259,7 +289,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -291,7 +321,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -320,7 +350,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-
+				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -341,6 +371,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skill = new SkillParentArray
 				{
 					CreatedSkillParent = DateTime.UtcNow,
@@ -369,6 +400,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntCollection
 				{
 					MyIntArray = new List<int> {2, 4, 6, 99, 7},
@@ -391,6 +423,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntCollection { BlahBlah = "test with no int array", Id = 3 };
 
 				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
@@ -411,6 +444,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithStringLongAndDoubleCollection
 				{
 					MyStringArray = new List<String>
@@ -445,6 +479,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntArray
 				{
 					MyIntArray = new[] { 2, 4, 6, 99, 7 },
@@ -467,6 +502,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntArray { BlahBlah = "test with no int array", Id = 3 };
 				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
 
@@ -485,6 +521,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithStringLongAndDoubleArray
 				{
 					MyStringArray = new[]
@@ -518,6 +555,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithSingleChild = new SkillWithSingleChild
 				{
 					Id = 5,
@@ -540,6 +578,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithSingleChild = new SkillWithSingleChild {MySkillSingleChildElement = null};
 				context.AddUpdateEntity(skillWithSingleChild, skillWithSingleChild.Id);
 
