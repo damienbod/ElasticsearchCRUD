@@ -12,9 +12,9 @@ namespace DataTransferSQLToEl
 		{
 			Repo repo = new Repo();
 			repo.SaveToElasticsearchPerson();
-			//repo.SaveToElasticsearchCountryRegion();
+			//repo.SaveToElasticsearchAddress();
 
-			var dd = repo.GetCountryRegionFromElasticsearch("US");
+			var dd = repo.GetAddressFromElasticsearch("US");
 			Console.WriteLine(dd);
 		}
 	}

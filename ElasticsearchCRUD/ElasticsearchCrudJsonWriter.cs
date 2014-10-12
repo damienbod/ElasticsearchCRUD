@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Security;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -21,6 +23,8 @@ namespace ElasticsearchCRUD
 			JsonWriter = JsonWriter = new JsonTextWriter(new StringWriter(Stringbuilder, CultureInfo.InvariantCulture)) { CloseOutput = true };
 		}
 
+		public ElasticsearchCrudJsonWriter ElasticsearchCrudJsonWriterChildItem { get; set; }
+
 		public StringBuilder Stringbuilder { get; private set; }
 
 		public JsonWriter JsonWriter { get; private set; }
@@ -34,6 +38,34 @@ namespace ElasticsearchCRUD
 				JsonWriter.Close();
 				JsonWriter = null;
 				
+			}
+		}
+
+		public string GetJsonString()
+		{
+			var sb = new StringBuilder();
+			var jsonString = new List<string> {Stringbuilder.ToString()};
+
+			AppendDataToTrace(ElasticsearchCrudJsonWriterChildItem, jsonString);
+			
+			for (int i = jsonString.Count - 1; i == 0; i--)
+			{
+				sb.Append(jsonString[i]);
+			}
+			
+
+			return sb.ToString();
+		}
+
+		public void AppendDataToTrace(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriterChildItem, List<string> jsonString)
+		{
+			if (elasticsearchCrudJsonWriterChildItem != null)
+			{
+				jsonString.Add(elasticsearchCrudJsonWriterChildItem.Stringbuilder.ToString());
+				if (elasticsearchCrudJsonWriterChildItem.ElasticsearchCrudJsonWriterChildItem != null)
+				{
+					AppendDataToTrace(elasticsearchCrudJsonWriterChildItem.ElasticsearchCrudJsonWriterChildItem, jsonString);
+				}
 			}
 		}
 	}

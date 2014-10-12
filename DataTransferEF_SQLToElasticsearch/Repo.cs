@@ -22,20 +22,20 @@ namespace DataTransferSQLToEl
 			return person;
 		}
 
-		public CountryRegion GetCountryRegionFromElasticsearch(string id)
+		public Address GetAddressFromElasticsearch(string id)
 		{
-			CountryRegion countryRegion;
+			Address countryRegion;
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
 				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
-				countryRegion = elasticSearchContext.GetEntity<CountryRegion>(id);
+				countryRegion = elasticSearchContext.GetEntity<Address>(id);
 			}
 
 			return countryRegion;
 		}
 
-		public void SaveToElasticsearchCountryRegion()
+		public void SaveToElasticsearchAddress()
 		{
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
@@ -45,12 +45,12 @@ namespace DataTransferSQLToEl
 				{
 					int pointer = 0;
 					const int interval = 100;
-					int length = databaseEfModel.CountryRegion.Count();
+					int length = databaseEfModel.Address.Count();
 
 					while (pointer < length)
 					{
 						stopwatch.Start();
-						var collection = databaseEfModel.CountryRegion.OrderBy(t => t.CountryRegionCode).Skip(pointer).Take(interval).ToList<CountryRegion>();
+						var collection = databaseEfModel.Address.OrderBy(t => t.AddressID).Skip(pointer).Take(interval).ToList<Address>();
 						stopwatch.Stop();
 						Console.WriteLine("Time taken for select {0} CountryRegionCode: {1}", interval, stopwatch.Elapsed);
 						stopwatch.Reset();
@@ -58,7 +58,8 @@ namespace DataTransferSQLToEl
 						stopwatch.Start();
 						foreach (var item in collection)
 						{
-							elasticSearchContext.AddUpdateEntity(item, item.CountryRegionCode);
+							var ee = item.StateProvince.CountryRegion.Name;
+							elasticSearchContext.AddUpdateEntity(item, item.AddressID);
 							string t = "yes";
 						}
 						elasticSearchContext.SaveChanges();

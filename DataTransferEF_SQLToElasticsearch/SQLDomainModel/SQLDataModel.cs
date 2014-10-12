@@ -10,7 +10,7 @@ namespace DataTransferSQLToEl.SQLDomainModel
 		public SQLDataModel()
 			: base("name=SQLDataModel")
 		{
-			this.Configuration.LazyLoadingEnabled = false;
+			//this.Configuration.LazyLoadingEnabled = false;
 
 		}
 
