@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticSearchContext.cs" />
     <Compile Include="ElasticsearchCrudException.cs" />

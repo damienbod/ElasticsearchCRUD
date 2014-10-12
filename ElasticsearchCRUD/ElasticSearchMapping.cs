@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using System.Reflection;
 using System.Text;
 using Newtonsoft.Json;
@@ -19,7 +17,7 @@ namespace ElasticsearchCRUD
 		protected HashSet<string> SerializedTypes = new HashSet<string>();
 
 		// default type is lowercase for properties
-		public virtual void MapEntityValues(Object entity, JsonWriter writer, bool beginMappingTree = false)
+		public virtual void MapEntityValues(Object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{
 			if (beginMappingTree)
 			{
@@ -35,19 +33,19 @@ namespace ElasticsearchCRUD
 				{
 					if (prop.GetValue(entity) != null)
 					{
-						writer.WritePropertyName(prop.Name.ToLower());
+						elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
 						var typeOfEntity = prop.GetValue(entity).GetType().GetGenericArguments();
 						if (typeOfEntity.Length > 0)
 						{
 							if (!SerializedTypes.Contains(GetDocumentType(typeOfEntity[0])))
 							{
-								MapCollectionOrArray(prop, entity, writer);
+								MapCollectionOrArray(prop, entity, elasticsearchCrudJsonWriter);
 							}
 						}
 						else
 						{
 							// Not a generic
-							MapCollectionOrArray(prop, entity, writer);
+							MapCollectionOrArray(prop, entity, elasticsearchCrudJsonWriter);
 						}
 					}
 				}
@@ -60,18 +58,18 @@ namespace ElasticsearchCRUD
 						{
 							SerializedTypes.Add(GetDocumentType(prop.GetValue(entity).GetType()));
 
-							writer.WritePropertyName(prop.Name.ToLower());
-							writer.WriteStartObject();
+							elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
+							elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 							// Do class mapping for nested type
-							MapEntityValues(prop.GetValue(entity), writer);
-							writer.WriteEndObject();
+							MapEntityValues(prop.GetValue(entity), elasticsearchCrudJsonWriter);
+							elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 						}
 
 						// TODO Add as separate document later inn it's index
 					}
 					else
 					{
-						MapValue(prop.Name.ToLower(), prop.GetValue(entity), writer);
+						MapValue(prop.Name.ToLower(), prop.GetValue(entity), elasticsearchCrudJsonWriter.JsonWriter);
 					}
 				}	
 			}
@@ -85,7 +83,7 @@ namespace ElasticsearchCRUD
 		//		"name" : "prog_list",
 		//		"description" : "programming list"
 		//	},	
-		protected virtual void MapCollectionOrArray(PropertyInfo prop, object entity, JsonWriter writer)
+		protected virtual void MapCollectionOrArray(PropertyInfo prop, object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			Type type = prop.PropertyType;
 			
@@ -93,17 +91,17 @@ namespace ElasticsearchCRUD
 			{
 				// It is a collection
 				var ienumerable = (Array)prop.GetValue(entity);
-				MapIEnumerableEntities(writer, ienumerable);				
+				MapIEnumerableEntities(elasticsearchCrudJsonWriter, ienumerable);				
 			}
 			else if (prop.PropertyType.IsGenericType)
 			{
 				// It is a collection
 				var ienumerable = (IEnumerable)prop.GetValue(entity);
-				MapIEnumerableEntities(writer, ienumerable);
+				MapIEnumerableEntities(elasticsearchCrudJsonWriter, ienumerable);
 			}
 		}
 
-		private void MapIEnumerableEntities(JsonWriter writer, IEnumerable ienumerable)
+		private void MapIEnumerableEntities(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, IEnumerable ienumerable)
 		{
 			string json = null;
 			bool isSimpleArrayOrCollection = true;
@@ -114,22 +112,20 @@ namespace ElasticsearchCRUD
 				sbCollection.Append("[");
 				foreach (var item in ienumerable)
 				{
-
 					doProccessingIfTheIEnumerableHasAtLeastOneItem = true;
-					var childEntityWriter = new JsonTextWriter(new StringWriter(sbCollection, CultureInfo.InvariantCulture))
-					{
-						CloseOutput = true
-					};
+
+					var childElasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter(sbCollection);
+
 					var typeofArrayItem = item.GetType();
 					if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" &&
 						typeofArrayItem.FullName != "System.Decimal")
 					{
 						isSimpleArrayOrCollection = false;
 						// collection of Objects
-						childEntityWriter.WriteStartObject();
+						childElasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 						// Do class mapping for nested type
-						MapEntityValues(item, childEntityWriter);
-						childEntityWriter.WriteEndObject();
+						MapEntityValues(item, childElasticsearchCrudJsonWriter);
+						childElasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 						// Add as separate document later
 					}
@@ -143,20 +139,25 @@ namespace ElasticsearchCRUD
 					sbCollection.Append(",");
 				}
 
-				if (doProccessingIfTheIEnumerableHasAtLeastOneItem)
+				if (isSimpleArrayOrCollection && doProccessingIfTheIEnumerableHasAtLeastOneItem)
 				{
-					if (isSimpleArrayOrCollection)
-					{
-						writer.WriteRawValue(json);
-					}
-					else
+					elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue(json);
+				}
+				else
+				{
+					if (doProccessingIfTheIEnumerableHasAtLeastOneItem)
+
 					{
 						sbCollection.Remove(sbCollection.Length - 1, 1);
-						sbCollection.Append("]");
-						writer.WriteRawValue(sbCollection.ToString());
 					}
+
+					sbCollection.Append("]");
+					elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue(sbCollection.ToString());
 				}
-					
+			}
+			else
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("");
 			}
 		}
 

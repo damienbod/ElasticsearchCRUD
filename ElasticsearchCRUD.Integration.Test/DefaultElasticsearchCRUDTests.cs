@@ -223,7 +223,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAsync();
-				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
+				Assert.AreEqual(HttpStatusCode.OK, ret.Result.Status);
 
 				// Get the entity
 				var entityResult = context.GetEntityAsync<SkillTestEntity>(entityId);

@@ -11,8 +11,8 @@ namespace DataTransferSQLToEl
 		static void Main(string[] args)
 		{
 			Repo repo = new Repo();
-			//repo.SaveToElasticsearchPerson();
-			repo.SaveToElasticsearchCountryRegion();
+			repo.SaveToElasticsearchPerson();
+			//repo.SaveToElasticsearchCountryRegion();
 
 			var dd = repo.GetCountryRegionFromElasticsearch("EN");
 			Console.WriteLine(dd);
