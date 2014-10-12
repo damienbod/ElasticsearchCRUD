@@ -12,6 +12,13 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.7</strong><em> 2014.10.12</em>
+- Bug in 1-n-m-1 mapping for EF entities
+- Added diagnostics for HttpClient Request and response
+- Added diagnostics for JsonWriter
+- Added Entity Framework Data Transfer Tests
+- Added Configuration to turn on/off Nested objects IncludeChildObjectsInDocument 
+
 <strong>Version 1.0.6</strong><em> 2014.10.12</em>
 - Add support for Entity Framework dynamic proxy entities
 - Add Error Handling when child Entity has a reference to its parent Entity 
