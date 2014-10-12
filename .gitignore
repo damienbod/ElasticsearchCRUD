@@ -21,3 +21,6 @@ ElasticsearchCRUD/bin
 ElasticsearchCRUD.Integration.Test/obj
 ElasticsearchCRUD.Integration.Test/bin
 ElasticsearchCrud.sln.DotSettings.user
+DataTransferEF_SQLToElasticsearch/bin/Release/EntityFramework.SqlServer.xml
+DataTransferEF_SQLToElasticsearch/bin
+DataTransferEF_SQLToElasticsearch/obj
