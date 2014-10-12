@@ -12,7 +12,14 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 ========================
 <strong>History</strong>
 
-<strong>Version 1.0.5</strong><em> 2014.10.05</em>
+<strong>Version 1.0.6</strong><em> 2014.10.12</em>
+- Add support for Entity Framework dynamic proxy entities
+- Add Error Handling when child Entity has a reference to its parent Entity 
+- support for HashSet<T> properties
+- Exception Handling for M-N relationships, and circular relationships detection
+- Support for 1 to N Entity Framework entities
+
+- <strong>Version 1.0.5</strong><em> 2014.10.05</em>
 - Support Array of Objects Property in entity as NESTED document
 - Support Collection of Objects Property in entity as NESTED documents 
 - Support Single Object Property in entity as NESTED document
