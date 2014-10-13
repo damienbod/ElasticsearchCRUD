@@ -35,8 +35,8 @@ namespace ElasticsearchCRUD
 				string index = _elasticSearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
 				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 				{
-					_traceProvider.Trace(TraceEventType.Error, "index is not allowed in Elasticsearch: {0}", index);
-					throw new ElasticsearchCrudException(string.Format("index is not allowed in Elasticsearch: {0}", index));
+					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");
+					throw new ElasticsearchCrudException(string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
 				}
 				if (entity.Item1.DeleteEntity)
 				{
