@@ -10,8 +10,9 @@ https://github.com/damienbod/ElasticsearchCRUD
 https://www.nuget.org/packages/ElasticsearchCRUD/
 
 
+========================
 
-Examples:
+<strong>Examples:</strong> 
 
 https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample
 
