@@ -12,8 +12,11 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 
 Examples:
+
 https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample
+
 https://github.com/damienbod/ElasticsearchCRUD/tree/master/ElasticsearchCRUD.Integration.Test
+
 https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvider
 
 <a href="https://github.com/damienbod/DataTransferSQLWithEntityFrameworkToElasticsearch">Data Transfer MS SQLServer 2014 With EntityFramework To Elasticsearch</a>
