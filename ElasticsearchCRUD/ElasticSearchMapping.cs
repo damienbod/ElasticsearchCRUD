@@ -25,16 +25,10 @@ namespace ElasticsearchCRUD
 		{
 			try
 			{
-				if (beginMappingTree)
-				{
-					SerializedTypes = new HashSet<string>();
-					TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Serialize BEGIN for Type: {0}", entity.GetType());
-					//SerializedTypes.Add(GetDocumentType(entity.GetType()));
-				}
+				BeginNewEntityToDocumentMapping(entity, beginMappingTree);
 
 				SerializedTypes.Add(GetDocumentType(entity.GetType()));
-				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}",
-					GetDocumentType(entity.GetType()));
+				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}", GetDocumentType(entity.GetType()));
 				var propertyInfo = entity.GetType().GetProperties();
 				foreach (var prop in propertyInfo)
 				{
@@ -42,68 +36,17 @@ namespace ElasticsearchCRUD
 					{
 						if (IsPropertyACollection(prop))
 						{
-							TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: IsPropertyACollection: {0}",
-								prop.Name.ToLower());
-							if (prop.GetValue(entity) != null && IncludeChildObjectsInDocument)
-							{
-								// TODO Add as separate child documents later in it's index Release V1.0.8
-
-								elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
-								TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}",
-									prop.Name.ToLower(), elasticsearchCrudJsonWriter.JsonWriter.Path);
-								var typeOfEntity = prop.GetValue(entity).GetType().GetGenericArguments();
-								if (typeOfEntity.Length > 0)
-								{
-									if (!SerializedTypes.Contains(GetDocumentType(typeOfEntity[0])))
-									{
-										TraceProvider.Trace(TraceEventType.Verbose,
-											"ElasticSearchMapping: SerializedTypes type ok, BEGIN ARRAY or COLLECTION: {0}",
-											typeOfEntity[0]);
-										TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}",
-											GetDocumentType(typeOfEntity[0]));
-										//SerializedTypes.Add(GetDocumentType(typeOfEntity[0]));
-										MapCollectionOrArray(prop, entity, elasticsearchCrudJsonWriter);
-									}
-									else
-									{
-										elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("null");
-									}
-								}
-								else
-								{
-									TraceProvider.Trace(TraceEventType.Verbose,
-										"ElasticSearchMapping: BEGIN ARRAY or COLLECTION NOT A GENERIC: {0}",
-										prop.Name.ToLower());
-									// Not a generic
-									MapCollectionOrArray(prop, entity, elasticsearchCrudJsonWriter);
-								}
-							}
+							ProcessArrayOrCollection(entity, elasticsearchCrudJsonWriter, prop);
 						}
 						else
 						{
-							if (prop.PropertyType.IsClass && prop.PropertyType.FullName != "System.String" &&
-								prop.PropertyType.FullName != "System.Decimal")
+							if (prop.PropertyType.IsClass && prop.PropertyType.FullName != "System.String" && prop.PropertyType.FullName != "System.Decimal")
 							{
-								TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is an Object: {0}", prop.ToString());
-								// This is a single object and not a reference to it's parent
-								if (prop.GetValue(entity) != null && !SerializedTypes.Contains(GetDocumentType(prop.GetValue(entity).GetType())) &&
-									IncludeChildObjectsInDocument)
-								{
-									//SerializedTypes.Add(GetDocumentType(prop.GetValue(entity).GetType()));
-
-									elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
-									elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-									// Do class mapping for nested type
-									MapEntityValues(prop.GetValue(entity), elasticsearchCrudJsonWriter);
-									elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-								}
-
-								// TODO Add as separate document later in it's index, Release V1.0.8
+								ProcessSingleObject(entity, elasticsearchCrudJsonWriter, prop);
 							}
 							else
 							{
-								TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is a simple Type: {0}",
-									prop.Name.ToLower());
+								TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is a simple Type: {0}", prop.Name.ToLower());
 								MapValue(prop.Name.ToLower(), prop.GetValue(entity), elasticsearchCrudJsonWriter.JsonWriter);
 							}
 						}
@@ -112,9 +55,79 @@ namespace ElasticsearchCRUD
 			}
 			catch (Exception ex)
 			{
-				TraceProvider.Trace(TraceEventType.Critical, "ElasticSearchMapping: Property is a simple Type: {0}",
-					elasticsearchCrudJsonWriter.GetJsonString());
-				throw ex;
+				TraceProvider.Trace(TraceEventType.Critical, ex, "ElasticSearchMapping: Property is a simple Type: {0}", elasticsearchCrudJsonWriter.GetJsonString());
+				throw;
+			}
+		}
+
+		private void BeginNewEntityToDocumentMapping(object entity, bool beginMappingTree)
+		{
+			if (beginMappingTree)
+			{
+				SerializedTypes = new HashSet<string>();
+				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Serialize BEGIN for Type: {0}", entity.GetType());
+			}
+		}
+
+		private void ProcessSingleObject(object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
+		{
+			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is an Object: {0}", prop.ToString());
+			// This is a single object and not a reference to it's parent
+			if (prop.GetValue(entity) != null && !SerializedTypes.Contains(GetDocumentType(prop.GetValue(entity).GetType())) && IncludeChildObjectsInDocument)
+			{
+				// TODO Add as separate document later in it's index, Release V1.0.8
+				ProcessSingleObjectAsNestedObject(entity, elasticsearchCrudJsonWriter, prop);
+			}
+		}
+
+		private void ProcessArrayOrCollection(object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
+		{
+			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: IsPropertyACollection: {0}", prop.Name.ToLower());
+			if (prop.GetValue(entity) != null && IncludeChildObjectsInDocument)
+			{
+				// TODO Add as separate child documents later in it's index Release V1.0.8
+
+				ProcessArrayOrCollectionAsNestedObject(entity, elasticsearchCrudJsonWriter, prop);
+			}
+		}
+
+		private void ProcessSingleObjectAsNestedObject(object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			// Do class mapping for nested type
+			MapEntityValues(prop.GetValue(entity), elasticsearchCrudJsonWriter);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+
+		private void ProcessArrayOrCollectionAsNestedObject(object entity,
+			ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
+			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}",
+				prop.Name.ToLower(), elasticsearchCrudJsonWriter.JsonWriter.Path);
+			var typeOfEntity = prop.GetValue(entity).GetType().GetGenericArguments();
+			if (typeOfEntity.Length > 0)
+			{
+				if (!SerializedTypes.Contains(GetDocumentType(typeOfEntity[0])))
+				{
+					TraceProvider.Trace(TraceEventType.Verbose,
+						"ElasticSearchMapping: SerializedTypes type ok, BEGIN ARRAY or COLLECTION: {0}", typeOfEntity[0]);
+					TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}",
+						GetDocumentType(typeOfEntity[0]));
+					MapCollectionOrArray(prop, entity, elasticsearchCrudJsonWriter);
+				}
+				else
+				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("null");
+				}
+			}
+			else
+			{
+				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: BEGIN ARRAY or COLLECTION NOT A GENERIC: {0}",
+					prop.Name.ToLower());
+				// Not a generic
+				MapCollectionOrArray(prop, entity, elasticsearchCrudJsonWriter);
 			}
 		}
 
