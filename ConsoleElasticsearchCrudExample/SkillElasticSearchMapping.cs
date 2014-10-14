@@ -20,7 +20,6 @@ namespace ConsoleElasticsearchCrudExample
 			MapValue("updated", skillEntity.Updated.UtcDateTime, elasticsearchCrudJsonWriter.JsonWriter);
 		}
 
-
 		/// <summary>
 		/// Use this if you require special mapping for the elasticsearch document type. For example you could pluralize your Type or set everything to lowercase
 		/// </summary>

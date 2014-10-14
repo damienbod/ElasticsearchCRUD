@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
@@ -75,5 +76,26 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		public long Id { get; set; }
 		public String Details { get; set; }
+	}
+
+	public class TestJsonIgnore
+	{
+		public List<String> MyStringArray { get; set; }
+
+		public long Id { get; set; }
+
+		[JsonIgnore]
+		public List<long> MyLongArray { get; set; }
+
+		[JsonIgnore]
+		public SkillSingleChildElement SkillSingleChildElement { get; set; }
+
+		[JsonIgnore]
+		public List<SkillSingleChildElement> SkillSingleChildElementList { get; set; }
+
+		public String BlahBlah { get; set; }
+
+		[JsonIgnore]
+		public String BlahBlahNull { get; set; }
 	}
 }
