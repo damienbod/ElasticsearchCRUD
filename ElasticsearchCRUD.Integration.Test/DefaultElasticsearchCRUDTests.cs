@@ -60,6 +60,10 @@ namespace ElasticsearchCRUD.Integration.Test
 				entityResult.Wait();
 				var secondDelete = context.DeleteIndexAsync<SkillTestEntityTwo>();
 				secondDelete.Wait();
+
+				var thirdDelete = context.DeleteIndexAsync<TestJsonIgnore>();
+				thirdDelete.Wait();
+				
 			}
 		}
 
