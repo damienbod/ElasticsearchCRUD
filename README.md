@@ -9,6 +9,19 @@ https://github.com/damienbod/ElasticsearchCRUD
 <strong>NuGet Package:</strong> 
 https://www.nuget.org/packages/ElasticsearchCRUD/
 
+
+
+Examples:
+https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample
+https://github.com/damienbod/ElasticsearchCRUD/tree/master/ElasticsearchCRUD.Integration.Test
+https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvider
+
+<a href="https://github.com/damienbod/DataTransferSQLWithEntityFrameworkToElasticsearch">Data Transfer MS SQLServer 2014 With EntityFramework To Elasticsearch</a>
+
+<a href="https://github.com/damienbod/WebSearchWithElasticsearchNestedDocuments">Using with NESTED documents (NEST for search)</a>
+
+<a href="https://github.com/damienbod/WebSearchWithElasticsearch">Simple autocomplete search (ElasticLINQ for search)</a>
+
 ========================
 <strong>History</strong>
 
