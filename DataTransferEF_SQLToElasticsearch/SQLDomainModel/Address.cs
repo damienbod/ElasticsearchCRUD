@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace DataTransferSQLToEl.SQLDomainModel
 {
     using System;
@@ -29,7 +31,8 @@ namespace DataTransferSQLToEl.SQLDomainModel
         public string PostalCode { get; set; }
 
 		// TODO add this to the ignore list
-       // public DbGeography SpatialLocation { get; set; }
+		[JsonIgnore]
+        public DbGeography SpatialLocation { get; set; }
 
         public Guid rowguid { get; set; }
 
