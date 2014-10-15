@@ -19,23 +19,30 @@ namespace ElasticsearchCRUD
 		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		private readonly Uri _elasticsearchUrlBatch;
 		private readonly HttpClient _client = new HttpClient();
-
-		private readonly List<Tuple<EntityContextInfo, object>> _entityPendingChanges = new List<Tuple<EntityContextInfo, object>>();
-
-		public ITraceProvider TraceProvider = new NullTraceProvider();
+		private readonly List<Tuple<EntityContextInfo, object>> _entityPendingChanges = new List<Tuple<EntityContextInfo, object>>();	
 		private readonly string _connectionString;
-		private bool _includeChildObjectsInDocument;
+		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
+		public ITraceProvider TraceProvider = new NullTraceProvider();
 
 		public bool AllowDeleteForIndex { get; set; }
 
-		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver, bool includeChildObjectsInDocument = true)
+		public ElasticSearchContext(string connectionString, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
 		{
-			_includeChildObjectsInDocument = includeChildObjectsInDocument;
+			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
-			_elasticSearchMappingResolver = elasticSearchMappingResolver;
+			_elasticSearchMappingResolver = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver;
 			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
-		
+		}
+
+		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver)
+		{
+			_elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(elasticSearchMappingResolver);
+			_connectionString = connectionString;
+			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
+			_elasticSearchMappingResolver = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver;
+			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
+
 		}
 
 		public void AddUpdateEntity(object entity, object id)
@@ -90,7 +97,7 @@ namespace ElasticsearchCRUD
 			try
 			{
 				string serializedEntities;
-				using (var serializer = new ElasticsearchSerializer(TraceProvider, _elasticSearchMappingResolver, _includeChildObjectsInDocument))
+				using (var serializer = new ElasticsearchSerializer(TraceProvider, _elasticsearchSerializerConfiguration))
 				{
 					serializedEntities = serializer.Serialize(_entityPendingChanges);
 				}

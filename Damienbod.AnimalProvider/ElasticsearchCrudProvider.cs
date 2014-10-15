@@ -11,7 +11,7 @@ namespace Damienbod.AnimalProvider
 		{
 			// You don't need to create this Resolver everytime a new context is created...
 			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Animal), new AnimalToLowerExampleElasticSearchMapping());
-			_elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver);
+			_elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(new ElasticSearchMappingResolver(), true,false));
 		}
 
         public void CreateAnimal(Animal animal)

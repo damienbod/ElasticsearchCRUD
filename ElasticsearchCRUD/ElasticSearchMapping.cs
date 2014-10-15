@@ -19,7 +19,10 @@ namespace ElasticsearchCRUD
 		protected HashSet<string> SerializedTypes = new HashSet<string>();
 		public ITraceProvider TraceProvider = new NullTraceProvider();
 		public bool IncludeChildObjectsInDocument { get; set; }
+		public bool ProcessChildDocumentsAsSeparateChildIndex { get; set; }
 
+		public List<EntityContextInfo> ChildIndexEntities = new List<EntityContextInfo>();
+ 
 		// default type is lowercase for properties
 		public virtual void MapEntityValues(Object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{
@@ -100,12 +103,10 @@ namespace ElasticsearchCRUD
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 
-		private void ProcessArrayOrCollectionAsNestedObject(object entity,
-			ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
+		private void ProcessArrayOrCollectionAsNestedObject(object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
-			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}",
-				prop.Name.ToLower(), elasticsearchCrudJsonWriter.JsonWriter.Path);
+			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}", prop.Name.ToLower(), elasticsearchCrudJsonWriter.JsonWriter.Path);
 			var typeOfEntity = prop.GetValue(entity).GetType().GetGenericArguments();
 			if (typeOfEntity.Length > 0)
 			{
@@ -259,5 +260,4 @@ namespace ElasticsearchCRUD
 			return type.Name.ToLower() + "s";
 		}
 	}
-
 }

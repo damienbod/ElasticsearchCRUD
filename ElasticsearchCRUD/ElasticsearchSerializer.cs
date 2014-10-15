@@ -8,18 +8,15 @@ namespace ElasticsearchCRUD
 {
 	public class ElasticsearchSerializer  : IDisposable
 	{
-		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver;
 		private readonly ITraceProvider _traceProvider;
-		private readonly bool _includeChildObjectsInDocument;
+		private ElasticsearchCrudJsonWriter _elasticsearchCrudJsonWriter;
+		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
 
-		public ElasticsearchSerializer( ITraceProvider traceProvider, IElasticSearchMappingResolver elasticSearchMappingResolver, bool includeChildObjectsInDocument)
+		public ElasticsearchSerializer(ITraceProvider traceProvider, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
 		{
-			_includeChildObjectsInDocument = includeChildObjectsInDocument;
-			_elasticSearchMappingResolver = elasticSearchMappingResolver;
+			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_traceProvider = traceProvider;
 		}
-
-		private ElasticsearchCrudJsonWriter _elasticsearchCrudJsonWriter;
 
 		public string Serialize(IEnumerable<Tuple<EntityContextInfo, object>> entities)
 		{
@@ -32,7 +29,7 @@ namespace ElasticsearchCRUD
 
 			foreach (var entity in entities)
 			{
-				string index = _elasticSearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
+				string index = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
 				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 				{
 					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");
@@ -55,9 +52,10 @@ namespace ElasticsearchCRUD
 
 		private void DeleteEntity(EntityContextInfo entityInfo)
 		{
-			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
-			elasticSearchMapping.IncludeChildObjectsInDocument = _includeChildObjectsInDocument;
+			elasticSearchMapping.IncludeChildObjectsInDocument = _elasticsearchSerializerConfiguration.IncludeChildObjectsInDocument;
+			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("delete");
@@ -75,9 +73,10 @@ namespace ElasticsearchCRUD
 
 		private void AddUpdateEntity(object entity, EntityContextInfo entityInfo)
 		{
-			var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
-			elasticSearchMapping.IncludeChildObjectsInDocument = _includeChildObjectsInDocument;
+			elasticSearchMapping.IncludeChildObjectsInDocument = _elasticsearchSerializerConfiguration.IncludeChildObjectsInDocument;
+			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
 			
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 

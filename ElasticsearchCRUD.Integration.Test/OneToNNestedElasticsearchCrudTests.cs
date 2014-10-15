@@ -101,7 +101,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			};
 
 			const bool includeChildObjects = false;
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver, includeChildObjects))
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, includeChildObjects)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);

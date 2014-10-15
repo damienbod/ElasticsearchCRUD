@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace ElasticsearchCRUD
 {
@@ -10,6 +11,6 @@ namespace ElasticsearchCRUD
 
 		public Type EntityType { get; set; }
 
-
+		public ChildIndexEntity ChildIndexEntity { get; set; }
 	}
 }
