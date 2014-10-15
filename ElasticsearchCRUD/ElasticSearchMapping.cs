@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
@@ -49,8 +50,12 @@ namespace ElasticsearchCRUD
 							}
 							else
 							{
-								TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is a simple Type: {0}", prop.Name.ToLower());
-								MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Entity), elasticsearchCrudJsonWriter.JsonWriter);
+								if (!ProcessChildDocumentsAsSeparateChildIndex || ProcessChildDocumentsAsSeparateChildIndex && beginMappingTree)
+								{
+									TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is a simple Type: {0}",
+										prop.Name.ToLower());
+									MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Entity), elasticsearchCrudJsonWriter.JsonWriter);
+								}
 							}
 						}
 					}
@@ -110,8 +115,6 @@ namespace ElasticsearchCRUD
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			// Do class mapping for nested type
-
-			// TODO add child Id
 			var entity = prop.GetValue(entityInfo.Entity);
 			var child = new EntityContextInfo { Entity = entity, ParentId = entityInfo.Id, EntityType = entity.GetType(), DeleteEntity = entityInfo.DeleteEntity};
 			MapEntityValues(child, elasticsearchCrudJsonWriter);
@@ -120,10 +123,33 @@ namespace ElasticsearchCRUD
 
 		private void ProcessSingleObjectAsChildDocument(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
 		{
-			// TODO add child Id
 			var entity = prop.GetValue(entityInfo.Entity);
-			var child = new EntityContextInfo { Entity = entity, ParentId = entityInfo.Id, EntityType = entity.GetType(), DeleteEntity = entityInfo.DeleteEntity };
-			MapEntityValues(child, elasticsearchCrudJsonWriter);
+			CreateChildEntityForDocumentIndex(entityInfo, elasticsearchCrudJsonWriter, entity);
+		}
+
+		private void CreateChildEntityForDocumentIndex(EntityContextInfo parentEntityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, object entity)
+		{
+			var propertyInfo = entity.GetType().GetProperties();
+			foreach (var property in propertyInfo)
+			{
+				if (Attribute.IsDefined(property, typeof (KeyAttribute)))
+				{
+					var obj = property.GetValue(entity);
+					var child = new EntityContextInfo
+					{
+						Entity = entity,
+						ParentId = parentEntityInfo.Id,
+						EntityType = entity.GetType(),
+						DeleteEntity = parentEntityInfo.DeleteEntity,
+						Id = obj.ToString() 
+					};
+					ChildIndexEntities.Add(child);
+					MapEntityValues(child, elasticsearchCrudJsonWriter);
+					return;
+				}
+			}
+
+			throw new ElasticsearchCrudException("No Key found for child object: " + parentEntityInfo.Entity.GetType());
 		}
 
 		private void ProcessArrayOrCollectionAsNestedObject(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
@@ -198,7 +224,7 @@ namespace ElasticsearchCRUD
 				var ienumerable = (Array)prop.GetValue(entityInfo.Entity);
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
-					// TODO process as child doc
+					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo);
 				}
 				else
 				{
@@ -212,11 +238,22 @@ namespace ElasticsearchCRUD
 				var ienumerable = (IEnumerable)prop.GetValue(entityInfo.Entity);
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
-					// TODO process as child doc
+					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo);
 				}
 				else
 				{
 					MapIEnumerableEntities(elasticsearchCrudJsonWriter, ienumerable, entityInfo);
+				}
+			}
+		}
+
+		private void MapIEnumerableEntitiesForChildIndexes(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, IEnumerable ienumerable, EntityContextInfo parentEntityInfo)
+		{
+			if (ienumerable != null)
+			{
+				foreach (var item in ienumerable)
+				{
+					CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item);
 				}
 			}
 		}

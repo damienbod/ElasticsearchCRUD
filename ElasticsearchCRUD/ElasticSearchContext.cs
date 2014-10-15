@@ -63,6 +63,11 @@ namespace ElasticsearchCRUD
 			{
 				var task = Task.Run(() => SaveChangesAsync());
 				task.Wait();
+				if (!string.IsNullOrEmpty(task.Result.Description))
+				{
+					TraceProvider.Trace(TraceEventType.Warning, "{0}: SaveChanges {1}", "ElasticSearchContext" , task.Result.Description);
+				}
+				
 				return task.Result;
 			}
 			catch (AggregateException ae)
