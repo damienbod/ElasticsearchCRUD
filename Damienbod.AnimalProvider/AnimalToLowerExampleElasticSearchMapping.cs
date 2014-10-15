@@ -9,12 +9,12 @@ namespace Damienbod.AnimalProvider
 		/// <summary>
 		/// Here you can do any type of entity mapping
 		/// </summary>
-		public override void MapEntityValues(Object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
+		public override void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{
-			var propertyInfo = entity.GetType().GetProperties();
+			var propertyInfo = entityInfo.Entity.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
 			{
-				MapValue(prop.Name, prop.GetValue(entity), elasticsearchCrudJsonWriter.JsonWriter);
+				MapValue(prop.Name, prop.GetValue(entityInfo.Entity), elasticsearchCrudJsonWriter.JsonWriter);
 			}
 		}
 

@@ -11,6 +11,8 @@ namespace ElasticsearchCRUD
 
 		public Type EntityType { get; set; }
 
-		public ChildIndexEntity ChildIndexEntity { get; set; }
+		public object ParentId { get; set; }
+
+		public object Entity { get; set; }
 	}
 }

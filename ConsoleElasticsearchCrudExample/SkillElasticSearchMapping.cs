@@ -10,9 +10,9 @@ namespace ConsoleElasticsearchCrudExample
 		/// Only required if you have some special mapping or want to remove some properties or use attributes..
 		/// </summary>
 		/// <param name="entity"></param>
-		public override void MapEntityValues(object entity, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
+		public override void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{
-			Skill skillEntity = entity as Skill;
+			Skill skillEntity = entityInfo.Entity as Skill;
 			MapValue("id", skillEntity.Id, elasticsearchCrudJsonWriter.JsonWriter);
 			MapValue("name", skillEntity.Name, elasticsearchCrudJsonWriter.JsonWriter);
 			MapValue("description", skillEntity.Description, elasticsearchCrudJsonWriter.JsonWriter);

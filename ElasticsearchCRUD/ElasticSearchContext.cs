@@ -19,7 +19,7 @@ namespace ElasticsearchCRUD
 		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		private readonly Uri _elasticsearchUrlBatch;
 		private readonly HttpClient _client = new HttpClient();
-		private readonly List<Tuple<EntityContextInfo, object>> _entityPendingChanges = new List<Tuple<EntityContextInfo, object>>();	
+		private readonly List<EntityContextInfo> _entityPendingChanges = new List<EntityContextInfo>();	
 		private readonly string _connectionString;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
 		public ITraceProvider TraceProvider = new NullTraceProvider();
@@ -48,13 +48,13 @@ namespace ElasticsearchCRUD
 		public void AddUpdateEntity(object entity, object id)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Adding entity: {0}, {1} to pending list", entity.GetType().Name, id, "ElasticSearchContext");
-			_entityPendingChanges.Add(new Tuple<EntityContextInfo, object>(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType() }, entity));
+			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType() , Entity = entity });
 		}
 
 		public void DeleteEntity<T>(object id)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Request to delete entity with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name, "ElasticSearchContext");
-			_entityPendingChanges.Add(new Tuple<EntityContextInfo, object>(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T)}, null));
+			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T), Entity = null});
 		}
 
 		public ResultDetails<string> SaveChanges()

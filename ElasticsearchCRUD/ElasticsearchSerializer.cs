@@ -18,7 +18,7 @@ namespace ElasticsearchCRUD
 			_traceProvider = traceProvider;
 		}
 
-		public string Serialize(IEnumerable<Tuple<EntityContextInfo, object>> entities)
+		public string Serialize(IEnumerable<EntityContextInfo> entities)
 		{
 			if (entities == null)
 			{
@@ -35,13 +35,13 @@ namespace ElasticsearchCRUD
 					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");
 					throw new ElasticsearchCrudException(string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
 				}
-				if (entity.Item1.DeleteEntity)
+				if (entity.DeleteEntity)
 				{
-					DeleteEntity(entity.Item1);
+					DeleteEntity(entity);
 				}
 				else
 				{
-					AddUpdateEntity(entity.Item2, entity.Item1);
+					AddUpdateEntity(entity);
 				}
 			}
 
@@ -54,7 +54,7 @@ namespace ElasticsearchCRUD
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
-			elasticSearchMapping.IncludeChildObjectsInDocument = _elasticsearchSerializerConfiguration.IncludeChildObjectsInDocument;
+			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
@@ -71,11 +71,11 @@ namespace ElasticsearchCRUD
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 		}
 
-		private void AddUpdateEntity(object entity, EntityContextInfo entityInfo)
+		private void AddUpdateEntity(EntityContextInfo entityInfo)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
-			elasticSearchMapping.IncludeChildObjectsInDocument = _elasticsearchSerializerConfiguration.IncludeChildObjectsInDocument;
+			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
 			
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
@@ -93,7 +93,7 @@ namespace ElasticsearchCRUD
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticSearchMapping.MapEntityValues(entity, _elasticsearchCrudJsonWriter, true);
+			elasticSearchMapping.MapEntityValues(entityInfo, _elasticsearchCrudJsonWriter, true);
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
