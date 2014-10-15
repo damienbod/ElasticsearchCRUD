@@ -25,7 +25,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		public void TestDefaultContextParentWithACollectionOfOneChildObjectNested()
+		public void TestDefaultContextParentWithACollectionOfOneChildDocuments()
 		{
 			var parentDocument = new ParentDocument
 			{

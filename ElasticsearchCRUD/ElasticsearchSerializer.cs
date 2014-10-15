@@ -105,10 +105,12 @@ namespace ElasticsearchCRUD
 					_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
 					// Write the batch "index" operation header
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-					WriteValue("_index", elasticSearchMapping.GetIndexForType(item.EntityType));
+					
+					// Always write to the same index
+					WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
 					WriteValue("_type", elasticSearchMapping.GetDocumentType(item.EntityType));
 					WriteValue("_id", item.Id);
-					WriteValue("_parent", item.ParentId);
+					//WriteValue("_parent", item.ParentId);
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");  //ES requires this \n separator
@@ -118,10 +120,13 @@ namespace ElasticsearchCRUD
 
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
-
-					
 				}
 			}
+
+			// TODO Add the parent type
+			// Add the mapping first the child
+			// add the child types with the _parent 
+			// repeat for child items...
 			elasticSearchMapping.ChildIndexEntities.Clear();			
 		}
 
