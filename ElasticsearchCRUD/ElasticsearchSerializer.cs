@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using ElasticsearchCRUD.Mapping;
 using ElasticsearchCRUD.Tracing;
+using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD
 {
@@ -48,9 +52,7 @@ namespace ElasticsearchCRUD
 			}
 
 			_elasticsearchCrudJsonWriter.Dispose();
-
 			_elasticSerializationResult.Content = _elasticsearchCrudJsonWriter.Stringbuilder.ToString();
-
 			return _elasticSerializationResult;
 		}
 
@@ -82,6 +84,30 @@ namespace ElasticsearchCRUD
 			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
 			
+			CreateBulkContentForParentDocument(entityInfo, elasticSearchMapping);
+
+			if (_elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
+			{
+				var initMappings = InitMappingIndex(entityInfo, elasticSearchMapping);
+
+				if (elasticSearchMapping.ChildIndexEntities.Count > 1)
+				{
+					// Only save the top level items now
+					elasticSearchMapping.SaveChildObjectsAsWellAsParent = false;
+					foreach (var item in elasticSearchMapping.ChildIndexEntities)
+					{
+						CreateBulkContentForChildDocument(entityInfo, elasticSearchMapping, item);
+						CreateCommandForChildDocument(entityInfo, initMappings, elasticSearchMapping, item);
+					}
+				}
+
+				_elasticSerializationResult.CommandsForAllEntities.AddRange(initMappings.Commands);
+			}
+			elasticSearchMapping.ChildIndexEntities.Clear();			
+		}
+
+		private void CreateBulkContentForParentDocument(EntityContextInfo entityInfo, ElasticSearchMapping elasticSearchMapping)
+		{
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
 			// Write the batch "index" operation header
@@ -91,63 +117,74 @@ namespace ElasticsearchCRUD
 			WriteValue("_id", entityInfo.Id);
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");  //ES requires this \n separator
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n"); //ES requires this \n separator
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			elasticSearchMapping.MapEntityValues(entityInfo, _elasticsearchCrudJsonWriter, true);
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
+		}
 
-			var initMappings = new InitMappings();
+		private void CreateBulkContentForChildDocument(EntityContextInfo entityInfo, ElasticSearchMapping elasticSearchMapping,
+			EntityContextInfo item)
+		{
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
+			// Write the batch "index" operation header
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+			// Always write to the same index
+			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
+			WriteValue("_type", elasticSearchMapping.GetDocumentType(item.EntityType));
+			WriteValue("_id", item.Id);
+			WriteValue("_parent", item.ParentId);
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n"); //ES requires this \n separator
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+			elasticSearchMapping.MapEntityValues(item, _elasticsearchCrudJsonWriter, true);
+
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
+		}
+
+		private static void CreateCommandForChildDocument(EntityContextInfo entityInfo, InitMappings initMappings,
+			ElasticSearchMapping elasticSearchMapping, EntityContextInfo item)
+		{
+			initMappings.CreateIndexMapping(
+				elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
+				elasticSearchMapping.GetDocumentType(item.ParentEntityType),
+				elasticSearchMapping.GetDocumentType(item.Entity.GetType())
+				);
+
+			var contentJson = new ElasticsearchCrudJsonWriter();
+			contentJson.JsonWriter.WriteStartObject();
+			elasticSearchMapping.MapEntityValues(item, contentJson, true);
+			contentJson.JsonWriter.WriteEndObject();
+
 			initMappings.CreateIndex(
-						elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
-						elasticSearchMapping.GetDocumentType(entityInfo.EntityType),
-						null,
-						entityInfo.Id, "{dddd}");
+				elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
+				elasticSearchMapping.GetDocumentType(item.EntityType),
+				item.ParentId.ToString(),
+				item.Id, contentJson.GetJsonString());
+		}
 
-			if (elasticSearchMapping.ChildIndexEntities.Count > 1)
-			{
-				// Only save the top level items now
-				elasticSearchMapping.SaveChildObjectsAsWellAsParent = false;
-				foreach (var item in elasticSearchMapping.ChildIndexEntities)
-				{
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-					_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
-					// Write the batch "index" operation header
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-					
-					// Always write to the same index
-					WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
-					WriteValue("_type", elasticSearchMapping.GetDocumentType(item.EntityType));
-					WriteValue("_id", item.Id);
-					WriteValue("_parent", item.ParentId);
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");  //ES requires this \n separator
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+		private static InitMappings InitMappingIndex(EntityContextInfo entityInfo, ElasticSearchMapping elasticSearchMapping)
+		{
+			var contentJsonParent = new ElasticsearchCrudJsonWriter();
+			contentJsonParent.JsonWriter.WriteStartObject();
+			elasticSearchMapping.MapEntityValues(entityInfo, contentJsonParent, true);
+			contentJsonParent.JsonWriter.WriteEndObject();
+			var initMappings = new InitMappings();
 
-					elasticSearchMapping.MapEntityValues(item, _elasticsearchCrudJsonWriter, true);
-
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-					_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
-
-					initMappings.CreateIndexMapping(
-						elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
-						elasticSearchMapping.GetDocumentType(item.ParentEntityType),
-						elasticSearchMapping.GetDocumentType(item.Entity.GetType())
-					);
-
-					initMappings.CreateIndex(
-						elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
-						elasticSearchMapping.GetDocumentType(item.EntityType),
-						item.ParentId.ToString(),
-						item.Id, "{dddd}");
-				}
-			}
-
-			_elasticSerializationResult.CommandsForAllEntities.AddRange(initMappings.Commands);
-			elasticSearchMapping.ChildIndexEntities.Clear();			
+			initMappings.CreateIndex(
+				elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
+				elasticSearchMapping.GetDocumentType(entityInfo.EntityType),
+				null,
+				entityInfo.Id, contentJsonParent.GetJsonString());
+			return initMappings;
 		}
 
 		private void WriteValue(string key, object valueObj)
