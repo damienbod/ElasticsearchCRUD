@@ -104,7 +104,9 @@ namespace ElasticsearchCRUD
 				string serializedEntities;
 				using (var serializer = new ElasticsearchSerializer(TraceProvider, _elasticsearchSerializerConfiguration))
 				{
-					serializedEntities = serializer.Serialize(_entityPendingChanges);
+					// TODO ExecuteCommands 
+					var result = serializer.Serialize(_entityPendingChanges);
+					serializedEntities = result.Content;
 				}
 				var content = new StringContent(serializedEntities);
 				TraceProvider.Trace(TraceEventType.Verbose, "{1}: sending bulk request: {0}", serializedEntities, "ElasticSearchContext");

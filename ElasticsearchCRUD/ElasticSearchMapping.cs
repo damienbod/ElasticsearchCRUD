@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using ElasticsearchCRUD.Mapping;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -60,6 +61,7 @@ namespace ElasticsearchCRUD
 						}
 					}
 				}
+
 			}
 			catch (Exception ex)
 			{
@@ -147,11 +149,13 @@ namespace ElasticsearchCRUD
 						Entity = entity,
 						ParentId = parentEntityInfo.Id,
 						EntityType = entity.GetType(),
+						ParentEntityType = parentEntityInfo.EntityType,
 						DeleteEntity = parentEntityInfo.DeleteEntity,
 						Id = obj.ToString() 
 					};
 					ChildIndexEntities.Add(child);
 					MapEntityValues(child, elasticsearchCrudJsonWriter);
+				
 					return;
 				}
 			}

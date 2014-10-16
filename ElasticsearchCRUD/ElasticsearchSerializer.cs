@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using ElasticsearchCRUD.Mapping;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD
@@ -11,6 +12,7 @@ namespace ElasticsearchCRUD
 		private readonly ITraceProvider _traceProvider;
 		private ElasticsearchCrudJsonWriter _elasticsearchCrudJsonWriter;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
+		private ElasticSerializationResult _elasticSerializationResult = new ElasticSerializationResult();
 
 		public ElasticsearchSerializer(ITraceProvider traceProvider, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
 		{
@@ -18,13 +20,13 @@ namespace ElasticsearchCRUD
 			_traceProvider = traceProvider;
 		}
 
-		public string Serialize(IEnumerable<EntityContextInfo> entities)
+		public ElasticSerializationResult Serialize(IEnumerable<EntityContextInfo> entities)
 		{
 			if (entities == null)
 			{
 				return null;
 			}
-
+			_elasticSerializationResult = new ElasticSerializationResult();
 			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 
 			foreach (var entity in entities)
@@ -47,7 +49,9 @@ namespace ElasticsearchCRUD
 
 			_elasticsearchCrudJsonWriter.Dispose();
 
-			return _elasticsearchCrudJsonWriter.Stringbuilder.ToString();
+			_elasticSerializationResult.Content = _elasticsearchCrudJsonWriter.Stringbuilder.ToString();
+
+			return _elasticSerializationResult;
 		}
 
 		private void DeleteEntity(EntityContextInfo entityInfo)
@@ -95,6 +99,13 @@ namespace ElasticsearchCRUD
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 
+			var initMappings = new InitMappings();
+			initMappings.CreateIndex(
+						elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
+						elasticSearchMapping.GetDocumentType(entityInfo.EntityType),
+						null,
+						entityInfo.Id, "{dddd}");
+
 			if (elasticSearchMapping.ChildIndexEntities.Count > 1)
 			{
 				// Only save the top level items now
@@ -120,10 +131,22 @@ namespace ElasticsearchCRUD
 
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 					_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
+
+					initMappings.CreateIndexMapping(
+						elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
+						elasticSearchMapping.GetDocumentType(item.ParentEntityType),
+						elasticSearchMapping.GetDocumentType(item.Entity.GetType())
+					);
+
+					initMappings.CreateIndex(
+						elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
+						elasticSearchMapping.GetDocumentType(item.EntityType),
+						item.ParentId.ToString(),
+						item.Id, "{dddd}");
 				}
 			}
 
-			// TODO Create init for mapping
+			_elasticSerializationResult.CommandsForAllEntities.AddRange(initMappings.Commands);
 			elasticSearchMapping.ChildIndexEntities.Clear();			
 		}
 
