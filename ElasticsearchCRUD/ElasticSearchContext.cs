@@ -57,7 +57,7 @@ namespace ElasticsearchCRUD
 			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T), Entity = null});
 		}
 
-		private bool _saveChangesAndInitMappingsForChildDocuments = false;
+		private bool _saveChangesAndInitMappingsForChildDocuments;
 		public ResultDetails<string> SaveChangesAndInitMappingsForChildDocuments()
 		{
 			_saveChangesAndInitMappingsForChildDocuments = true;
@@ -115,7 +115,7 @@ namespace ElasticsearchCRUD
 					var result = serializer.Serialize(_entityPendingChanges);
 					if (_saveChangesAndInitMappingsForChildDocuments)
 					{
-						var initResult = await result.InitMappings.Execute(_client, _connectionString, TraceProvider, _cancellationTokenSource);
+						await result.InitMappings.Execute(_client, _connectionString, TraceProvider, _cancellationTokenSource);
 						_saveChangesAndInitMappingsForChildDocuments = false;
 					}
 					serializedEntities = result.Content;
