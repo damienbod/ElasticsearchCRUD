@@ -40,7 +40,7 @@ namespace DataTransferSQLToEl
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
-				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				//elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				using (var databaseEfModel = new SQLDataModel())
 				{
 					int pointer = 0;

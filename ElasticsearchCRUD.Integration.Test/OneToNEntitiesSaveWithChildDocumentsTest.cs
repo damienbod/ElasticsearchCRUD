@@ -40,51 +40,30 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 */
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
-		[SetUp]
-		public void SetUp()
+		[TestFixtureSetUp]
+		public void SetUpFixture()
 		{
 		}
 
-		[TearDown]
-		public void TearDown()
+		[TestFixtureTearDown]
+		public void TestFixtureTearDown()
 		{
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<ParentDocument>();
+				entityResult.Wait();
+			}
 		}
 
 		[Test]
 		public void TestDefaultContextParentWithACollectionOfOneChildDocuments()
 		{
-			var parentDocument = new ParentDocument
-			{
-				Id = 7,
-				D1 = "p7",
-				ChildDocumentLevelOne = new Collection<ChildDocumentLevelOne>
-				{
-					new ChildDocumentLevelOne
-					{
-						D2 = "p21a",
-						Id = 21,
-						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
-						{
-							Id=31,
-							D3="p31a"
-						}
-					},
-					
-					new ChildDocumentLevelOne
-					{
-						D2 = "p22",
-						Id = 22,
-						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
-						{
-							Id=32,
-							D3="p32"
-						}
-					}
-				}
-			};
+			var parentDocument = ParentDocument();
 
-
-			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOne), new ElasticSearchMappingChildDocumentLevelOne());
+			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOne), new ElasticSearchMappingChildDocumentForParent());
+			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelTwo), new ElasticSearchMappingChildDocumentForParent());
 			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true,true)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
@@ -99,10 +78,95 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 				Assert.AreEqual(parentDocument.Id, roundTripResult.Id);
 				Assert.AreEqual(parentDocument.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
 			}
+
+			var parentDocument2 = ParentDocument2();
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateEntity(parentDocument2, parentDocument2.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<ParentDocument>(parentDocument2.Id);
+				var roundTripResultChildDocumentLevelOne = context.GetEntity<ChildDocumentLevelOne>(parentDocument2.ChildDocumentLevelOne.First().Id, parentDocument2.Id);
+				var roundTripResultChildDocumentLevelTwo = context.GetEntity<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id, parentDocument2.ChildDocumentLevelOne.First().Id);
+				Assert.AreEqual(parentDocument2.Id, roundTripResult.Id);
+				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
+				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id, roundTripResultChildDocumentLevelTwo.Id);
+			}
+		}
+
+		private static ParentDocument ParentDocument()
+		{
+			var parentDocument = new ParentDocument
+			{
+				Id = 7,
+				D1 = "p7",
+				ChildDocumentLevelOne = new Collection<ChildDocumentLevelOne>
+				{
+					new ChildDocumentLevelOne
+					{
+						D2 = "p21a",
+						Id = 21,
+						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
+						{
+							Id = 31,
+							D3 = "p31a"
+						}
+					},
+					new ChildDocumentLevelOne
+					{
+						D2 = "p22",
+						Id = 22,
+						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
+						{
+							Id = 32,
+							D3 = "p32"
+						}
+					}
+				}
+			};
+			return parentDocument;
+		}
+
+		private static ParentDocument ParentDocument2()
+		{
+			var parentDocument = new ParentDocument
+			{
+				Id = 8,
+				D1 = "p8",
+				ChildDocumentLevelOne = new Collection<ChildDocumentLevelOne>
+				{
+					new ChildDocumentLevelOne
+					{
+						D2 = "p25f",
+						Id = 25,
+						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
+						{
+							Id = 35,
+							D3 = "p35a"
+						}
+					},
+					new ChildDocumentLevelOne
+					{
+						D2 = "p26",
+						Id = 26,
+						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
+						{
+							Id = 36,
+							D3 = "p36"
+						}
+					}
+				}
+			};
+			return parentDocument;
 		}
 	}
 
-	public class ElasticSearchMappingChildDocumentLevelOne : ElasticSearchMapping
+	public class ElasticSearchMappingChildDocumentForParent : ElasticSearchMapping
 	{
 		public override string GetIndexForType(Type type)
 		{

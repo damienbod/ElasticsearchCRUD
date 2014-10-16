@@ -31,8 +31,8 @@ namespace ElasticsearchCRUD.Mapping
 			foreach (var command in Commands)
 			{
 				var content = new StringContent(command.Content + "\n");
-				traceProvider.Trace(TraceEventType.Verbose, "{1}: sending bulk request: {0}", command, "InitMappings");
-				traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", command.Url, "InitMappings");
+				traceProvider.Trace(TraceEventType.Verbose, "{1}: sending init mappings request: {0}", command, "InitMappings");
+				traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP PUT uri: {0}", command.Url, "InitMappings");
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
 				HttpResponseMessage response;
@@ -46,7 +46,7 @@ namespace ElasticsearchCRUD.Mapping
 				}
 
 				//resultDetails.Status = response.StatusCode;
-				if (response.StatusCode != HttpStatusCode.OK || response.StatusCode != HttpStatusCode.Created)
+				if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.Created)
 				{
 					traceProvider.Trace(TraceEventType.Warning, "{2}: SaveChangesAsync response status code: {0}, {1}",
 						response.StatusCode, response.ReasonPhrase, "InitMappings");
