@@ -82,19 +82,21 @@ namespace ElasticsearchCRUD
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is an Object: {0}", prop.ToString());
 			// This is a single object and not a reference to it's parent
 
-			var child = GetDocumentType(prop.GetValue(entityInfo.Entity).GetType());
-			var parent = entityInfo.EntityType.Name;
-
-			if (prop.GetValue(entityInfo.Entity) != null && !SerializedTypes.Contains(child + parent) && SaveChildObjectsAsWellAsParent)
+			if (prop.GetValue(entityInfo.Entity) != null  && SaveChildObjectsAsWellAsParent)
 			{
-				SerializedTypes.Add(parent + child);
-				if (ProcessChildDocumentsAsSeparateChildIndex)
+				var child = GetDocumentType(prop.GetValue(entityInfo.Entity).GetType());
+				var parent = entityInfo.EntityType.Name;
+				if (!SerializedTypes.Contains(child + parent))
 				{
-					ProcessSingleObjectAsChildDocument(entityInfo, elasticsearchCrudJsonWriter, prop);
-				}
-				else
-				{	
-					ProcessSingleObjectAsNestedObject(entityInfo, elasticsearchCrudJsonWriter, prop);
+					SerializedTypes.Add(parent + child);
+					if (ProcessChildDocumentsAsSeparateChildIndex)
+					{
+						ProcessSingleObjectAsChildDocument(entityInfo, elasticsearchCrudJsonWriter, prop);
+					}
+					else
+					{
+						ProcessSingleObjectAsNestedObject(entityInfo, elasticsearchCrudJsonWriter, prop);
+					}
 				}
 			}
 		}
