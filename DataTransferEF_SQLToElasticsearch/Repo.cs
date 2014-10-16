@@ -40,7 +40,7 @@ namespace DataTransferSQLToEl
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using ( var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(elasticSearchMappingResolver,true,true)))
 			{
-				//elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
+				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				using (var databaseEfModel = new SQLDataModel())
 				{
 					int pointer = 0;
@@ -61,7 +61,7 @@ namespace DataTransferSQLToEl
 							var ee = item.StateProvince.CountryRegion.Name;
 							elasticSearchContext.AddUpdateEntity(item, item.AddressID);
 						}
-						elasticSearchContext.SaveChanges();
+						elasticSearchContext.SaveChangesAndInitMappingsForChildDocuments();
 						stopwatch.Stop();
 						Console.WriteLine("Time taken to insert {0} Address documents: {1}", interval, stopwatch.Elapsed);
 						stopwatch.Reset();
