@@ -60,7 +60,6 @@ namespace DataTransferSQLToEl
 						{
 							var ee = item.StateProvince.CountryRegion.Name;
 							elasticSearchContext.AddUpdateEntity(item, item.AddressID);
-							string t = "yes";
 						}
 						elasticSearchContext.SaveChanges();
 						stopwatch.Stop();
@@ -99,7 +98,6 @@ namespace DataTransferSQLToEl
 						foreach (var item in collection)
 						{
 							elasticSearchContext.AddUpdateEntity(item, item.BusinessEntityID);
-							string t = "yes";
 						}
 						elasticSearchContext.SaveChanges();
 						stopwatch.Stop();

@@ -57,6 +57,13 @@ namespace ElasticsearchCRUD
 			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T), Entity = null});
 		}
 
+		private bool _saveChangesAndInitMappingsForChildDocuments = false;
+		public ResultDetails<string> SaveChangesAndInitMappingsForChildDocuments()
+		{
+			_saveChangesAndInitMappingsForChildDocuments = true;
+			return SaveChanges();
+		}
+
 		public ResultDetails<string> SaveChanges()
 		{
 			try
@@ -104,8 +111,13 @@ namespace ElasticsearchCRUD
 				string serializedEntities;
 				using (var serializer = new ElasticsearchSerializer(TraceProvider, _elasticsearchSerializerConfiguration))
 				{
-					// TODO ExecuteCommands 
+					
 					var result = serializer.Serialize(_entityPendingChanges);
+					if (_saveChangesAndInitMappingsForChildDocuments)
+					{
+						var initResult = await result.InitMappings.Execute(_client, _connectionString, TraceProvider, _cancellationTokenSource);
+						_saveChangesAndInitMappingsForChildDocuments = false;
+					}
 					serializedEntities = result.Content;
 				}
 				var content = new StringContent(serializedEntities);

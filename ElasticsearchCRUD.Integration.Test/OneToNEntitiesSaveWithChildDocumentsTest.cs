@@ -61,12 +61,12 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 				{
 					new ChildDocumentLevelOne
 					{
-						D2 = "p21",
+						D2 = "p21a",
 						Id = 21,
 						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
 						{
 							Id=31,
-							D3="p31"
+							D3="p31a"
 						}
 					},
 					
@@ -89,7 +89,7 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 				context.AddUpdateEntity(parentDocument, parentDocument.Id);
 
 				// Save to Elasticsearch
-				var ret = context.SaveChanges();
+				var ret = context.SaveChangesAndInitMappingsForChildDocuments();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetEntity<ParentDocument>(parentDocument.Id);

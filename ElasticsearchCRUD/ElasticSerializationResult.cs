@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using ElasticsearchCRUD.Mapping;
+﻿using ElasticsearchCRUD.Mapping;
 
 namespace ElasticsearchCRUD
 {
 	public class ElasticSerializationResult
 	{
-		public List<MappingCommand> CommandsForAllEntities = new List<MappingCommand>();
+		public InitMappings InitMappings { get; set; }
 
 		public string Content { get; set; }
 	}

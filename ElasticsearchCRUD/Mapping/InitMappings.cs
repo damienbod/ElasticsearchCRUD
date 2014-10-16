@@ -25,12 +25,12 @@ namespace ElasticsearchCRUD.Mapping
 		public List<string> CommandTypes = new List<string>();
 		public List<MappingCommand> Commands = new List<MappingCommand>();
 
-		public async Task<ResultDetails<string>> Execute(HttpClient client, ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource)
+		public async Task<ResultDetails<string>> Execute(HttpClient client, string baseUrl, ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource)
 		{
 			var resultDetails = new ResultDetails<string> {Status = HttpStatusCode.InternalServerError};
 			foreach (var command in Commands)
 			{
-				var content = new StringContent(command.Content);
+				var content = new StringContent(command.Content + "\n");
 				traceProvider.Trace(TraceEventType.Verbose, "{1}: sending bulk request: {0}", command, "InitMappings");
 				traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", command.Url, "InitMappings");
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
@@ -38,15 +38,15 @@ namespace ElasticsearchCRUD.Mapping
 				HttpResponseMessage response;
 				if (command.RequestType == "POST")
 				{
-					response = await client.PostAsync(command.Url, content, cancellationTokenSource.Token).ConfigureAwait(true);
+					response = await client.PostAsync(baseUrl + command.Url, content, cancellationTokenSource.Token).ConfigureAwait(true);
 				}
 				else
 				{
-					response = await client.PutAsync(command.Url, content, cancellationTokenSource.Token).ConfigureAwait(true);
+					response = await client.PutAsync(baseUrl + command.Url, content, cancellationTokenSource.Token).ConfigureAwait(true);
 				}
 
 				//resultDetails.Status = response.StatusCode;
-				if (response.StatusCode != HttpStatusCode.OK)
+				if (response.StatusCode != HttpStatusCode.OK || response.StatusCode != HttpStatusCode.Created)
 				{
 					traceProvider.Trace(TraceEventType.Warning, "{2}: SaveChangesAsync response status code: {0}, {1}",
 						response.StatusCode, response.ReasonPhrase, "InitMappings");
@@ -118,6 +118,10 @@ namespace ElasticsearchCRUD.Mapping
 				if (!string.IsNullOrEmpty(parentIdValue))
 				{
 					parentDef = "?parent=" + parentIdValue;
+				}
+				else
+				{
+					parentDef = "?_index";
 				}
 				command.Url = string.Format("/{0}/{1}/{2}{3}", index, indexType, id, parentDef);
 

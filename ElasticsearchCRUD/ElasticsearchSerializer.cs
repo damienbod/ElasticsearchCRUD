@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
 using System.Text.RegularExpressions;
 using ElasticsearchCRUD.Mapping;
 using ElasticsearchCRUD.Tracing;
-using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD
 {
@@ -72,8 +68,7 @@ namespace ElasticsearchCRUD
 			WriteValue("_type", elasticSearchMapping.GetDocumentType(entityInfo.EntityType));
 			WriteValue("_id", entityInfo.Id);
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-		
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();	
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 		}
 
@@ -101,7 +96,7 @@ namespace ElasticsearchCRUD
 					}
 				}
 
-				_elasticSerializationResult.CommandsForAllEntities.AddRange(initMappings.Commands);
+				_elasticSerializationResult.InitMappings = initMappings;
 			}
 			elasticSearchMapping.ChildIndexEntities.Clear();			
 		}
