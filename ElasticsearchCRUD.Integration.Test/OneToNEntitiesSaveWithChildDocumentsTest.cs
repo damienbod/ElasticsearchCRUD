@@ -12,6 +12,32 @@ namespace ElasticsearchCRUD.Integration.Test
 	[TestFixture]
 	public class OneToNEntitiesWithChildDocumentsTest
 	{
+/*		------------------------
+ *      Only works if the index has already been mapped
+
+POST http:/localhost:9200/parentdocuments/parentdocument/7?_index 
+{"id":7,"d1":"p7"}
+
+PUT http://localhost:9200/parentdocuments/childdocumentlevelone/_mapping 
+{
+  "childdocumentlevelone":{
+    "_parent": {"type": "parentdocument"}
+  }
+}
+
+POST http://localhost:9200/parentdocuments/childdocumentlevelone/21?parent=7
+{"id":21,"d2":"p21"}
+
+PUT http://localhost:9200/parentdocuments/childdocumentleveltwo/_mapping
+{
+  "childdocumentleveltwo":{
+    "_parent": {"type": "childdocumentlevelone"}
+  }
+}
+
+POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21 
+{"id":31,"d3":"p31"}
+*/
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
 		[SetUp]
