@@ -83,6 +83,8 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 				}
 			};
 
+
+			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOne), new ElasticSearchMappingChildDocumentLevelOne());
 			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true,true)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
@@ -93,8 +95,18 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetEntity<ParentDocument>(parentDocument.Id);
+				var roundTripResultChildDocumentLevelOne = context.GetEntity<ChildDocumentLevelOne>(parentDocument.ChildDocumentLevelOne.First().Id, parentDocument.Id);
 				Assert.AreEqual(parentDocument.Id, roundTripResult.Id);
+				Assert.AreEqual(parentDocument.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
 			}
+		}
+	}
+
+	public class ElasticSearchMappingChildDocumentLevelOne : ElasticSearchMapping
+	{
+		public override string GetIndexForType(Type type)
+		{
+			return "parentdocuments";
 		}
 	}
 
