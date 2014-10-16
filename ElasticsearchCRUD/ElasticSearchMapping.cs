@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
@@ -31,7 +32,6 @@ namespace ElasticsearchCRUD
 			{
 				BeginNewEntityToDocumentMapping(entityInfo, beginMappingTree);
 
-				SerializedTypes.Add(GetDocumentType(entityInfo.Entity.GetType()));
 				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}", GetDocumentType(entityInfo.Entity.GetType()));
 				var propertyInfo = entityInfo.Entity.GetType().GetProperties();
 				foreach (var prop in propertyInfo)
@@ -81,8 +81,13 @@ namespace ElasticsearchCRUD
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is an Object: {0}", prop.ToString());
 			// This is a single object and not a reference to it's parent
-			if (prop.GetValue(entityInfo.Entity) != null && !SerializedTypes.Contains(GetDocumentType(prop.GetValue(entityInfo.Entity).GetType())) && SaveChildObjectsAsWellAsParent)
+
+			var child = GetDocumentType(prop.GetValue(entityInfo.Entity).GetType());
+			var parent = entityInfo.EntityType.Name;
+
+			if (prop.GetValue(entityInfo.Entity) != null && !SerializedTypes.Contains(child + parent) && SaveChildObjectsAsWellAsParent)
 			{
+				SerializedTypes.Add(parent + child);
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
 					ProcessSingleObjectAsChildDocument(entityInfo, elasticsearchCrudJsonWriter, prop);
@@ -159,8 +164,12 @@ namespace ElasticsearchCRUD
 			var typeOfEntity = prop.GetValue(entityInfo.Entity).GetType().GetGenericArguments();
 			if (typeOfEntity.Length > 0)
 			{
-				if (!SerializedTypes.Contains(GetDocumentType(typeOfEntity[0])))
+				var child = GetDocumentType(typeOfEntity[0]);
+				var parent = entityInfo.EntityType.Name;
+
+				if (!SerializedTypes.Contains(child + parent))
 				{
+					SerializedTypes.Add(parent + child);
 					TraceProvider.Trace(TraceEventType.Verbose,
 						"ElasticSearchMapping: SerializedTypes type ok, BEGIN ARRAY or COLLECTION: {0}", typeOfEntity[0]);
 					TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}",
@@ -187,8 +196,12 @@ namespace ElasticsearchCRUD
 			var typeOfEntity = prop.GetValue(entityInfo.Entity).GetType().GetGenericArguments();
 			if (typeOfEntity.Length > 0)
 			{
-				if (!SerializedTypes.Contains(GetDocumentType(typeOfEntity[0])))
+				var child = GetDocumentType(typeOfEntity[0]);
+				var parent = entityInfo.EntityType.Name;
+
+				if (!SerializedTypes.Contains(child + parent))
 				{
+					SerializedTypes.Add(parent + child);
 					TraceProvider.Trace(TraceEventType.Verbose,
 						"ElasticSearchMapping: SerializedTypes type ok, BEGIN ARRAY or COLLECTION: {0}", typeOfEntity[0]);
 					TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}",
