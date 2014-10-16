@@ -87,7 +87,7 @@ namespace ElasticsearchCRUD
 			if (prop.GetValue(entityInfo.Entity) != null  && SaveChildObjectsAsWellAsParent)
 			{
 				var child = GetDocumentType(prop.GetValue(entityInfo.Entity).GetType());
-				var parent = entityInfo.EntityType.Name;
+				var parent = GetDocumentType(entityInfo.EntityType);
 				if (!SerializedTypes.Contains(child + parent))
 				{
 					SerializedTypes.Add(parent + child);
@@ -148,8 +148,8 @@ namespace ElasticsearchCRUD
 					{
 						Entity = entity,
 						ParentId = parentEntityInfo.Id,
-						EntityType = entity.GetType(),
-						ParentEntityType = parentEntityInfo.EntityType,
+						EntityType = GetEntityDocumentType(entity.GetType()),
+						ParentEntityType = GetEntityDocumentType(parentEntityInfo.EntityType),
 						DeleteEntity = parentEntityInfo.DeleteEntity,
 						Id = obj.ToString() 
 					};
@@ -171,7 +171,7 @@ namespace ElasticsearchCRUD
 			if (typeOfEntity.Length > 0)
 			{
 				var child = GetDocumentType(typeOfEntity[0]);
-				var parent = entityInfo.EntityType.Name;
+				var parent = GetDocumentType(entityInfo.EntityType);
 
 				if (!SerializedTypes.Contains(child + parent))
 				{
@@ -203,7 +203,7 @@ namespace ElasticsearchCRUD
 			if (typeOfEntity.Length > 0)
 			{
 				var child = GetDocumentType(typeOfEntity[0]);
-				var parent = entityInfo.EntityType.Name;
+				var parent = GetDocumentType(entityInfo.EntityType);
 
 				if (!SerializedTypes.Contains(child + parent))
 				{
@@ -368,6 +368,16 @@ namespace ElasticsearchCRUD
 				type = type.BaseType;
 			}
 			return type.Name.ToLower();
+		}
+
+		public virtual Type GetEntityDocumentType(Type type)
+		{
+			// Adding support for EF types
+			if (type.BaseType != null && type.Namespace == "System.Data.Entity.DynamicProxies")
+			{
+				type = type.BaseType;
+			}
+			return type;
 		}
 
 		// pluralize the default type

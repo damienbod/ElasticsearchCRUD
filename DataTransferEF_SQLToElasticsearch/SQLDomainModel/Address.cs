@@ -11,6 +11,7 @@ namespace DataTransferSQLToEl.SQLDomainModel
     [Table("Person.Address")]
     public partial class Address
     {
+		[Key]
         public int AddressID { get; set; }
 
         [Required]

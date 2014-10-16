@@ -14,6 +14,7 @@ namespace DataTransferSQLToEl.SQLDomainModel
             Address = new HashSet<Address>();
         }
 
+		[Key]
         public int StateProvinceID { get; set; }
 
         [Required]
