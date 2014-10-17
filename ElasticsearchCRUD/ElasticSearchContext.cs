@@ -196,6 +196,11 @@ namespace ElasticsearchCRUD
 					TraceProvider.Trace(TraceEventType.Warning, "HttpStatusCode.NotFound");
 					throw new ElasticsearchCrudException("HttpStatusCode.NotFound");
 				}
+				if (task.Result.Status == HttpStatusCode.BadRequest)
+				{
+					TraceProvider.Trace(TraceEventType.Warning, "HttpStatusCode.BadRequest");
+					throw new ElasticsearchCrudException("HttpStatusCode.BadRequest" + task.Result.Description);
+				}
 				return task.Result.PayloadResult;
 			}
 			catch (AggregateException ae)
@@ -241,6 +246,11 @@ namespace ElasticsearchCRUD
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 						resultDetails.Description = errorInfo;
+						if (errorInfo.Contains("RoutingMissingException"))
+						{
+							throw new ElasticsearchCrudException("HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+						}
+
 						return resultDetails;
 					}
 				}
