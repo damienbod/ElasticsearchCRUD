@@ -51,7 +51,7 @@ https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvi
 - Exception Handling for M-N relationships, and circular relationships detection
 - Support for 1 to N Entity Framework entities
 
-- <strong>Version 1.0.5</strong><em> 2014.10.05</em>
+<strong>Version 1.0.5</strong><em> 2014.10.05</em>
 - Support Array of Objects Property in entity as NESTED document
 - Support Collection of Objects Property in entity as NESTED documents 
 - Support Single Object Property in entity as NESTED document
