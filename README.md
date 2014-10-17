@@ -29,6 +29,14 @@ https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvi
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.8</strong><em> 2014.10.17</em>
+- Support Collection of Objects Property in entity as child documents
+- Support Single Object Property in entity as child document
+- Support Array of Objects Property in entity as child documents
+- Add JsonIgnore Property Attribute for Elasticsearch
+- Add Configuration/Mapping for child Object definition NESTED or document 
+- Bug Fix Only the first child object is processed if it is defined in a parent List 
+
 <strong>Version 1.0.7</strong><em> 2014.10.12</em>
 - Bug in 1-n-m-1 mapping for EF entities
 - Added diagnostics for HttpClient Request and response
