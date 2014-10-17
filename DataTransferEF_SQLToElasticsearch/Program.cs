@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DataTransferSQLToEl
 {
@@ -12,10 +8,10 @@ namespace DataTransferSQLToEl
 		{
 			Repo repo = new Repo();
 			//repo.SaveToElasticsearchPerson();
+			
 			repo.SaveToElasticsearchAddress();
-
-			var dd = repo.GetAddressFromElasticsearch("US");
-			Console.WriteLine(dd);
+			var addressX = repo.GetAddressFromElasticsearch("22");
+			Console.WriteLine(addressX);
 		}
 	}
 }
