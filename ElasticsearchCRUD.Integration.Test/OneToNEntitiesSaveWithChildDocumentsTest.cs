@@ -32,6 +32,38 @@ PUT http://localhost:9200/parentdocuments/childdocumentleveltwo/_mapping
 
 POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21 
 {"id":31,"d3":"p31"}
+ 
+http://localhost:9200/parentdocuments/parentdocument/_search
+{
+  "query": {
+    "has_child": {
+      "type": "childdocumentlevelone",
+      "query" : {
+        "filtered": {
+          "query": { "match_all": {}}
+         
+        }
+      }
+    }
+  }
+}
+
+http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
+{
+  "query": {
+    "has_parent": {
+      "type": "childdocumentlevelone",
+      "query" : {
+        "filtered": {
+          "query": { "match_all": {}}
+         
+        }
+      }
+    }
+  }
+}
+
+ 
 */
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -54,8 +86,8 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<ParentDocument>();
-				entityResult.Wait();
+				//var entityResult = context.DeleteIndexAsync<ParentDocument>();
+				//entityResult.Wait();
 			}
 		}
 

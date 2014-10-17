@@ -82,9 +82,9 @@ namespace ElasticsearchCRUD.Mapping
 
 		public void CreateIndexMapping(string index, string parentType, string childType)
 		{
-			if (!CommandTypes.Contains("CreateIndexMapping" + index + parentType + childType))
+			if (!CommandTypes.Contains("CreateMappingForIndex_" + index + parentType + childType))
 			{
-				CommandTypes.Add("CreateIndexMapping" + index + parentType + childType);
+				
 				var command = new MappingCommand {Url = string.Format("/{0}/{1}/_mapping", index, childType), RequestType = "PUT"};
 
 				var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
@@ -101,7 +101,18 @@ namespace ElasticsearchCRUD.Mapping
 
 				command.Content = elasticsearchCrudJsonWriter.Stringbuilder.ToString();
 
-				Commands.Add(command);
+				var test = CommandTypes.FindIndex(t => t.EndsWith(childType) && t.StartsWith("CreateIndex"));
+				if (test > 0)
+				{
+					CommandTypes.Insert(test - 1, "CreateMappingForIndex_" + index + parentType + childType);
+					Commands.Insert(test -1, command);
+				}
+				else
+				{
+					CommandTypes.Add("CreateMappingForIndex_" + index + parentType + childType);
+					Commands.Add(command);
+				}
+				
 			}
 		}
 
@@ -109,9 +120,10 @@ namespace ElasticsearchCRUD.Mapping
 		//{"id":7,"d1":"p7"}
 		public void CreateIndex(string index, string indexType, string parentIdValue, string id, string content)
 		{
-			if (!CommandTypes.Contains("CreateIndex" + index + indexType))
+			if (!CommandTypes.Contains("CreateIndex_" + index + indexType))
 			{
-				CommandTypes.Add("CreateIndex" + index + indexType);
+				// TODO if a index exists for this type, we need to insert this before the index
+				CommandTypes.Add("CreateIndex_" + index + indexType);
 				string parentDef = "";
 				var command = new MappingCommand {Content = content, RequestType = "POST"};
 
