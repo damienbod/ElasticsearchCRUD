@@ -21,6 +21,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult = context.DeleteIndexAsync<TestNestedDocumentLevelOneHashSet>(); entityResult.Wait();
 				var secondDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneCollection>(); secondDelete.Wait();
 				var thirdDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneArray>(); thirdDelete.Wait();
+				var fourthDelete = context.DeleteIndexAsync<SkillDocument>(); fourthDelete.Wait();	
 			}
 		}
 

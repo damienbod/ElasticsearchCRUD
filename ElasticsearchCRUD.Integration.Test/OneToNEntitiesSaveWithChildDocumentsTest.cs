@@ -7,12 +7,7 @@ using System.Net;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
-namespace ElasticsearchCRUD.Integration.Test
-{
-	[TestFixture]
-	public class OneToNEntitiesWithChildDocumentsTest
-	{
-/*		------------------------
+/*		----------- EXAMPLE -------------
  *      Only works if the index has already been mapped
 
 POST http:/localhost:9200/parentdocuments/parentdocument/7?_index 
@@ -38,6 +33,13 @@ PUT http://localhost:9200/parentdocuments/childdocumentleveltwo/_mapping
 POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21 
 {"id":31,"d3":"p31"}
 */
+
+namespace ElasticsearchCRUD.Integration.Test
+{
+	[TestFixture]
+	public class OneToNEntitiesWithChildDocumentsTest
+	{
+
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
 		[TestFixtureSetUp]
@@ -109,23 +111,41 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 				{
 					new ChildDocumentLevelOne
 					{
-						D2 = "p21a",
+						D2 = "p7.p21",
 						Id = 21,
 						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
 						{
 							Id = 31,
-							D3 = "p31a"
+							D3 = "p7.p21.p31"
 						}
 					},
 					new ChildDocumentLevelOne
 					{
-						D2 = "p22",
+						D2 = "p7.p21.p22",
 						Id = 22,
 						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
 						{
 							Id = 32,
-							D3 = "p32"
+							D3 = "p7.p21.p32"
 						}
+					}				
+				},
+				ChildDocumentLevelTwoFromTop = new ChildDocumentLevelTwo[]
+				{
+					new ChildDocumentLevelTwo
+					{
+						Id = 71,
+						D3 = "p7.testComplex71"
+					},
+					new ChildDocumentLevelTwo
+					{
+						Id = 72,
+						D3 = "p7.testComplex72"
+					},
+					new ChildDocumentLevelTwo
+					{
+						Id = 73,
+						D3 = "p7.testComplex73"
 					}
 				}
 			};
@@ -142,23 +162,31 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 				{
 					new ChildDocumentLevelOne
 					{
-						D2 = "p25f",
+						D2 = "p8.p25",
 						Id = 25,
 						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
 						{
 							Id = 35,
-							D3 = "p35a"
+							D3 = "p8.p25.p35"
 						}
 					},
 					new ChildDocumentLevelOne
 					{
-						D2 = "p26",
+						D2 = "p8.p26",
 						Id = 26,
 						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
 						{
 							Id = 36,
-							D3 = "p36"
+							D3 = "p8.p26.p36"
 						}
+					}
+				},
+				ChildDocumentLevelTwoFromTop = new ChildDocumentLevelTwo[]
+				{
+					new ChildDocumentLevelTwo
+					{
+						Id = 81,
+						D3 = "p8.testComplex81"
 					}
 				}
 			};
@@ -181,6 +209,7 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 		public string D1 { get; set; }
 
 		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }
+		public virtual ChildDocumentLevelTwo[] ChildDocumentLevelTwoFromTop { get; set; }
 	}
 
 	public class ChildDocumentLevelOne
