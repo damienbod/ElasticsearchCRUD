@@ -73,8 +73,15 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 
-		[TearDown]
-		public void TestTearDown()
+
+		[TestFixtureSetUp]
+		public void FixtureSetup()
+		{
+			TestCreateCompletelyNewIndex(new ConsoleTraceProvider());
+		}
+
+		[TestFixtureTearDown]
+		public void FixtureTearDown()
 		{
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
@@ -85,22 +92,22 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		public void TestDefaultContextParentWithACollectionOfChildDocuments()
-		{
-			TestCreateCompletelyNewIndex( new ConsoleTraceProvider());
+		public void TestAddUpdateWithExistingMappingsTest()
+		{		
 			TestAddUpdateWithExistingMappings();
-			TestCreateIndexNewChildItem();
+		}
 
-			try
-			{
-				TestCreateIndexNewChildItemExceptionMissingParentId();
-				throw new Exception("Missing RoutingMissingException, test failed");
-			}
-			catch (ElasticsearchCrudException exception)
-			{
-				Assert.AreEqual("HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...", exception.Message);
-			}
-			
+		[Test]
+		public void TestCreateIndexNewChildItemTest()
+		{
+			TestCreateIndexNewChildItem();
+		}
+
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException),ExpectedMessage = "HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...")]
+		public void TestCreateIndexNewChildItemExceptionMissingParentIdTest()
+		{
+			TestCreateIndexNewChildItemExceptionMissingParentId();
 		}
 
 		private void TestCreateCompletelyNewIndex(ITraceProvider trace)
