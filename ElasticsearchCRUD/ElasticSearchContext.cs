@@ -42,13 +42,12 @@ namespace ElasticsearchCRUD
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
 			_elasticSearchMappingResolver = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver;
 			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
-
 		}
 
-		public void AddUpdateEntity(object entity, object id)
+		public void AddUpdateEntity(object entity, object id, object parentId = null)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Adding entity: {0}, {1} to pending list", entity.GetType().Name, id, "ElasticSearchContext");
-			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType() , Entity = entity });
+			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType(), Entity = entity, ParentId = parentId });
 		}
 
 		public void DeleteEntity<T>(object id)

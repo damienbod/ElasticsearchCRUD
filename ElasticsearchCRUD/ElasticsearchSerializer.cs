@@ -110,6 +110,11 @@ namespace ElasticsearchCRUD
 			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticSearchMapping.GetDocumentType(entityInfo.EntityType));
 			WriteValue("_id", entityInfo.Id);
+			if (entityInfo.ParentId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
+			{
+				// It's a document which belongs to a parent
+				WriteValue("_parent", entityInfo.ParentId);
+			}
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n"); //ES requires this \n separator
