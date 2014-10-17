@@ -57,6 +57,13 @@ namespace ElasticsearchCRUD
 			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T), Entity = null});
 		}
 
+		private bool _saveChangesAndInitMappingsForChildDocuments;
+		public ResultDetails<string> SaveChangesAndInitMappingsForChildDocuments()
+		{
+			_saveChangesAndInitMappingsForChildDocuments = true;
+			return SaveChanges();
+		}
+
 		public ResultDetails<string> SaveChanges()
 		{
 			try
@@ -104,7 +111,14 @@ namespace ElasticsearchCRUD
 				string serializedEntities;
 				using (var serializer = new ElasticsearchSerializer(TraceProvider, _elasticsearchSerializerConfiguration))
 				{
-					serializedEntities = serializer.Serialize(_entityPendingChanges);
+					
+					var result = serializer.Serialize(_entityPendingChanges);
+					if (_saveChangesAndInitMappingsForChildDocuments)
+					{
+						await result.InitMappings.Execute(_client, _connectionString, TraceProvider, _cancellationTokenSource);
+						_saveChangesAndInitMappingsForChildDocuments = false;
+					}
+					serializedEntities = result.Content;
 				}
 				var content = new StringContent(serializedEntities);
 				TraceProvider.Trace(TraceEventType.Verbose, "{1}: sending bulk request: {0}", serializedEntities, "ElasticSearchContext");
@@ -172,11 +186,11 @@ namespace ElasticsearchCRUD
 			}
 		}
 
-		public T GetEntity<T>(object entityId)
+		public T GetEntity<T>(object entityId, object parentId = null)
 		{
 			try
 			{
-				var task = Task.Run(() => GetEntityAsync<T>(entityId));
+				var task = Task.Run(() => GetEntityAsync<T>(entityId, parentId));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -203,7 +217,7 @@ namespace ElasticsearchCRUD
 			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for GetEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContext"));
 		}
 
-		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId)
+		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId, object parentId = null)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Request for select entity with id: {0}, Type: {1}", entityId, typeof(T), "ElasticSearchContext");
 			var resultDetails = new ResultDetails<T>{Status=HttpStatusCode.InternalServerError};
@@ -211,7 +225,12 @@ namespace ElasticsearchCRUD
 			{
 				var elasticSearchMapping = _elasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
-				var uri = new Uri(elasticsearchUrlForEntityGet + entityId);
+				var parentMapping = "";
+				if (parentId != null)
+				{
+					parentMapping = "?parent=" + parentId;
+				}
+				var uri = new Uri(elasticsearchUrlForEntityGet + entityId + parentMapping);
 				TraceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "ElasticSearchContext");
 				var response = await _client.GetAsync(uri,  _cancellationTokenSource.Token).ConfigureAwait(false);
 

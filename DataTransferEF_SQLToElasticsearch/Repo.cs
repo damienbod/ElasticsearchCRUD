@@ -38,7 +38,7 @@ namespace DataTransferSQLToEl
 		public void SaveToElasticsearchAddress()
 		{
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
+			using ( var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(elasticSearchMappingResolver,true,true)))
 			{
 				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				using (var databaseEfModel = new SQLDataModel())
@@ -52,7 +52,7 @@ namespace DataTransferSQLToEl
 						stopwatch.Start();
 						var collection = databaseEfModel.Address.OrderBy(t => t.AddressID).Skip(pointer).Take(interval).ToList<Address>();
 						stopwatch.Stop();
-						Console.WriteLine("Time taken for select {0} CountryRegionCode: {1}", interval, stopwatch.Elapsed);
+						Console.WriteLine("Time taken for select {0} Address: {1}", interval, stopwatch.Elapsed);
 						stopwatch.Reset();
 
 						stopwatch.Start();
@@ -60,11 +60,10 @@ namespace DataTransferSQLToEl
 						{
 							var ee = item.StateProvince.CountryRegion.Name;
 							elasticSearchContext.AddUpdateEntity(item, item.AddressID);
-							string t = "yes";
 						}
-						elasticSearchContext.SaveChanges();
+						elasticSearchContext.SaveChangesAndInitMappingsForChildDocuments();
 						stopwatch.Stop();
-						Console.WriteLine("Time taken to insert {0} CountryRegionCode documents: {1}", interval, stopwatch.Elapsed);
+						Console.WriteLine("Time taken to insert {0} Address documents: {1}", interval, stopwatch.Elapsed);
 						stopwatch.Reset();
 						pointer = pointer + interval;
 						Console.WriteLine("Transferred: {0} items", pointer);
@@ -99,7 +98,6 @@ namespace DataTransferSQLToEl
 						foreach (var item in collection)
 						{
 							elasticSearchContext.AddUpdateEntity(item, item.BusinessEntityID);
-							string t = "yes";
 						}
 						elasticSearchContext.SaveChanges();
 						stopwatch.Stop();
