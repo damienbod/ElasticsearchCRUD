@@ -232,6 +232,10 @@ namespace ElasticsearchCRUD
 				var parentMapping = "";
 				if (parentId != null)
 				{
+					// TODO Add Content mapping
+					//parentMapping = "/_search";
+
+					// TO DELETE
 					parentMapping = "?parent=" + parentId;
 				}
 				var uri = new Uri(elasticsearchUrlForEntityGet + entityId + parentMapping);
