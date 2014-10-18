@@ -63,6 +63,51 @@ http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
   }
 }
 
+// Search for a + to n relationship
+http://localhost:9200/parentdocuments/childdocumentlevelone/_search
+{
+  "query": {
+    "filtered": {
+      "query": {"match_all": {}},
+      "filter": {
+        "and": [
+          {"term": {"id": 21}},
+          {
+            "has_parent": {
+              "type": "parentdocument",
+              "query": {
+                "term": {"id": "7"}
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
+http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
+{
+  "query": {
+    "filtered": {
+      "query": {"match_all": {}},
+      "filter": {
+        "and": [
+          {"term": {"id": 46}},
+          {
+            "has_parent": {
+              "type": "childdocumentlevelone",
+              "query": {
+                "term": {"id": "21"}
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+
  
 */
 
@@ -83,12 +128,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
-			{
-				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<ParentDocument>();
-				entityResult.Wait();
-			}
+			//using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			//{
+			//	context.AllowDeleteForIndex = true;
+			//	var entityResult = context.DeleteIndexAsync<ParentDocument>();
+			//	entityResult.Wait();
+			//}
 		}
 
 		[Test]
@@ -100,14 +145,84 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestCreateIndexNewChildItemTest()
 		{
-			TestCreateIndexNewChildItem();
+			int parentId = 21;
+			// This could return NOT FOUND 404 or OK 200. It all depends is the routing matches the same shard. It does not search for the exact parent
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				var testObject = new ChildDocumentLevelTwo
+				{
+					Id = 46,
+					D3 = "p7.p21.p46"
+				};
+
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateEntity(testObject, testObject.Id, parentId);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id, parentId);
+
+				// TODO check that this object has been added as a child doc to the define mapping
+				Assert.AreEqual(testObject.Id, roundTripResult.Id);
+			}
+		}
+
+		[Test]
+		public void TestCreateIndexNewChildItemTestParentDoesNotExist()
+		{
+			int parentId = 332;
+			// This could return NOT FOUND 404 or OK 200. It all depends is the routing matches the same shard. It does not search for the exact parent
+			
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				var testObject = new ChildDocumentLevelTwo
+				{
+					Id = 46,
+					D3 = "p7.p21.p46"
+				};
+
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateEntity(testObject, testObject.Id, parentId);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id, parentId);
+
+				// TODO check that this object has been added as a child doc to the define mapping
+				Assert.AreEqual(testObject.Id, roundTripResult.Id);
+			}
 		}
 
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException),ExpectedMessage = "HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...")]
 		public void TestCreateIndexNewChildItemExceptionMissingParentIdTest()
 		{
-			TestCreateIndexNewChildItemExceptionMissingParentId();
+			const int parentId = 21;
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				var testObject = new ChildDocumentLevelTwo
+				{
+					Id = 46,
+					D3 = "p7.p21.p46"
+				};
+
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateEntity(testObject, testObject.Id, parentId);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id);
+
+				// TODO check that this object has been added as a child doc to the define mapping
+				Assert.AreEqual(testObject.Id, roundTripResult.Id);
+			}
 		}
 
 		private void TestCreateCompletelyNewIndex(ITraceProvider trace)
@@ -165,56 +280,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		private void TestCreateIndexNewChildItem()
-		{
-			const int parentId = 21;
-			using ( var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
-			{
-				var testObject = new ChildDocumentLevelTwo
-				{
-					Id = 46,
-					D3 = "p7.p21.p46"
-				};
-
-				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testObject, testObject.Id, parentId);
-
-				// Save to Elasticsearch
-				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id, parentId);
-
-				// TODO check that this object has been added as a child doc to the define mapping
-				Assert.AreEqual(testObject.Id, roundTripResult.Id);
-			}
-		}
-
-		private void TestCreateIndexNewChildItemExceptionMissingParentId()
-		{
-			const int parentId = 21;
-			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
-			{
-				var testObject = new ChildDocumentLevelTwo
-				{
-					Id = 46,
-					D3 = "p7.p21.p46"
-				};
-
-				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testObject, testObject.Id, parentId);
-
-				// Save to Elasticsearch
-				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id);
-
-				// TODO check that this object has been added as a child doc to the define mapping
-				Assert.AreEqual(testObject.Id, roundTripResult.Id);
-			}
-		}
-
 		private static ParentDocument ParentDocument()
 		{
 			var parentDocument = new ParentDocument
@@ -241,26 +306,26 @@ namespace ElasticsearchCRUD.Integration.Test
 						{
 							Id = 32,
 							D3 = "p7.p21.p32"
+						},
+						ChildDocumentLevelTwoFromTop = new ChildDocumentLevelTwo[]
+						{
+							new ChildDocumentLevelTwo
+							{
+								Id = 71,
+								D3 = "p7.p21.testComplex71"
+							},
+							new ChildDocumentLevelTwo
+							{
+								Id = 72,
+								D3 = "p7.p21.testComplex72"
+							},
+							new ChildDocumentLevelTwo
+							{
+								Id = 73,
+								D3 = "p7.p21.testComplex73"
+							}
 						}
 					}				
-				},
-				ChildDocumentLevelTwoFromTop = new ChildDocumentLevelTwo[]
-				{
-					new ChildDocumentLevelTwo
-					{
-						Id = 71,
-						D3 = "p7.testComplex71"
-					},
-					new ChildDocumentLevelTwo
-					{
-						Id = 72,
-						D3 = "p7.testComplex72"
-					},
-					new ChildDocumentLevelTwo
-					{
-						Id = 73,
-						D3 = "p7.testComplex73"
-					}
 				}
 			};
 			return parentDocument;
@@ -292,15 +357,15 @@ namespace ElasticsearchCRUD.Integration.Test
 						{
 							Id = 36,
 							D3 = "p8.p26.p36"
+						},
+						ChildDocumentLevelTwoFromTop = new ChildDocumentLevelTwo[]
+						{
+							new ChildDocumentLevelTwo
+							{
+								Id = 81,
+								D3 = "p8.p26.testComplex81"
+							}
 						}
-					}
-				},
-				ChildDocumentLevelTwoFromTop = new ChildDocumentLevelTwo[]
-				{
-					new ChildDocumentLevelTwo
-					{
-						Id = 81,
-						D3 = "p8.testComplex81"
 					}
 				}
 			};
@@ -322,8 +387,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public long Id { get; set; }
 		public string D1 { get; set; }
 
-		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }
-		public virtual ChildDocumentLevelTwo[] ChildDocumentLevelTwoFromTop { get; set; }
+		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }	
 	}
 
 	public class ChildDocumentLevelOne
@@ -332,6 +396,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public long Id { get; set; }
 		public string D2 { get; set; }
 
+		public virtual ChildDocumentLevelTwo[] ChildDocumentLevelTwoFromTop { get; set; }
 		public virtual ChildDocumentLevelTwo ChildDocumentLevelTwo { get; set; }
 	}
 
