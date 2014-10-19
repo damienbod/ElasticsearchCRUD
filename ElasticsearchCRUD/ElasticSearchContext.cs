@@ -1,25 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.Tracing;
-using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD
 {
 	public class ElasticSearchContext : IDisposable 
-	{
-		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver;
-
-		private const string BatchOperationPath = "/_bulk";
+	{	
 		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
-		private readonly Uri _elasticsearchUrlBatch;
 		private readonly HttpClient _client = new HttpClient();
 		private readonly List<EntityContextInfo> _entityPendingChanges = new List<EntityContextInfo>();	
 		private readonly string _connectionString;
@@ -33,8 +26,6 @@ namespace ElasticsearchCRUD
 			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
-			_elasticSearchMappingResolver = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver;
-			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
 		}
 
 		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver)
@@ -42,8 +33,6 @@ namespace ElasticsearchCRUD
 			_elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(elasticSearchMappingResolver);
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
-			_elasticSearchMappingResolver = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver;
-			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
 		}
 
 		public void AddUpdateEntity(object entity, object id, object parentId = null)
@@ -58,10 +47,8 @@ namespace ElasticsearchCRUD
 			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T), Entity = null});
 		}
 
-
 		public ResultDetails<string> SaveChangesAndInitMappingsForChildDocuments()
 		{
-
 			var elasticsearchContextAddDeleteUpdate = new ElasticsearchContextAddDeleteUpdate(
 					TraceProvider,
 					_cancellationTokenSource,
@@ -70,7 +57,7 @@ namespace ElasticsearchCRUD
 					_connectionString
 			);
 
-			return elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, _elasticsearchUrlBatch, true);
+			return elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, true);
 		}
 
 		public ResultDetails<string> SaveChanges()
@@ -83,7 +70,7 @@ namespace ElasticsearchCRUD
 					_connectionString
 			);
 
-			return elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, _elasticsearchUrlBatch, false);
+			return elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, false);
 		}
 
 		public async Task<ResultDetails<string>> SaveChangesAsync()
@@ -96,7 +83,7 @@ namespace ElasticsearchCRUD
 					_connectionString
 					);
 
-			return await elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges, _elasticsearchUrlBatch);
+			return await elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
 		public T GetEntity<T>(object entityId, object parentId = null)

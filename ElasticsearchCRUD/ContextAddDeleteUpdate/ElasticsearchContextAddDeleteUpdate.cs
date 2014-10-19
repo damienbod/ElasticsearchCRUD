@@ -13,12 +13,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
 	public class ElasticsearchContextAddDeleteUpdate
 	{
+		private const string BatchOperationPath = "/_bulk";
 		private readonly ITraceProvider _traceProvider;
 		private readonly CancellationTokenSource _cancellationTokenSource;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
 		private readonly HttpClient _client;
 		private readonly string _connectionString;
 		private bool _saveChangesAndInitMappingsForChildDocuments;
+		private Uri _elasticsearchUrlBatch;
 
 		public ElasticsearchContextAddDeleteUpdate(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
 		{
@@ -27,14 +29,15 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_client = client;
 			_connectionString = connectionString;
+			_elasticsearchUrlBatch = new Uri(new Uri(connectionString), BatchOperationPath);
 		}
 
-		public ResultDetails<string> SaveChanges(List<EntityContextInfo> entityPendingChanges, Uri elasticsearchUrlBatch, bool saveChangesAndInitMappingsForChildDocuments)
+		public ResultDetails<string> SaveChanges(List<EntityContextInfo> entityPendingChanges, bool saveChangesAndInitMappingsForChildDocuments)
 		{
 			_saveChangesAndInitMappingsForChildDocuments = saveChangesAndInitMappingsForChildDocuments;
 			try
 			{
-				var task = Task.Run(() => SaveChangesAsync(entityPendingChanges, elasticsearchUrlBatch));
+				var task = Task.Run(() => SaveChangesAsync(entityPendingChanges));
 				task.Wait();
 				if (!string.IsNullOrEmpty(task.Result.Description))
 				{
@@ -61,7 +64,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			throw new ElasticsearchCrudException("ElasticSearchContext: Unknown error for SaveChanges");
 		}
 
-		public async Task<ResultDetails<string>> SaveChangesAsync(List<EntityContextInfo> entityPendingChanges, Uri elasticsearchUrlBatch)
+		public async Task<ResultDetails<string>> SaveChangesAsync(List<EntityContextInfo> entityPendingChanges)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{0}: Save changes to Elasticsearch started", "ElasticsearchContextAddDeleteUpdate");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
@@ -88,9 +91,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				}
 				var content = new StringContent(serializedEntities);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: sending bulk request: {0}", serializedEntities, "ElasticsearchContextAddDeleteUpdate");
-				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", elasticsearchUrlBatch.AbsoluteUri, "ElasticsearchContextAddDeleteUpdate");
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", _elasticsearchUrlBatch.AbsoluteUri, "ElasticsearchContextAddDeleteUpdate");
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-				var response = await _client.PostAsync(elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(true);
+				var response = await _client.PostAsync(_elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(true);
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
