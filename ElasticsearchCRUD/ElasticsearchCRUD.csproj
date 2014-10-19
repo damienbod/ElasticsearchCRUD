@@ -48,15 +48,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
+    <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
-    <Compile Include="ElasticSerializationResult.cs" />
-    <Compile Include="Mapping\InitMappings.cs" />
+    <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />
+    <Compile Include="ContextAddDeleteUpdate\InitMappings.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticSearchContext.cs" />
     <Compile Include="ElasticsearchCrudException.cs" />
     <Compile Include="ElasticSearchMappingResolver.cs" />
-    <Compile Include="ElasticsearchSerializer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\ElasticsearchSerializer.cs" />
     <Compile Include="ElasticSearchMapping.cs" />
     <Compile Include="EntityContextInfo.cs" />
     <Compile Include="IElasticSearchMappingResolver.cs" />
@@ -68,6 +70,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Search\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

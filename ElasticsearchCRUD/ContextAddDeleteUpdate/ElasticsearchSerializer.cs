@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using ElasticsearchCRUD.Mapping;
 using ElasticsearchCRUD.Tracing;
 
-namespace ElasticsearchCRUD
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
 	public class ElasticsearchSerializer  : IDisposable
 	{

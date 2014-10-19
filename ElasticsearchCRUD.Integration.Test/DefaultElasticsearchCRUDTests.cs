@@ -150,7 +150,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		[ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "HttpStatusCode.NotFound")]
+		[ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
 		public void TestDefaultContextGetEntityNotFound()
 		{
 			const int entityId = 39994;
@@ -164,7 +164,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		[ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "HttpStatusCode.NotFound")]
+		[ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
 		public void TestDefaultContextGetEntityIndexNotFound()
 		{
 			const int entityId = 39994;

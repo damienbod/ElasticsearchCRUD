@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -9,7 +8,7 @@ using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
 
-namespace ElasticsearchCRUD.Mapping
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
 	public class MappingCommand
 	{
@@ -104,6 +103,7 @@ namespace ElasticsearchCRUD.Mapping
 				var test = CommandTypes.FindIndex(t => t.EndsWith(childType) && t.StartsWith("CreateIndex"));
 				if (test > 0)
 				{
+					// TODO throw not supported exception
 					CommandTypes.Insert(test - 1, "CreateMappingForIndex_" + index + parentType + childType);
 					Commands.Insert(test -1, command);
 				}
@@ -122,7 +122,6 @@ namespace ElasticsearchCRUD.Mapping
 		{
 			if (!CommandTypes.Contains("CreateIndex_" + index + indexType))
 			{
-				// TODO if a index exists for this type, we need to insert this before the index
 				CommandTypes.Add("CreateIndex_" + index + indexType);
 				string parentDef = "";
 				var command = new MappingCommand {Content = content, RequestType = "POST"};

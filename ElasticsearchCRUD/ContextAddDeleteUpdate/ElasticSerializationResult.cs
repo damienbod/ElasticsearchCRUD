@@ -1,6 +1,4 @@
-﻿using ElasticsearchCRUD.Mapping;
-
-namespace ElasticsearchCRUD
+﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
 	public class ElasticSerializationResult
 	{

@@ -6,7 +6,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using ElasticsearchCRUD.Mapping;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
