@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
@@ -112,5 +114,84 @@ namespace ElasticsearchCRUD.ContextGet
 			}
 		}
 
+		public async Task<ResultDetails<T>> GetChildEntityAsync<T>(object entityId, object parentId)
+		{
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			var index = elasticSearchMapping.GetIndexForType(typeof (T));
+			var type = elasticSearchMapping.GetDocumentType(typeof (T));
+			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextGet: Searching for document id: {0}, parentId: {1}, index {2}, type {3}", entityId, parentId, index, type));
+
+			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
+			var search = new Search.Search(_traceProvider,_cancellationTokenSource, _elasticsearchSerializerConfiguration,_client,_connectionString);
+			var result =  await search.PostSearchAsync<T>(BuildGetChildSearch<T>(entityId, type,parentId));
+			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count > 0)
+			{
+				resultDetails.PayloadResult = result.PayloadResult.First();
+				return resultDetails;
+			}
+
+			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count == 0)
+			{
+				resultDetails.Status = HttpStatusCode.NotFound;
+				resultDetails.Description = string.Format("No document found id: {0}, parentId: {1}, index {3}, type {4}");
+				_traceProvider.Trace(TraceEventType.Information, string.Format("ElasticsearchContextGet: No document found id: {0}, parentId: {1}, index {2}, type {3}", entityId, parentId, index, type));
+
+				return resultDetails;
+			}
+
+			resultDetails.Status = result.Status;
+			resultDetails.Description = result.Description;
+			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextGet: No document found id: {0}, parentId: {1}, index {2}, type {3}", entityId, parentId, index, type));
+			return resultDetails;
+		}
+
+		//		{
+		//  "query": {
+		//	"filtered": {
+		//	  "query": {"match_all": {}},
+		//	  "filter": 
+		//		"and": [
+		//		  {"term": {"id": 46}},
+		//		  {
+		//			"has_parent": {
+		//			  "type": "childdocumentlevelone",
+		//			  "query": {
+		//				"term": {"id": "21"}
+		//			  }
+		//			}
+		//		  }
+		//		]
+		//	  }
+		//	}
+		//  }
+		//}
+		private string BuildGetChildSearch<T>(object childId, string childDocumentType, object parentId)
+		{
+			var buildJson = new StringBuilder();
+			buildJson.AppendLine("{");
+			buildJson.AppendLine("\"query\": {");
+
+			buildJson.AppendLine("\"filtered\": {");
+			buildJson.AppendLine("\"query\": {\"match_all\": {}},");
+			buildJson.AppendLine("\"filter\": ");
+			buildJson.AppendLine("\"and\": [");
+			buildJson.AppendLine("{\"term\": {\"id\": " + childId + "}},");
+			buildJson.AppendLine("{");
+			buildJson.AppendLine("\"has_parent\": {");
+			buildJson.AppendLine("\"type\": \""+ childDocumentType +"\",");
+			buildJson.AppendLine("\"query\": {");
+			buildJson.AppendLine("\"term\": {\"id\": \"" + parentId + "\"}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("]");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+
+			return buildJson.ToString();
+
+		}
 	}
 }
