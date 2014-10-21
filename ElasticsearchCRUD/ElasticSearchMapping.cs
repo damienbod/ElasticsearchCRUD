@@ -32,8 +32,8 @@ namespace ElasticsearchCRUD
 			{
 				BeginNewEntityToDocumentMapping(entityInfo, beginMappingTree);
 
-				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}", GetDocumentType(entityInfo.Entity.GetType()));
-				var propertyInfo = entityInfo.Entity.GetType().GetProperties();
+				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: SerializedTypes new Type added: {0}", GetDocumentType(entityInfo.Document.GetType()));
+				var propertyInfo = entityInfo.Document.GetType().GetProperties();
 				foreach (var prop in propertyInfo)
 				{
 					if (!Attribute.IsDefined(prop, typeof (JsonIgnoreAttribute)))
@@ -54,7 +54,7 @@ namespace ElasticsearchCRUD
 								{
 									TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is a simple Type: {0}",
 										prop.Name.ToLower());
-									MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Entity), elasticsearchCrudJsonWriter.JsonWriter);
+									MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
 								}
 							}
 						}
@@ -74,7 +74,7 @@ namespace ElasticsearchCRUD
 			if (beginMappingTree)
 			{
 				SerializedTypes = new HashSet<string>();
-				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Serialize BEGIN for Type: {0}", entityInfo.Entity.GetType());
+				TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Serialize BEGIN for Type: {0}", entityInfo.Document.GetType());
 			}
 		}
 
@@ -83,9 +83,9 @@ namespace ElasticsearchCRUD
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: Property is an Object: {0}", prop.ToString());
 			// This is a single object and not a reference to it's parent
 
-			if (prop.GetValue(entityInfo.Entity) != null  && SaveChildObjectsAsWellAsParent)
+			if (prop.GetValue(entityInfo.Document) != null  && SaveChildObjectsAsWellAsParent)
 			{
-				var child = GetDocumentType(prop.GetValue(entityInfo.Entity).GetType());
+				var child = GetDocumentType(prop.GetValue(entityInfo.Document).GetType());
 				var parent = GetDocumentType(entityInfo.EntityType);
 				if (!SerializedTypes.Contains(child + parent))
 				{
@@ -105,7 +105,7 @@ namespace ElasticsearchCRUD
 		private void ProcessArrayOrCollection(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: IsPropertyACollection: {0}", prop.Name.ToLower());
-			if (prop.GetValue(entityInfo.Entity) != null && SaveChildObjectsAsWellAsParent)
+			if (prop.GetValue(entityInfo.Document) != null && SaveChildObjectsAsWellAsParent)
 			{
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
@@ -123,15 +123,15 @@ namespace ElasticsearchCRUD
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			// Do class mapping for nested type
-			var entity = prop.GetValue(entityInfo.Entity);
-			var child = new EntityContextInfo { Entity = entity, ParentId = entityInfo.Id, EntityType = entity.GetType(), DeleteEntity = entityInfo.DeleteEntity};
+			var entity = prop.GetValue(entityInfo.Document);
+			var child = new EntityContextInfo { Document = entity, ParentId = entityInfo.Id, EntityType = entity.GetType(), DeleteDocument = entityInfo.DeleteDocument};
 			MapEntityValues(child, elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 
 		private void ProcessSingleObjectAsChildDocument(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
 		{
-			var entity = prop.GetValue(entityInfo.Entity);
+			var entity = prop.GetValue(entityInfo.Document);
 			CreateChildEntityForDocumentIndex(entityInfo, elasticsearchCrudJsonWriter, entity);
 		}
 
@@ -145,11 +145,11 @@ namespace ElasticsearchCRUD
 					var obj = property.GetValue(entity);
 					var child = new EntityContextInfo
 					{
-						Entity = entity,
+						Document = entity,
 						ParentId = parentEntityInfo.Id,
 						EntityType = GetEntityDocumentType(entity.GetType()),
 						ParentEntityType = GetEntityDocumentType(parentEntityInfo.EntityType),
-						DeleteEntity = parentEntityInfo.DeleteEntity,
+						DeleteDocument = parentEntityInfo.DeleteDocument,
 						Id = obj.ToString() 
 					};
 					ChildIndexEntities.Add(child);
@@ -159,14 +159,14 @@ namespace ElasticsearchCRUD
 				}
 			}
 
-			throw new ElasticsearchCrudException("No Key found for child object: " + parentEntityInfo.Entity.GetType());
+			throw new ElasticsearchCrudException("No Key found for child object: " + parentEntityInfo.Document.GetType());
 		}
 
 		private void ProcessArrayOrCollectionAsNestedObject(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}", prop.Name.ToLower(), elasticsearchCrudJsonWriter.JsonWriter.Path);
-			var typeOfEntity = prop.GetValue(entityInfo.Entity).GetType().GetGenericArguments();
+			var typeOfEntity = prop.GetValue(entityInfo.Document).GetType().GetGenericArguments();
 			if (typeOfEntity.Length > 0)
 			{
 				var child = GetDocumentType(typeOfEntity[0]);
@@ -198,7 +198,7 @@ namespace ElasticsearchCRUD
 		private void ProcessArrayOrCollectionAsChildDocument(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticSearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}", prop.Name.ToLower(), elasticsearchCrudJsonWriter.JsonWriter.Path);
-			var typeOfEntity = prop.GetValue(entityInfo.Entity).GetType().GetGenericArguments();
+			var typeOfEntity = prop.GetValue(entityInfo.Document).GetType().GetGenericArguments();
 			if (typeOfEntity.Length > 0)
 			{
 				var child = GetDocumentType(typeOfEntity[0]);
@@ -239,7 +239,7 @@ namespace ElasticsearchCRUD
 			if (type.HasElementType)
 			{
 				// It is a collection
-				var ienumerable = (Array)prop.GetValue(entityInfo.Entity);
+				var ienumerable = (Array)prop.GetValue(entityInfo.Document);
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
 					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo);
@@ -253,7 +253,7 @@ namespace ElasticsearchCRUD
 			else if (prop.PropertyType.IsGenericType)
 			{
 				// It is a collection
-				var ienumerable = (IEnumerable)prop.GetValue(entityInfo.Entity);
+				var ienumerable = (IEnumerable)prop.GetValue(entityInfo.Document);
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
 					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo);
@@ -301,7 +301,7 @@ namespace ElasticsearchCRUD
 						childElasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 						// Do class mapping for nested type
 						// TODO add child Id
-						var child = new EntityContextInfo { Entity = item, ParentId = parentEntityInfo.Id, EntityType = item.GetType(), DeleteEntity = parentEntityInfo.DeleteEntity };
+						var child = new EntityContextInfo { Document = item, ParentId = parentEntityInfo.Id, EntityType = item.GetType(), DeleteDocument = parentEntityInfo.DeleteDocument };
 						MapEntityValues(child, childElasticsearchCrudJsonWriter);
 						childElasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 

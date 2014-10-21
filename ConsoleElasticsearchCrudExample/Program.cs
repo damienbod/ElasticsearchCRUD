@@ -16,11 +16,11 @@ namespace ConsoleElasticsearchCrudExample
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
 				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
-				elasticSearchContext.AddUpdateEntity(TestData.SkillEf, TestData.SkillEf.Id);
-				elasticSearchContext.AddUpdateEntity(TestData.SkillOrm, TestData.SkillOrm.Id);
-				elasticSearchContext.AddUpdateEntity(TestData.SkillSQLServer, TestData.SkillSQLServer.Id);
-				elasticSearchContext.AddUpdateEntity(TestData.SkillGermanWithFunnyLetters, TestData.SkillGermanWithFunnyLetters.Id);
-				elasticSearchContext.AddUpdateEntity(TestData.SkillLevel, TestData.SkillLevel.Id);
+				elasticSearchContext.AddUpdateDocument(TestData.SkillEf, TestData.SkillEf.Id);
+				elasticSearchContext.AddUpdateDocument(TestData.SkillOrm, TestData.SkillOrm.Id);
+				elasticSearchContext.AddUpdateDocument(TestData.SkillSQLServer, TestData.SkillSQLServer.Id);
+				elasticSearchContext.AddUpdateDocument(TestData.SkillGermanWithFunnyLetters, TestData.SkillGermanWithFunnyLetters.Id);
+				elasticSearchContext.AddUpdateDocument(TestData.SkillLevel, TestData.SkillLevel.Id);
 
 				var addEntitiesResult = elasticSearchContext.SaveChanges();
 
@@ -33,13 +33,13 @@ namespace ConsoleElasticsearchCrudExample
 			{
 				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
 				// get a entity and update it, then delete an entity
-				Skill singleEntityWithId = elasticSearchContext.GetEntity<Skill>("11");
+				Skill singleEntityWithId = elasticSearchContext.GetDocument<Skill>("11");
 				singleEntityWithId.Updated = DateTime.UtcNow;
-				elasticSearchContext.AddUpdateEntity(TestData.SkillOrm, TestData.SkillOrm.Id);
-				elasticSearchContext.DeleteEntity<Skill>(TestData.SkillEf.Id);
+				elasticSearchContext.AddUpdateDocument(TestData.SkillOrm, TestData.SkillOrm.Id);
+				elasticSearchContext.DeleteDocument<Skill>(TestData.SkillEf.Id);
 				elasticSearchContext.SaveChanges();
 
-				elasticSearchContext.AddUpdateEntity(TestData.SkillEf, TestData.SkillEf.Id);
+				elasticSearchContext.AddUpdateDocument(TestData.SkillEf, TestData.SkillEf.Id);
 				var nextResult = elasticSearchContext.SaveChanges();
 
 				Console.WriteLine(nextResult.PayloadResult);

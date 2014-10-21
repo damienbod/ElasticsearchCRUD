@@ -75,13 +75,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentCollection>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillParentCollection>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
 				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
 			}
@@ -104,13 +104,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, includeChildObjects)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentCollection>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillParentCollection>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
 				Assert.AreEqual(roundTripResult.SkillChildren, null);
 			}
@@ -132,13 +132,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentCollection>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillParentCollection>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
 				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
 				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
@@ -161,13 +161,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					DescriptionSkillParent = "ee",
 					SkillChildren = new Collection<SkillChild>()
 				};
-				context.AddUpdateEntity(skill, skill.Id);
+				context.AddUpdateDocument(skill, skill.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentCollection>(skill.Id);
+				var roundTripResult = context.GetDocument<SkillParentCollection>(skill.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
@@ -186,13 +186,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					NameSkillParent = "rr",
 					DescriptionSkillParent = "ee"
 				};
-				context.AddUpdateEntity(skill, skill.Id);
+				context.AddUpdateDocument(skill, skill.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentCollection>(skill.Id);
+				var roundTripResult = context.GetDocument<SkillParentCollection>(skill.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
@@ -216,13 +216,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
 				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
 			}
@@ -241,13 +241,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
 				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
 				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent);
@@ -267,13 +267,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
 			}
 		}
@@ -290,13 +290,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillDocumentHastSet>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
 			}
 		}
@@ -322,13 +322,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentArray>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillParentArray>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
 				Assert.AreEqual(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
 			}
@@ -351,13 +351,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentArray>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillParentArray>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
 				Assert.AreEqual(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
 				Assert.AreEqual(roundTripResult.SkillChildren[1].DescriptionSkillChild, testSkillParentObject.SkillChildren[1].DescriptionSkillChild);
@@ -380,13 +380,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					NameSkillParent = "rr",
 					DescriptionSkillParent = "ee"
 				};
-				context.AddUpdateEntity(skill, skill.Id);
+				context.AddUpdateDocument(skill, skill.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillParentArray>(skill.Id);
+				var roundTripResult = context.GetDocument<SkillParentArray>(skill.Id);
 				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
@@ -407,13 +407,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					BlahBlah = "test3 with int array",
 					Id = 2
 				};
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+				context.AddUpdateDocument(skillWithIntArray, skillWithIntArray.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var returned = context.GetEntity<SkillWithIntCollection>(2);
+				var returned = context.GetDocument<SkillWithIntCollection>(2);
 				Assert.AreEqual(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
 			}
 		}
@@ -426,14 +426,14 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntCollection { BlahBlah = "test with no int array", Id = 3 };
 
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+				context.AddUpdateDocument(skillWithIntArray, skillWithIntArray.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
 
-				var returned = context.GetEntity<SkillWithIntCollection>(3);
+				var returned = context.GetDocument<SkillWithIntCollection>(3);
 				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
 				Assert.IsNull(returned.MyIntArray);
 			}
@@ -456,13 +456,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					MyDoubleArray = new List<double> { 2.4, 5.7, 67.345 },
 					MyLongArray = new List<long> { 34444445, 65432, 7889999 }
 				};
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+				context.AddUpdateDocument(skillWithIntArray, skillWithIntArray.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var returned = context.GetEntity<SkillWithStringLongAndDoubleCollection>(2);
+				var returned = context.GetDocument<SkillWithStringLongAndDoubleCollection>(2);
 				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
 				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
 				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
@@ -486,13 +486,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					BlahBlah = "test3 with int array",
 					Id = 2
 				};
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+				context.AddUpdateDocument(skillWithIntArray, skillWithIntArray.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var returned = context.GetEntity<SkillWithIntArray>(2);
+				var returned = context.GetDocument<SkillWithIntArray>(2);
 				Assert.AreEqual(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
 			}
 		}
@@ -504,13 +504,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntArray { BlahBlah = "test with no int array", Id = 3 };
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+				context.AddUpdateDocument(skillWithIntArray, skillWithIntArray.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var returned = context.GetEntity<SkillWithIntArray>(3);
+				var returned = context.GetDocument<SkillWithIntArray>(3);
 				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
 				Assert.IsNull(returned.MyIntArray);
 			}
@@ -533,13 +533,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					MyDoubleArray = new[] { 2.4, 5.7, 67.345 },
 					MyLongArray = new long[] { 34444445, 65432, 7889999 }
 				};
-				context.AddUpdateEntity(skillWithIntArray, skillWithIntArray.Id);
+				context.AddUpdateDocument(skillWithIntArray, skillWithIntArray.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var returned = context.GetEntity<SkillWithStringLongAndDoubleArray>(2);
+				var returned = context.GetDocument<SkillWithStringLongAndDoubleArray>(2);
 				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
 				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
 				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
@@ -562,13 +562,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					BlahBlah = "TEST",
 					MySkillSingleChildElement = new SkillSingleChildElement{ Id= 5, Details = "tteesstt"}
 				};
-				context.AddUpdateEntity(skillWithSingleChild, skillWithSingleChild.Id);
+				context.AddUpdateDocument(skillWithSingleChild, skillWithSingleChild.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillWithSingleChild>(skillWithSingleChild.Id);
+				var roundTripResult = context.GetDocument<SkillWithSingleChild>(skillWithSingleChild.Id);
 				Assert.AreEqual(roundTripResult.MySkillSingleChildElement.Details, skillWithSingleChild.MySkillSingleChildElement.Details);
 			}
 		}
@@ -580,13 +580,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithSingleChild = new SkillWithSingleChild {MySkillSingleChildElement = null};
-				context.AddUpdateEntity(skillWithSingleChild, skillWithSingleChild.Id);
+				context.AddUpdateDocument(skillWithSingleChild, skillWithSingleChild.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillWithSingleChild>(skillWithSingleChild.Id);
+				var roundTripResult = context.GetDocument<SkillWithSingleChild>(skillWithSingleChild.Id);
 				Assert.AreEqual(roundTripResult.BlahBlah, skillWithSingleChild.BlahBlah);
 			}
 		}

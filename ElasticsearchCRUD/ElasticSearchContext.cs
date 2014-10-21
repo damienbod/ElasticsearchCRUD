@@ -37,16 +37,16 @@ namespace ElasticsearchCRUD
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
 		}
 
-		public void AddUpdateEntity(object entity, object id, object parentId = null)
+		public void AddUpdateDocument(object entity, object id, object parentId = null)
 		{
-			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Adding entity: {0}, {1} to pending list", entity.GetType().Name, id, "ElasticSearchContext");
-			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType(), Entity = entity, ParentId = parentId });
+			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Adding document: {0}, {1} to pending list", entity.GetType().Name, id, "ElasticSearchContext");
+			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), EntityType = entity.GetType(), Document = entity, ParentId = parentId });
 		}
 
-		public void DeleteEntity<T>(object id)
+		public void DeleteDocument<T>(object id)
 		{
-			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Request to delete entity with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name, "ElasticSearchContext");
-			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteEntity = true, EntityType = typeof(T), Entity = null});
+			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Request to delete document with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name, "ElasticSearchContext");
+			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteDocument = true, EntityType = typeof(T), Document = null});
 		}
 
 		public ResultDetails<string> SaveChangesAndInitMappingsForChildDocuments()
@@ -88,7 +88,7 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
-		public T GetEntity<T>(object entityId, object parentId = null)
+		public T GetDocument<T>(object entityId, object parentId = null)
 		{
 			var elasticsearchContextGet = new ElasticsearchContextGet(
 				TraceProvider,
@@ -98,7 +98,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return elasticsearchContextGet.GetEntity<T>(entityId, parentId);
+			return elasticsearchContextGet.GetDocument<T>(entityId, parentId);
 		}
 
 		public T SearchById<T>(object entityId)
@@ -163,7 +163,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await elasticsearchContextGet.GetEntityAsync<T>(entityId, parentId);
+			return await elasticsearchContextGet.GetDocumentAsync<T>(entityId, parentId);
 
 		}
 

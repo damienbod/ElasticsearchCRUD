@@ -16,7 +16,7 @@ namespace DataTransferSQLToEl
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
 				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
-				person = elasticSearchContext.GetEntity<Person>(id);
+				person = elasticSearchContext.GetDocument<Person>(id);
 			}
 
 			return person;
@@ -29,7 +29,7 @@ namespace DataTransferSQLToEl
 			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
 			{
 				//elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
-				countryRegion = elasticSearchContext.GetEntity<Address>(id);
+				countryRegion = elasticSearchContext.GetDocument<Address>(id);
 			}
 
 			return countryRegion;
@@ -60,7 +60,7 @@ namespace DataTransferSQLToEl
 						foreach (var item in collection)
 						{
 							var ee = item.StateProvince.CountryRegion.Name;
-							elasticSearchContext.AddUpdateEntity(item, item.AddressID);
+							elasticSearchContext.AddUpdateDocument(item, item.AddressID);
 						}
 
 						if (firstRun)
@@ -108,7 +108,7 @@ namespace DataTransferSQLToEl
 						stopwatch.Start();
 						foreach (var item in collection)
 						{
-							elasticSearchContext.AddUpdateEntity(item, item.BusinessEntityID);
+							elasticSearchContext.AddUpdateDocument(item, item.BusinessEntityID);
 						}
 						elasticSearchContext.SaveChanges();
 						stopwatch.Stop();

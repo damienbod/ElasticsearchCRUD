@@ -36,7 +36,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");
 					throw new ElasticsearchCrudException(string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
 				}
-				if (entity.DeleteEntity)
+				if (entity.DeleteDocument)
 				{
 					DeleteEntity(entity);
 				}
@@ -155,7 +155,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			initMappings.CreateIndexMapping(
 				elasticSearchMapping.GetIndexForType(entityInfo.EntityType),
 				elasticSearchMapping.GetDocumentType(item.ParentEntityType),
-				elasticSearchMapping.GetDocumentType(item.Entity.GetType())
+				elasticSearchMapping.GetDocumentType(item.Document.GetType())
 				);
 
 			var contentJson = new ElasticsearchCrudJsonWriter();

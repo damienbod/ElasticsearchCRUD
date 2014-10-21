@@ -70,7 +70,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				for (int i = 0; i < 100; i++)
 				{
-					context.AddUpdateEntity(_entitiesForTests[i], i);
+					context.AddUpdateDocument(_entitiesForTests[i], i);
 				}
 
 				// Save to Elasticsearch

@@ -12,7 +12,7 @@ namespace ConsoleElasticsearchCrudExample
 		/// <param name="entity"></param>
 		public override void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{
-			Skill skillEntity = entityInfo.Entity as Skill;
+			Skill skillEntity = entityInfo.Document as Skill;
 			MapValue("id", skillEntity.Id, elasticsearchCrudJsonWriter.JsonWriter);
 			MapValue("name", skillEntity.Name, elasticsearchCrudJsonWriter.JsonWriter);
 			MapValue("description", skillEntity.Description, elasticsearchCrudJsonWriter.JsonWriter);

@@ -81,13 +81,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(data, data.Id);
+				context.AddUpdateDocument(data, data.Id);
 				context.SaveChanges();
 			}
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var roundTripData = context.GetEntity<TestNestedDocumentLevelOneArray>(data.Id);
+				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneArray>(data.Id);
 				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
 				Assert.AreEqual(
 					data.TestNestedDocumentLevelTwoArray.First().DescriptionTwo,
@@ -159,13 +159,13 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				context.AddUpdateEntity(data, data.Id);
+				context.AddUpdateDocument(data, data.Id);
 				context.SaveChanges();
 			}
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var roundTripData = context.GetEntity<TestNestedDocumentLevelOneCollection>(data.Id);
+				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneCollection>(data.Id);
 				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
 				Assert.AreEqual(
 					data.TestNestedDocumentLevelTwoCollection.First().DescriptionTwo,
@@ -243,13 +243,13 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				context.AddUpdateEntity(data,data.Id);
+				context.AddUpdateDocument(data,data.Id);
 				context.SaveChanges();
 			}
 
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
-				var roundTripData = context.GetEntity<TestNestedDocumentLevelOneHashSet>(data.Id);
+				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneHashSet>(data.Id);
 				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
 				Assert.AreEqual(
 					data.TestNestedDocumentLevelTwoHashSet.First().DescriptionTwo, 
@@ -294,13 +294,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 
-				context.AddUpdateEntity(testSkillParentObject, testSkillParentObject.Id);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<SkillDocument>(testSkillParentObject.Id);
+				var roundTripResult = context.GetDocument<SkillDocument>(testSkillParentObject.Id);
 				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
 				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelOne.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelOne.First().NameSkillParent);
 				Assert.AreEqual(

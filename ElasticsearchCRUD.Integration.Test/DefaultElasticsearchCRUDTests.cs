@@ -75,7 +75,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 100; i++)
 				{
-					context.AddUpdateEntity(_entitiesForTests[i], i);
+					context.AddUpdateDocument(_entitiesForTests[i], i);
 				}
 
 				// Save to Elasticsearch
@@ -91,7 +91,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://locaghghghlhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(_entitiesForTests[1], 1);
+				context.AddUpdateDocument(_entitiesForTests[1], 1);
 				var ret = context.SaveChangesAsync();
 				Console.WriteLine(ret.Result.Status);
 			}
@@ -104,7 +104,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://locaghghghlhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(_entitiesForTests[1], 1);
+				context.AddUpdateDocument(_entitiesForTests[1], 1);
 				context.SaveChanges();
 			}
 		}
@@ -116,7 +116,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(_entitiesForTests[entityId], entityId);
+				context.AddUpdateDocument(_entitiesForTests[entityId], entityId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAsync();
@@ -137,14 +137,14 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(_entitiesForTests[entityId], entityId);
+				context.AddUpdateDocument(_entitiesForTests[entityId], entityId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				var entityResult = context.GetDocument<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Id, entityId);
 			}
 		}
@@ -158,7 +158,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// Get the entity
-				var entityResult = context.GetEntity<SkillTestEntity>(entityId);
+				var entityResult = context.GetDocument<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Id, entityId);
 			}
 		}
@@ -172,7 +172,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// Get the entity
-				var entityResult = context.GetEntity<SkillTestEntityNoIndex>(entityId);
+				var entityResult = context.GetDocument<SkillTestEntityNoIndex>(entityId);
 				Assert.AreEqual(entityResult.Id, entityId);
 			}
 		}
@@ -185,7 +185,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localghghghhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var entityResult = context.GetEntity<SkillTestEntity>(entityId);;
+				var entityResult = context.GetDocument<SkillTestEntity>(entityId);;
 			}
 		}
 
@@ -198,7 +198,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// add a new entity
-				context.AddUpdateEntity(_entitiesForTests[entityId], entityId);
+				context.AddUpdateDocument(_entitiesForTests[entityId], entityId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAsync();
@@ -214,7 +214,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// update entity
-				context.AddUpdateEntity(resultfromGet, entityId);
+				context.AddUpdateDocument(resultfromGet, entityId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAsync();
@@ -234,7 +234,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(_entitiesForTests[entityId], entityId);
+				context.AddUpdateDocument(_entitiesForTests[entityId], entityId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAsync();
@@ -247,7 +247,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.IsNotNull(entityResult.Result.PayloadResult as SkillTestEntity);
 
 				// Delete the entity
-				context.DeleteEntity<SkillTestEntity>(entityId);
+				context.DeleteDocument<SkillTestEntity>(entityId);
 				var deleteResult = context.SaveChangesAsync();
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
@@ -262,8 +262,8 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// Delete the entity
-				context.DeleteEntity<SkillTestEntity>(6433);
-				context.DeleteEntity<SkillTestEntity>(22222);
+				context.DeleteDocument<SkillTestEntity>(6433);
+				context.DeleteDocument<SkillTestEntity>(22222);
 
 				var task = Task.Run(() => context.SaveChangesAsync());
 
@@ -319,7 +319,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 100; i++)
 				{
-					context.AddUpdateEntity(_entitiesForTests[i], i);
+					context.AddUpdateDocument(_entitiesForTests[i], i);
 				}
 
 				// Save to Elasticsearch
@@ -388,8 +388,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 100; i++)
 				{
-					context.AddUpdateEntity(_entitiesForTests[i], i);
-					context.AddUpdateEntity(_entitiesForTestsTypeTwo[i], i);
+					context.AddUpdateDocument(_entitiesForTests[i], i);
+					context.AddUpdateDocument(_entitiesForTestsTypeTwo[i], i);
 				}
 
 				// Save to Elasticsearch
@@ -417,12 +417,12 @@ namespace ElasticsearchCRUD.Integration.Test
 						new List<SkillSingleChildElement> {new SkillSingleChildElement {Details = "ww", Id = 2}}
 				};
 
-				context.AddUpdateEntity(testJsonIgnore, testJsonIgnore.Id);
+				context.AddUpdateDocument(testJsonIgnore, testJsonIgnore.Id);
 
 				// Save to Elasticsearch
 				context.SaveChanges();
 
-				var ret = context.GetEntity<TestJsonIgnore>(3);
+				var ret = context.GetDocument<TestJsonIgnore>(3);
 				Assert.AreEqual(ret.MyLongArray, null);
 				Assert.AreEqual(ret.SkillSingleChildElement, null);
 				Assert.AreEqual(ret.SkillSingleChildElementList, null);

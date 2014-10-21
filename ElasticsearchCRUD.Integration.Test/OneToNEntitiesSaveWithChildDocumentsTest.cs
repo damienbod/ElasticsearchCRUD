@@ -161,7 +161,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(71, parentId);
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(71, parentId);
 
 				Assert.AreEqual(71, roundTripResult.Id);
 			}
@@ -188,13 +188,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testObject, testObject.Id, parentId);
+				context.AddUpdateDocument(testObject, testObject.Id, parentId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id, parentId);
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
 				// TODO check that this object has been added as a child doc to the define mapping
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
@@ -216,13 +216,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testObject, testObject.Id, parentId);
+				context.AddUpdateDocument(testObject, testObject.Id, parentId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id, parentId);
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
 				// TODO check that this object has been added as a child doc to the define mapping
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
@@ -243,13 +243,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(testObject, testObject.Id, parentId);
+				context.AddUpdateDocument(testObject, testObject.Id, parentId);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(testObject.Id);
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id);
 
 				// TODO check that this object has been added as a child doc to the define mapping
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
@@ -269,17 +269,17 @@ namespace ElasticsearchCRUD.Integration.Test
 					new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
 			{
 				context.TraceProvider = trace;
-				context.AddUpdateEntity(parentDocument, parentDocument.Id);
+				context.AddUpdateDocument(parentDocument, parentDocument.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAndInitMappingsForChildDocuments();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<ParentDocument>(parentDocument.Id);
+				var roundTripResult = context.GetDocument<ParentDocument>(parentDocument.Id);
 
 				// TODO when implemented
 				//var roundTripResultChildDocumentLevelOne =
-				//	context.GetEntity<ChildDocumentLevelOne>(parentDocument.ChildDocumentLevelOne.First().Id, parentDocument.Id);
+				//	context.GetDocument<ChildDocumentLevelOne>(parentDocument.ChildDocumentLevelOne.First().Id, parentDocument.Id);
 				//Assert.AreEqual(parentDocument.Id, roundTripResult.Id);
 				//Assert.AreEqual(parentDocument.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
 			}
@@ -294,17 +294,17 @@ namespace ElasticsearchCRUD.Integration.Test
 					new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateEntity(parentDocument2, parentDocument2.Id);
+				context.AddUpdateDocument(parentDocument2, parentDocument2.Id);
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetEntity<ParentDocument>(parentDocument2.Id);
+				var roundTripResult = context.GetDocument<ParentDocument>(parentDocument2.Id);
 				var roundTripResultChildDocumentLevelOne =
-					context.GetEntity<ChildDocumentLevelOne>(parentDocument2.ChildDocumentLevelOne.First().Id, parentDocument2.Id);
+					context.GetDocument<ChildDocumentLevelOne>(parentDocument2.ChildDocumentLevelOne.First().Id, parentDocument2.Id);
 				var roundTripResultChildDocumentLevelTwo =
-					context.GetEntity<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
+					context.GetDocument<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
 						parentDocument2.ChildDocumentLevelOne.First().Id);
 				Assert.AreEqual(parentDocument2.Id, roundTripResult.Id);
 				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);

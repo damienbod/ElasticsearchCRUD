@@ -11,10 +11,10 @@ namespace Damienbod.AnimalProvider
 		/// </summary>
 		public override void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{
-			var propertyInfo = entityInfo.Entity.GetType().GetProperties();
+			var propertyInfo = entityInfo.Document.GetType().GetProperties();
 			foreach (var prop in propertyInfo)
 			{
-				MapValue(prop.Name, prop.GetValue(entityInfo.Entity), elasticsearchCrudJsonWriter.JsonWriter);
+				MapValue(prop.Name, prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
 			}
 		}
 

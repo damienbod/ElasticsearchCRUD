@@ -16,19 +16,19 @@ namespace Damienbod.AnimalProvider
 
         public void CreateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id);
+			_elasticSearchContext.AddUpdateDocument(animal, animal.Id);
 			var ret = _elasticSearchContext.SaveChangesAsync();    
         }
 
         public void UpdateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateEntity(animal, animal.Id);
+			_elasticSearchContext.AddUpdateDocument(animal, animal.Id);
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 
         public void DeleteById(int id)
         {
-			_elasticSearchContext.DeleteEntity<Animal>(id);
+			_elasticSearchContext.DeleteDocument<Animal>(id);
 			var ret = _elasticSearchContext.SaveChangesAsync(); 
         }
 

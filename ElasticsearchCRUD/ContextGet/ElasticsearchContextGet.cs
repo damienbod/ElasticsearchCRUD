@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
@@ -28,12 +26,12 @@ namespace ElasticsearchCRUD.ContextGet
 			_connectionString = connectionString;
 		}
 
-		public T GetEntity<T>(object entityId, object parentId)
+		public T GetDocument<T>(object entityId, object parentId)
 		{
 			try
 			{
 				Task<ResultDetails<T>> task;
-				task = Task.Run(() => GetEntityAsync<T>(entityId, parentId));
+				task = Task.Run(() => GetDocumentAsync<T>(entityId, parentId));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -65,9 +63,9 @@ namespace ElasticsearchCRUD.ContextGet
 			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for GetChildEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContextGet"));
 		}
 
-		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId, object parentId)
+		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object entityId, object parentId)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for select entity with id: {0}, Type: {1}", entityId, typeof(T), "ElasticSearchContextGet");
+			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for select document with id: {0}, Type: {1}", entityId, typeof(T), "ElasticSearchContextGet");
 			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
@@ -86,7 +84,7 @@ namespace ElasticsearchCRUD.ContextGet
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "{2}: GetEntityAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "ElasticSearchContextGet");
+					_traceProvider.Trace(TraceEventType.Warning, "{2}: GetDocumentAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "ElasticSearchContextGet");
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
