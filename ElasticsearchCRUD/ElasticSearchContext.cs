@@ -114,7 +114,33 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextSearch.SearchById<T>(entityId);
 		}
 
-		public Collection<T> SearchForChildDocumentsByParentId<T>(object parentId, string parentDocumentType)
+		public Collection<T> Search<T>(string searchJsonParameters)
+		{
+			var search = new Search.Search(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return search.PostSearch<T>(searchJsonParameters);
+		}
+
+		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters)
+		{
+			var search = new Search.Search(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await search.PostSearchAsync<T>(searchJsonParameters);
+		}
+
+		public Collection<T> SearchForChildDocumentsByParentId<T>(object parentId, Type parentDocumentType)
 		{
 			var elasticsearchContextSearch = new ElasticsearchContextSearch(
 				TraceProvider,
@@ -127,7 +153,7 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextSearch.SearchForChildDocumentsByParentId<T>(parentId, parentDocumentType);
 		}
 
-		public async Task<ResultDetails<Collection<T>>> SearchForChildDocumentsByParentIdAsync<T>(object parentId, string parentDocumentType)
+		public async Task<ResultDetails<Collection<T>>> SearchForChildDocumentsByParentIdAsync<T>(object parentId, Type parentDocumentType)
 		{
 			var elasticsearchContextSearch = new ElasticsearchContextSearch(
 				TraceProvider,
@@ -153,7 +179,7 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextSearch.SearchByIdAsync<T>(entityId);
 		}
 
-		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId, object parentId = null)
+		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object entityId, object parentId = null)
 		{
 			var elasticsearchContextGet = new ElasticsearchContextGet(
 				TraceProvider,

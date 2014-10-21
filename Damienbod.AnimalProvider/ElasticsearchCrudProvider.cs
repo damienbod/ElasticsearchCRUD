@@ -34,7 +34,7 @@ namespace Damienbod.AnimalProvider
 
         public Animal GetAnimal(int id)
         {
-	        return  _elasticSearchContext.GetEntityAsync<Animal>(id).Result.PayloadResult;
+	        return  _elasticSearchContext.GetDocumentAsync<Animal>(id).Result.PayloadResult;
         }
     }
 }

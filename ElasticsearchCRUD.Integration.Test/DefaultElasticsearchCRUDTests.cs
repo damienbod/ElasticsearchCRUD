@@ -123,7 +123,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				var entityResult = context.GetEntityAsync<SkillTestEntity>(entityId);
+				var entityResult = context.GetDocumentAsync<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
 				Assert.IsNotNull(entityResult.Result.PayloadResult as SkillTestEntity);
@@ -205,7 +205,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				resultfromGet = context.GetEntityAsync<SkillTestEntity>(entityId).Result.PayloadResult;
+				resultfromGet = context.GetDocumentAsync<SkillTestEntity>(entityId).Result.PayloadResult;
 
 			}
 
@@ -221,7 +221,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 
 				// Get the entity
-				var readEntity = context.GetEntityAsync<SkillTestEntity>(entityId).Result.PayloadResult;
+				var readEntity = context.GetDocumentAsync<SkillTestEntity>(entityId).Result.PayloadResult;
 				Assert.AreEqual(readEntity.Name, resultfromGet.Name);
 				Assert.AreNotEqual(readEntity.Name, _entitiesForTests[entityId]);
 			}
@@ -241,7 +241,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(HttpStatusCode.OK, ret.Result.Status);
 
 				// Get the entity
-				var entityResult = context.GetEntityAsync<SkillTestEntity>(entityId);
+				var entityResult = context.GetDocumentAsync<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
 				Assert.IsNotNull(entityResult.Result.PayloadResult as SkillTestEntity);
@@ -293,7 +293,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var entityResult = context.GetEntityAsync<SkillTestEntity>(entityId);
+				var entityResult = context.GetDocumentAsync<SkillTestEntity>(entityId);
 				entityResult.Wait();
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.NotFound);
 			}

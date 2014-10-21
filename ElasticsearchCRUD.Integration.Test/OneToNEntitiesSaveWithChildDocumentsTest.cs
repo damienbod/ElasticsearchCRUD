@@ -196,7 +196,9 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
-				// TODO check that this object has been added as a child doc to the define mapping
+				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentId, typeof(ChildDocumentLevelOne));
+				var childDocs2 = context.SearchForChildDocumentsByParentId<ChildDocumentLevelOne>(7, typeof(ParentDocument));
+				int t = childDocs.Count + childDocs2.Count;
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}

@@ -20,7 +20,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		private readonly HttpClient _client;
 		private readonly string _connectionString;
 		private bool _saveChangesAndInitMappingsForChildDocuments;
-		private Uri _elasticsearchUrlBatch;
+		private readonly Uri _elasticsearchUrlBatch;
 
 		public ElasticsearchContextAddDeleteUpdate(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
 		{

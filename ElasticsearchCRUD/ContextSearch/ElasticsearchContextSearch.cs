@@ -121,7 +121,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			return buildJson.ToString();
 		}
 
-		public async Task<ResultDetails<Collection<T>>> SearchForChildDocumentsByParentIdAsync<T>(object parentId, string parentDocumentType)
+		public async Task<ResultDetails<Collection<T>>> SearchForChildDocumentsByParentIdAsync<T>(object parentId, Type parentDocumentType)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			var index = elasticSearchMapping.GetIndexForType(typeof(T));
@@ -130,7 +130,7 @@ namespace ElasticsearchCRUD.ContextSearch
 
 			var resultDetails = new ResultDetails<Collection<T>> { Status = HttpStatusCode.InternalServerError };
 			var search = new Search.Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
-			var result = await search.PostSearchAsync<T>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, parentDocumentType));
+			var result = await search.PostSearchAsync<T>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, elasticSearchMapping.GetDocumentType(parentDocumentType)));
 			if (result.Status == HttpStatusCode.OK)
 			{
 				resultDetails.PayloadResult = result.PayloadResult;
@@ -152,7 +152,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			return resultDetails;
 		}
 
-		public Collection<T> SearchForChildDocumentsByParentId<T>(object parentId, string parentDocumentType)
+		public Collection<T> SearchForChildDocumentsByParentId<T>(object parentId, Type parentDocumentType)
 		{
 			try
 			{
@@ -198,7 +198,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			var buildJson = new StringBuilder();
 			buildJson.AppendLine("{");
 			buildJson.AppendLine("\"query\": {");
-			buildJson.AppendLine("\"term\": {\"_parent\": " + parentDocumentType + "#" +  parentId + "}");
+			buildJson.AppendLine("\"term\": {\"_parent\": \"" + parentDocumentType + "#" +  parentId + "\"}");
 			buildJson.AppendLine("}");
 			buildJson.AppendLine("}");
 

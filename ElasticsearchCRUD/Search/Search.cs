@@ -90,5 +90,41 @@ namespace ElasticsearchCRUD.Search
 			}
 		}
 
+		public Collection<T> PostSearch<T>(string jsonContent)
+		{
+			try
+			{
+				Task<ResultDetails<Collection<T>>> task = Task.Run(() => PostSearchAsync<T>(jsonContent));
+				task.Wait();
+				if (task.Result.Status == HttpStatusCode.NotFound)
+				{
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.NotFound");
+					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.NotFound");
+				}
+				if (task.Result.Status == HttpStatusCode.BadRequest)
+				{
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.BadRequest");
+					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.BadRequest" + task.Result.Description);
+				}
+				return task.Result.PayloadResult;
+			}
+			catch (AggregateException ae)
+			{
+				ae.Handle(x =>
+				{
+					_traceProvider.Trace(TraceEventType.Warning, x, "{2} Search {0}, {1}", typeof(T), jsonContent, "ElasticsearchContextSearch");
+					if (x is ElasticsearchCrudException || x is HttpRequestException)
+					{
+						throw x;
+					}
+
+					throw new ElasticsearchCrudException(x.Message);
+				});
+			}
+
+			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextSearch");
+			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextSearch"));
+		}
+
 	}
 }
