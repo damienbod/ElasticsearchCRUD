@@ -103,9 +103,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				var test = CommandTypes.FindIndex(t => t.EndsWith(childType) && t.StartsWith("CreateIndex"));
 				if (test > 0)
 				{
-					// TODO throw not supported exception
-					CommandTypes.Insert(test - 1, "CreateMappingForIndex_" + index + parentType + childType);
-					Commands.Insert(test -1, command);
+					throw new ElasticsearchCrudException("Not supported, child documents can only have one parent");
+					//CommandTypes.Insert(test - 1, "CreateMappingForIndex_" + index + parentType + childType);
+					//Commands.Insert(test -1, command);
 				}
 				else
 				{
