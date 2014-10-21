@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
-using ElasticsearchCRUD.Mapping;
 using ElasticsearchCRUD.Tracing;
 
-namespace ElasticsearchCRUD
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
 	public class ElasticsearchSerializer  : IDisposable
 	{
@@ -138,7 +137,7 @@ namespace ElasticsearchCRUD
 			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticSearchMapping.GetDocumentType(item.EntityType));
 			WriteValue("_id", item.Id);
-			WriteValue("_parent", item.ParentId);
+			WriteValue("parent", item.ParentId);
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n"); //ES requires this \n separator
