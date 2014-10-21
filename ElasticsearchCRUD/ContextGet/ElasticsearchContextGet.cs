@@ -28,11 +28,12 @@ namespace ElasticsearchCRUD.ContextGet
 			_connectionString = connectionString;
 		}
 
-		public T GetEntity<T>(object entityId)
+		public T GetEntity<T>(object entityId, object parentId)
 		{
 			try
 			{
-				var task = Task.Run(() => GetEntityAsync<T>(entityId));
+				Task<ResultDetails<T>> task;
+				task = Task.Run(() => GetEntityAsync<T>(entityId, parentId));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -50,7 +51,7 @@ namespace ElasticsearchCRUD.ContextGet
 			{
 				ae.Handle(x =>
 				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} GetEntity {0}, {1}", typeof(T), entityId, "ElasticSearchContextGet");
+					_traceProvider.Trace(TraceEventType.Warning, x, "{2} GetChildEntity {0}, {1}", typeof(T), entityId, "ElasticSearchContextGet");
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
@@ -60,11 +61,11 @@ namespace ElasticsearchCRUD.ContextGet
 				});
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for GetEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContextGet");
-			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for GetEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContextGet"));
+			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for GetChildEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContextGet");
+			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for GetChildEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContextGet"));
 		}
 
-		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId)
+		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId, object parentId)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for select entity with id: {0}, Type: {1}", entityId, typeof(T), "ElasticSearchContextGet");
 			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
@@ -72,8 +73,13 @@ namespace ElasticsearchCRUD.ContextGet
 			{
 				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
-	
-				var uri = new Uri(elasticsearchUrlForEntityGet + entityId);
+
+				string parentIdUrl = "";
+				if (parentId != null)
+				{
+					parentIdUrl = "?parent=" + parentId;
+				}
+				var uri = new Uri(elasticsearchUrlForEntityGet + entityId + parentIdUrl);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "ElasticSearchContextGet");
 				var response = await _client.GetAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -114,84 +120,6 @@ namespace ElasticsearchCRUD.ContextGet
 			}
 		}
 
-		public async Task<ResultDetails<T>> GetChildEntityAsync<T>(object entityId, object parentId)
-		{
-			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
-			var index = elasticSearchMapping.GetIndexForType(typeof (T));
-			var type = elasticSearchMapping.GetDocumentType(typeof (T));
-			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextGet: Searching for document id: {0}, parentId: {1}, index {2}, type {3}", entityId, parentId, index, type));
-
-			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
-			var search = new Search.Search(_traceProvider,_cancellationTokenSource, _elasticsearchSerializerConfiguration,_client,_connectionString);
-			var result =  await search.PostSearchAsync<T>(BuildGetChildSearch<T>(entityId, type,parentId));
-			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count > 0)
-			{
-				resultDetails.PayloadResult = result.PayloadResult.First();
-				return resultDetails;
-			}
-
-			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count == 0)
-			{
-				resultDetails.Status = HttpStatusCode.NotFound;
-				resultDetails.Description = string.Format("No document found id: {0}, parentId: {1}, index {3}, type {4}");
-				_traceProvider.Trace(TraceEventType.Information, string.Format("ElasticsearchContextGet: No document found id: {0}, parentId: {1}, index {2}, type {3}", entityId, parentId, index, type));
-
-				return resultDetails;
-			}
-
-			resultDetails.Status = result.Status;
-			resultDetails.Description = result.Description;
-			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextGet: No document found id: {0}, parentId: {1}, index {2}, type {3}", entityId, parentId, index, type));
-			return resultDetails;
-		}
-
-		//		{
-		//  "query": {
-		//	"filtered": {
-		//	  "query": {"match_all": {}},
-		//	  "filter": 
-		//		"and": [
-		//		  {"term": {"id": 46}},
-		//		  {
-		//			"has_parent": {
-		//			  "type": "childdocumentlevelone",
-		//			  "query": {
-		//				"term": {"id": "21"}
-		//			  }
-		//			}
-		//		  }
-		//		]
-		//	  }
-		//	}
-		//  }
-		//}
-		private string BuildGetChildSearch<T>(object childId, string childDocumentType, object parentId)
-		{
-			var buildJson = new StringBuilder();
-			buildJson.AppendLine("{");
-			buildJson.AppendLine("\"query\": {");
-
-			buildJson.AppendLine("\"filtered\": {");
-			buildJson.AppendLine("\"query\": {\"match_all\": {}},");
-			buildJson.AppendLine("\"filter\": ");
-			buildJson.AppendLine("\"and\": [");
-			buildJson.AppendLine("{\"term\": {\"id\": " + childId + "}},");
-			buildJson.AppendLine("{");
-			buildJson.AppendLine("\"has_parent\": {");
-			buildJson.AppendLine("\"type\": \""+ childDocumentType +"\",");
-			buildJson.AppendLine("\"query\": {");
-			buildJson.AppendLine("\"term\": {\"id\": \"" + parentId + "\"}");
-			buildJson.AppendLine("}");
-			buildJson.AppendLine("}");
-			buildJson.AppendLine("}");
-			buildJson.AppendLine("]");
-			buildJson.AppendLine("}");
-			buildJson.AppendLine("}");
-			buildJson.AppendLine("}");
-			buildJson.AppendLine("}");
-
-			return buildJson.ToString();
-
-		}
+		
 	}
 }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextGet;
+using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD
@@ -88,38 +90,81 @@ namespace ElasticsearchCRUD
 
 		public T GetEntity<T>(object entityId, object parentId = null)
 		{
-			if (parentId == null)
-			{
-				var elasticsearchContextGet = new ElasticsearchContextGet(
-					TraceProvider,
-					_cancellationTokenSource,
-					_elasticsearchSerializerConfiguration,
-					_client,
-					_connectionString
-					);
+			var elasticsearchContextGet = new ElasticsearchContextGet(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
 
-				return elasticsearchContextGet.GetEntity<T>(entityId);
-			}
+			return elasticsearchContextGet.GetEntity<T>(entityId, parentId);
+		}
 
-			throw new  NotSupportedException("Still to implement");
+		public T SearchById<T>(object entityId)
+		{
+			var elasticsearchContextSearch = new ElasticsearchContextSearch(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextSearch.SearchById<T>(entityId);
+		}
+
+		public Collection<T> SearchForChildDocumentsByParentId<T>(object parentId, string parentDocumentType)
+		{
+			var elasticsearchContextSearch = new ElasticsearchContextSearch(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextSearch.SearchForChildDocumentsByParentId<T>(parentId, parentDocumentType);
+		}
+
+		public async Task<ResultDetails<Collection<T>>> SearchForChildDocumentsByParentIdAsync<T>(object parentId, string parentDocumentType)
+		{
+			var elasticsearchContextSearch = new ElasticsearchContextSearch(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextSearch.SearchForChildDocumentsByParentIdAsync<T>(parentId, parentDocumentType);
+		}
+
+		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object entityId)
+		{
+			var elasticsearchContextSearch = new ElasticsearchContextSearch(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextSearch.SearchByIdAsync<T>(entityId);
 		}
 
 		public async Task<ResultDetails<T>> GetEntityAsync<T>(object entityId, object parentId = null)
 		{
-			if (parentId == null)
-			{
-				var elasticsearchContextGet = new ElasticsearchContextGet(
-					TraceProvider,
-					_cancellationTokenSource,
-					_elasticsearchSerializerConfiguration,
-					_client,
-					_connectionString
-					);
+			var elasticsearchContextGet = new ElasticsearchContextGet(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
 
-				return await elasticsearchContextGet.GetEntityAsync<T>(entityId);
-			}
+			return await elasticsearchContextGet.GetEntityAsync<T>(entityId, parentId);
 
-			return null;
 		}
 
 		public async Task<ResultDetails<T>> DeleteIndexAsync<T>()

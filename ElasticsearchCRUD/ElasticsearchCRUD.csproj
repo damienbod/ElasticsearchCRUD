@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
+    <Compile Include="ContextSearch\ElasticsearchContextSearch.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />

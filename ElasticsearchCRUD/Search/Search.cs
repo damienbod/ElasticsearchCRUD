@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
@@ -65,11 +66,19 @@ namespace ElasticsearchCRUD.Search
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
 				var responseObject = JObject.Parse(responseString);
 
-				var source = responseObject["_source"];
+				// First object
+				// responseObject["hits"]["hits"][0]["_source"]
+				var source = responseObject["hits"]["hits"];
 				if (source != null)
 				{
-					var result = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(source, typeof(T));
-					//resultDetails.PayloadResult = (T)result;
+					var hitResults = new Collection<T>();
+					foreach (var item in source)
+					{
+						var payload = item["_source"];
+						hitResults.Add((T)_elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(payload, typeof(T)));
+					}
+
+					resultDetails.PayloadResult = hitResults;
 				}
 
 				return resultDetails;

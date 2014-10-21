@@ -86,28 +86,44 @@ http://localhost:9200/parentdocuments/childdocumentlevelone/_search
   }
 }
 
-http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
+http://localhost:9200/parentdocuments/22/_search
 {
   "query": {
     "filtered": {
       "query": {"match_all": {}},
       "filter": {
         "and": [
-          {"term": {"id": 46}},
-          {
-            "has_parent": {
-              "type": "childdocumentlevelone",
-              "query": {
-                "term": {"id": "21"}
-              }
-            }
-          }
+          { "term": {"id": 46}},
+          { "has_parent": { "type": "childdocumentlevelone", "query": { "term": {"id": "21"} } } }
         ]
       }
     }
   }
 }
 
+{
+  "query": {
+    "filtered": {
+      "filter":{
+        "has_parent": {
+          "type": "childdocumentlevelone",
+          "query" : {
+            "filtered": {
+              "query": { "term": {"id": "21"}}
+            }
+          }
+        }
+      }
+    }
+  } 
+
+{
+  "query": {
+    "term": {
+      "_parent": "childdocumentlevelone#26"
+    }
+  }
+}
  
 */
 
@@ -134,6 +150,21 @@ namespace ElasticsearchCRUD.Integration.Test
 			//	var entityResult = context.DeleteIndexAsync<ParentDocument>();
 			//	entityResult.Wait();
 			//}
+		}
+
+		[Test]
+		public void TestGetChildItemTestParentDoesNotExist()
+		{
+			const int parentId = 22;
+			// This could return NOT FOUND 404 or OK 200. It all depends is the routing matches the same shard. It does not search for the exact parent
+
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				var roundTripResult = context.GetEntity<ChildDocumentLevelTwo>(71, parentId);
+
+				Assert.AreEqual(71, roundTripResult.Id);
+			}
 		}
 
 		[Test]
@@ -174,14 +205,14 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestCreateIndexNewChildItemTestParentDoesNotExist()
 		{
 			const int parentId = 332;
-			// This could return NOT FOUND 404 or OK 200. It all depends is the routing matches the same shard. It does not search for the exact parent
+			// This creates a new child doc with the parent 332 even though no parent for 332 exists
 			
 			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
 			{
 				var testObject = new ChildDocumentLevelTwo
 				{
-					Id = 46,
-					D3 = "p7.p21.p46"
+					Id = 47,
+					D3 = "DoesNotExist.p332.p47"
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();

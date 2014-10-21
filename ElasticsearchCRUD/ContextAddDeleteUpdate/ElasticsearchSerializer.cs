@@ -137,7 +137,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticSearchMapping.GetDocumentType(item.EntityType));
 			WriteValue("_id", item.Id);
-			WriteValue("_parent", item.ParentId);
+			WriteValue("parent", item.ParentId);
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n"); //ES requires this \n separator
