@@ -234,6 +234,74 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void TestSearchById()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var childDoc = context.SearchById<ChildDocumentLevelTwo>(71);
+				Assert.IsNotNull(childDoc);
+				Assert.AreEqual(71, childDoc.Id);
+			}
+		}
+
+		[Test]
+		public void TestParentSearchById()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var childDoc = context.SearchById<ParentDocument>(7);
+				Assert.IsNotNull(childDoc);
+				Assert.AreEqual(7, childDoc.Id);
+			}
+		}
+
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
+		public void TestParentSearchByIdNotFoundWrongType()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var childDoc = context.SearchById<ParentDocument>(71);
+				Assert.IsNotNull(childDoc);
+				Assert.AreEqual(7, childDoc.Id);
+			}
+		}
+
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
+		public void TestParentSearchByIdNotFoundWrongTypeChildDoc()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var childDoc = context.SearchById<ChildDocumentLevelOne>(71);
+				Assert.IsNotNull(childDoc);
+				Assert.AreEqual(7, childDoc.Id);
+			}
+		}
+
+
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
+		public void TestsearchByIdNotFound()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var childDoc = context.SearchById<ChildDocumentLevelTwo>(767761);
+				Assert.IsNull(childDoc);
+			}
+		}
+
+		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException),ExpectedMessage = "HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...")]
 		public void TestCreateIndexNewChildItemExceptionMissingParentIdTest()
 		{
