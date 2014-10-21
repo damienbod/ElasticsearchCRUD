@@ -163,6 +163,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.TraceProvider = new ConsoleTraceProvider();
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(71, parentId);
 
+				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentId, typeof(ChildDocumentLevelOne));
+				Assert.IsNotNull(childDocs.First(t => t.Id == 71));
 				Assert.AreEqual(71, roundTripResult.Id);
 			}
 		}
@@ -197,8 +199,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
 				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentId, typeof(ChildDocumentLevelOne));
-				var childDocs2 = context.SearchForChildDocumentsByParentId<ChildDocumentLevelOne>(7, typeof(ParentDocument));
-				int t = childDocs.Count + childDocs2.Count;
+				Assert.IsNotNull(childDocs.First(t => t.Id == 46));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}
@@ -226,7 +227,8 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
-				// TODO check that this object has been added as a child doc to the define mapping
+				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentId, typeof(ChildDocumentLevelOne));
+				Assert.IsNotNull(childDocs.First(t => t.Id == 47));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}
@@ -253,7 +255,6 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id);
 
-				// TODO check that this object has been added as a child doc to the define mapping
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}
@@ -310,8 +311,16 @@ namespace ElasticsearchCRUD.Integration.Test
 						parentDocument2.ChildDocumentLevelOne.First().Id);
 				Assert.AreEqual(parentDocument2.Id, roundTripResult.Id);
 				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
-				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
-					roundTripResultChildDocumentLevelTwo.Id);
+				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id, roundTripResultChildDocumentLevelTwo.Id);
+
+				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.FirstOrDefault().Id, typeof(ChildDocumentLevelOne));
+				var childDocs2 = context.SearchForChildDocumentsByParentId<ChildDocumentLevelOne>(parentDocument2.Id, typeof(ParentDocument));
+
+				var childDocs3 = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(22, typeof(ChildDocumentLevelOne));
+
+				Assert.AreEqual(1, childDocs.Count);
+				Assert.AreEqual(2, childDocs2.Count);
+				Assert.AreEqual(4, childDocs3.Count);
 			}
 		}
 
