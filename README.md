@@ -39,7 +39,7 @@ https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvi
 - Added Search with Json String for type T
 - Initial Mappings for child parent type relationships
 - Using key attribute to identity ids
-- 
+
 <strong>Version 1.0.8</strong><em> 2014.10.17</em>
 - Support Collection of Objects Property in entity as child documents
 - Support Single Object Property in entity as child document
