@@ -128,6 +128,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		private void CreateBulkContentForChildDocument(EntityContextInfo entityInfo, ElasticSearchMapping elasticSearchMapping,
 			EntityContextInfo item)
 		{
+			// TODO Delete document if exists
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
 			// Write the batch "index" operation header
