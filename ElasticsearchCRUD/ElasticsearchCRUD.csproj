@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
+    <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
     <Compile Include="ContextSearch\ElasticsearchContextSearch.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
