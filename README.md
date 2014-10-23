@@ -24,7 +24,7 @@ https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvi
 
 <a href="https://github.com/damienbod/WebSearchWithElasticsearchNestedDocuments">Using with NESTED documents (NEST for search)</a>
 
-<a href="https://github.com/damienbod/WebSearchWithElasticsearch">Simple autocomplete search (ElasticLINQ for search)</a>
+<a href="https://github.com/damienbod/WebSearchWithElasticsearch">Simple autocomplete search </a>
 
 ========================
 <strong>History</strong>
