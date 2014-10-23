@@ -29,6 +29,17 @@ https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvi
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.9</strong><em> 2014.10.22</em>
+- Added Get child document for parent Id method to context
+- Add SearchById<T> method to context
+- Create a Child document possible
+- It is possible now to update, or index child documents which belong to a parent document 
+- Added non-functional tests for child documents, parent documents
+- Added Search for child documents of a document
+- Added Search with Json String for type T
+- Initial Mappings for child parent type relationships
+- Using key attribute to identity ids
+
 <strong>Version 1.0.8</strong><em> 2014.10.17</em>
 - Support Collection of Objects Property in entity as child documents
 - Support Single Object Property in entity as child document
