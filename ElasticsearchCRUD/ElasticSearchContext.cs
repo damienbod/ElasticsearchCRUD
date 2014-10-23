@@ -139,7 +139,7 @@ namespace ElasticsearchCRUD
 		/// <typeparam name="T">type used for the document index and type definition</typeparam>
 		/// <param name="documentId">document id</param>
 		/// <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
-		/// saved to the same shard.)</param>
+		/// saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
 		/// <returns>Document type T</returns>
 		public T GetDocument<T>(object documentId, object parentId = null)
 		{
@@ -154,6 +154,12 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextGet.GetDocument<T>(documentId, parentId);
 		}
 
+		/// <summary>
+		/// Uses Elasticsearch search API to get the document per id
+		/// </summary>
+		/// <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
+		/// <param name="documentId"></param>
+		/// <returns>Returns the document of type T</returns>
 		public T SearchById<T>(object documentId)
 		{
 			var elasticsearchContextSearch = new ElasticsearchContextSearch(
@@ -167,6 +173,12 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextSearch.SearchById<T>(documentId);
 		}
 
+		/// <summary>
+		/// Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+		/// </summary>
+		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// <returns>A collection of documents of type T</returns>
 		public Collection<T> Search<T>(string searchJsonParameters)
 		{
 			var search = new Search.Search(
@@ -180,6 +192,12 @@ namespace ElasticsearchCRUD
 			return search.PostSearch<T>(searchJsonParameters);
 		}
 
+		/// <summary>
+		/// async Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+		/// </summary>
+		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// <returns>A collection of documents of type T in a Task</returns>
 		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters)
 		{
 			var search = new Search.Search(
@@ -193,6 +211,13 @@ namespace ElasticsearchCRUD
 			return await search.PostSearchAsync<T>(searchJsonParameters);
 		}
 
+		/// <summary>
+		/// Searches for all child types of the parent Id parameter. 
+		/// </summary>
+		/// <typeparam name="T">type used the get the index and the type used for the document search</typeparam>
+		/// <param name="parentId">Parent Id of the parent docuemnt</param>
+		/// <param name="parentDocumentType">Parent document type. Required to search for the child documents.</param>
+		/// <returns>collection od docuemtns of type T</returns>
 		public Collection<T> SearchForChildDocumentsByParentId<T>(object parentId, Type parentDocumentType)
 		{
 			var elasticsearchContextSearch = new ElasticsearchContextSearch(
@@ -206,6 +231,13 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextSearch.SearchForChildDocumentsByParentId<T>(parentId, parentDocumentType);
 		}
 
+		/// <summary>
+		/// async Searches for all child types of the parent Id parameter. 
+		/// </summary>
+		/// <typeparam name="T">type used the get the index and the type used for the document search</typeparam>
+		/// <param name="parentId">Parent Id of the parent docuemnt</param>
+		/// <param name="parentDocumentType">Parent document type. Required to search for the child documents.</param>
+		/// <returns>collection od docuemtns of type T in a Task</returns>
 		public async Task<ResultDetails<Collection<T>>> SearchForChildDocumentsByParentIdAsync<T>(object parentId, Type parentDocumentType)
 		{
 			var elasticsearchContextSearch = new ElasticsearchContextSearch(
@@ -219,7 +251,13 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextSearch.SearchForChildDocumentsByParentIdAsync<T>(parentId, parentDocumentType);
 		}
 
-		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object entityId)
+		/// <summary>
+		/// async Uses Elasticsearch search API to get the document per id
+		/// </summary>
+		/// <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
+		/// <param name="documentId"></param>
+		/// <returns>Returns the document of type T in a Task with result details</returns>
+		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object documentId)
 		{
 			var elasticsearchContextSearch = new ElasticsearchContextSearch(
 				TraceProvider,
@@ -229,10 +267,18 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await elasticsearchContextSearch.SearchByIdAsync<T>(entityId);
+			return await elasticsearchContextSearch.SearchByIdAsync<T>(documentId);
 		}
 
-		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object entityId, object parentId = null)
+		/// <summary>
+		/// Gets a document by id. Elasticsearch GET API
+		/// </summary>
+		/// <typeparam name="T">type used for the document index and type definition</typeparam>
+		/// <param name="documentId">document id</param>
+		/// <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
+		/// saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
+		/// <returns>Document type T in a Task with result details</returns>
+		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object documentId, object parentId = null)
 		{
 			var elasticsearchContextGet = new ElasticsearchContextGet(
 				TraceProvider,
@@ -242,10 +288,16 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await elasticsearchContextGet.GetDocumentAsync<T>(entityId, parentId);
+			return await elasticsearchContextGet.GetDocumentAsync<T>(documentId, parentId);
 
 		}
 
+		/// <summary>
+		/// Delete the whole index if it exists and Elasticsearch allows delete index.
+		/// Property AllowDeleteForIndex must also be set to true.
+		/// </summary>
+		/// <typeparam name="T">Type used to get the index to delete.</typeparam>
+		/// <returns>Result details in a task</returns>
 		public async Task<ResultDetails<T>> DeleteIndexAsync<T>()
 		{
 			var elasticsearchContextAddDeleteUpdate = new ElasticsearchContextAddDeleteUpdate(
@@ -259,6 +311,9 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextAddDeleteUpdate.DeleteIndexAsync<T>(AllowDeleteForIndex);
 		}
 
+		/// <summary>
+		/// Dispose used to clean the HttpClient
+		/// </summary>
 		public void Dispose()
 		{
 			if (_client != null)
