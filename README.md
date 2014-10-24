@@ -12,19 +12,36 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 ========================
 
-<strong>Examples:</strong> 
+<strong>Examples:</strong>
 
-https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample
+<a href="https://github.com/damienbod/WebSearchWithElasticsearch">Simple autocomplete search </a>
 
-https://github.com/damienbod/ElasticsearchCRUD/tree/master/ElasticsearchCRUD.Integration.Test
-
-https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvider
-
-<a href="https://github.com/damienbod/DataTransferSQLWithEntityFrameworkToElasticsearch">Data Transfer MS SQLServer 2014 With EntityFramework To Elasticsearch</a>
+This examples shows how to do a simple search using an MVC application with jQuery autocomplete and Elasticsearch simple documents . 
 
 <a href="https://github.com/damienbod/WebSearchWithElasticsearchNestedDocuments">Using with NESTED documents (NEST for search)</a>
 
-<a href="https://github.com/damienbod/WebSearchWithElasticsearch">Simple autocomplete search (ElasticLINQ for search)</a>
+This example uses Elasticsearch nested documents. The documents can be created, deleted, updated or searched for. The autocomplete search searches the documents as well as the nested objects.
+
+<a href="https://github.com/damienbod/WebSearchWithElasticsearchChildDocuments">Elasticsearch child, parent documents in a MVC application</a>
+
+This example uses Elasticsearch child/parent documents. All documents are saved inside the same index each with a different type. The child and parent documents are saved on the same shard. It is possible to do CRUD operations with all child documents or search for child/parent documents.
+
+<a href="https://github.com/damienbod/DataTransferSQLWithEntityFrameworkToElasticsearch">Data Transfer MS SQLServer 2014 With EntityFramework To Elasticsearch</a>
+
+This examples show how to transfer entities to documents in Elasticsearch. The entities are saved as nested documents.
+
+<a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample">ConsoleElasticsearchCrudExample</a>
+
+A basic CRUD example.
+
+<a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/ElasticsearchCRUD.Integration.Test">ElasticsearchCRUD.Integration.Test</a>
+
+The integration tests shows lots of examples for ElasticsearchCRUD.
+
+<a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvider">Damienbod.AnimalProvider</a>
+
+Example showing mapping configuration.
+
 
 ========================
 <strong>History</strong>
