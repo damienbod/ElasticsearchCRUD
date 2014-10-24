@@ -32,7 +32,8 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
-		/// Saves all child objects as well as the parent if set. The child objects will be saved as nested or as separate documents depending on ProcessChildDocumentsAsSeparateChildIndex
+		/// Saves all child objects as well as the parent if set. 
+		/// The child objects will be saved as nested or as separate documents depending on ProcessChildDocumentsAsSeparateChildIndex
 		/// </summary>
 		public bool SaveChildObjectsAsWellAsParent
 		{

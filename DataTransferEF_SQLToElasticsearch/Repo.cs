@@ -35,7 +35,7 @@ namespace DataTransferSQLToEl
 			return countryRegion;
 		}
 
-		public void SaveToElasticsearchAddress()
+		public void SaveToElasticsearchStateProvince()
 		{
 			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
 			using ( var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(elasticSearchMappingResolver,true,true)))
@@ -46,12 +46,12 @@ namespace DataTransferSQLToEl
 					int pointer = 0;
 					const int interval = 20;
 					bool firstRun = true;
-					int length = databaseEfModel.Address.Count();
+					int length = databaseEfModel.StateProvince.Count();
 
 					while (pointer < length)
 					{
 						stopwatch.Start();
-						var collection = databaseEfModel.Address.OrderBy(t => t.AddressID).Skip(pointer).Take(interval).ToList<Address>();
+						var collection = databaseEfModel.StateProvince.OrderBy(t => t.StateProvinceID).Skip(pointer).Take(interval).ToList<StateProvince>();
 						stopwatch.Stop();
 						Console.WriteLine("Time taken for select {0} Address: {1}", interval, stopwatch.Elapsed);
 						stopwatch.Reset();
@@ -59,8 +59,8 @@ namespace DataTransferSQLToEl
 						stopwatch.Start();
 						foreach (var item in collection)
 						{
-							var ee = item.StateProvince.CountryRegion.Name;
-							elasticSearchContext.AddUpdateDocument(item, item.AddressID);
+							var ee = item.CountryRegion.Name;
+							elasticSearchContext.AddUpdateDocument(item, item.StateProvinceID);
 						}
 
 						if (firstRun)
