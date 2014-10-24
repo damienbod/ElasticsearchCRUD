@@ -30,17 +30,18 @@ This example uses Elasticsearch child/parent documents. All documents are saved 
 
 This examples show how to transfer entities to documents in Elasticsearch. The entities are saved as nested documents.
 
-<a href="ConsoleElasticsearchCrudExample">https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample</a>
+<a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample">ConsoleElasticsearchCrudExample</a>
 
 A basic CRUD example.
 
-<a href="ElasticsearchCRUD.Integration.Test">https://github.com/damienbod/ElasticsearchCRUD/tree/master/ElasticsearchCRUD.Integration.Test</a>
+<a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/ElasticsearchCRUD.Integration.Test">ElasticsearchCRUD.Integration.Test</a>
 
 The integration tests shows lots of examples for ElasticsearchCRUD.
 
 <a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/Damienbod.AnimalProvider">Damienbod.AnimalProvider</a>
 
 Example showing mapping configuration.
+
 
 ========================
 <strong>History</strong>
