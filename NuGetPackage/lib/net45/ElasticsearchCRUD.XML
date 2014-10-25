@@ -1,0 +1,218 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ElasticsearchCRUD</name>
+    </assembly>
+    <members>
+        <member name="T:ElasticsearchCRUD.ElasticsearchSerializerConfiguration">
+            <summary>
+            Configuration class used for the context settings.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ElasticsearchSerializerConfiguration.ElasticSearchMappingResolver">
+            <summary>
+            Mapping resolver used to get set each mapping configuration for a type. A type can only have one mapping pro context.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ElasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent">
+            <summary>
+            Saves all child objects as well as the parent if set. 
+            The child objects will be saved as nested or as separate documents depending on ProcessChildDocumentsAsSeparateChildIndex
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex">
+            <summary>
+            Context will save child objects as separate types in the same index if set. Otherwise child itemas are saved as nested objects.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ElasticSearchContext">
+            <summary>
+            Context for crud operations. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.#ctor(System.String,ElasticsearchCRUD.ElasticsearchSerializerConfiguration)">
+            <summary>
+            ctor
+            </summary>
+            <param name="connectionString">Connection string which is used as ther base URL for the HttpClient</param>
+            <param name="elasticsearchSerializerConfiguration">Configuration class for the context. The default settings can be oset here. This 
+            class contains an IElasticSearchMappingResolver</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.#ctor(System.String,ElasticsearchCRUD.IElasticSearchMappingResolver)">
+            <summary>
+            ctor
+            </summary>
+            <param name="connectionString">Connection string which is used as ther base URL for the HttpClient</param>
+            <param name="elasticSearchMappingResolver">Resolver used for getting the index and type of a document type. The default 
+            ElasticsearchSerializerConfiguration is used in this ctor.</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.AddUpdateDocument(System.Object,System.Object,System.Object)">
+            <summary>
+            Adds a document to the pending changes list. Nor HTTP request is sent with this method. If the save changes is not called, the
+            document is not added or updated in the search engine
+            </summary>
+            <param name="document">Document to be added or updated</param>
+            <param name="id">document id</param>
+            <param name="parentId">parent id of the document. This is only used if the ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex
+            property is set to true. The document is then saved with the parent routing. It will also be saved even if the parent does not exist.</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.DeleteDocument``1(System.Object)">
+            <summary>
+            Adds a document to the pending changes list to be deletedd. Nor HTTP request is sent with this method. If the save changes is not called, the
+            document is not added or updated in the search engine
+            </summary>
+            <typeparam name="T">This type is used to get the index and type of the document</typeparam>
+            <param name="id">id of the document which will be deleted.</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.SaveChangesAndInitMappingsForChildDocuments">
+            <summary>
+            Saves all the changes in the pending list of changes, add, update and delete. It also creates mappings and indexes
+            if the child documents are saved as separate index types. ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex= true
+            </summary>
+            <returns>Returns HTTP response information</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.SaveChanges">
+            <summary>
+            Saves all the changes in the pending list of changes, add, update and delete. No mappings are created here for child document types.
+            </summary>
+            <returns>Returns HTTP response information</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.SaveChangesAsync">
+            <summary>
+            async Saves all the changes in the pending list of changes, add, update and delete. No mappings are created here for child document types.
+            </summary>
+            <returns>Returns HTTP response information</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.GetDocument``1(System.Object,System.Object)">
+            <summary>
+            Gets a document by id. Elasticsearch GET API
+            </summary>
+            <typeparam name="T">type used for the document index and type definition</typeparam>
+            <param name="documentId">document id</param>
+            <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
+            saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
+            <returns>Document type T</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.SearchById``1(System.Object)">
+            <summary>
+            Uses Elasticsearch search API to get the document per id
+            </summary>
+            <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
+            <param name="documentId"></param>
+            <returns>Returns the document of type T</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.Search``1(System.String)">
+            <summary>
+            Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+            </summary>
+            <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+            <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+            <returns>A collection of documents of type T</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.SearchAsync``1(System.String)">
+            <summary>
+            async Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+            </summary>
+            <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+            <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+            <returns>A collection of documents of type T in a Task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.Count``1(System.String)">
+            <summary>
+            Count to amount of hits for a index, type and query.
+            </summary>
+            <typeparam name="T">Type to find</typeparam>
+            <param name="jsonContent">json query data, returns all in emtpy</param>
+            <returns>Result amount of document found</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.CountAsync``1(System.String)">
+            <summary>
+            Count to amount of hits for a index, type and query.
+            </summary>
+            <typeparam name="T">Type to find</typeparam>
+            <param name="jsonContent">json query data, returns all in emtpy</param>
+            <returns>Result amount of document found in a result details task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.SearchByIdAsync``1(System.Object)">
+            <summary>
+            async Uses Elasticsearch search API to get the document per id
+            </summary>
+            <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
+            <param name="documentId"></param>
+            <returns>Returns the document of type T in a Task with result details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.GetDocumentAsync``1(System.Object,System.Object)">
+            <summary>
+            Gets a document by id. Elasticsearch GET API
+            </summary>
+            <typeparam name="T">type used for the document index and type definition</typeparam>
+            <param name="documentId">document id</param>
+            <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
+            saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
+            <returns>Document type T in a Task with result details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.DeleteIndexAsync``1">
+            <summary>
+            Delete the whole index if it exists and Elasticsearch allows delete index.
+            Property AllowDeleteForIndex must also be set to true.
+            </summary>
+            <typeparam name="T">Type used to get the index to delete.</typeparam>
+            <returns>Result details in a task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchContext.Dispose">
+            <summary>
+            Dispose used to clean the HttpClient
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ElasticSearchContext.AllowDeleteForIndex">
+            <summary>
+            This bool needs to be set to true if you want to delete an index. Per default this is false.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ElasticSearchMappingResolver">
+            <summary>
+            This class is used to add all register all the type definitions and then resolver them when requesting or handling response data from Elasticsearch.
+            If no mapping is defined, the default mapping is used.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchMappingResolver.AddElasticSearchMappingForEntityType(System.Type,ElasticsearchCRUD.ElasticSearchMapping)">
+            <summary>
+            You can add custom Type handlers here for specific mapping.
+            Only one mapping can be defined pro type.
+            </summary>
+            <param name="type">Type of class</param>
+            <param name="mapping">mapping definition.</param>
+        </member>
+        <member name="T:ElasticsearchCRUD.ElasticSearchMapping">
+            <summary>
+            Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
+            Everything is lowercase and the index is pluralized
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchMapping.MapEntityValues(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Boolean)">
+            <summary>
+            Ovveride this if your default mapping needs to be changed.
+            default type is lowercase for properties, indes pluralized and type to lower
+            </summary>
+            <param name="entityInfo">Information about the entity</param>
+            <param name="elasticsearchCrudJsonWriter">Serializer with added tracing</param>
+            <param name="beginMappingTree">begin new mapping tree</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchMapping.GetDocumentType(System.Type)">
+            <summary>
+            Override this if you require a special type definitoin for your document type.
+            </summary>
+            <param name="type"></param>
+            <returns>The type used in Elasticsearch for this type</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticSearchMapping.GetIndexForType(System.Type)">
+            <summary>
+            Overide this if you need to define the index for your document. 
+            Required if your using a child document type.
+            Default: pluralize the default type
+            </summary>
+            <param name="type">Type of class used</param>
+            <returns>The index used in Elasticsearch for this type</returns>
+        </member>
+    </members>
+</doc>
