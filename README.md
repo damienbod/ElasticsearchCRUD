@@ -46,6 +46,12 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.10</strong><em> 2014.10.25</em>
+- Support for Elasticsearch Count API
+- Return hits/total in search results
+- Added code documentation and included in NuGet deployment
+- Removed search for child documents per parent
+
 <strong>Version 1.0.9</strong><em> 2014.10.22</em>
 - Added Get child document for parent Id method to context
 - Add SearchById<T> method to context
