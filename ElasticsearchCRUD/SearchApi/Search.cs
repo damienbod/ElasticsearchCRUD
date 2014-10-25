@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
@@ -10,7 +9,7 @@ using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
 
-namespace ElasticsearchCRUD.Search
+namespace ElasticsearchCRUD.SearchApi
 {
 	public class Search
 	{
@@ -48,6 +47,7 @@ namespace ElasticsearchCRUD.Search
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "Search");
 
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+				resultDetails.RequestUrl = elasticsearchUrlForEntityGet;
 				var response = await _client.PostAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(true);
 				
 				resultDetails.Status = response.StatusCode;
@@ -56,7 +56,7 @@ namespace ElasticsearchCRUD.Search
 					_traceProvider.Trace(TraceEventType.Warning, "{2}: GetSearchAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "Search");
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
-						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
 						resultDetails.Description = errorInfo;
 						if (errorInfo.Contains("RoutingMissingException"))
 						{
@@ -67,7 +67,7 @@ namespace ElasticsearchCRUD.Search
 					}
 				}
 
-				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
 				var responseObject = JObject.Parse(responseString);
 

@@ -93,6 +93,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: sending bulk request: {0}", serializedEntities, "ElasticsearchContextAddDeleteUpdate");
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", _elasticsearchUrlBatch.AbsoluteUri, "ElasticsearchContextAddDeleteUpdate");
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+				resultDetails.RequestUrl = _elasticsearchUrlBatch.OriginalString;
 				var response = await _client.PostAsync(_elasticsearchUrlBatch, content, _cancellationTokenSource.Token).ConfigureAwait(true);
 
 				resultDetails.Status = response.StatusCode;

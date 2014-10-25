@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
@@ -25,7 +24,13 @@ namespace ElasticsearchCRUD
 
 		public List<EntityContextInfo> ChildIndexEntities = new List<EntityContextInfo>();
 
-		// default type is lowercase for properties
+		/// <summary>
+		/// Ovveride this if your default mapping needs to be changed.
+		/// default type is lowercase for properties, indes pluralized and type to lower
+		/// </summary>
+		/// <param name="entityInfo">Information about the entity</param>
+		/// <param name="elasticsearchCrudJsonWriter">Serializer with added tracing</param>
+		/// <param name="beginMappingTree">begin new mapping tree</param>
 		public virtual void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{
 			try
@@ -354,11 +359,17 @@ namespace ElasticsearchCRUD
 			return property.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null;
 		} 
 
+
 		public virtual object ParseEntity(JToken source, Type type)
 		{
 			return JsonConvert.DeserializeObject(source.ToString(), type);
 		}
 
+		/// <summary>
+		/// Override this if you require a special type definitoin for your document type.
+		/// </summary>
+		/// <param name="type"></param>
+		/// <returns>The type used in Elasticsearch for this type</returns>
 		public virtual string GetDocumentType(Type type)
 		{
 			// Adding support for EF types
@@ -379,7 +390,13 @@ namespace ElasticsearchCRUD
 			return type;
 		}
 
-		// pluralize the default type
+		/// <summary>
+		/// Overide this if you need to define the index for your document. 
+		/// Required if your using a child document type.
+		/// Default: pluralize the default type
+		/// </summary>
+		/// <param name="type">Type of class used</param>
+		/// <returns>The index used in Elasticsearch for this type</returns>
 		public virtual string GetIndexForType(Type type)
 		{
 			// Adding support for EF types

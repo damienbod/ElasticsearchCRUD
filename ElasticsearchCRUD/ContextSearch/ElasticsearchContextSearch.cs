@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.SearchApi;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD.ContextSearch
@@ -74,13 +75,16 @@ namespace ElasticsearchCRUD.ContextSearch
 
 			var resultDetails = new ResultDetails<T> {Status = HttpStatusCode.InternalServerError};
 			
-			var search = new Search.Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
+			var search = new Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
+
 			var result = await search.PostSearchAsync<T>(BuildSearchById<T>(entityId));
+			resultDetails.TotalHits = result.TotalHits;
+			resultDetails.RequestBody = result.RequestBody;
+			resultDetails.RequestUrl = result.RequestUrl;
+
 			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count > 0)
 			{
 				resultDetails.PayloadResult = result.PayloadResult.First();
-				resultDetails.TotalHits = result.TotalHits;
-				resultDetails.RequestBody = result.RequestBody;
 				return resultDetails;
 			}
 
@@ -89,7 +93,6 @@ namespace ElasticsearchCRUD.ContextSearch
 				resultDetails.Status = HttpStatusCode.NotFound;
 				resultDetails.Description = string.Format("No document found id: {0}, index {1}, type {2}", entityId, index, type);
 				_traceProvider.Trace(TraceEventType.Information, string.Format("ElasticsearchContextSearch: No document found id: {0},, index {1}, type {2}", entityId, index, type));
-
 				return resultDetails;
 			}
 

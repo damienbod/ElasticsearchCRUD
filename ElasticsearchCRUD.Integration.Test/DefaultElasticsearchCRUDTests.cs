@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
@@ -81,6 +82,30 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAsync();
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextCount()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				for (int i = 0; i < 7; i++)
+				{
+					context.AddUpdateDocument(_entitiesForTests[i], i);
+				}
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+
+				// get elasticsearch time to update...
+				Thread.Sleep(2000);
+
+				long found = context.Count<SkillTestEntity>();
+				Assert.AreEqual(7, found);
 			}
 		}
 

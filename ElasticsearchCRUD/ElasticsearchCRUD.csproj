@@ -56,11 +56,12 @@
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
     <Compile Include="ContextSearch\ElasticsearchContextSearch.cs" />
+    <Compile Include="CountApi\Count.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />
     <Compile Include="ContextAddDeleteUpdate\InitMappings.cs" />
-    <Compile Include="Search\Search.cs" />
+    <Compile Include="SearchApi\Search.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticSearchContext.cs" />
     <Compile Include="ElasticsearchCrudException.cs" />

@@ -80,6 +80,8 @@ namespace ElasticsearchCRUD.ContextGet
 				var uri = new Uri(elasticsearchUrlForEntityGet + entityId + parentIdUrl);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "ElasticSearchContextGet");
 				var response = await _client.GetAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
+				resultDetails.RequestUrl = uri.OriginalString;
+
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)

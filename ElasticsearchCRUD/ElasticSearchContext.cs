@@ -8,6 +8,8 @@ using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
+using ElasticsearchCRUD.CountApi;
+using ElasticsearchCRUD.SearchApi;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD
@@ -181,7 +183,7 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T</returns>
 		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters)
 		{
-			var search = new Search.Search(
+			var search = new Search(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -200,7 +202,7 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T in a Task</returns>
 		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters)
 		{
-			var search = new Search.Search(
+			var search = new Search(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -209,6 +211,44 @@ namespace ElasticsearchCRUD
 				);
 
 			return await search.PostSearchAsync<T>(searchJsonParameters);
+		}
+
+		/// <summary>
+		/// Count to amount of hits for a index, type and query.
+		/// </summary>
+		/// <typeparam name="T">Type to find</typeparam>
+		/// <param name="jsonContent">json query data, returns all in emtpy</param>
+		/// <returns>Result amount of document found</returns>
+		public long Count<T>(string jsonContent = "")
+		{
+			var count = new Count(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return count.PostCount<T>(jsonContent).PayloadResult;
+		}
+
+		/// <summary>
+		/// Count to amount of hits for a index, type and query.
+		/// </summary>
+		/// <typeparam name="T">Type to find</typeparam>
+		/// <param name="jsonContent">json query data, returns all in emtpy</param>
+		/// <returns>Result amount of document found in a result details task</returns>
+		public async Task<ResultDetails<long>> CountAsync<T>(string jsonContent = "")
+		{
+			var count = new Count(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await count.PostCountAsync<T>(jsonContent);
 		}
 
 		/// <summary>

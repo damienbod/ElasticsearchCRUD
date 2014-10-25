@@ -42,7 +42,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 						response.StatusCode, response.ReasonPhrase, "InitMappings");
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
-						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
 						resultDetails.Description = errorInfo;
 						return resultDetails;
 					}
@@ -50,7 +50,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					return resultDetails;
 				}
 
-				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
 
 				var responseObject = JObject.Parse(responseString);
 				traceProvider.Trace(TraceEventType.Verbose, "{1}: response: {0}", responseString, "InitMappings");
