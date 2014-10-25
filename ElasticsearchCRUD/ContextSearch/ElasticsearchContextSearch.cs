@@ -72,12 +72,15 @@ namespace ElasticsearchCRUD.ContextSearch
 			var type = elasticSearchMapping.GetDocumentType(typeof(T));
 			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextSearch: Searching for document id: {0}, index {1}, type {2}", entityId, index, type));
 
-			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
+			var resultDetails = new ResultDetails<T> {Status = HttpStatusCode.InternalServerError};
+			
 			var search = new Search.Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
 			var result = await search.PostSearchAsync<T>(BuildSearchById<T>(entityId));
 			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count > 0)
 			{
 				resultDetails.PayloadResult = result.PayloadResult.First();
+				resultDetails.TotalHits = result.TotalHits;
+				resultDetails.RequestBody = result.RequestBody;
 				return resultDetails;
 			}
 
