@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
+using System.Text;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
@@ -163,10 +164,27 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.TraceProvider = new ConsoleTraceProvider();
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(71, parentId);
 
-				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentId, typeof(ChildDocumentLevelOne));
+				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.First(t => t.Id == 71));
 				Assert.AreEqual(71, roundTripResult.Id);
 			}
+		}
+
+		// {
+		//  "query": {
+		//	"term": { "_parent": "parentdocument#7" }
+		//  }
+		// }
+		private string BuildSearchForChildDocumentsWithIdAndParentType(object parentId, string parentDocumentType)
+		{
+			var buildJson = new StringBuilder();
+			buildJson.AppendLine("{");
+			buildJson.AppendLine("\"query\": {");
+			buildJson.AppendLine("\"term\": {\"_parent\": \"" + parentDocumentType + "#" + parentId + "\"}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+
+			return buildJson.ToString();
 		}
 
 		[Test]
@@ -198,7 +216,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
-				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentId, typeof(ChildDocumentLevelOne));
+				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.First(t => t.Id == 46));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
@@ -227,7 +245,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
-				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentId, typeof(ChildDocumentLevelOne));
+				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.First(t => t.Id == 47));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
@@ -381,11 +399,10 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
 				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id, roundTripResultChildDocumentLevelTwo.Id);
 
-				var childDocs = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.FirstOrDefault().Id, typeof(ChildDocumentLevelOne));
-				var childDocs2 = context.SearchForChildDocumentsByParentId<ChildDocumentLevelOne>(parentDocument2.Id, typeof(ParentDocument));
-
-				var childDocs3 = context.SearchForChildDocumentsByParentId<ChildDocumentLevelTwo>(22, typeof(ChildDocumentLevelOne));
-
+				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.ChildDocumentLevelOne.FirstOrDefault().Id, "childdocumentlevelone"));
+				var childDocs2 = context.Search<ChildDocumentLevelOne>(BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.Id, "parentdocument"));
+				var childDocs3 = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
+			
 				Assert.AreEqual(1, childDocs.Count);
 				Assert.AreEqual(2, childDocs2.Count);
 				Assert.AreEqual(4, childDocs3.Count);

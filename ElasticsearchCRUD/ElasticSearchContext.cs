@@ -212,46 +212,6 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
-		/// Searches for all child types of the parent Id parameter. 
-		/// </summary>
-		/// <typeparam name="T">type used the get the index and the type used for the document search</typeparam>
-		/// <param name="parentId">Parent Id of the parent docuemnt</param>
-		/// <param name="parentDocumentType">Parent document type. Required to search for the child documents.</param>
-		/// <returns>collection od docuemtns of type T</returns>
-		public Collection<T> SearchForChildDocumentsByParentId<T>(object parentId, Type parentDocumentType)
-		{
-			var elasticsearchContextSearch = new ElasticsearchContextSearch(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextSearch.SearchForChildDocumentsByParentId<T>(parentId, parentDocumentType);
-		}
-
-		/// <summary>
-		/// async Searches for all child types of the parent Id parameter. 
-		/// </summary>
-		/// <typeparam name="T">type used the get the index and the type used for the document search</typeparam>
-		/// <param name="parentId">Parent Id of the parent docuemnt</param>
-		/// <param name="parentDocumentType">Parent document type. Required to search for the child documents.</param>
-		/// <returns>collection od docuemtns of type T in a Task</returns>
-		public async Task<ResultDetails<Collection<T>>> SearchForChildDocumentsByParentIdAsync<T>(object parentId, Type parentDocumentType)
-		{
-			var elasticsearchContextSearch = new ElasticsearchContextSearch(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextSearch.SearchForChildDocumentsByParentIdAsync<T>(parentId, parentDocumentType);
-		}
-
-		/// <summary>
 		/// async Uses Elasticsearch search API to get the document per id
 		/// </summary>
 		/// <typeparam name="T">type T used to get index anf the type of the document.</typeparam>

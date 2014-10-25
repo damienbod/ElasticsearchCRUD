@@ -9,7 +9,7 @@ namespace DataTransferSQLToEl
 			Repo repo = new Repo();
 			//repo.SaveToElasticsearchPerson();
 			
-			repo.SaveToElasticsearchAddress();
+			repo.SaveToElasticsearchStateProvince();
 			var addressX = repo.GetAddressFromElasticsearch("22");
 			Console.WriteLine(addressX);
 		}
