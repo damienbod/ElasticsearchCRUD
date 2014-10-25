@@ -165,7 +165,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(71, parentId);
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
-				Assert.IsNotNull(childDocs.First(t => t.Id == 71));
+				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 71));
 				Assert.AreEqual(71, roundTripResult.Id);
 			}
 		}
@@ -217,7 +217,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
-				Assert.IsNotNull(childDocs.First(t => t.Id == 46));
+				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 46));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}
@@ -246,7 +246,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
-				Assert.IsNotNull(childDocs.First(t => t.Id == 47));
+				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 47));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}
@@ -403,9 +403,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				var childDocs2 = context.Search<ChildDocumentLevelOne>(BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.Id, "parentdocument"));
 				var childDocs3 = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
 			
-				Assert.AreEqual(1, childDocs.Count);
-				Assert.AreEqual(2, childDocs2.Count);
-				Assert.AreEqual(4, childDocs3.Count);
+				Assert.AreEqual(1, childDocs.TotalHits);
+				Assert.AreEqual(2, childDocs2.TotalHits);
+				Assert.AreEqual(4, childDocs3.TotalHits);
 			}
 		}
 

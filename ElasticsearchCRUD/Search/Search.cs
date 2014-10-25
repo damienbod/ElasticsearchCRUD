@@ -32,12 +32,17 @@ namespace ElasticsearchCRUD.Search
 		public async Task<ResultDetails<Collection<T>>> PostSearchAsync<T>(string jsonContent)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search: {0}, content: {1}", typeof(T), jsonContent, "Search");
-			var resultDetails = new ResultDetails<Collection<T>> { Status = HttpStatusCode.InternalServerError };
+			var resultDetails = new ResultDetails<Collection<T>>
+			{
+				Status = HttpStatusCode.InternalServerError,
+				RequestBody = jsonContent
+			};
+
 			try
 			{
 				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
-				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
-
+				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));	
+				
 				var content = new StringContent(jsonContent);
 				var uri = new Uri(elasticsearchUrlForEntityGet);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "Search");
@@ -69,6 +74,7 @@ namespace ElasticsearchCRUD.Search
 				// First object
 				// responseObject["hits"]["hits"][0]["_source"]
 				var source = responseObject["hits"]["hits"];
+				resultDetails.TotalHits = (long)responseObject["hits"]["total"];
 				if (source != null)
 				{
 					var hitResults = new Collection<T>();
@@ -90,7 +96,7 @@ namespace ElasticsearchCRUD.Search
 			}
 		}
 
-		public Collection<T> PostSearch<T>(string jsonContent)
+		public ResultDetails<Collection<T>> PostSearch<T>(string jsonContent)
 		{
 			try
 			{
@@ -106,7 +112,7 @@ namespace ElasticsearchCRUD.Search
 					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.BadRequest");
 					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.BadRequest" + task.Result.Description);
 				}
-				return task.Result.PayloadResult;
+				return task.Result;
 			}
 			catch (AggregateException ae)
 			{

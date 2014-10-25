@@ -179,7 +179,7 @@ namespace ElasticsearchCRUD
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
 		/// <returns>A collection of documents of type T</returns>
-		public Collection<T> Search<T>(string searchJsonParameters)
+		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters)
 		{
 			var search = new Search.Search(
 				TraceProvider,
