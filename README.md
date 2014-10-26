@@ -12,6 +12,19 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 ========================
 
+<strong>Tutorials:</strong>
+<a href="http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/">Part 1: ElasticsearchCRUD introduction</a>
+
+<a href="http://damienbod.wordpress.com/2014/10/01/full-text-search-with-asp-net-mvc-jquery-autocomplete-and-elasticsearch/">Part 2: MVC application search with simple documents using autocomplete, jQuery and jTable</a>
+
+<a href="http://damienbod.wordpress.com/2014/10/08/mvc-crud-with-elasticsearch-nested-documents/">Part 3: MVC Elasticsearch CRUD with nested documents</a>
+
+<a href="http://damienbod.wordpress.com/2014/10/14/transferring-data-to-elasticsearch-from-ms-sql-server-using-elasticsearchcrud-and-entity-framework/">Part 4: Data Transfer from MS SQL Server using Entity Framework to Elasticsearch</a>
+
+<a href="http://damienbod.wordpress.com/2014/10/26/mvc-crud-with-elasticsearch-child-parent-documents/">Part 5: MVC Elasticsearch with child, parent documents</a>
+
+========================
+
 <strong>Examples:</strong>
 
 <a href="https://github.com/damienbod/WebSearchWithElasticsearch">Simple autocomplete search </a>
