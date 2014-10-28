@@ -278,6 +278,42 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void TestDocumentExists()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var found = context.DocumentExists<ParentDocument>(7);
+				Assert.IsTrue(found);
+			}
+		}
+
+		[Test]
+		public void TestDocumentExistsChildDoc()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var found = context.DocumentExists<ChildDocumentLevelTwo>(71, 22);
+				Assert.IsTrue(found);
+			}
+		}
+
+		[Test]
+		[ExpectedException(typeof(ElasticsearchCrudException))]
+		public void TestDocumentExistsChildDocBadRoute()
+		{
+			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var found = context.DocumentExists<ChildDocumentLevelTwo>(71);
+			}
+		}
+		
+		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
 		public void TestParentSearchByIdNotFoundWrongType()
 		{

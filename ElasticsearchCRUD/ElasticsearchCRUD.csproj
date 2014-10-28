@@ -61,7 +61,6 @@
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />
     <Compile Include="ContextAddDeleteUpdate\InitMappings.cs" />
-    <Compile Include="SearchApi\Hits.cs" />
     <Compile Include="SearchApi\Search.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticSearchContext.cs" />
