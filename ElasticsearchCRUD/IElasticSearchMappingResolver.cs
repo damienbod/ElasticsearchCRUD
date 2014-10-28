@@ -2,9 +2,9 @@
 
 namespace ElasticsearchCRUD
 {
-	public interface IElasticSearchMappingResolver
+	public interface IElasticsearchMappingResolver
 	{
-		ElasticSearchMapping GetElasticSearchMapping(Type type);
-		void AddElasticSearchMappingForEntityType(Type type, ElasticSearchMapping mapping);
+		ElasticsearchMapping GetElasticSearchMapping(Type type);
+		void AddElasticSearchMappingForEntityType(Type type, ElasticsearchMapping mapping);
 	}
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -9,9 +8,9 @@ using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
 
-namespace ElasticsearchCRUD.SearchApi
+namespace ElasticsearchCRUD.ContextDeleteByQuery
 {
-	public class Search
+	public class ElasticsearchContextDeleteByQuery
 	{
 		private readonly ITraceProvider _traceProvider;
 		private readonly CancellationTokenSource _cancellationTokenSource;
@@ -19,7 +18,7 @@ namespace ElasticsearchCRUD.SearchApi
 		private readonly HttpClient _client;
 		private readonly string _connectionString;
 
-		public Search(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
+		public ElasticsearchContextDeleteByQuery(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
 		{
 			_traceProvider = traceProvider;
 			_cancellationTokenSource = cancellationTokenSource;
@@ -28,10 +27,10 @@ namespace ElasticsearchCRUD.SearchApi
 			_connectionString = connectionString;
 		}
 
-		public async Task<ResultDetails<Collection<T>>> PostSearchAsync<T>(string jsonContent)
+		public async Task<ResultDetails<bool>> DeleteByQueryAsync<T>(string jsonContent)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search: {0}, content: {1}", typeof(T), jsonContent, "Search");
-			var resultDetails = new ResultDetails<Collection<T>>
+			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for ElasticsearchContextDeleteByQuery: {0}, content: {1}", typeof(T), jsonContent, "ElasticsearchContextDeleteByQuery");
+			var resultDetails = new ResultDetails<bool>
 			{
 				Status = HttpStatusCode.InternalServerError,
 				RequestBody = jsonContent
@@ -39,16 +38,24 @@ namespace ElasticsearchCRUD.SearchApi
 
 			try
 			{
-				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
-				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));	
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_query", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));	
 				
 				var content = new StringContent(jsonContent);
 				var uri = new Uri(elasticsearchUrlForEntityGet);
-				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "Search");
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP DELETE uri: {0}", uri.AbsoluteUri, "Search");
 
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+				var request = new HttpRequestMessage(HttpMethod.Delete, uri)
+				{
+					Content = content
+				};
+				var response = await _client.SendAsync(request,_cancellationTokenSource.Token).ConfigureAwait(false); ;
+
+
 				resultDetails.RequestUrl = elasticsearchUrlForEntityGet;
-				var response = await _client.PostAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(true);
+				//var response = await _client.DeleteAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(true);
 				
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
@@ -71,22 +78,6 @@ namespace ElasticsearchCRUD.SearchApi
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
 				var responseObject = JObject.Parse(responseString);
 
-				// First object
-				// responseObject["hits"]["hits"][0]["_source"]
-				var source = responseObject["hits"]["hits"];
-				resultDetails.TotalHits = (long)responseObject["hits"]["total"];
-				if (source != null)
-				{
-					var hitResults = new Collection<T>();
-					foreach (var item in source)
-					{
-						var payload = item["_source"];
-						hitResults.Add((T)_elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(payload, typeof(T)));
-					}
-
-					resultDetails.PayloadResult = hitResults;
-				}
-
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)
@@ -96,21 +87,21 @@ namespace ElasticsearchCRUD.SearchApi
 			}
 		}
 
-		public ResultDetails<Collection<T>> PostSearch<T>(string jsonContent)
+		public ResultDetails<bool> SendDeleteByQuery<T>(string jsonContent)
 		{
 			try
 			{
-				Task<ResultDetails<Collection<T>>> task = Task.Run(() => PostSearchAsync<T>(jsonContent));
+				Task<ResultDetails<bool>> task = Task.Run(() => DeleteByQueryAsync<T>(jsonContent));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.NotFound");
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextDeleteByQuery: HttpStatusCode.NotFound");
+					throw new ElasticsearchCrudException("ElasticsearchContextDeleteByQuery: HttpStatusCode.NotFound");
 				}
 				if (task.Result.Status == HttpStatusCode.BadRequest)
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.BadRequest" + task.Result.Description);
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextDeleteByQuery: HttpStatusCode.BadRequest");
+					throw new ElasticsearchCrudException("ElasticsearchContextDeleteByQuery: HttpStatusCode.BadRequest" + task.Result.Description);
 				}
 				return task.Result;
 			}
@@ -118,7 +109,7 @@ namespace ElasticsearchCRUD.SearchApi
 			{
 				ae.Handle(x =>
 				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} Search {0}, {1}", typeof(T), jsonContent, "ElasticsearchContextSearch");
+					_traceProvider.Trace(TraceEventType.Warning, x, "{2} Search {0}, {1}", typeof(T), jsonContent, "ElasticsearchContextDeleteByQuery");
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
@@ -128,8 +119,8 @@ namespace ElasticsearchCRUD.SearchApi
 				});
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextSearch");
-			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextSearch"));
+			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextDeleteByQuery");
+			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextDeleteByQuery"));
 		}
 
 	}

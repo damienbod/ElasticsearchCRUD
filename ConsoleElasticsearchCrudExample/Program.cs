@@ -9,11 +9,11 @@ namespace ConsoleElasticsearchCrudExample
 	{
 		static void Main(string[] args)
 		{
-			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
+			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 			// You only require a mapping if the default settings are not good enough
-			//elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticSearchMapping());
+			//elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Skill), new SkillElasticsearchMapping());
 
-			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
 			{
 				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
 				elasticSearchContext.AddUpdateDocument(TestData.SkillEf, TestData.SkillEf.Id);
@@ -29,7 +29,7 @@ namespace ConsoleElasticsearchCrudExample
 				Console.WriteLine(addEntitiesResult.Description);
 			}
 
-			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
 			{
 				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
 				// get a entity and update it, then delete an entity
@@ -47,7 +47,7 @@ namespace ConsoleElasticsearchCrudExample
 				Console.WriteLine(nextResult.Description);
 			}
 
-			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
 			{
 				elasticSearchContext.TraceProvider = new TraceProvider("tracingExample");
 				// deleting indexes are usually not required...

@@ -61,7 +61,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 
 			_traceProvider.Trace(TraceEventType.Error, "{0}: Unknown error for SaveChanges", "ElasticsearchContextAddDeleteUpdate");
-			throw new ElasticsearchCrudException("ElasticSearchContext: Unknown error for SaveChanges");
+			throw new ElasticsearchCrudException("ElasticsearchContext: Unknown error for SaveChanges");
 		}
 
 		public async Task<ResultDetails<string>> SaveChangesAsync(List<EntityContextInfo> entityPendingChanges)
@@ -161,14 +161,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			if (!allowDeleteForIndex)
 			{
 				_traceProvider.Trace(TraceEventType.Error, "{0}: Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context", "ElasticsearchContextAddDeleteUpdate");
-				throw new ElasticsearchCrudException("ElasticSearchContext: Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
+				throw new ElasticsearchCrudException("ElasticsearchContext: Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
 			}
 			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request to delete complete index for Type: {0}", typeof(T), "ElasticsearchContextAddDeleteUpdate");
 
 			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
-				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForIndexDelete = string.Format("{0}{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
 				var uri = new Uri(elasticsearchUrlForIndexDelete);
 				_traceProvider.Trace(TraceEventType.Warning, "{1}: Request HTTP Delete uri: {0}", uri.AbsoluteUri, "ElasticsearchContextAddDeleteUpdate");

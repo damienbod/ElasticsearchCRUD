@@ -12,13 +12,13 @@ namespace ElasticsearchCRUD
 	/// </summary>
 	public class ElasticsearchSerializerConfiguration
 	{
-		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver;
+		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver;
 		private readonly bool _saveChildObjectsAsWellAsParent;
 		private readonly bool _processChildDocumentsAsSeparateChildIndex;
 
-		public ElasticsearchSerializerConfiguration(IElasticSearchMappingResolver elasticSearchMappingResolver, bool saveChildObjectsAsWellAsParent = true, bool processChildDocumentsAsSeparateChildIndex = false)
+		public ElasticsearchSerializerConfiguration(IElasticsearchMappingResolver elasticsearchMappingResolver, bool saveChildObjectsAsWellAsParent = true, bool processChildDocumentsAsSeparateChildIndex = false)
 		{
-			_elasticSearchMappingResolver = elasticSearchMappingResolver;
+			_elasticsearchMappingResolver = elasticsearchMappingResolver;
 			_saveChildObjectsAsWellAsParent = saveChildObjectsAsWellAsParent;
 			_processChildDocumentsAsSeparateChildIndex = processChildDocumentsAsSeparateChildIndex;
 		}
@@ -26,9 +26,9 @@ namespace ElasticsearchCRUD
 		/// <summary>
 		/// Mapping resolver used to get set each mapping configuration for a type. A type can only have one mapping pro context.
 		/// </summary>
-		public IElasticSearchMappingResolver ElasticSearchMappingResolver
+		public IElasticsearchMappingResolver ElasticsearchMappingResolver
 		{
-			get { return _elasticSearchMappingResolver; }
+			get { return _elasticsearchMappingResolver; }
 		}
 
 		/// <summary>

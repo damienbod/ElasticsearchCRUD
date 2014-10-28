@@ -7,18 +7,18 @@ namespace ElasticsearchCRUD
 	/// This class is used to add all register all the type definitions and then resolver them when requesting or handling response data from Elasticsearch.
 	/// If no mapping is defined, the default mapping is used.
 	/// </summary>
-	public class ElasticSearchMappingResolver : IElasticSearchMappingResolver
+	public class ElasticsearchMappingResolver : IElasticsearchMappingResolver
 	{
-		private readonly Dictionary<Type, ElasticSearchMapping> _mappingDefinitions = new Dictionary<Type, ElasticSearchMapping>();
+		private readonly Dictionary<Type, ElasticsearchMapping> _mappingDefinitions = new Dictionary<Type, ElasticsearchMapping>();
 
-		public ElasticSearchMapping GetElasticSearchMapping(Type type)
+		public ElasticsearchMapping GetElasticSearchMapping(Type type)
 		{
 			if (_mappingDefinitions.ContainsKey(type))
 			{
 				return _mappingDefinitions[type];
 			}
 
-			_mappingDefinitions.Add(type, new ElasticSearchMapping());
+			_mappingDefinitions.Add(type, new ElasticsearchMapping());
 			return _mappingDefinitions[type];
 		}
 
@@ -28,7 +28,7 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <param name="type">Type of class</param>
 		/// <param name="mapping">mapping definition.</param>
-		public void AddElasticSearchMappingForEntityType(Type type, ElasticSearchMapping mapping)
+		public void AddElasticSearchMappingForEntityType(Type type, ElasticsearchMapping mapping)
 		{
 			if (_mappingDefinitions.ContainsKey(type))
 			{

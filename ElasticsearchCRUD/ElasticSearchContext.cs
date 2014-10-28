@@ -6,11 +6,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextCount;
+using ElasticsearchCRUD.ContextDeleteByQuery;
 using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
-using ElasticsearchCRUD.CountApi;
-using ElasticsearchCRUD.DeleteByQueryApi;
-using ElasticsearchCRUD.SearchApi;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD
@@ -18,7 +17,7 @@ namespace ElasticsearchCRUD
 	/// <summary>
 	/// Context for crud operations. 
 	/// </summary>
-	public class ElasticSearchContext : IDisposable 
+	public class ElasticsearchContext : IDisposable 
 	{	
 		private readonly CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
 		private readonly HttpClient _client = new HttpClient();
@@ -41,25 +40,25 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <param name="connectionString">Connection string which is used as ther base URL for the HttpClient</param>
 		/// <param name="elasticsearchSerializerConfiguration">Configuration class for the context. The default settings can be oset here. This 
-		/// class contains an IElasticSearchMappingResolver</param>
-		public ElasticSearchContext(string connectionString, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
+		/// class contains an IElasticsearchMappingResolver</param>
+		public ElasticsearchContext(string connectionString, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
 		{
 			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_connectionString = connectionString;
-			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
+			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticsearchContext with connection string: {0}", connectionString, "ElasticsearchContext");
 		}
 
 		/// <summary>
 		/// ctor
 		/// </summary>
 		/// <param name="connectionString">Connection string which is used as ther base URL for the HttpClient</param>
-		/// <param name="elasticSearchMappingResolver">Resolver used for getting the index and type of a document type. The default 
+		/// <param name="elasticsearchMappingResolver">Resolver used for getting the index and type of a document type. The default 
 		/// ElasticsearchSerializerConfiguration is used in this ctor.</param>
-		public ElasticSearchContext(string connectionString, IElasticSearchMappingResolver elasticSearchMappingResolver)
+		public ElasticsearchContext(string connectionString, IElasticsearchMappingResolver elasticsearchMappingResolver)
 		{
-			_elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(elasticSearchMappingResolver);
+			_elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver);
 			_connectionString = connectionString;
-			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticSearchContext with connection string: {0}", connectionString, "ElasticSearchContext");
+			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticsearchContext with connection string: {0}", connectionString, "ElasticsearchContext");
 		}
 
 		/// <summary>
@@ -72,7 +71,7 @@ namespace ElasticsearchCRUD
 		/// property is set to true. The document is then saved with the parent routing. It will also be saved even if the parent does not exist.</param>
 		public void AddUpdateDocument(object document, object id, object parentId = null)
 		{
-			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Adding document: {0}, {1} to pending list", document.GetType().Name, id, "ElasticSearchContext");
+			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Adding document: {0}, {1} to pending list", document.GetType().Name, id, "ElasticsearchContext");
 			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), EntityType = document.GetType(), Document = document, ParentId = parentId });
 		}
 
@@ -84,7 +83,7 @@ namespace ElasticsearchCRUD
 		/// <param name="id">id of the document which will be deleted.</param>
 		public void DeleteDocument<T>(object id)
 		{
-			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Request to delete document with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name, "ElasticSearchContext");
+			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Request to delete document with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name, "ElasticsearchContext");
 			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteDocument = true, EntityType = typeof(T), Document = null});
 		}
 
@@ -219,14 +218,14 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
-		/// Count to amount of hits for a index, type and query.
+		/// ElasticsearchContextCount to amount of hits for a index, type and query.
 		/// </summary>
 		/// <typeparam name="T">Type to find</typeparam>
 		/// <param name="jsonContent">json query data, returns all in emtpy</param>
 		/// <returns>Result amount of document found</returns>
 		public long Count<T>(string jsonContent = "")
 		{
-			var count = new Count(
+			var count = new ElasticsearchContextCount(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -238,14 +237,14 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
-		/// Count to amount of hits for a index, type and query.
+		/// ElasticsearchContextCount to amount of hits for a index, type and query.
 		/// </summary>
 		/// <typeparam name="T">Type to find</typeparam>
 		/// <param name="jsonContent">json query data, returns all in emtpy</param>
 		/// <returns>Result amount of document found in a result details task</returns>
 		public async Task<ResultDetails<long>> CountAsync<T>(string jsonContent = "")
 		{
-			var count = new Count(
+			var count = new ElasticsearchContextCount(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -277,7 +276,7 @@ namespace ElasticsearchCRUD
 
 		public async Task<ResultDetails<bool>> DeleteByQueryAsync<T>(string jsonContent = "")
 		{
-			var deleteByQueryApi = new DeleteByQuery(
+			var deleteByQueryApi = new ElasticsearchContextDeleteByQuery(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -290,7 +289,7 @@ namespace ElasticsearchCRUD
 
 		public ResultDetails<bool> DeleteByQuery<T>(string jsonContent = "")
 		{
-			var deleteByQueryApi = new DeleteByQuery(
+			var deleteByQueryApi = new ElasticsearchContextDeleteByQuery(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,

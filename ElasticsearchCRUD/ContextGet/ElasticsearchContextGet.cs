@@ -69,7 +69,7 @@ namespace ElasticsearchCRUD.ContextGet
 			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
-				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
 
 				string parentIdUrl = "";
@@ -107,7 +107,7 @@ namespace ElasticsearchCRUD.ContextGet
 				var source = responseObject["_source"];
 				if (source != null)
 				{
-					var result = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(source, typeof(T));
+					var result = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(source, typeof(T));
 					resultDetails.PayloadResult = (T)result;
 				}
 
@@ -160,7 +160,7 @@ namespace ElasticsearchCRUD.ContextGet
 			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
-				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
 
 				string parentIdUrl = "";

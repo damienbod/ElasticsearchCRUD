@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ElasticsearchCRUD.SearchApi;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD.ContextSearch
@@ -66,7 +65,7 @@ namespace ElasticsearchCRUD.ContextSearch
 
 		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object entityId)
 		{
-			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			var index = elasticSearchMapping.GetIndexForType(typeof(T));
 			var type = elasticSearchMapping.GetDocumentType(typeof(T));
 			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextSearch: Searching for document id: {0}, index {1}, type {2}", entityId, index, type));
