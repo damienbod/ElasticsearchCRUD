@@ -292,6 +292,32 @@ namespace ElasticsearchCRUD
 
 		}
 
+		public bool DocumentExists<T>(object documentId, object parentId = null)
+		{
+			var elasticsearchContextGet = new ElasticsearchContextGet(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextGet.DocumentExists<T>(documentId, parentId);
+		}
+
+		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object documentId, object parentId = null)
+		{
+			var elasticsearchContextGet = new ElasticsearchContextGet(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextGet.DocumentExistsAsync<T>(documentId, parentId);
+		}
+
 		/// <summary>
 		/// Delete the whole index if it exists and Elasticsearch allows delete index.
 		/// Property AllowDeleteForIndex must also be set to true.
