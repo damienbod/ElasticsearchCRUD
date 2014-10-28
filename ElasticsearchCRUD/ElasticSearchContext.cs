@@ -9,6 +9,7 @@ using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.CountApi;
+using ElasticsearchCRUD.DeleteByQueryApi;
 using ElasticsearchCRUD.SearchApi;
 using ElasticsearchCRUD.Tracing;
 
@@ -272,6 +273,32 @@ namespace ElasticsearchCRUD
 				);
 
 			return await elasticsearchContextSearch.SearchByIdAsync<T>(documentId);
+		}
+
+		public async Task<ResultDetails<bool>> DeleteByQueryAsync<T>(string jsonContent = "")
+		{
+			var deleteByQueryApi = new DeleteByQuery(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await deleteByQueryApi.DeleteByQueryAsync<T>(jsonContent);
+		}
+
+		public ResultDetails<bool> DeleteByQuery<T>(string jsonContent = "")
+		{
+			var deleteByQueryApi = new DeleteByQuery(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return deleteByQueryApi.SendDeleteByQuery<T>(jsonContent);
 		}
 
 		/// <summary>

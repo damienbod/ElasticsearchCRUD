@@ -57,6 +57,7 @@
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
     <Compile Include="ContextSearch\ElasticsearchContextSearch.cs" />
     <Compile Include="CountApi\Count.cs" />
+    <Compile Include="DeleteByQueryApi\DeleteByQuery.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />
