@@ -24,6 +24,10 @@ namespace ElasticsearchCRUD
 		private readonly List<EntityContextInfo> _entityPendingChanges = new List<EntityContextInfo>();	
 		private readonly string _connectionString;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
+
+		/// <summary>
+		/// TraceProvider for all logs, trace etc. This can be replaced with any TraceProvider implementation.
+		/// </summary>
 		public ITraceProvider TraceProvider = new NullTraceProvider();
 
 		/// <summary>
@@ -292,6 +296,14 @@ namespace ElasticsearchCRUD
 
 		}
 
+		/// <summary>
+		/// Checks if a document exists with a head request
+		/// </summary>
+		/// <typeparam name="T">Type of document to find</typeparam>
+		/// <param name="documentId">Id of the document</param>
+		/// <param name="parentId">parent Id, required if hte docuemtnis a child document and routing is required.
+		/// NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
+		/// <returns>true or false</returns>
 		public bool DocumentExists<T>(object documentId, object parentId = null)
 		{
 			var elasticsearchContextGet = new ElasticsearchContextGet(
@@ -305,6 +317,14 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextGet.DocumentExists<T>(documentId, parentId);
 		}
 
+		/// <summary>
+		/// Async Checks if a document exists with a head request
+		/// </summary>
+		/// <typeparam name="T">Type of document to find</typeparam>
+		/// <param name="documentId">Id of the document</param>
+		/// <param name="parentId">parent Id, required if hte docuemtnis a child document and routing is required.
+		/// NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
+		/// <returns>true or false</returns>
 		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object documentId, object parentId = null)
 		{
 			var elasticsearchContextGet = new ElasticsearchContextGet(
