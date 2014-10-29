@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace Damienbod.AnimalProvider
 {
-	public class AnimalToLowerExampleElasticSearchMapping : ElasticSearchMapping
+	public class AnimalToLowerExampleElasticsearchMapping : ElasticsearchMapping
 	{
 		/// <summary>
 		/// Here you can do any type of entity mapping

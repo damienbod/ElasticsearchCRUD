@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
 
-namespace ElasticsearchCRUD.SearchApi
+namespace ElasticsearchCRUD.ContextSearch
 {
 	public class Search
 	{
@@ -39,7 +39,7 @@ namespace ElasticsearchCRUD.SearchApi
 
 			try
 			{
-				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));	
 				
 				var content = new StringContent(jsonContent);
@@ -81,7 +81,7 @@ namespace ElasticsearchCRUD.SearchApi
 					foreach (var item in source)
 					{
 						var payload = item["_source"];
-						hitResults.Add((T)_elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(payload, typeof(T)));
+						hitResults.Add((T)_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(payload, typeof(T)));
 					}
 
 					resultDetails.PayloadResult = hitResults;

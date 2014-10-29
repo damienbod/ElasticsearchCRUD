@@ -5,36 +5,36 @@ namespace Damienbod.AnimalProvider
 {
 	public class ElasticsearchCrudProvider 
     {
-		readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-		private readonly ElasticSearchContext _elasticSearchContext;
+		readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+		private readonly ElasticsearchContext _elasticsearchContext;
 		public ElasticsearchCrudProvider()
 		{
 			// You don't need to create this Resolver everytime a new context is created...
-			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Animal), new AnimalToLowerExampleElasticSearchMapping());
-			_elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(new ElasticSearchMappingResolver(), true,false));
+			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(Animal), new AnimalToLowerExampleElasticsearchMapping());
+			_elasticsearchContext = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(new ElasticsearchMappingResolver(), true,false));
 		}
 
         public void CreateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateDocument(animal, animal.Id);
-			var ret = _elasticSearchContext.SaveChangesAsync();    
+			_elasticsearchContext.AddUpdateDocument(animal, animal.Id);
+			var ret = _elasticsearchContext.SaveChangesAsync();    
         }
 
         public void UpdateAnimal(Animal animal)
         {
-			_elasticSearchContext.AddUpdateDocument(animal, animal.Id);
-			var ret = _elasticSearchContext.SaveChangesAsync(); 
+			_elasticsearchContext.AddUpdateDocument(animal, animal.Id);
+			var ret = _elasticsearchContext.SaveChangesAsync(); 
         }
 
         public void DeleteById(int id)
         {
-			_elasticSearchContext.DeleteDocument<Animal>(id);
-			var ret = _elasticSearchContext.SaveChangesAsync(); 
+			_elasticsearchContext.DeleteDocument<Animal>(id);
+			var ret = _elasticsearchContext.SaveChangesAsync(); 
         }
 
         public Animal GetAnimal(int id)
         {
-	        return  _elasticSearchContext.GetDocumentAsync<Animal>(id).Result.PayloadResult;
+	        return  _elasticsearchContext.GetDocumentAsync<Animal>(id).Result.PayloadResult;
         }
     }
 }

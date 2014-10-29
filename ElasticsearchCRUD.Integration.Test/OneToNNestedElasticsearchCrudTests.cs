@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class OneToNNestedElasticsearchCrudTests
 	{
 		private List<SkillChild> _entitiesForSkillChild;
-		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
+		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 
 		[SetUp]
 		public void SetUp()
@@ -38,7 +38,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[TearDown]
 		public void TearDown()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult1 = context.DeleteIndexAsync<SkillTestEntityTwo>();entityResult1.Wait();
@@ -72,7 +72,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				SkillChildren = new Collection<SkillChild> {_entitiesForSkillChild[0]}
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -101,7 +101,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			};
 
 			const bool includeChildObjects = false;
-			using (var context = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, includeChildObjects)))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, includeChildObjects)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -129,7 +129,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -149,7 +149,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentWithACollectionOfNoChildObjectNested()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skill = new SkillParentCollection
@@ -175,7 +175,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentWithNullCollectionNested()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skill = new SkillParentCollection
@@ -213,7 +213,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				SkillNestedDocumentLevelTwoHashSet = new HashSet<SkillNestedDocumentLevelTwo>{ new SkillNestedDocumentLevelTwo{ Id = 1, NameSkillParent = "TestHashSet"} }
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -238,7 +238,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				SkillNestedDocumentLevelTwoHashSet = new HashSet<SkillNestedDocumentLevelTwo> { new SkillNestedDocumentLevelTwo { Id = 1, NameSkillParent = "TestHashSet" }, new SkillNestedDocumentLevelTwo { Id = 2, NameSkillParent = "TestHashSet2" } }
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -264,7 +264,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				SkillNestedDocumentLevelTwoHashSet = new HashSet<SkillNestedDocumentLevelTwo>()
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -287,7 +287,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				NameSkillParent = "cool",
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -319,7 +319,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				SkillChildren = new[] { _entitiesForSkillChild[0] }
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -348,7 +348,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				SkillChildren = new[] { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
 			};
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
@@ -369,7 +369,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentWithNullArrayNested()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skill = new SkillParentArray
@@ -398,7 +398,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentNestedIntCollection()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntCollection
@@ -421,7 +421,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentNestedIntCollectionEqualsNull()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntCollection { BlahBlah = "test with no int array", Id = 3 };
@@ -442,7 +442,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentNestedSkillWithStringAndLongCollection()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithStringLongAndDoubleCollection
@@ -477,7 +477,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentNestedIntArray()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntArray
@@ -500,7 +500,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentNestedIntArrayEqualsNull()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithIntArray { BlahBlah = "test with no int array", Id = 3 };
@@ -519,7 +519,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentNestedSkillWithStringAndLongArray()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithIntArray = new SkillWithStringLongAndDoubleArray
@@ -553,7 +553,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentWithSingleChild()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithSingleChild = new SkillWithSingleChild
@@ -576,7 +576,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextParentWithSingleChildEqualsNull()
 		{
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var skillWithSingleChild = new SkillWithSingleChild {MySkillSingleChildElement = null};

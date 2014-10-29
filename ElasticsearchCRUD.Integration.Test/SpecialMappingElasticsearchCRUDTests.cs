@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private List<SkillTestEntity> _entitiesForTests;
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
-		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
+		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		[SetUp]
 		public void SetUp()
 		{
@@ -50,7 +50,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TearDown()
 		{
 			_entitiesForTests = null;
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<SkillTestEntity>();
@@ -64,9 +64,9 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextAdd100Entities()
 		{
-			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(SkillTestEntity), new SkillTestEntityElasticSearchMapping());
+			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(SkillTestEntity), new SkillTestEntityElasticsearchMapping());
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/", _elasticSearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				for (int i = 0; i < 100; i++)
 				{

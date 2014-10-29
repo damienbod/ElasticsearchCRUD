@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
-	public class SkillTestEntityElasticSearchMapping : ElasticSearchMapping
+	public class SkillTestEntityElasticsearchMapping : ElasticsearchMapping
 	{
 		public override void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
 		{

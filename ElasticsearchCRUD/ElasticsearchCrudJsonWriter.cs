@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Security;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -10,7 +9,6 @@ namespace ElasticsearchCRUD
 {
 	public class ElasticsearchCrudJsonWriter : IDisposable
 	{
-		// TODO add child ElasticsearchCrudJsonWriter for recursive string display
 		public ElasticsearchCrudJsonWriter()
 		{
 			Stringbuilder = new StringBuilder();

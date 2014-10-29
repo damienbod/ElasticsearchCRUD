@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
-using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
@@ -51,8 +50,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-
-				var responseObject = JObject.Parse(responseString);
 				traceProvider.Trace(TraceEventType.Verbose, "{1}: response: {0}", responseString, "InitMappings");
 			}
 
@@ -98,12 +95,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					//CommandTypes.Insert(test - 1, "CreateMappingForIndex_" + index + parentType + childType);
 					//Commands.Insert(test -1, command);
 				}
-				else
-				{
-					CommandTypes.Add("CreateMappingForIndex_" + index + parentType + childType);
-					Commands.Add(command);
-				}
-				
+
+				CommandTypes.Add("CreateMappingForIndex_" + index + parentType + childType);
+				Commands.Add(command);
 			}
 		}
 
@@ -114,7 +108,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			if (!CommandTypes.Contains("CreateIndex_" + index + indexType))
 			{
 				CommandTypes.Add("CreateIndex_" + index + indexType);
-				string parentDef = "";
+				string parentDef;
 				var command = new MappingCommand {Content = content, RequestType = "POST"};
 
 				if (!string.IsNullOrEmpty(parentIdValue))

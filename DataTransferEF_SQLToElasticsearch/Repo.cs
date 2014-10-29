@@ -12,8 +12,8 @@ namespace DataTransferSQLToEl
 		public Person GetPersonFromElasticsearch(int id)
 		{
 			Person person; 
-			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
+			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
 			{
 				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				person = elasticSearchContext.GetDocument<Person>(id);
@@ -25,8 +25,8 @@ namespace DataTransferSQLToEl
 		public Address GetAddressFromElasticsearch(string id)
 		{
 			Address countryRegion;
-			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
+			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
 			{
 				//elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				countryRegion = elasticSearchContext.GetDocument<Address>(id);
@@ -37,8 +37,8 @@ namespace DataTransferSQLToEl
 
 		public void SaveToElasticsearchStateProvince()
 		{
-			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-			using ( var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(elasticSearchMappingResolver,true,true)))
+			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+			using ( var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver,true,true)))
 			{
 				elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				using (var databaseEfModel = new SQLDataModel())
@@ -87,8 +87,8 @@ namespace DataTransferSQLToEl
 		public void SaveToElasticsearchPerson()
 		{
 
-			IElasticSearchMappingResolver elasticSearchMappingResolver = new ElasticSearchMappingResolver();
-			using (var elasticSearchContext = new ElasticSearchContext("http://localhost:9200/", elasticSearchMappingResolver))
+			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
 			{
 				//elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				using (var databaseEfModel = new SQLDataModel())

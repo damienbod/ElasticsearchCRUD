@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	[TestFixture]
 	public class DocumentsWithChildDocumentsTestNotAllowed
 	{
-		private readonly IElasticSearchMappingResolver _elasticSearchMappingResolver = new ElasticSearchMappingResolver();
+		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "InitMappings: Not supported, child documents can only have one parent")]
@@ -18,12 +18,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var parentDocument = GetParentDocumentEx();
 
-			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOneEx),
-				new ElasticSearchMappingChildDocumentForParentEx());
-			_elasticSearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelTwoEx),
-				new ElasticSearchMappingChildDocumentForParentEx());
+			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOneEx),
+				new ElasticsearchMappingChildDocumentForParentEx());
+			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelTwoEx),
+				new ElasticsearchMappingChildDocumentForParentEx());
 
-			using (var context = new ElasticSearchContext("http://localhost:9200/",new ElasticsearchSerializerConfiguration(_elasticSearchMappingResolver, true, true)))
+			using (var context = new ElasticsearchContext("http://localhost:9200/",new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(parentDocument, parentDocument.Id);
@@ -84,7 +84,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			return parentDocument;
 		}
 
-		public class ElasticSearchMappingChildDocumentForParentEx : ElasticSearchMapping
+		public class ElasticsearchMappingChildDocumentForParentEx : ElasticsearchMapping
 		{
 			public override string GetIndexForType(Type type)
 			{

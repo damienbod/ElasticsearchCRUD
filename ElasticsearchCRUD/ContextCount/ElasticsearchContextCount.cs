@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -9,9 +8,9 @@ using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
 
-namespace ElasticsearchCRUD.CountApi
+namespace ElasticsearchCRUD.ContextCount
 {
-	public class Count
+	public class ElasticsearchContextCount
 	{
 		private readonly ITraceProvider _traceProvider;
 		private readonly CancellationTokenSource _cancellationTokenSource;
@@ -19,7 +18,7 @@ namespace ElasticsearchCRUD.CountApi
 		private readonly HttpClient _client;
 		private readonly string _connectionString;
 
-		public Count(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
+		public ElasticsearchContextCount(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
 		{
 			_traceProvider = traceProvider;
 			_cancellationTokenSource = cancellationTokenSource;
@@ -30,7 +29,7 @@ namespace ElasticsearchCRUD.CountApi
 
 		public async Task<ResultDetails<long>> PostCountAsync<T>(string jsonContent)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for Count: {0}, content: {1}", typeof(T), jsonContent, "Count");
+			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for ElasticsearchContextCount: {0}, content: {1}", typeof(T), jsonContent, "ElasticsearchContextCount");
 			var resultDetails = new ResultDetails<long>
 			{
 				Status = HttpStatusCode.InternalServerError,
@@ -39,12 +38,12 @@ namespace ElasticsearchCRUD.CountApi
 
 			try
 			{
-				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_count", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
 
 				var content = new StringContent(jsonContent);
 				var uri = new Uri(elasticsearchUrlForEntityGet);
-				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "Count");
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "ElasticsearchContextCount");
 
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 				resultDetails.RequestUrl = elasticsearchUrlForEntityGet;
@@ -53,22 +52,25 @@ namespace ElasticsearchCRUD.CountApi
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "{2}: GetCountAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "Count");
+					_traceProvider.Trace(TraceEventType.Warning, "{2}: GetCountAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "ElasticsearchContextCount");
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
 						resultDetails.Description = errorInfo;
 						if (errorInfo.Contains("RoutingMissingException"))
 						{
-							throw new ElasticsearchCrudException("HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+							throw new ElasticsearchCrudException("ElasticsearchContextCount: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
 						}
 
 						return resultDetails;
 					}
+
+					throw new ElasticsearchCrudException("ElasticsearchContextCount: Index not found");
+
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Count");
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "ElasticsearchContextCount");
 				var responseObject = JObject.Parse(responseString);
 
 				resultDetails.TotalHits = (long)responseObject["count"];
@@ -78,7 +80,7 @@ namespace ElasticsearchCRUD.CountApi
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Verbose, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message, "Count");
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message, "ElasticsearchContextCount");
 				return resultDetails;
 			}
 		}
@@ -91,13 +93,13 @@ namespace ElasticsearchCRUD.CountApi
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "Count: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("Count: HttpStatusCode.NotFound");
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextCount: HttpStatusCode.NotFound");
+					throw new ElasticsearchCrudException("ElasticsearchContextCount: HttpStatusCode.NotFound");
 				}
 				if (task.Result.Status == HttpStatusCode.BadRequest)
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "Count: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("Count: HttpStatusCode.BadRequest" + task.Result.Description);
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextCount: HttpStatusCode.BadRequest");
+					throw new ElasticsearchCrudException("ElasticsearchContextCount: HttpStatusCode.BadRequest" + task.Result.Description);
 				}
 				return task.Result;
 			}
@@ -105,7 +107,7 @@ namespace ElasticsearchCRUD.CountApi
 			{
 				ae.Handle(x =>
 				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} Count {0}, {1}", typeof(T), jsonContent, "Count");
+					_traceProvider.Trace(TraceEventType.Warning, x, "{2} ElasticsearchContextCount {0}, {1}", typeof(T), jsonContent, "ElasticsearchContextCount");
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
@@ -115,8 +117,8 @@ namespace ElasticsearchCRUD.CountApi
 				});
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for Count {0}, Type {1}", jsonContent, typeof(T), "Count");
-			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for Count {0}, Type {1}", jsonContent, typeof(T), "Count"));
+			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for ElasticsearchContextCount {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextCount");
+			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for ElasticsearchContextCount {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextCount"));
 		}
 
 	}

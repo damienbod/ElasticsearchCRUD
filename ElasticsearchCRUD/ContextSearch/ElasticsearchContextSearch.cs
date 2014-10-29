@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -8,7 +6,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ElasticsearchCRUD.SearchApi;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD.ContextSearch
@@ -68,7 +65,7 @@ namespace ElasticsearchCRUD.ContextSearch
 
 		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object entityId)
 		{
-			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticSearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			var index = elasticSearchMapping.GetIndexForType(typeof(T));
 			var type = elasticSearchMapping.GetDocumentType(typeof(T));
 			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextSearch: Searching for document id: {0}, index {1}, type {2}", entityId, index, type));
@@ -77,7 +74,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			
 			var search = new Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
 
-			var result = await search.PostSearchAsync<T>(BuildSearchById<T>(entityId));
+			var result = await search.PostSearchAsync<T>(BuildSearchById(entityId));
 			resultDetails.TotalHits = result.TotalHits;
 			resultDetails.RequestBody = result.RequestBody;
 			resultDetails.RequestUrl = result.RequestUrl;
@@ -111,7 +108,7 @@ namespace ElasticsearchCRUD.ContextSearch
 		//	   }
 		//   }
 		// }
-		private string BuildSearchById<T>(object childId)
+		private string BuildSearchById(object childId)
 		{
 			var buildJson = new StringBuilder();
 			buildJson.AppendLine("{");

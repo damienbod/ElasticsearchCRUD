@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 
 namespace ConsoleElasticsearchCrudExample
 {
-	public class SkillElasticSearchMapping : ElasticSearchMapping
+	public class SkillElasticsearchMapping : ElasticsearchMapping
 	{
 		/// <summary>
 		/// Only required if you have some special mapping or want to remove some properties or use attributes..
