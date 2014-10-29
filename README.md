@@ -59,6 +59,11 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.11</strong><em> 2014.10.29</em>
+- Added ClearCache API support
+- Added HTTP Head request to test if a document exists DocumentExists<T>
+- Added DeleteByQuery API support 
+
 <strong>Version 1.0.10</strong><em> 2014.10.25</em>
 - Support for Elasticsearch Count API
 - Return hits/total in search results
