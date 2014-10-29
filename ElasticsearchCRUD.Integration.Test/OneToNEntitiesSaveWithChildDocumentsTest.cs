@@ -312,6 +312,30 @@ namespace ElasticsearchCRUD.Integration.Test
 				var found = context.DocumentExists<ChildDocumentLevelTwo>(71);
 			}
 		}
+
+		[Test]
+		public void TestDocumentCountChildDocument()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var found = context.Count<ChildDocumentLevelTwo>();
+				Assert.Greater(found,0);
+			}
+		}
+	
+		[Test]
+		public void TestDocumentCountChildDocumentWithQuery()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+
+				var found = context.Count<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
+				Assert.Greater(found,0);
+			}
+		}
 		
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
