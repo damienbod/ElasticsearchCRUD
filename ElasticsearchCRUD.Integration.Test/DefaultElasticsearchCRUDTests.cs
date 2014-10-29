@@ -15,7 +15,15 @@ namespace ElasticsearchCRUD.Integration.Test
 		private List<SkillTestEntity> _entitiesForTests;
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
 
+		private void WaitForDataOrFail()
+		{
+			if (!_resetEvent.WaitOne(5000))
+			{
+				Assert.Fail("No data received within specified time");
+			}
+		}
 		[SetUp]
 		public void SetUp()
 		{
@@ -99,15 +107,29 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				long found = 0;
+				Task.Run(() =>
+				{
+					while (true)
+					{
+						found = context.Count<SkillTestEntity>();
+						if (found == 7)
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}					
+				});
 
-				// get elasticsearch time to update...
-				Thread.Sleep(2000);
+				// allow elasticsearch time to update...
+				WaitForDataOrFail();
 
-				long found = context.Count<SkillTestEntity>();
 				Assert.AreEqual(7, found);
 			}
 		}
 
+		
+		
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextCount: Index not found")]
 		public void TestDefaultContextCountWithNoIndex()
@@ -449,10 +471,24 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 
 				// Wait for Elasticsearch to update
-				// TODO remove the thread sleep
-				Thread.Sleep(2000);
-				
-				long foundBefore = context.Count<SkillTestEntity>();		
+				long foundBefore = 0;
+
+				Task.Run(() =>
+				{
+					while (true)
+					{
+						foundBefore = context.Count<SkillTestEntity>();
+						if (foundBefore > 9)
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}
+				});
+
+				// allow elasticsearch time to update...
+				WaitForDataOrFail();
+							
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
@@ -485,10 +521,24 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 
 				// Wait for Elasticsearch to update
-				// TODO remove the thread sleep
-				Thread.Sleep(2000);
+				long foundBefore = 0;
 
-				var foundBefore = context.Count<SkillTestEntity>();
+				Task.Run(() =>
+				{
+					while (true)
+					{
+						foundBefore = context.Count<SkillTestEntity>();
+						if (foundBefore > 9)
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}
+				});
+
+				// allow elasticsearch time to update...
+				WaitForDataOrFail();
+
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
