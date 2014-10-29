@@ -59,11 +59,14 @@ namespace ElasticsearchCRUD.ContextCount
 						resultDetails.Description = errorInfo;
 						if (errorInfo.Contains("RoutingMissingException"))
 						{
-							throw new ElasticsearchCrudException("HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+							throw new ElasticsearchCrudException("ElasticsearchContextCount: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
 						}
 
 						return resultDetails;
 					}
+
+					throw new ElasticsearchCrudException("ElasticsearchContextCount: Index not found");
+
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);

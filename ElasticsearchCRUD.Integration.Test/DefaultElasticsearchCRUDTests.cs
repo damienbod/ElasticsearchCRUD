@@ -110,6 +110,16 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextCount: Index not found")]
+		public void TestDefaultContextCountWithNoIndex()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				 context.Count<SkillTestEntityNoIndex>();
+			}
+		}
+
+		[Test]
 		[ExpectedException(typeof(AggregateException))]
 		public void TestDefaultContextAddEntitySaveChangesAsyncBadUrl()
 		{
@@ -436,13 +446,51 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					context.AddUpdateDocument(_entitiesForTests[i-150], i);
 				}
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+
+				// Wait for Elasticsearch to update
+				Thread.Sleep(1000);
+				
+				long foundBefore = context.Count<SkillTestEntity>();		
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				var deleteResult = context.DeleteByQuery<SkillTestEntity>(deleteJson);
+
+				// Clear thecache so count or get returns the latest value
+				context.ClearCacheForIndex<SkillTestEntity>();
+				long foundAfter = context.Count<SkillTestEntity>();
+
+				Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
+				Assert.Greater(foundBefore, foundAfter);
+				context.GetDocument<SkillTestEntity>(documentId);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextClearCache()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				for (int i = 150; i < 160; i++)
+				{
+					context.AddUpdateDocument(_entitiesForTests[i - 150], i);
+				}
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-				var deleteResult = context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
-				context.GetDocument<SkillTestEntity>(documentId);
+				Assert.IsTrue(context.ClearCacheForIndex<SkillTestEntity>());
+			}
+		}
+
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextClearCache: Could nor clear cache for index skilltestentitynoindexs")]
+		public void TestDefaultContextClearCacheForNoIndex()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.ClearCacheForIndex<SkillTestEntityNoIndex>());
 			}
 		}
 

@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
+    <Compile Include="ContextClearCache\ElasticsearchContextClearCache.cs" />
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
     <Compile Include="ContextSearch\ElasticsearchContextSearch.cs" />
     <Compile Include="ContextCount\ElasticsearchContextCount.cs" />

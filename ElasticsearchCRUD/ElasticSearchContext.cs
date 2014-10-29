@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextClearCache;
 using ElasticsearchCRUD.ContextCount;
 using ElasticsearchCRUD.ContextDeleteByQuery;
 using ElasticsearchCRUD.ContextGet;
@@ -372,6 +373,32 @@ namespace ElasticsearchCRUD
 				);
 
 			return await elasticsearchContextGet.DocumentExistsAsync<T>(documentId, parentId);
+		}
+
+		public bool ClearCacheForIndex<T>()
+		{
+			var elasticsearchContextClearCache = new ElasticsearchContextClearCache(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextClearCache.ClearCacheForIndex<T>();
+		}
+
+		public async Task<ResultDetails<bool>> ClearCacheForIndexAsync<T>()
+		{
+			var elasticsearchContextClearCache = new ElasticsearchContextClearCache(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
 		}
 
 		/// <summary>
