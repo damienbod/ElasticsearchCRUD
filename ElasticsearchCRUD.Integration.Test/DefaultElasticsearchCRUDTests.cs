@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test
 {
 	[TestFixture]
-    public class DefaultElasticsearchCRUDTests
+    public class DefaultElasticsearchCrudTests
 	{
 		private List<SkillTestEntity> _entitiesForTests;
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
@@ -160,7 +160,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult = context.GetDocumentAsync<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
-				Assert.IsNotNull(entityResult.Result.PayloadResult as SkillTestEntity);
+				Assert.IsNotNull(entityResult.Result.PayloadResult);
 			}
 		}
 
@@ -219,7 +219,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticsearchContext("http://localghghghhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var entityResult = context.GetDocument<SkillTestEntity>(entityId);;
+				context.GetDocument<SkillTestEntity>(entityId);
 			}
 		}
 
@@ -278,11 +278,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult = context.GetDocumentAsync<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
-				Assert.IsNotNull(entityResult.Result.PayloadResult as SkillTestEntity);
+				Assert.IsNotNull(entityResult.Result.PayloadResult);
 
 				// Delete the entity
 				context.DeleteDocument<SkillTestEntity>(entityId);
-				var deleteResult = context.SaveChangesAsync();
+				context.SaveChanges();
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
 			}
@@ -308,7 +308,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				catch (AggregateException ae)
 				{
 
-					ae.Handle((x) =>
+					ae.Handle(x =>
 					{
 						if (x is ElasticsearchCrudException) // This is what we expect.
 						{
@@ -400,7 +400,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				catch (AggregateException ae)
 				{
 
-					ae.Handle((x) =>
+					ae.Handle(x =>
 					{
 						if (x is ElasticsearchCrudException) // This is what we expect.
 						{
@@ -454,7 +454,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				
 				long foundBefore = context.Count<SkillTestEntity>();		
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-				var deleteResult = context.DeleteByQuery<SkillTestEntity>(deleteJson);
+				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
 				// Clear thecache so count or get returns the latest value
 				context.ClearCacheForIndex<SkillTestEntity>();
@@ -466,6 +466,41 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
+		public void TestDefaultContextDeleteByQueryForTwoDocumentsWithIdQuery()
+		{
+			const int documentId153 = 153;
+			const int documentId155 = 155;
+
+			string deleteJson = "{\"query\": { \"ids\": { \"values\":  [\"" + documentId153 + "\", \"" + documentId155 + "\"]  }}}";
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				for (int i = 150; i < 160; i++)
+				{
+					context.AddUpdateDocument(_entitiesForTests[i - 150], i);
+				}
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+
+				// Wait for Elasticsearch to update
+				// TODO remove the thread sleep
+				Thread.Sleep(2000);
+
+				var foundBefore = context.Count<SkillTestEntity>();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				context.DeleteByQuery<SkillTestEntity>(deleteJson);
+
+				// Clear thecache so count or get returns the latest value
+				context.ClearCacheForIndex<SkillTestEntity>();
+				var foundAfter = context.Count<SkillTestEntity>();
+
+				Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
+				Assert.Greater(foundBefore -1, foundAfter);
+				context.GetDocument<SkillTestEntity>(documentId153);
+			}
+		}
 		[Test]
 		public void TestDefaultContextClearCache()
 		{
@@ -511,8 +546,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-				var deleteResult = context.DeleteByQuery<SkillTestEntity>(deleteJson);
-
+				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 				context.GetDocument<SkillTestEntity>(documentId);
 			}
 		}
