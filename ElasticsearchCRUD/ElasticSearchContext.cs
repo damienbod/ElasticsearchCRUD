@@ -274,8 +274,13 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextSearch.SearchByIdAsync<T>(documentId);
 		}
 
-		public async Task<ResultDetails<bool>> DeleteByQueryAsync<T>(string jsonContent = "")
+		public async Task<ResultDetails<bool>> DeleteByQueryAsync<T>(string jsonContent)
 		{
+			if (string.IsNullOrEmpty(jsonContent))
+			{
+				throw new ElasticsearchCrudException("Context: you must supply a json query for DeleteByQueryAsync");
+			}
+
 			var deleteByQueryApi = new ElasticsearchContextDeleteByQuery(
 				TraceProvider,
 				_cancellationTokenSource,
@@ -287,8 +292,13 @@ namespace ElasticsearchCRUD
 			return await deleteByQueryApi.DeleteByQueryAsync<T>(jsonContent);
 		}
 
-		public ResultDetails<bool> DeleteByQuery<T>(string jsonContent = "")
+		public ResultDetails<bool> DeleteByQuery<T>(string jsonContent)
 		{
+			if (string.IsNullOrEmpty(jsonContent))
+			{
+				throw new ElasticsearchCrudException("Context: you must supply a json query for DeleteByQueryAsync");
+			}
+
 			var deleteByQueryApi = new ElasticsearchContextDeleteByQuery(
 				TraceProvider,
 				_cancellationTokenSource,

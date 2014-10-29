@@ -64,7 +64,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var thirdDelete = context.DeleteIndexAsync<TestJsonIgnore>();
 				thirdDelete.Wait();
-				
+
 			}
 		}
 
@@ -423,7 +423,52 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
+		public void TestDefaultContextDeleteByQuerySingleDocumentWithId()
+		{
+			const int documentId = 153;
+			string deleteJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				for (int i = 150; i < 160; i++)
+				{
+					context.AddUpdateDocument(_entitiesForTests[i-150], i);
+				}
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				var deleteResult = context.DeleteByQuery<SkillTestEntity>(deleteJson);
+
+				context.GetDocument<SkillTestEntity>(documentId);
+			}
+		}
+
+		[Test]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
+		public void TestDefaultContextDeleteByQuerySingleDocumentWithNonExistingId()
+		{
+			const int documentId = 965428;
+			string deleteJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				for (int i = 150; i < 160; i++)
+				{
+					context.AddUpdateDocument(_entitiesForTests[i - 150], i);
+				}
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				var deleteResult = context.DeleteByQuery<SkillTestEntity>(deleteJson);
+
+				context.GetDocument<SkillTestEntity>(documentId);
+			}
+		}
+
 		[Test]
 		public void TestDefaultContextTestJsonIgnore()
 		{
