@@ -100,7 +100,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-
 				// get elasticsearch time to update...
 				Thread.Sleep(2000);
 
@@ -450,7 +449,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 
 				// Wait for Elasticsearch to update
-				Thread.Sleep(1000);
+				// TODO remove the thread sleep
+				Thread.Sleep(2000);
 				
 				long foundBefore = context.Count<SkillTestEntity>();		
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
