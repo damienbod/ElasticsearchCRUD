@@ -305,7 +305,7 @@ namespace ElasticsearchCRUD
 						// collection of Objects
 						childElasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 						// Do class mapping for nested type
-						// TODO add child Id
+
 						var child = new EntityContextInfo { Document = item, ParentId = parentEntityInfo.Id, EntityType = item.GetType(), DeleteDocument = parentEntityInfo.DeleteDocument };
 						MapEntityValues(child, childElasticsearchCrudJsonWriter);
 						childElasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

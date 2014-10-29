@@ -6,7 +6,6 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
-using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextDeleteByQuery
 {
@@ -51,13 +50,11 @@ namespace ElasticsearchCRUD.ContextDeleteByQuery
 				{
 					Content = content
 				};
-				var response = await _client.SendAsync(request,_cancellationTokenSource.Token).ConfigureAwait(false); ;
-
+				var response = await _client.SendAsync(request,_cancellationTokenSource.Token).ConfigureAwait(false);
 
 				resultDetails.RequestUrl = elasticsearchUrlForEntityGet;
-				//var response = await _client.DeleteAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(true);
-				
 				resultDetails.Status = response.StatusCode;
+
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
 					_traceProvider.Trace(TraceEventType.Warning, "{2}: GetSearchAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "Search");
@@ -76,7 +73,6 @@ namespace ElasticsearchCRUD.ContextDeleteByQuery
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
-				var responseObject = JObject.Parse(responseString);
 
 				return resultDetails;
 			}

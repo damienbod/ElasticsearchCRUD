@@ -30,8 +30,7 @@ namespace ElasticsearchCRUD.ContextGet
 		{
 			try
 			{
-				Task<ResultDetails<T>> task;
-				task = Task.Run(() => GetDocumentAsync<T>(entityId, parentId));
+				Task<ResultDetails<T>> task = Task.Run(() => GetDocumentAsync<T>(entityId, parentId));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -124,8 +123,7 @@ namespace ElasticsearchCRUD.ContextGet
 		{
 			try
 			{
-				Task<ResultDetails<bool>> task;
-				task = Task.Run(() => DocumentExistsAsync<T>(entityId, parentId));
+				Task<ResultDetails<bool>> task = Task.Run(() => DocumentExistsAsync<T>(entityId, parentId));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -173,7 +171,7 @@ namespace ElasticsearchCRUD.ContextGet
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP HEAD uri: {0}", uri.AbsoluteUri, "ElasticSearchContextGet");
 
 				var request = new HttpRequestMessage(HttpMethod.Head, uri);
-				var response = await _client.SendAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false); ;
+				var response = await _client.SendAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false);
 
 				resultDetails.RequestUrl = uri.OriginalString;
 
