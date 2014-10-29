@@ -275,6 +275,12 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextSearch.SearchByIdAsync<T>(documentId);
 		}
 
+		/// <summary>
+		/// Async Deletes all documents found using the query in the body.
+		/// </summary>
+		/// <typeparam name="T">Type used to define the index and the type in Elasticsearch</typeparam>
+		/// <param name="jsonContent">json string using directly in Elasticsearch API. </param>
+		/// <returns>Returns true if ok</returns>
 		public async Task<ResultDetails<bool>> DeleteByQueryAsync<T>(string jsonContent)
 		{
 			if (string.IsNullOrEmpty(jsonContent))
@@ -293,6 +299,12 @@ namespace ElasticsearchCRUD
 			return await deleteByQueryApi.DeleteByQueryAsync<T>(jsonContent);
 		}
 
+		/// <summary>
+		/// Deletes all documents found using the query in the body.
+		/// </summary>
+		/// <typeparam name="T">Type used to define the index and the type in Elasticsearch</typeparam>
+		/// <param name="jsonContent">json string using directly in Elasticsearch API. </param>
+		/// <returns>Returns true if ok</returns>
 		public ResultDetails<bool> DeleteByQuery<T>(string jsonContent)
 		{
 			if (string.IsNullOrEmpty(jsonContent))
@@ -375,6 +387,11 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextGet.DocumentExistsAsync<T>(documentId, parentId);
 		}
 
+		/// <summary>
+		/// Clears the cache for the index. The index is defined using the Type
+		/// </summary>
+		/// <typeparam name="T">Type used to get the index name</typeparam>
+		/// <returns>returns true if cache has been cleared</returns>
 		public bool ClearCacheForIndex<T>()
 		{
 			var elasticsearchContextClearCache = new ElasticsearchContextClearCache(
@@ -388,6 +405,11 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextClearCache.ClearCacheForIndex<T>();
 		}
 
+		/// <summary>
+		/// Async Clears the cache for the index. The index is defined using the Type
+		/// </summary>
+		/// <typeparam name="T">Type used to get the index name</typeparam>
+		/// <returns>returns true if cache has been cleared</returns>
 		public async Task<ResultDetails<bool>> ClearCacheForIndexAsync<T>()
 		{
 			var elasticsearchContextClearCache = new ElasticsearchContextClearCache(
