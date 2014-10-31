@@ -115,7 +115,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			buildJson.AppendLine("\"query\": {");
 			buildJson.AppendLine("\"filtered\": {");
 			buildJson.AppendLine("\"query\": {");
-			buildJson.AppendLine("\"term\": {\"id\": " + childId + "}");
+			buildJson.AppendLine("\"term\": {\"_id\": " + childId + "}");
 			buildJson.AppendLine("}");
 			buildJson.AppendLine("}");
 			buildJson.AppendLine("}");
