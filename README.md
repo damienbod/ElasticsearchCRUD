@@ -43,8 +43,7 @@ This example uses Elasticsearch child/parent documents. All documents are saved 
 
 This examples show how to transfer entities to documents in Elasticsearch. The entities are saved as nested documents.
 
-
-<a href=" https://github.com/damienbod/WebSearchWithElasticsearchEntityFrameworkAsPrimary">MVC application with Entity Framework and Elasticsearch</a>
+<a href="https://github.com/damienbod/WebSearchWithElasticsearchEntityFrameworkAsPrimary">MVC application with Entity Framework and Elasticsearch</a>
 
 This example demonstrates how to use Entity Framework as you primary database and Elasticsearch for the search in an MVC application. The application needs to create, update, delete documents in the search engine when ever Entity Framework changes, deletes or updates an entity.
 
@@ -63,6 +62,9 @@ Example showing mapping configuration.
 
 ========================
 <strong>History</strong>
+
+<strong>Version 1.0.12</strong><em> 2014.10.31</em>
+- Bug fix SearchById
 
 <strong>Version 1.0.11</strong><em> 2014.10.29</em>
 - Added ClearCache API support
