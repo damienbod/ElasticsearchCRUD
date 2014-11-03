@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAlias;
 using ElasticsearchCRUD.ContextClearCache;
 using ElasticsearchCRUD.ContextCount;
 using ElasticsearchCRUD.ContextDeleteByQuery;
@@ -422,6 +423,61 @@ namespace ElasticsearchCRUD
 
 			return await elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
 		}
+
+		public bool CreateAliasForIndex(string alias, string index)
+		{
+			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextClearCache.CreateAliasForIndex(alias, index);
+		}
+
+		public async Task<ResultDetails<bool>> CreateAliasForIndexAsync(string alias, string index)
+		{
+			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextClearCache.CreateAliasForIndexAsync(alias, index);
+		}
+
+		public bool RemoveAliasForIndex(string alias, string index)
+		{
+			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextClearCache.RemoveAliasForIndex(alias, index);
+		}
+
+		public async Task<ResultDetails<bool>> RemoveAliasForIndexAsync(string alias, string index)
+		{
+			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextClearCache.RemoveAliasForIndexAsync(alias, index);
+		}
+
+
+		
 
 		/// <summary>
 		/// Delete the whole index if it exists and Elasticsearch allows delete index.
