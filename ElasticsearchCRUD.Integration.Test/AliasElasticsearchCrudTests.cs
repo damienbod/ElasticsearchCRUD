@@ -9,9 +9,6 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 
-
-
-		
 		[TearDown]
 		public void TearDown()
 		{
@@ -174,7 +171,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				var itemOk = context.SearchById<IndexAliasDtoTestThree>(2);
 				//Assert.IsNull(itemNull);
 				Assert.IsNotNull(itemOk);
-
 			}
 
 			// delete index v1
