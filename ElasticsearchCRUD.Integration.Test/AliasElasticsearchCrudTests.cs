@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Threading;
 using NUnit.Framework;
 
@@ -190,10 +191,39 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 
 		}
+
+		[Test]
+		public void RenameAliasForIndex()
+		{
+			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+				context.SaveChanges();
+
+				var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
+				Assert.IsTrue(resultCreate);
+
+				var result = context.Alias(BuildRenameAliasJsonContent("test", "testNew", "indexaliasdtotests"));
+				Assert.IsTrue(result);
+			}
+		}
+
+		private string BuildRenameAliasJsonContent(string aliasOld, string aliasNew, string index)
+		{
+			var sb = new StringBuilder();
+			sb.AppendLine("{");
+			sb.AppendLine("\"actions\" : [");
+			sb.AppendLine("{ \"remove\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + aliasOld + "\" } },");
+			sb.AppendLine("{ \"add\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + aliasNew + "\" } }");
+			sb.AppendLine("]");
+			sb.AppendLine("}");
+
+			return sb.ToString();
+		}
 	}
 
-	
-				
 
 	public class IndexAliasDtoTest
 	{
