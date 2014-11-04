@@ -47,7 +47,7 @@ namespace ElasticsearchCRUD.ContextClearCache
 			{
 				ae.Handle(x =>
 				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} SearchById {0}, {1}", typeof(T), "ElasticsearchContextClearCache");
+					_traceProvider.Trace(TraceEventType.Warning, x, "{1} ClearCacheForIndex {0}", typeof(T), "ElasticsearchContextClearCache");
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;

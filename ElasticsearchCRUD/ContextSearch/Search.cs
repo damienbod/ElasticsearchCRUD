@@ -28,7 +28,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			_connectionString = connectionString;
 		}
 
-		public async Task<ResultDetails<Collection<T>>> PostSearchAsync<T>(string jsonContent)
+		public async Task<ResultDetails<Collection<T>>> PostSearchAsync<T>(string jsonContent, string scrollId)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search: {0}, content: {1}", typeof(T), jsonContent, "Search");
 			var resultDetails = new ResultDetails<Collection<T>>
@@ -40,8 +40,13 @@ namespace ElasticsearchCRUD.ContextSearch
 			try
 			{
 				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
-				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));	
-				
+				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+
+				if (!string.IsNullOrEmpty(scrollId))
+				{
+					elasticsearchUrlForEntityGet = elasticsearchUrlForEntityGet + "?_scroll_id=" + scrollId;
+				}
+
 				var content = new StringContent(jsonContent);
 				var uri = new Uri(elasticsearchUrlForEntityGet);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "Search");
@@ -63,6 +68,13 @@ namespace ElasticsearchCRUD.ContextSearch
 							throw new ElasticsearchCrudException("HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
 						}
 
+						return resultDetails;
+					}
+
+					if (response.StatusCode == HttpStatusCode.NotFound)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+						resultDetails.Description = errorInfo;
 						return resultDetails;
 					}
 				}
@@ -96,11 +108,110 @@ namespace ElasticsearchCRUD.ContextSearch
 			}
 		}
 
-		public ResultDetails<Collection<T>> PostSearch<T>(string jsonContent)
+		public ResultDetails<Collection<T>> PostSearch<T>(string jsonContent, string scrollId)
 		{
 			try
 			{
-				Task<ResultDetails<Collection<T>>> task = Task.Run(() => PostSearchAsync<T>(jsonContent));
+				Task<ResultDetails<Collection<T>>> task = Task.Run(() => PostSearchAsync<T>(jsonContent, scrollId));
+				task.Wait();
+				if (task.Result.Status == HttpStatusCode.NotFound)
+				{
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.NotFound");
+					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.NotFound");
+				}
+				if (task.Result.Status == HttpStatusCode.BadRequest)
+				{
+					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.BadRequest");
+					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.BadRequest" + task.Result.Description);
+				}
+				return task.Result;
+			}
+			catch (AggregateException ae)
+			{
+				ae.Handle(x =>
+				{
+					_traceProvider.Trace(TraceEventType.Warning, x, "{2} Search {0}, {1}", typeof(T), jsonContent, "ElasticsearchContextSearch");
+					if (x is ElasticsearchCrudException || x is HttpRequestException)
+					{
+						throw x;
+					}
+
+					throw new ElasticsearchCrudException(x.Message);
+				});
+			}
+
+			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextSearch");
+			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextSearch"));
+		}
+
+		public async Task<ResultDetails<string>> PostSearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search create scan ans scroll: {0}, content: {1}", typeof(T), jsonContent, "Search");
+			var resultDetails = new ResultDetails<string>
+			{
+				Status = HttpStatusCode.InternalServerError,
+				RequestBody = jsonContent
+			};
+
+			try
+			{
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+
+				elasticsearchUrlForEntityGet = elasticsearchUrlForEntityGet + "?" + scanAndScrollConfiguration.GetSrollScanUrl();
+
+				var content = new StringContent(jsonContent);
+				var uri = new Uri(elasticsearchUrlForEntityGet);
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "Search");
+
+				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+				resultDetails.RequestUrl = elasticsearchUrlForEntityGet;
+				var response = await _client.PostAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(true);
+
+				resultDetails.Status = response.StatusCode;
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					_traceProvider.Trace(TraceEventType.Warning, "{2}: GetSearchAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "Search");
+					if (response.StatusCode == HttpStatusCode.BadRequest)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+						resultDetails.Description = errorInfo;
+						if (errorInfo.Contains("RoutingMissingException"))
+						{
+							throw new ElasticsearchCrudException("HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+						}
+
+						return resultDetails;
+					}
+
+					if (response.StatusCode == HttpStatusCode.NotFound)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+						resultDetails.Description = errorInfo;
+						return resultDetails;
+					}
+				}
+
+				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
+				var responseObject = JObject.Parse(responseString);
+
+				resultDetails.TotalHits = (long)responseObject["hits"]["total"];
+				resultDetails.PayloadResult = responseObject["_scroll_id"].ToString();
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message, "Search");
+				return resultDetails;
+			}
+		}
+
+		public ResultDetails<string> PostSearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			try
+			{
+				Task<ResultDetails<string>> task = Task.Run(() => PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{

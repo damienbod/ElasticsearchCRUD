@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAlias;
 using ElasticsearchCRUD.ContextClearCache;
 using ElasticsearchCRUD.ContextCount;
 using ElasticsearchCRUD.ContextDeleteByQuery;
@@ -185,8 +186,9 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
 		/// <returns>A collection of documents of type T</returns>
-		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters)
+		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters, string scrollId = null)
 		{
 			var search = new Search(
 				TraceProvider,
@@ -196,7 +198,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return search.PostSearch<T>(searchJsonParameters);
+			return search.PostSearch<T>(searchJsonParameters, scrollId);
 		}
 
 		/// <summary>
@@ -204,8 +206,9 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
 		/// <returns>A collection of documents of type T in a Task</returns>
-		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters)
+		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null)
 		{
 			var search = new Search(
 				TraceProvider,
@@ -215,7 +218,49 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await search.PostSearchAsync<T>(searchJsonParameters);
+			return await search.PostSearchAsync<T>(searchJsonParameters, scrollId);
+		}
+
+		/// <summary>
+		/// Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+		/// If your doing a live reindexing, you should use a timestamp in the json content query.
+		/// </summary>
+		/// <typeparam name="T">index and type formt search scan and scroll</typeparam>
+		/// <param name="jsonContent">query which will be saved.</param>
+		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
+		public ResultDetails<string> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			var search = new Search(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
+		}
+
+		/// <summary>
+		/// Async Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+		/// If your doing a live reindexing, you should use a timestamp in the json content query.
+		/// </summary>
+		/// <typeparam name="T">index and type formt search scan and scroll</typeparam>
+		/// <param name="jsonContent">query which will be saved.</param>
+		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
+		public async Task<ResultDetails<string>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			var search = new Search(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await search.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -421,6 +466,158 @@ namespace ElasticsearchCRUD
 				);
 
 			return await elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
+		}
+
+		/// <summary>
+		/// Creates a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was created </returns>
+		public bool AliasCreateForIndex(string alias, string index)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
+		}
+
+		/// <summary>
+		/// Async Creates a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was created </returns>
+		public async Task<ResultDetails<bool>> AliasCreateForIndexAsync(string alias, string index)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
+		}
+
+		/// <summary>
+		/// Creates any alias command depending on the json content
+		/// </summary>
+		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
+		/// <returns>returns true if the alias commnad was completed successfully</returns>
+		public bool Alias(string jsonContent)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextAlias.SendAliasCommand(jsonContent);
+		}
+
+		/// <summary>
+		/// Async Creates any alias command depending on the json content
+		/// </summary>
+		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
+		/// <returns>returns true if the alias commnad was completed successfully</returns>
+		public async Task<ResultDetails<bool>> AliasAsync(string jsonContent)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
+		}
+
+		/// <summary>
+		/// Removes a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was removed </returns>
+		public bool AliasRemoveForIndex(string alias, string index)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+		}
+
+		/// <summary>
+		/// asnyc Removes a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was removed </returns>
+		public async Task<ResultDetails<bool>> AliasRemoveForIndexAsync(string alias, string index)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+		}
+
+		/// <summary>
+		/// Replaces the index for the alias. This can be used when reindexing live
+		/// </summary>
+		/// <param name="alias">Name of the alias</param>
+		/// <param name="indexOld">Old index which will be removed</param>
+		/// <param name="indexNew">New index which will be mapped to the alias</param>
+		/// <returns>Returns true if the index was replaced</returns>
+		public bool AliasReplaceIndex(string alias, string indexOld, string indexNew)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
+		}
+
+		/// <summary>
+		/// Async Replaces the index for the alias. This can be used when reindexing live
+		/// </summary>
+		/// <param name="alias">Name of the alias</param>
+		/// <param name="indexOld">Old index which will be removed</param>
+		/// <param name="indexNew">New index which will be mapped to the alias</param>
+		/// <returns>Returns true if the index was replaced</returns>
+		public async Task<ResultDetails<bool>> AliasReplaceIndexAsync(string alias, string indexOld, string indexNew)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
 		}
 
 		/// <summary>

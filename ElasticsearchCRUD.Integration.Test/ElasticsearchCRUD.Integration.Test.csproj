@@ -49,12 +49,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AliasElasticsearchCrudTests.cs" />
     <Compile Include="ComplexRelationsTests.cs" />
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
     <Compile Include="DocumentsWithChildDocumentsTestNotAllowed.cs" />
     <Compile Include="OneToNEntitiesSaveWithChildDocumentsTest.cs" />
     <Compile Include="OneToNNestedElasticsearchCrudTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchCreateScanAndScrollTests.cs" />
     <Compile Include="SkillParentCollection.cs" />
     <Compile Include="SkillTestEntityElasticSearchMapping.cs" />
     <Compile Include="SpecialMappingElasticsearchCRUDTests.cs" />
