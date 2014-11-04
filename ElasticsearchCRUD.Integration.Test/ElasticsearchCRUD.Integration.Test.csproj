@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AliasElasticsearchCrudTests.cs" />
     <Compile Include="ComplexRelationsTests.cs" />
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
     <Compile Include="DocumentsWithChildDocumentsTestNotAllowed.cs" />

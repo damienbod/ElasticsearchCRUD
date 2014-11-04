@@ -424,9 +424,9 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
 		}
 
-		public bool CreateAliasForIndex(string alias, string index)
+		public bool AliasCreateForIndex(string alias, string index)
 		{
-			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -434,12 +434,12 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return elasticsearchContextClearCache.CreateAliasForIndex(alias, index);
+			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
 		}
 
-		public async Task<ResultDetails<bool>> CreateAliasForIndexAsync(string alias, string index)
+		public async Task<ResultDetails<bool>> AliasCreateForIndexAsync(string alias, string index)
 		{
-			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -447,12 +447,12 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await elasticsearchContextClearCache.CreateAliasForIndexAsync(alias, index);
+			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
 		}
 
-		public bool RemoveAliasForIndex(string alias, string index)
+		public bool Alias(string jsonContent)
 		{
-			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -460,12 +460,12 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return elasticsearchContextClearCache.RemoveAliasForIndex(alias, index);
+			return elasticsearchContextAlias.SendAliasCommand(jsonContent);
 		}
 
-		public async Task<ResultDetails<bool>> RemoveAliasForIndexAsync(string alias, string index)
+		public async Task<ResultDetails<bool>> AliasAsync(string jsonContent)
 		{
-			var elasticsearchContextClearCache = new ElasticsearchContextAlias(
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -473,11 +473,61 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await elasticsearchContextClearCache.RemoveAliasForIndexAsync(alias, index);
+			return await elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
 		}
 
+		public bool AliasRemoveForIndex(string alias, string index)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
 
-		
+			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+		}
+
+		public async Task<ResultDetails<bool>> AliasRemoveForIndexAsync(string alias, string index)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+		}
+
+		public bool AliasReplaceIndex(string alias, string indexOld, string indexNew)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
+		}
+
+		public async Task<ResultDetails<bool>> AliasReplaceIndexAsync(string alias, string indexOld, string indexNew)
+		{
+			var elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
+		}
+
 
 		/// <summary>
 		/// Delete the whole index if it exists and Elasticsearch allows delete index.

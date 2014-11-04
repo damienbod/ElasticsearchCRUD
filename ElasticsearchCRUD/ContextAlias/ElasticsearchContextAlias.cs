@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,11 +27,11 @@ namespace ElasticsearchCRUD.ContextAlias
 			_connectionString = connectionString;
 		}
 
-		public bool CreateAliasForIndex(string alias, string index)
+		public bool SendAliasCommand(string contentJson)
 		{
 			try
 			{
-				Task<ResultDetails<bool>> task = Task.Run(() => CreateAliasForIndexAsync(alias, index));
+				Task<ResultDetails<bool>> task = Task.Run(() => SendAliasCommandAsync(contentJson));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -58,32 +59,20 @@ namespace ElasticsearchCRUD.ContextAlias
 				});
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextAlias: Creating Alias {1} for Index index {0}", index, alias);
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Creating Alias {1} for Index index {0}", index, alias));
+			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextAlias: Executing Alias {0}", contentJson);
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Executing Alias {0}", contentJson));
 		}
 
-		public async Task<ResultDetails<bool>> CreateAliasForIndexAsync(string alias, string index)
+		public async Task<ResultDetails<bool>> SendAliasCommandAsync(string contentJson)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextAlias: Creating Alias {1} for Index index {0}", index, alias));
-
-			if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
-			{
-				_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchContextAlias");
-				throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: index is not allowed in Elasticsearch: {0}", index));
-			}
-
-			if (Regex.IsMatch(alias, "[\\\\/*?\",<>|\\sA-Z]"))
-			{
-				_traceProvider.Trace(TraceEventType.Error, "{1}: alias is not allowed in Elasticsearch: {0}", alias, "ElasticsearchContextAlias");
-				throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: index is not allowed in Elasticsearch: {0}", index));
-			}
+			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextAlias: Creating Alias {0}", contentJson));
 
 			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
-			var elasticsearchUrlForClearCache = string.Format("{0}/{1}/_cache/clear", _connectionString, index);
+			var elasticsearchUrlForClearCache = string.Format("{0}/_aliases", _connectionString);
 			var uri = new Uri(elasticsearchUrlForClearCache);
 			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", uri.AbsoluteUri, "ElasticsearchContextAlias");
 
-			var content = new StringContent(BuildCreateAliasBody(alias, index));
+			var content = new StringContent(contentJson);
 			var response = await _client.PostAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(false);
 
 			if (response.StatusCode == HttpStatusCode.OK)
@@ -92,88 +81,85 @@ namespace ElasticsearchCRUD.ContextAlias
 				return resultDetails;
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextAlias: Cound Not Create Alias {1} for Index index {0}", index, alias));
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Cound Not Create Alias {1} for Index index {0}", index, alias));
+			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextAlias: Cound Not Execute Alias {0}", contentJson));
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Cound Not Execute Alias  {0}", contentJson));
 		}
 
-		public bool RemoveAliasForIndex(string alias, string index)
+		public void ValidateAlias(string alias)
 		{
-			try
+			if (Regex.IsMatch(alias, "[\\\\/*?\",<>|\\sA-Z]"))
 			{
-				Task<ResultDetails<bool>> task = Task.Run(() => RemoveAliasForIndexAsync(alias, index));
-				task.Wait();
-				if (task.Result.Status == HttpStatusCode.NotFound)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextAlias: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("ElasticsearchContextAlias: HttpStatusCode.NotFound");
-				}
-				if (task.Result.Status == HttpStatusCode.BadRequest)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextAlias: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("ElasticsearchContextAlias: HttpStatusCode.BadRequest" + task.Result.Description);
-				}
-				return task.Result.PayloadResult;
+				_traceProvider.Trace(TraceEventType.Error, "{1}: alias is not allowed in Elasticsearch: {0}", alias, "ElasticsearchContextAlias");
+				throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: alias is not allowed in Elasticsearch: {0}", alias));
 			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{0} Exception", "ElasticsearchContextAlias");
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
-
-					throw new ElasticsearchCrudException(x.Message);
-				});
-			}
-
-			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextAlias: Remove Alias {1} for Index index {0}", index, alias);
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Remove Alias {1} for Index index {0}", index, alias));
 		}
 
-		public async Task<ResultDetails<bool>> RemoveAliasForIndexAsync(string alias, string index)
+		public void ValidateIndex(string index)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextAlias: Remove Alias {1} for Index index {0}", index, alias));
-
 			if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 			{
 				_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchContextAlias");
 				throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: index is not allowed in Elasticsearch: {0}", index));
 			}
-
-			if (Regex.IsMatch(alias, "[\\\\/*?\",<>|\\sA-Z]"))
-			{
-				_traceProvider.Trace(TraceEventType.Error, "{1}: alias is not allowed in Elasticsearch: {0}", alias, "ElasticsearchContextAlias");
-				throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: index is not allowed in Elasticsearch: {0}", index));
-			}
-
-			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
-			var elasticsearchUrlForClearCache = string.Format("{0}/{1}/_cache/clear", _connectionString, index);
-			var uri = new Uri(elasticsearchUrlForClearCache);
-			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", uri.AbsoluteUri, "ElasticsearchContextAlias");
-
-			var content = new StringContent(BuildRemoveAliasBody(alias, index));
-			var response = await _client.PostAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(false);
-
-			if (response.StatusCode == HttpStatusCode.OK)
-			{
-				resultDetails.PayloadResult = true;
-				return resultDetails;
-			}
-
-			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextAlias: Cound Not Create Alias {1} for Index index {0}", index, alias));
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Cound Not Create Alias {1} for Index index {0}", index, alias));
 		}
 
-		private string BuildCreateAliasBody(string alias, string index)
+		//{
+		//	"actions" : [
+		//		{ "remove" : { "index" : "test1", "alias" : "alias1" } },
+		//		{ "add" : { "index" : "test1", "alias" : "alias2" } }
+		//	]
+		//}'
+		public string BuildCreateOrRemoveAlias(AliasAction action, string alias, string index)
 		{
-			return "";
+			ValidateAlias(alias);
+			ValidateIndex(index);
+
+			var sb = new StringBuilder();
+			BuildAliasBegin(sb);
+			BuildAction(sb, action, alias, index);
+			BuildAliasEnd(sb);
+			return sb.ToString();
 		}
 
-		private string BuildRemoveAliasBody(string alias, string index)
+		public string BuildAliasChangeIndex(string alias, string indexOld, string indexNew)
 		{
-			return "";
+			ValidateAlias(alias);
+			ValidateIndex(indexOld);
+			ValidateIndex(indexNew);
+
+			var sb = new StringBuilder();
+			BuildAliasBegin(sb);
+			BuildAction(sb, AliasAction.remove, alias, indexOld);
+			sb.Append(",");
+			BuildAction(sb, AliasAction.add, alias, indexNew);
+			BuildAliasEnd(sb);
+			return sb.ToString();
 		}
+
+		private void BuildAliasBegin(StringBuilder sb)
+		{
+			sb.AppendLine("{");
+			sb.AppendLine("\"actions\" : [");
+		}
+
+		private void BuildAliasEnd(StringBuilder sb)
+		{
+			sb.AppendLine("]");
+			sb.AppendLine("}");
+		}
+
+		private void BuildAction(StringBuilder sb, AliasAction action, string alias, string index)
+		{
+			sb.AppendLine("{ \"" + action + "\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + alias + "\" } }");
+		}
+
+		
 	}
+
+	enum AliasAction
+	{
+		remove,
+		add,
+	}
+
 }
