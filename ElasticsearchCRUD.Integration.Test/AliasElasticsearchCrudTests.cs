@@ -1,4 +1,6 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Threading;
+using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
@@ -6,6 +8,23 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class AliasElasticsearchCrudTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+
+
+
+		
+		[TearDown]
+		public void TearDown()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<IndexAliasDtoTest>();
+				entityResult.Wait();
+
+				var secondDelete = context.DeleteIndexAsync<IndexAliasDtoTestTwo>();
+				secondDelete.Wait();		
+			}
+		}
 
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
@@ -105,7 +124,80 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.IsTrue(result);
 			}
 		}
+
+		[Test]
+		public void ReindexTest()
+		{
+			var indexAliasDtoTestV1 = new IndexAliasDtoTestThree { Id = 1, Description = "V1" };
+			var indexAliasDtoTestV2 = new IndexAliasDtoTestThree { Id = 2, Description = "V2" };
+
+			IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndex = new ElasticsearchMappingResolver();
+			IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndexV1 = new ElasticsearchMappingResolver();
+			var mappingV1 = new IndexAliasDtoTestThreeMappingV1();
+
+			IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndexV2 = new ElasticsearchMappingResolver();
+			var mappingV2 = new IndexAliasDtoTestThreeMappingV2();
+
+			elasticsearchMappingResolverDirectIndexV1.AddElasticSearchMappingForEntityType(typeof(IndexAliasDtoTestThree), mappingV1);
+			elasticsearchMappingResolverDirectIndexV2.AddElasticSearchMappingForEntityType(typeof(IndexAliasDtoTestThree), mappingV2);
+
+			// Step 1 create index V1 and add alias
+			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV1))
+			{
+				// create the index
+				context.AddUpdateDocument(indexAliasDtoTestV1, indexAliasDtoTestV1.Id);
+				context.SaveChanges();
+
+				var resultCreate = context.AliasCreateForIndex("indexaliasdtotestthrees", "indexaliasdtotestthree_v1");
+				Assert.IsTrue(resultCreate);
+			}
+
+			// Step 2 create index V2 and replace alias
+			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV2))
+			{
+				// create the index
+				context.AddUpdateDocument(indexAliasDtoTestV2, indexAliasDtoTestV2.Id);
+				context.SaveChanges();
+
+				var result = context.AliasReplaceIndex("indexaliasdtotestthrees", "indexaliasdtotestthree_v1", "indexaliasdtotestthree_v2");
+				Assert.IsTrue(result);
+			}
+
+			// wait till el updates
+			Thread.Sleep(1000);
+
+			// Step 3 CUD using alias
+			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndex))
+			{
+				// create the index
+				//var itemNull = context.SearchById<IndexAliasDtoTest>(1);
+				var itemOk = context.SearchById<IndexAliasDtoTestThree>(2);
+				//Assert.IsNull(itemNull);
+				Assert.IsNotNull(itemOk);
+
+			}
+
+			// delete index v1
+			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV1))
+			{
+				context.AllowDeleteForIndex = true;
+				var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
+				thirdDelete.Wait();
+			}
+
+			// delete index v2
+			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV2))
+			{
+				context.AllowDeleteForIndex = true;
+				var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
+				thirdDelete.Wait();
+			}
+
+		}
 	}
+
+	
+				
 
 	public class IndexAliasDtoTest
 	{
@@ -117,5 +209,27 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		public long Id { get; set; }
 		public string Description { get; set; }
+	}
+
+	public class IndexAliasDtoTestThree
+	{
+		public long Id { get; set; }
+		public string Description { get; set; }
+	}
+
+	public class IndexAliasDtoTestThreeMappingV1 : ElasticsearchMapping
+	{
+		public override string GetIndexForType(Type type)
+		{
+			return "indexaliasdtotestthree_v1";
+		}
+	}
+
+	public class IndexAliasDtoTestThreeMappingV2 : ElasticsearchMapping
+	{
+		public override string GetIndexForType(Type type)
+		{
+			return "indexaliasdtotestthree_v2";
+		}
 	}
 }

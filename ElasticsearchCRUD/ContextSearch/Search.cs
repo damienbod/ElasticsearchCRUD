@@ -65,6 +65,13 @@ namespace ElasticsearchCRUD.ContextSearch
 
 						return resultDetails;
 					}
+
+					if (response.StatusCode == HttpStatusCode.NotFound)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+						resultDetails.Description = errorInfo;
+						return resultDetails;
+					}
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
