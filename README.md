@@ -23,6 +23,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="http://damienbod.wordpress.com/2014/10/26/mvc-crud-with-elasticsearch-child-parent-documents/">Part 5: MVC Elasticsearch with child, parent documents</a>
 
+<a href="http://damienbod.wordpress.com/2014/11/02/mvc-application-with-entity-framework-and-elasticsearch/">Part 6: MVC application with Entity Framework and Elasticsearch</a>
+
 ========================
 
 <strong>Examples:</strong>
@@ -43,6 +45,10 @@ This example uses Elasticsearch child/parent documents. All documents are saved 
 
 This examples show how to transfer entities to documents in Elasticsearch. The entities are saved as nested documents.
 
+<a href="https://github.com/damienbod/WebSearchWithElasticsearchEntityFrameworkAsPrimary">MVC application with Entity Framework and Elasticsearch</a>
+
+This example demonstrates how to use Entity Framework as you primary database and Elasticsearch for the search in an MVC application. The application needs to create, update, delete documents in the search engine when ever Entity Framework changes, deletes or updates an entity.
+
 <a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample">ConsoleElasticsearchCrudExample</a>
 
 A basic CRUD example.
@@ -58,6 +64,9 @@ Example showing mapping configuration.
 
 ========================
 <strong>History</strong>
+
+<strong>Version 1.0.12</strong><em> 2014.10.31</em>
+- Bug fix SearchById
 
 <strong>Version 1.0.11</strong><em> 2014.10.29</em>
 - Added ClearCache API support
