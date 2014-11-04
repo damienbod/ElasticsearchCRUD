@@ -74,7 +74,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			
 			var search = new Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
 
-			var result = await search.PostSearchAsync<T>(BuildSearchById(entityId));
+			var result = await search.PostSearchAsync<T>(BuildSearchById(entityId), null);
 			resultDetails.TotalHits = result.TotalHits;
 			resultDetails.RequestBody = result.RequestBody;
 			resultDetails.RequestUrl = result.RequestUrl;

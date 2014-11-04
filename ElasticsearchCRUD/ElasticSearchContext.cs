@@ -186,8 +186,9 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
 		/// <returns>A collection of documents of type T</returns>
-		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters)
+		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters, string scrollId = null)
 		{
 			var search = new Search(
 				TraceProvider,
@@ -197,7 +198,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return search.PostSearch<T>(searchJsonParameters);
+			return search.PostSearch<T>(searchJsonParameters, scrollId);
 		}
 
 		/// <summary>
@@ -205,8 +206,9 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
 		/// <returns>A collection of documents of type T in a Task</returns>
-		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters)
+		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null)
 		{
 			var search = new Search(
 				TraceProvider,
@@ -216,7 +218,33 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await search.PostSearchAsync<T>(searchJsonParameters);
+			return await search.PostSearchAsync<T>(searchJsonParameters, scrollId);
+		}
+
+		public ResultDetails<string> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			var search = new Search(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
+		}
+
+		public async Task<ResultDetails<string>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			var search = new Search(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			return await search.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
