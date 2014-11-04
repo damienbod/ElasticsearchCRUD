@@ -221,6 +221,14 @@ namespace ElasticsearchCRUD
 			return await search.PostSearchAsync<T>(searchJsonParameters, scrollId);
 		}
 
+		/// <summary>
+		/// Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+		/// If your doing a live reindexing, you should use a timestamp in the json content query.
+		/// </summary>
+		/// <typeparam name="T">index and type formt search scan and scroll</typeparam>
+		/// <param name="jsonContent">query which will be saved.</param>
+		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public ResultDetails<string> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			var search = new Search(
@@ -234,6 +242,14 @@ namespace ElasticsearchCRUD
 			return search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
 		}
 
+		/// <summary>
+		/// Async Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+		/// If your doing a live reindexing, you should use a timestamp in the json content query.
+		/// </summary>
+		/// <typeparam name="T">index and type formt search scan and scroll</typeparam>
+		/// <param name="jsonContent">query which will be saved.</param>
+		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public async Task<ResultDetails<string>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			var search = new Search(
