@@ -424,6 +424,12 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
 		}
 
+		/// <summary>
+		/// Creates a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was created </returns>
 		public bool AliasCreateForIndex(string alias, string index)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -437,6 +443,12 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
 		}
 
+		/// <summary>
+		/// Async Creates a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was created </returns>
 		public async Task<ResultDetails<bool>> AliasCreateForIndexAsync(string alias, string index)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -450,6 +462,11 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
 		}
 
+		/// <summary>
+		/// Creates any alias command depending on the json content
+		/// </summary>
+		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
+		/// <returns>returns true if the alias commnad was completed successfully</returns>
 		public bool Alias(string jsonContent)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -463,6 +480,11 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextAlias.SendAliasCommand(jsonContent);
 		}
 
+		/// <summary>
+		/// Async Creates any alias command depending on the json content
+		/// </summary>
+		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
+		/// <returns>returns true if the alias commnad was completed successfully</returns>
 		public async Task<ResultDetails<bool>> AliasAsync(string jsonContent)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -476,6 +498,12 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
 		}
 
+		/// <summary>
+		/// Removes a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was removed </returns>
 		public bool AliasRemoveForIndex(string alias, string index)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -489,6 +517,12 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
 		}
 
+		/// <summary>
+		/// asnyc Removes a new alias for the index parameter. 
+		/// </summary>
+		/// <param name="alias">name of the alias</param>
+		/// <param name="index">index for the alias</param>
+		/// <returns>true if the alias was removed </returns>
 		public async Task<ResultDetails<bool>> AliasRemoveForIndexAsync(string alias, string index)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -502,6 +536,13 @@ namespace ElasticsearchCRUD
 			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
 		}
 
+		/// <summary>
+		/// Replaces the index for the alias. This can be used when reindexing live
+		/// </summary>
+		/// <param name="alias">Name of the alias</param>
+		/// <param name="indexOld">Old index which will be removed</param>
+		/// <param name="indexNew">New index which will be mapped to the alias</param>
+		/// <returns>Returns true if the index was replaced</returns>
 		public bool AliasReplaceIndex(string alias, string indexOld, string indexNew)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -515,6 +556,13 @@ namespace ElasticsearchCRUD
 			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
 		}
 
+		/// <summary>
+		/// Async Replaces the index for the alias. This can be used when reindexing live
+		/// </summary>
+		/// <param name="alias">Name of the alias</param>
+		/// <param name="indexOld">Old index which will be removed</param>
+		/// <param name="indexNew">New index which will be mapped to the alias</param>
+		/// <returns>Returns true if the index was replaced</returns>
 		public async Task<ResultDetails<bool>> AliasReplaceIndexAsync(string alias, string indexOld, string indexNew)
 		{
 			var elasticsearchContextAlias = new ElasticsearchContextAlias(
@@ -527,7 +575,6 @@ namespace ElasticsearchCRUD
 
 			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
 		}
-
 
 		/// <summary>
 		/// Delete the whole index if it exists and Elasticsearch allows delete index.
