@@ -106,21 +106,43 @@
             <param name="documentId"></param>
             <returns>Returns the document of type T</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Search``1(System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Search``1(System.String,System.String)">
             <summary>
             Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
             </summary>
             <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
             <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+            <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
             <returns>A collection of documents of type T</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchAsync``1(System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchAsync``1(System.String,System.String)">
             <summary>
             async Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
             </summary>
             <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
             <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+            /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
             <returns>A collection of documents of type T in a Task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScroll``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
+            <summary>
+            Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+            If your doing a live reindexing, you should use a timestamp in the json content query.
+            </summary>
+            <typeparam name="T">index and type formt search scan and scroll</typeparam>
+            <param name="jsonContent">query which will be saved.</param>
+            <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+            <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScrollAsync``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
+            <summary>
+            Async Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+            If your doing a live reindexing, you should use a timestamp in the json content query.
+            </summary>
+            <typeparam name="T">index and type formt search scan and scroll</typeparam>
+            <param name="jsonContent">query which will be saved.</param>
+            <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+            <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.Count``1(System.String)">
             <summary>
@@ -205,6 +227,70 @@
             </summary>
             <typeparam name="T">Type used to get the index name</typeparam>
             <returns>returns true if cache has been cleared</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasCreateForIndex(System.String,System.String)">
+            <summary>
+            Creates a new alias for the index parameter. 
+            </summary>
+            <param name="alias">name of the alias</param>
+            <param name="index">index for the alias</param>
+            <returns>true if the alias was created </returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasCreateForIndexAsync(System.String,System.String)">
+            <summary>
+            Async Creates a new alias for the index parameter. 
+            </summary>
+            <param name="alias">name of the alias</param>
+            <param name="index">index for the alias</param>
+            <returns>true if the alias was created </returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Alias(System.String)">
+            <summary>
+            Creates any alias command depending on the json content
+            </summary>
+            <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
+            <returns>returns true if the alias commnad was completed successfully</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasAsync(System.String)">
+            <summary>
+            Async Creates any alias command depending on the json content
+            </summary>
+            <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
+            <returns>returns true if the alias commnad was completed successfully</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasRemoveForIndex(System.String,System.String)">
+            <summary>
+            Removes a new alias for the index parameter. 
+            </summary>
+            <param name="alias">name of the alias</param>
+            <param name="index">index for the alias</param>
+            <returns>true if the alias was removed </returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasRemoveForIndexAsync(System.String,System.String)">
+            <summary>
+            asnyc Removes a new alias for the index parameter. 
+            </summary>
+            <param name="alias">name of the alias</param>
+            <param name="index">index for the alias</param>
+            <returns>true if the alias was removed </returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasReplaceIndex(System.String,System.String,System.String)">
+            <summary>
+            Replaces the index for the alias. This can be used when reindexing live
+            </summary>
+            <param name="alias">Name of the alias</param>
+            <param name="indexOld">Old index which will be removed</param>
+            <param name="indexNew">New index which will be mapped to the alias</param>
+            <returns>Returns true if the index was replaced</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasReplaceIndexAsync(System.String,System.String,System.String)">
+            <summary>
+            Async Replaces the index for the alias. This can be used when reindexing live
+            </summary>
+            <param name="alias">Name of the alias</param>
+            <param name="indexOld">Old index which will be removed</param>
+            <param name="indexNew">New index which will be mapped to the alias</param>
+            <returns>Returns true if the index was replaced</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndexAsync``1">
             <summary>
