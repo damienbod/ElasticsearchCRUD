@@ -65,6 +65,10 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.13</strong><em> 2014.11.05</em>
+- Support for alias
+- Support for _search scan and scroll
+- 
 <strong>Version 1.0.12</strong><em> 2014.10.31</em>
 - Bug fix SearchById
 
