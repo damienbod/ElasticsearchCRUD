@@ -52,12 +52,12 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
-				//context.AllowDeleteForIndex = true;
-				//var entityResult = context.DeleteIndexAsync<ScanScrollTypeV1>();
-				//entityResult.Wait();
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<ScanScrollTypeV1>();
+				entityResult.Wait();
 
-				//var entityResultV2 = context.DeleteIndexAsync<ScanScrollTypeV2>();
-				//entityResultV2.Wait();
+				var entityResultV2 = context.DeleteIndexAsync<ScanScrollTypeV2>();
+				entityResultV2.Wait();
 			}
 		}
 
@@ -102,7 +102,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				// lets elasticsearch have time to update
 				Thread.Sleep(2000);
 				context.ClearCacheForIndex<ScanScrollTypeV2>();
-				Assert.AreEqual(1000, context.Count<ScanScrollTypeV2>());
+				Assert.AreEqual(10000, context.Count<ScanScrollTypeV2>());
 			}
 		}
 
