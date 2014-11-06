@@ -4,6 +4,39 @@
         <name>ElasticsearchCRUD</name>
     </assembly>
     <members>
+        <member name="F:ElasticsearchCRUD.ElasticsearchCrudReindex`2.ScanAndScrollConfiguration">
+            <summary>
+            Scan ans scroll settings for the reindex. You should keep this small, otherwise the response request will be too larger.
+            Default is 5 seconds with a size of 500 documents pro shard.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.#ctor(ElasticsearchCRUD.Utils.IndexTypeDescription,ElasticsearchCRUD.Utils.IndexTypeDescription,System.String)">
+            <summary>
+            Reindex constructor. The class reuires a index and a type for the old index and also the new index. The old index can then be converteds or reindexed to the new index.
+            </summary>
+            <param name="oldIndexTypeDescription">index and index type parameters for the old index</param>
+            <param name="newIndexTypeDescription">index and index type parameters for the new index</param>
+            <param name="connectionString">Elasticsearch connection string</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.SwitchAliasfromOldToNewIndex(System.String)">
+            <summary>
+            Resets the alias from the old index to the new index. Assumes that a alias is used for the old indeex. This way, reindex can be done live.
+            </summary>
+            <param name="alias">alias string used for the index.</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.Reindex(System.String,System.Func{`0,System.Object},System.Func{`0,`1})">
+            <summary>
+            This method is used to reindex one index to a new index using a query, and two Functions.
+            </summary>
+            <param name="jsonContent">Json content for the search query</param>
+            <param name="getKeyMethod">Func is require to define the _id required for the new index</param>
+            <param name="convertMethod">Func used to map the old index to the new old, whatever your required mapping/conversion logic is</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ElasticsearchCrudReindex`2.TraceProvider">
+            <summary>
+            TraceProvider if logging or tracing is used
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.ElasticsearchSerializerConfiguration">
             <summary>
             Configuration class used for the context settings.
@@ -24,6 +57,37 @@
             <summary>
             Context will save child objects as separate types in the same index if set. Otherwise child itemas are saved as nested objects.
             </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ElasticsearchMapping">
+            <summary>
+            Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
+            Everything is lowercase and the index is pluralized
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.MapEntityValues(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Boolean)">
+            <summary>
+            Ovveride this if your default mapping needs to be changed.
+            default type is lowercase for properties, indes pluralized and type to lower
+            </summary>
+            <param name="entityInfo">Information about the entity</param>
+            <param name="elasticsearchCrudJsonWriter">Serializer with added tracing</param>
+            <param name="beginMappingTree">begin new mapping tree</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.GetDocumentType(System.Type)">
+            <summary>
+            Override this if you require a special type definitoin for your document type.
+            </summary>
+            <param name="type"></param>
+            <returns>The type used in Elasticsearch for this type</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.GetIndexForType(System.Type)">
+            <summary>
+            Overide this if you need to define the index for your document. 
+            Required if your using a child document type.
+            Default: pluralize the default type
+            </summary>
+            <param name="type">Type of class used</param>
+            <returns>The index used in Elasticsearch for this type</returns>
         </member>
         <member name="T:ElasticsearchCRUD.ElasticsearchContext">
             <summary>
@@ -106,22 +170,24 @@
             <param name="documentId"></param>
             <returns>Returns the document of type T</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Search``1(System.String,System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Search``1(System.String,System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
             <summary>
             Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
             </summary>
             <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
             <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
             <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
+            <param name="scanAndScrollConfiguration">Required scroll configuration</param>
             <returns>A collection of documents of type T</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchAsync``1(System.String,System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchAsync``1(System.String,System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
             <summary>
             async Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
             </summary>
             <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
             <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
             /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
+            <param name="scanAndScrollConfiguration">Required scroll configuration</param>
             <returns>A collection of documents of type T in a Task</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScroll``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
@@ -323,37 +389,6 @@
             </summary>
             <param name="type">Type of class</param>
             <param name="mapping">mapping definition.</param>
-        </member>
-        <member name="T:ElasticsearchCRUD.ElasticsearchMapping">
-            <summary>
-            Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
-            Everything is lowercase and the index is pluralized
-            </summary>
-        </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.MapEntityValues(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Boolean)">
-            <summary>
-            Ovveride this if your default mapping needs to be changed.
-            default type is lowercase for properties, indes pluralized and type to lower
-            </summary>
-            <param name="entityInfo">Information about the entity</param>
-            <param name="elasticsearchCrudJsonWriter">Serializer with added tracing</param>
-            <param name="beginMappingTree">begin new mapping tree</param>
-        </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.GetDocumentType(System.Type)">
-            <summary>
-            Override this if you require a special type definitoin for your document type.
-            </summary>
-            <param name="type"></param>
-            <returns>The type used in Elasticsearch for this type</returns>
-        </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.GetIndexForType(System.Type)">
-            <summary>
-            Overide this if you need to define the index for your document. 
-            Required if your using a child document type.
-            Default: pluralize the default type
-            </summary>
-            <param name="type">Type of class used</param>
-            <returns>The index used in Elasticsearch for this type</returns>
         </member>
     </members>
 </doc>
