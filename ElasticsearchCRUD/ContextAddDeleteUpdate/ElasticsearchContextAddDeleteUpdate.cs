@@ -41,7 +41,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				task.Wait();
 				if (!string.IsNullOrEmpty(task.Result.Description))
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "{0}: SaveChanges {1}", "ElasticsearchContextAddDeleteUpdate", task.Result.Description);
+					_traceProvider.Trace(TraceEventType.Verbose, "{0}: SaveChanges {1}", "ElasticsearchContextAddDeleteUpdate", task.Result.Description);
 				}
 
 				return task.Result;

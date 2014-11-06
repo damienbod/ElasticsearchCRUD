@@ -5,16 +5,34 @@ namespace ElasticsearchCRUD.Tracing
 {
 	public class ConsoleTraceProvider : ITraceProvider
 	{
+		private readonly TraceEventType _traceEventTypelogLevel;
+
+		public ConsoleTraceProvider()
+		{
+			
+		}
+
+		public ConsoleTraceProvider(TraceEventType traceEventTypelogLevel)
+		{
+			_traceEventTypelogLevel = traceEventTypelogLevel;
+		}
+
 		public void Trace(TraceEventType level, string message, params object[] args)
 		{
-			SetForegroundColor(level);
-			Console.WriteLine(level + ": " + message, args);
+			if (_traceEventTypelogLevel >= level)
+			{
+				SetForegroundColor(level);
+				Console.WriteLine(level + ": " + message, args);
+			}
 		}
 
 		public void Trace(TraceEventType level, Exception ex, string message, params object[] args)
 		{
-			SetForegroundColor(level);
-			Console.WriteLine(level + ": " + ex.Message + ex.InnerException + message, args);
+			if (_traceEventTypelogLevel >= level)
+			{
+				SetForegroundColor(level);
+				Console.WriteLine(level + ": " + ex.Message + ex.InnerException + message, args);
+			}
 		}
 
 		private void SetForegroundColor(TraceEventType level)

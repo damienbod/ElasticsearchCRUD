@@ -61,11 +61,17 @@
     <Compile Include="ContextCount\ElasticsearchContextCount.cs" />
     <Compile Include="ContextDeleteByQuery\ElasticsearchContextDeleteByQuery.cs" />
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
+    <Compile Include="ContextSearch\TimeUnits.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
+    <Compile Include="ElasticsearchCrudReindex.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />
     <Compile Include="ContextAddDeleteUpdate\InitMappings.cs" />
     <Compile Include="ContextSearch\Search.cs" />
+    <Compile Include="Utils\IndexMapping.cs" />
+    <Compile Include="Utils\IndexTypeDescription.cs" />
+    <Compile Include="Utils\IndexTypeMapping.cs" />
+    <Compile Include="Utils\MappingUtils.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticsearchContext.cs" />
     <Compile Include="ElasticsearchCrudException.cs" />
