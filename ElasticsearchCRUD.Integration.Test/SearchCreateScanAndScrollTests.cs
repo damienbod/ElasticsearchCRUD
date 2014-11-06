@@ -64,7 +64,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestScanAndScollReindexFor1000Entities()
 		{
-			using (var context = new ElasticsearchContext("http://localhost.fiddler:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 10000; i++)
