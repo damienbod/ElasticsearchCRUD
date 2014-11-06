@@ -65,6 +65,13 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+
+<strong>Version 1.0.14</strong><em> 2014.11.06</em>
+- Added live Reindex support
+- Added index and indexType mapping utilities
+- Added console min trace level to ConsoleTraceLogger
+- Fix for scan and scroll implementation 
+
 <strong>Version 1.0.13</strong><em> 2014.11.05</em>
 - Support for alias
 - Support for _search scan and scroll
