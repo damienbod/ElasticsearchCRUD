@@ -10,5 +10,6 @@ namespace ElasticsearchCRUD
 		public string RequestUrl { get; set; }
 		public string Description { get; set; }
 		public T PayloadResult{ get; set; }
+		public string ScrollId { get; set; }
 	}
 }

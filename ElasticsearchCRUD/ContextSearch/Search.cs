@@ -28,7 +28,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			_connectionString = connectionString;
 		}
 
-		public async Task<ResultDetails<Collection<T>>> PostSearchAsync<T>(string jsonContent, string scrollId)
+		public async Task<ResultDetails<Collection<T>>> PostSearchAsync<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search: {0}, content: {1}", typeof(T), jsonContent, "Search");
 			var resultDetails = new ResultDetails<Collection<T>>
@@ -44,7 +44,7 @@ namespace ElasticsearchCRUD.ContextSearch
 
 				if (!string.IsNullOrEmpty(scrollId))
 				{
-					elasticsearchUrlForEntityGet = elasticsearchUrlForEntityGet + "?_scroll_id=" + scrollId;
+					elasticsearchUrlForEntityGet = string.Format("{0}/{1}{2}", _connectionString ,scanAndScrollConfiguration.GetScrollScanUrlForRunning(),scrollId);
 				}
 
 				var content = new StringContent(jsonContent);
@@ -83,8 +83,10 @@ namespace ElasticsearchCRUD.ContextSearch
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
 				var responseObject = JObject.Parse(responseString);
 
-				// First object
-				// responseObject["hits"]["hits"][0]["_source"]
+				if (!string.IsNullOrEmpty(scrollId))
+				{
+					resultDetails.ScrollId = responseObject["_scroll_id"].ToString();
+				}
 				var source = responseObject["hits"]["hits"];
 				resultDetails.TotalHits = (long)responseObject["hits"]["total"];
 				if (source != null)
@@ -108,11 +110,11 @@ namespace ElasticsearchCRUD.ContextSearch
 			}
 		}
 
-		public ResultDetails<Collection<T>> PostSearch<T>(string jsonContent, string scrollId)
+		public ResultDetails<Collection<T>> PostSearch<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			try
 			{
-				Task<ResultDetails<Collection<T>>> task = Task.Run(() => PostSearchAsync<T>(jsonContent, scrollId));
+				Task<ResultDetails<Collection<T>>> task = Task.Run(() => PostSearchAsync<T>(jsonContent, scrollId, scanAndScrollConfiguration));
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -158,7 +160,7 @@ namespace ElasticsearchCRUD.ContextSearch
 				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
 
-				elasticsearchUrlForEntityGet = elasticsearchUrlForEntityGet + "?" + scanAndScrollConfiguration.GetSrollScanUrl();
+				elasticsearchUrlForEntityGet = elasticsearchUrlForEntityGet + "?" + scanAndScrollConfiguration.GetScrollScanUrlForSetup();
 
 				var content = new StringContent(jsonContent);
 				var uri = new Uri(elasticsearchUrlForEntityGet);
@@ -197,7 +199,7 @@ namespace ElasticsearchCRUD.ContextSearch
 				var responseObject = JObject.Parse(responseString);
 
 				resultDetails.TotalHits = (long)responseObject["hits"]["total"];
-				resultDetails.PayloadResult = responseObject["_scroll_id"].ToString();
+				resultDetails.ScrollId = responseObject["_scroll_id"].ToString();
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)

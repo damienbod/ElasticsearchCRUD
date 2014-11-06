@@ -29,11 +29,15 @@ namespace ElasticsearchCRUD.ContextSearch
 			_size = size;
 		}
 
-		public string GetSrollScanUrl()
+		public string GetScrollScanUrlForSetup()
 		{
 			return string.Format("search_type=scan&scroll={0}{1}&size={2}", _scroll, _timeUnits[_timeUnitsForScroll],_size);
 		}
-		
+
+		public string GetScrollScanUrlForRunning()
+		{
+			return string.Format("_search/scroll?scroll={0}{1}&scroll_id=", _scroll, _timeUnits[_timeUnitsForScroll]);
+		}
 
 	}
 }

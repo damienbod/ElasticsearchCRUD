@@ -187,8 +187,9 @@ namespace ElasticsearchCRUD
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
 		/// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
+		/// <param name="scanAndScrollConfiguration">Required scroll configuration</param>
 		/// <returns>A collection of documents of type T</returns>
-		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters, string scrollId = null)
+		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration = null)
 		{
 			var search = new Search(
 				TraceProvider,
@@ -198,7 +199,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return search.PostSearch<T>(searchJsonParameters, scrollId);
+			return search.PostSearch<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -207,8 +208,9 @@ namespace ElasticsearchCRUD
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
 		/// /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
+		/// <param name="scanAndScrollConfiguration">Required scroll configuration</param>
 		/// <returns>A collection of documents of type T in a Task</returns>
-		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null)
+		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration= null)
 		{
 			var search = new Search(
 				TraceProvider,
@@ -218,7 +220,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await search.PostSearchAsync<T>(searchJsonParameters, scrollId);
+			return await search.PostSearchAsync<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
 		}
 
 		/// <summary>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -51,22 +52,22 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
-				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<ScanScrollTypeV1>();
-				entityResult.Wait();
+				//context.AllowDeleteForIndex = true;
+				//var entityResult = context.DeleteIndexAsync<ScanScrollTypeV1>();
+				//entityResult.Wait();
 
-				var entityResultV2 = context.DeleteIndexAsync<ScanScrollTypeV2>();
-				entityResultV2.Wait();
+				//var entityResultV2 = context.DeleteIndexAsync<ScanScrollTypeV2>();
+				//entityResultV2.Wait();
 			}
 		}
 
 		[Test]
 		public void TestScanAndScollReindexFor1000Entities()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext("http://localhost.fiddler:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				for (int i = 0; i < 1000; i++)
+				for (int i = 0; i < 10000; i++)
 				{
 					context.AddUpdateDocument(_entitiesForTests[i], i);
 				}
@@ -78,23 +79,24 @@ namespace ElasticsearchCRUD.Integration.Test
 				// lets elasticsearch have time to update
 				Thread.Sleep(2000);
 				context.ClearCacheForIndex<ScanScrollTypeV1>();
+				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 300);
+				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 
-				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(),
-					new ScanAndScrollConfiguration(1, TimeUnits.Minute, 100));
+				var scrollId = result.ScrollId;
 
-				var scrollId = result.PayloadResult;
-
-				int indexPointer = 0;
-				while (result.TotalHits > indexPointer)
+				int processedResults = 0;
+				while (result.TotalHits > processedResults)
 				{
-					var resultCollection = context.Search<ScanScrollTypeV1>(BuildSearchFromTooForScanScroll(indexPointer, 100), scrollId);
+					var resultCollection = context.Search<ScanScrollTypeV1>("", scrollId, scanScrollConfig);
+					scrollId = resultCollection.ScrollId;
 
 					foreach (var item in resultCollection.PayloadResult)
 					{
+						processedResults++;
 						context.AddUpdateDocument(ConvertScanScrollTypeV1(item), item.Id);
 					}
 					context.SaveChanges();
-					indexPointer = indexPointer + 100;
+					
 				}
 
 				// lets elasticsearch have time to update
@@ -129,19 +131,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			buildJson.AppendLine("\"query\": {");
 			buildJson.AppendLine("\"match_all\" : {}");
 			buildJson.AppendLine("}");
-			buildJson.AppendLine("}");
-
-			return buildJson.ToString();
-		}
-
-		//{   
-		//   "from" : 100 , "size" : 100
-		//}
-		private string BuildSearchFromTooForScanScroll(int from, int size)
-		{
-			var buildJson = new StringBuilder();
-			buildJson.AppendLine("{");
-			buildJson.AppendLine("\"from\" : " + from + ", \"size\" : " + size);
 			buildJson.AppendLine("}");
 
 			return buildJson.ToString();

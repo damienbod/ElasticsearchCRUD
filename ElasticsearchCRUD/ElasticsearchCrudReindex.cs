@@ -44,7 +44,7 @@ namespace ElasticsearchCRUD
 			_context.AliasReplaceIndex(alias, _oldIndexTypeDescription.Index, _newIndexTypeDescription.Index);
 		}
 
-		public void Reindex(DateTime beginDateTime, Func<TOld, long> getKeyMethod, Func<TOld, TNew> convertMethod )
+		public void Reindex(DateTime beginDateTime, Func<TOld, object> getKeyMethod, Func<TOld, TNew> convertMethod )
 		{
 			var result = _context.SearchCreateScanAndScroll<TOld>(BuildSearchModifiedDateTimeLessThan(beginDateTime), ScanAndScrollConfiguration);
 
@@ -68,7 +68,7 @@ namespace ElasticsearchCRUD
 			}
 		}
 
-		public void ReindexUpdateChangesWhileReindexing(DateTime beginDateTime, Func<TOld, long> getKeyMethod, Func<TOld, TNew> convertMethod)
+		public void ReindexUpdateChangesWhileReindexing(DateTime beginDateTime, Func<TOld, object> getKeyMethod, Func<TOld, TNew> convertMethod)
 		{
 			var result = _context.SearchCreateScanAndScroll<TOld>(BuildSearchModifiedDateTimeGreaterThan(beginDateTime), ScanAndScrollConfiguration);
 			var scrollId = result.PayloadResult;
