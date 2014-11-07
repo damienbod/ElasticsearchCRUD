@@ -25,6 +25,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="http://damienbod.wordpress.com/2014/11/02/mvc-application-with-entity-framework-and-elasticsearch/">Part 6: MVC application with Entity Framework and Elasticsearch</a>
 
+<a href="http://damienbod.wordpress.com/2014/11/07/live-reindex-in-elasticsearch/">Part 7: Live Reindex in Elasticsearch</a>
+
 ========================
 
 <strong>Examples:</strong>
