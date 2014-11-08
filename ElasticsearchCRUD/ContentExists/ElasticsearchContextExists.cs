@@ -43,9 +43,15 @@ namespace ElasticsearchCRUD.ContentExists
 
 		public bool DocumentExists<T>(object entityId, object parentId)
 		{
+			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Unknown error for DocumentExists {0}, Type {1}", entityId, typeof(T), "ElasticsearchContextExists");
+			return Exists<T>(DocumentExistsAsync<T>(entityId, parentId));
+		}
+
+		public bool Exists<T>(Task<ResultDetails<bool>> method)
+		{
 			try
 			{
-				Task<ResultDetails<bool>> task = Task.Run(() => DocumentExistsAsync<T>(entityId, parentId));
+				Task<ResultDetails<bool>> task = Task.Run(() => method);
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -58,7 +64,7 @@ namespace ElasticsearchCRUD.ContentExists
 			{
 				ae.Handle(x =>
 				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} DocumentExists {0}, {1}", typeof(T), entityId, "ElasticsearchContextExists");
+					_traceProvider.Trace(TraceEventType.Warning, x, "ElasticsearchContextExists: DocumentExists {0}", typeof(T));
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
@@ -68,8 +74,8 @@ namespace ElasticsearchCRUD.ContentExists
 				});
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for DocumentExists {0}, Type {1}", entityId, typeof(T), "ElasticsearchContextExists");
-			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for DocumentExists {0}, Type {1}", entityId, typeof(T), "ElasticsearchContextExists"));
+			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextExists: Unknown error for DocumentExists  Type {0}",  typeof(T));
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextExists: Unknown error for DocumentExists Type {0}",  typeof(T)));
 		}
 	}
 }
