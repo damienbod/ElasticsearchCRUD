@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContentExists
 {
@@ -100,35 +101,11 @@ namespace ElasticsearchCRUD.ContentExists
 			return await ExistsHeadRequest.ExistsAsync(uri);
 		}
 
-		public bool Exists<T>(Task<ResultDetails<bool>> method)
+		public bool Exists(Task<ResultDetails<bool>> method)
 		{
-			try
-			{
-				Task<ResultDetails<bool>> task = Task.Run(() => method);
-				task.Wait();
-				if (task.Result.Status == HttpStatusCode.NotFound)
-				{
-					_traceProvider.Trace(TraceEventType.Information, "ElasticsearchContextExists: Exists HttpStatusCode.NotFound");
-				}
-
-				return task.Result.PayloadResult;
-			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "ElasticsearchContextExists: Exists {0}", typeof(T));
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
-
-					throw new ElasticsearchCrudException(x.Message);
-				});
-			}
-
-			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextExists: Unknown error for Exists  Type {0}",  typeof(T));
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextExists: Unknown error for Exists Type {0}",  typeof(T)));
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.Execute(method);
 		}
+
 	}
 }

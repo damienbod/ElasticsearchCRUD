@@ -300,7 +300,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true or false</returns>
 		public bool DocumentExists<T>(object documentId, object parentId = null)
 		{
-			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId));
+			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId));
 		}
 
 		/// <summary>
@@ -318,7 +318,7 @@ namespace ElasticsearchCRUD
 
 		public bool IndexExists<T>()
 		{
-			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.IndexExistsAsync<T>());
+			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.IndexExistsAsync<T>());
 		}
 
 		public async Task<ResultDetails<bool>> IndexExistsAsync<T>()
@@ -328,7 +328,7 @@ namespace ElasticsearchCRUD
 
 		public bool IndexTypeExists<T>()
 		{
-			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.IndexTypeExistsAsync<T>());
+			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.IndexTypeExistsAsync<T>());
 		}
 
 		public async Task<ResultDetails<bool>> IndexTypeExistsAsync<T>()
@@ -338,7 +338,7 @@ namespace ElasticsearchCRUD
 
 		public bool AliasExistsForIndex<T>(string alias)
 		{
-			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.AliasExistsForIndexAsync<T>(alias));
+			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.AliasExistsForIndexAsync<T>(alias));
 		}
 
 		public async Task<ResultDetails<bool>> AliasExistsForIndexAsync<T>(string alias)
@@ -348,7 +348,7 @@ namespace ElasticsearchCRUD
 
 		public bool AliasExists(string alias)
 		{
-			return _elasticsearchContextExists.Exists<Object>(_elasticsearchContextExists.AliasExistsAsync(alias));
+			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.AliasExistsAsync(alias));
 		}
 
 		public async Task<ResultDetails<bool>> AliasExistsAsync(string alias)

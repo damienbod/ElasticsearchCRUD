@@ -56,6 +56,6 @@ namespace ElasticsearchCRUD.ContentExists
 				return resultDetails;
 			}
 		}
-
+	
 	}
 }
