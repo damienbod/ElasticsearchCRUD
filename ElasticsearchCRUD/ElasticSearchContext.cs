@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Threading;
+using ElasticsearchCRUD.ContentExists;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAlias;
 using ElasticsearchCRUD.ContextClearCache;
@@ -402,7 +403,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true or false</returns>
 		public bool DocumentExists<T>(object documentId, object parentId = null)
 		{
-			var elasticsearchContextGet = new ElasticsearchContextGet(
+			var elasticsearchContextExists = new ElasticsearchContextExists(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -410,7 +411,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return elasticsearchContextGet.DocumentExists<T>(documentId, parentId);
+			return elasticsearchContextExists.DocumentExists<T>(documentId, parentId);
 		}
 
 		/// <summary>
@@ -423,7 +424,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true or false</returns>
 		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object documentId, object parentId = null)
 		{
-			var elasticsearchContextGet = new ElasticsearchContextGet(
+			var elasticsearchContextExists = new ElasticsearchContextExists(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
@@ -431,7 +432,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return await elasticsearchContextGet.DocumentExistsAsync<T>(documentId, parentId);
+			return await elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId);
 		}
 
 		/// <summary>

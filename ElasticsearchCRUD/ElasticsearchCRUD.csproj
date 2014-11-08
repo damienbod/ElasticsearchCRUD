@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContentExists\ElasticsearchContextExists.cs" />
+    <Compile Include="ContentExists\Exists.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />
