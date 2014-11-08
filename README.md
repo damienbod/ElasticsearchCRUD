@@ -25,6 +25,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="http://damienbod.wordpress.com/2014/11/02/mvc-application-with-entity-framework-and-elasticsearch/">Part 6: MVC application with Entity Framework and Elasticsearch</a>
 
+<a href="http://damienbod.wordpress.com/2014/11/07/live-reindex-in-elasticsearch/">Part 7: Live Reindex in Elasticsearch</a>
+
 ========================
 
 <strong>Examples:</strong>
@@ -48,6 +50,10 @@ This examples show how to transfer entities to documents in Elasticsearch. The e
 <a href="https://github.com/damienbod/WebSearchWithElasticsearchEntityFrameworkAsPrimary">MVC application with Entity Framework and Elasticsearch</a>
 
 This example demonstrates how to use Entity Framework as you primary database and Elasticsearch for the search in an MVC application. The application needs to create, update, delete documents in the search engine when ever Entity Framework changes, deletes or updates an entity.
+
+<a href="https://github.com/damienbod/LiveReindexInElasticsearch">Live Reindexing in Elasticsearch</a>
+
+This example shows how to do a live reindex in Elasticsearch. There is no downtime. The old index is accessed using an alias. The new index is created from the old index using scan and scroll and a document mapper. Then the alias to switched to access the new index. Then if required, the old index could be removed.
 
 <a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample">ConsoleElasticsearchCrudExample</a>
 
