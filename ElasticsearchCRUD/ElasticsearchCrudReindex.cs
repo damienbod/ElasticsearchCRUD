@@ -66,7 +66,8 @@ namespace ElasticsearchCRUD
 		/// <param name="jsonContent">Json content for the search query</param>
 		/// <param name="getKeyMethod">Func is require to define the _id required for the new index</param>
 		/// <param name="convertMethod">Func used to map the old index to the new old, whatever your required mapping/conversion logic is</param>
-		public void Reindex(string jsonContent, Func<TOld, object> getKeyMethod, Func<TOld, TNew> convertMethod)
+		/// <param name="getParentKey">Function to get the key method</param>
+		public void Reindex(string jsonContent, Func<TOld, object> getKeyMethod, Func<TOld, TNew> convertMethod, Func<TOld, object> getParentKey = null)
 		{
 			var result = _context.SearchCreateScanAndScroll<TOld>(jsonContent, ScanAndScrollConfiguration);
 
@@ -84,7 +85,15 @@ namespace ElasticsearchCRUD
 				foreach (var item in resultCollection.PayloadResult)
 				{
 					indexProccessed++;
-					_context.AddUpdateDocument(convertMethod(item), getKeyMethod(item));
+					if (getParentKey != null)
+					{
+						_context.AddUpdateDocument(convertMethod(item), getKeyMethod(item), getParentKey(item));
+					}
+					else
+					{
+						_context.AddUpdateDocument(convertMethod(item), getKeyMethod(item));
+					}
+					
 				}
 				_context.SaveChanges();
 			}
