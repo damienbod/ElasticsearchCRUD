@@ -29,6 +29,14 @@ namespace ElasticsearchCRUD
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
 
 		private ElasticsearchContextExists _elasticsearchContextExists;
+		private ElasticsearchContextAddDeleteUpdate _elasticsearchContextAddDeleteUpdate;
+		private ElasticsearchContextGet _elasticsearchContextGet;
+		private ElasticsearchContextSearch _elasticsearchContextSearch;
+		private Search _search;
+		private ElasticsearchContextCount _elasticsearchContextCount;
+		private ElasticsearchContextDeleteByQuery _elasticsearchContextDeleteByQuery;
+		private ElasticsearchContextClearCache _elasticsearchContextClearCache;
+		private ElasticsearchContextAlias _elasticsearchContextAlias;
 
 		/// <summary>
 		/// TraceProvider for all logs, trace etc. This can be replaced with any TraceProvider implementation.
@@ -38,11 +46,7 @@ namespace ElasticsearchCRUD
 		public ITraceProvider TraceProvider
 		{
 			get { return _traceProvider; }
-			set
-			{
-				_traceProvider = value;
-				InitialContext();
-			}
+			set { _traceProvider = value; }
 		}
 		/// <summary>
 		/// This bool needs to be set to true if you want to delete an index. Per default this is false.
@@ -75,17 +79,6 @@ namespace ElasticsearchCRUD
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticsearchContext with connection string: {0}", connectionString, "ElasticsearchContext");
 			InitialContext();
-		}
-
-		private void InitialContext()
-		{
-			_elasticsearchContextExists = new ElasticsearchContextExists(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
 		}
 
 		/// <summary>
@@ -121,15 +114,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns HTTP response information</returns>
 		public ResultDetails<string> SaveChangesAndInitMappingsForChildDocuments()
 		{
-			var elasticsearchContextAddDeleteUpdate = new ElasticsearchContextAddDeleteUpdate(
-					TraceProvider,
-					_cancellationTokenSource,
-					_elasticsearchSerializerConfiguration,
-					_client,
-					_connectionString
-			);
-
-			return elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, true);
+			return _elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, true);
 		}
 
 		/// <summary>
@@ -138,15 +123,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns HTTP response information</returns>
 		public ResultDetails<string> SaveChanges()
 		{
-			var elasticsearchContextAddDeleteUpdate = new ElasticsearchContextAddDeleteUpdate(
-					TraceProvider,
-					_cancellationTokenSource,
-					_elasticsearchSerializerConfiguration,
-					_client,
-					_connectionString
-			);
-
-			return elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, false);
+			return _elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, false);
 		}
 
 		/// <summary>
@@ -155,15 +132,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns HTTP response information</returns>
 		public async Task<ResultDetails<string>> SaveChangesAsync()
 		{
-			var elasticsearchContextAddDeleteUpdate = new ElasticsearchContextAddDeleteUpdate(
-					TraceProvider,
-					_cancellationTokenSource,
-					_elasticsearchSerializerConfiguration,
-					_client,
-					_connectionString
-					);
-
-			return await elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
+			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
 		/// <summary>
@@ -176,15 +145,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Document type T</returns>
 		public T GetDocument<T>(object documentId, object parentId = null)
 		{
-			var elasticsearchContextGet = new ElasticsearchContextGet(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextGet.GetDocument<T>(documentId, parentId);
+			return _elasticsearchContextGet.GetDocument<T>(documentId, parentId);
 		}
 
 		/// <summary>
@@ -195,15 +156,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the document of type T</returns>
 		public T SearchById<T>(object documentId)
 		{
-			var elasticsearchContextSearch = new ElasticsearchContextSearch(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextSearch.SearchById<T>(documentId);
+			return _elasticsearchContextSearch.SearchById<T>(documentId);
 		}
 
 		/// <summary>
@@ -216,15 +169,7 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T</returns>
 		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration = null)
 		{
-			var search = new Search(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return search.PostSearch<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
+			return _search.PostSearch<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -237,15 +182,7 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T in a Task</returns>
 		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration= null)
 		{
-			var search = new Search(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await search.PostSearchAsync<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
+			return await _search.PostSearchAsync<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -258,15 +195,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public ResultDetails<string> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
-			var search = new Search(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
+			return _search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -279,15 +208,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public async Task<ResultDetails<string>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
-			var search = new Search(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await search.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
+			return await _search.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -298,15 +219,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Result amount of document found</returns>
 		public long Count<T>(string jsonContent = "")
 		{
-			var count = new ElasticsearchContextCount(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return count.PostCount<T>(jsonContent).PayloadResult;
+			return _elasticsearchContextCount.PostCount<T>(jsonContent).PayloadResult;
 		}
 
 		/// <summary>
@@ -317,15 +230,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Result amount of document found in a result details task</returns>
 		public async Task<ResultDetails<long>> CountAsync<T>(string jsonContent = "")
 		{
-			var count = new ElasticsearchContextCount(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await count.PostCountAsync<T>(jsonContent);
+			return await _elasticsearchContextCount.PostCountAsync<T>(jsonContent);
 		}
 
 		/// <summary>
@@ -336,15 +241,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the document of type T in a Task with result details</returns>
 		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object documentId)
 		{
-			var elasticsearchContextSearch = new ElasticsearchContextSearch(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextSearch.SearchByIdAsync<T>(documentId);
+			return await _elasticsearchContextSearch.SearchByIdAsync<T>(documentId);
 		}
 
 		/// <summary>
@@ -360,15 +257,7 @@ namespace ElasticsearchCRUD
 				throw new ElasticsearchCrudException("Context: you must supply a json query for DeleteByQueryAsync");
 			}
 
-			var deleteByQueryApi = new ElasticsearchContextDeleteByQuery(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await deleteByQueryApi.DeleteByQueryAsync<T>(jsonContent);
+			return await _elasticsearchContextDeleteByQuery.DeleteByQueryAsync<T>(jsonContent);
 		}
 
 		/// <summary>
@@ -384,15 +273,7 @@ namespace ElasticsearchCRUD
 				throw new ElasticsearchCrudException("Context: you must supply a json query for DeleteByQueryAsync");
 			}
 
-			var deleteByQueryApi = new ElasticsearchContextDeleteByQuery(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return deleteByQueryApi.SendDeleteByQuery<T>(jsonContent);
+			return _elasticsearchContextDeleteByQuery.SendDeleteByQuery<T>(jsonContent);
 		}
 
 		/// <summary>
@@ -405,15 +286,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Document type T in a Task with result details</returns>
 		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object documentId, object parentId = null)
 		{
-			var elasticsearchContextGet = new ElasticsearchContextGet(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextGet.GetDocumentAsync<T>(documentId, parentId);
+			return await _elasticsearchContextGet.GetDocumentAsync<T>(documentId, parentId);
 
 		}
 
@@ -490,15 +363,7 @@ namespace ElasticsearchCRUD
 		/// <returns>returns true if cache has been cleared</returns>
 		public bool ClearCacheForIndex<T>()
 		{
-			var elasticsearchContextClearCache = new ElasticsearchContextClearCache(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextClearCache.ClearCacheForIndex<T>();
+			return _elasticsearchContextClearCache.ClearCacheForIndex<T>();
 		}
 
 		/// <summary>
@@ -508,15 +373,7 @@ namespace ElasticsearchCRUD
 		/// <returns>returns true if cache has been cleared</returns>
 		public async Task<ResultDetails<bool>> ClearCacheForIndexAsync<T>()
 		{
-			var elasticsearchContextClearCache = new ElasticsearchContextClearCache(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
+			return await _elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
 		}
 
 		/// <summary>
@@ -527,15 +384,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was created </returns>
 		public bool AliasCreateForIndex(string alias, string index)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
+			return _elasticsearchContextAlias.SendAliasCommand(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
 		}
 
 		/// <summary>
@@ -546,15 +395,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was created </returns>
 		public async Task<ResultDetails<bool>> AliasCreateForIndexAsync(string alias, string index)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
 		}
 
 		/// <summary>
@@ -564,15 +405,7 @@ namespace ElasticsearchCRUD
 		/// <returns>returns true if the alias commnad was completed successfully</returns>
 		public bool Alias(string jsonContent)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextAlias.SendAliasCommand(jsonContent);
+			return _elasticsearchContextAlias.SendAliasCommand(jsonContent);
 		}
 
 		/// <summary>
@@ -582,15 +415,7 @@ namespace ElasticsearchCRUD
 		/// <returns>returns true if the alias commnad was completed successfully</returns>
 		public async Task<ResultDetails<bool>> AliasAsync(string jsonContent)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
 		}
 
 		/// <summary>
@@ -601,15 +426,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was removed </returns>
 		public bool AliasRemoveForIndex(string alias, string index)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+			return _elasticsearchContextAlias.SendAliasCommand(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
 		}
 
 		/// <summary>
@@ -620,15 +437,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was removed </returns>
 		public async Task<ResultDetails<bool>> AliasRemoveForIndexAsync(string alias, string index)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
 		}
 
 		/// <summary>
@@ -640,15 +449,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns true if the index was replaced</returns>
 		public bool AliasReplaceIndex(string alias, string indexOld, string indexNew)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextAlias.SendAliasCommand(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
+			return _elasticsearchContextAlias.SendAliasCommand(_elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
 		}
 
 		/// <summary>
@@ -660,15 +461,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns true if the index was replaced</returns>
 		public async Task<ResultDetails<bool>> AliasReplaceIndexAsync(string alias, string indexOld, string indexNew)
 		{
-			var elasticsearchContextAlias = new ElasticsearchContextAlias(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return await elasticsearchContextAlias.SendAliasCommandAsync(elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(_elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
 		}
 
 		/// <summary>
@@ -679,15 +472,83 @@ namespace ElasticsearchCRUD
 		/// <returns>Result details in a task</returns>
 		public async Task<ResultDetails<T>> DeleteIndexAsync<T>()
 		{
-			var elasticsearchContextAddDeleteUpdate = new ElasticsearchContextAddDeleteUpdate(
-					TraceProvider,
-					_cancellationTokenSource,
-					_elasticsearchSerializerConfiguration,
-					_client,
-					_connectionString
-			);
+			return await _elasticsearchContextAddDeleteUpdate.DeleteIndexAsync<T>(AllowDeleteForIndex);
+		}
 
-			return await elasticsearchContextAddDeleteUpdate.DeleteIndexAsync<T>(AllowDeleteForIndex);
+		private void InitialContext()
+		{
+			_elasticsearchContextExists = new ElasticsearchContextExists(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextAddDeleteUpdate = new ElasticsearchContextAddDeleteUpdate(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextGet = new ElasticsearchContextGet(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextSearch = new ElasticsearchContextSearch(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_search = new Search(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextCount = new ElasticsearchContextCount(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextDeleteByQuery = new ElasticsearchContextDeleteByQuery(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextClearCache = new ElasticsearchContextClearCache(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
 		}
 
 		/// <summary>
