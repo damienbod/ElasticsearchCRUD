@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.ContentExists
 		private readonly ITraceProvider _traceProvider;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
 		private readonly string _connectionString;
-		private readonly Exists _exists;
+		public readonly Exists ExistsHeadRequest;
 
 		public ElasticsearchContextExists(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource,
 			ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
@@ -21,15 +21,20 @@ namespace ElasticsearchCRUD.ContentExists
 			_traceProvider = traceProvider;
 			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_connectionString = connectionString;
-			_exists = new Exists(_traceProvider, cancellationTokenSource, client);
+			ExistsHeadRequest = new Exists(_traceProvider, cancellationTokenSource, client);
 		}
 
 		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object entityId, object parentId)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: Request for exist document with id: {0}, Type: {1}", entityId, typeof(T));
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: IndexExistsAsync for Type:{0}, Index: {1}, IndexType: {2}, Entity {3}",
+				typeof(T),
+				elasticSearchMapping.GetIndexForType(typeof(T)),
+				elasticSearchMapping.GetDocumentType(typeof(T)),
+				entityId
+			);
 
-			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof (T));
-			var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString,
+			var elasticsearchUrlForHeadRequest = string.Format("{0}/{1}/{2}/", _connectionString,
 				elasticSearchMapping.GetIndexForType(typeof (T)), elasticSearchMapping.GetDocumentType(typeof (T)));
 
 			string parentIdUrl = "";
@@ -37,14 +42,62 @@ namespace ElasticsearchCRUD.ContentExists
 			{
 				parentIdUrl = "?parent=" + parentId;
 			}
-			var uri = new Uri(elasticsearchUrlForEntityGet + entityId + parentIdUrl);
-			return await _exists.ExistsAsync(uri);
+			var uri = new Uri(elasticsearchUrlForHeadRequest + entityId + parentIdUrl);
+			return await ExistsHeadRequest.ExistsAsync(uri);
 		}
 
-		public bool DocumentExists<T>(object entityId, object parentId)
+		public async Task<ResultDetails<bool>> IndexExistsAsync<T>()
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Unknown error for DocumentExists {0}, Type {1}", entityId, typeof(T), "ElasticsearchContextExists");
-			return Exists<T>(DocumentExistsAsync<T>(entityId, parentId));
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: IndexExistsAsync for Type:{0}, Index: {1}",
+				typeof(T),
+				elasticSearchMapping.GetIndexForType(typeof(T))
+			);
+
+			var elasticsearchUrlForHeadRequest = string.Format("{0}/{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
+
+			var uri = new Uri(elasticsearchUrlForHeadRequest);
+			return await ExistsHeadRequest.ExistsAsync(uri);
+		}
+
+		public async Task<ResultDetails<bool>> IndexTypeExistsAsync<T>()
+		{
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: IndexExistsAsync for Type:{0}, Index: {1}, IndexType: {2}", 
+				typeof(T), 
+				elasticSearchMapping.GetIndexForType(typeof(T)), 
+				elasticSearchMapping.GetDocumentType(typeof(T))
+			);
+
+			var elasticsearchUrlForHeadRequest = string.Format("{0}/{1}/{2}", _connectionString,
+				elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+
+			var uri = new Uri(elasticsearchUrlForHeadRequest);
+			return await ExistsHeadRequest.ExistsAsync(uri);
+		}
+
+		public async Task<ResultDetails<bool>> AliasExistsAsync<T>()
+		{
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: AliasExistsAsync for Type:{0}, Index: {1}",
+				typeof(T),
+				elasticSearchMapping.GetIndexForType(typeof(T))
+			);
+
+			var elasticsearchUrlForHeadRequest = string.Format("{0}/_alias/{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
+
+			var uri = new Uri(elasticsearchUrlForHeadRequest);
+			return await ExistsHeadRequest.ExistsAsync(uri);
+		}
+
+		public async Task<ResultDetails<bool>> AliasExistsAsync(string alias)
+		{
+			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: AliasExistsAsync for alias:{0}", alias);
+
+			var elasticsearchUrlForHeadRequest = string.Format("{0}/_alias/{1}", _connectionString, alias);
+
+			var uri = new Uri(elasticsearchUrlForHeadRequest);
+			return await ExistsHeadRequest.ExistsAsync(uri);
 		}
 
 		public bool Exists<T>(Task<ResultDetails<bool>> method)

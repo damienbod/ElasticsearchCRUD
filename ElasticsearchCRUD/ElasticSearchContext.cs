@@ -411,7 +411,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			return elasticsearchContextExists.DocumentExists<T>(documentId, parentId);
+			return elasticsearchContextExists.Exists<T>(elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId));
 		}
 
 		/// <summary>
