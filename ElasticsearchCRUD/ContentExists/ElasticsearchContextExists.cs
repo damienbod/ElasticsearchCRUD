@@ -76,7 +76,7 @@ namespace ElasticsearchCRUD.ContentExists
 			return await ExistsHeadRequest.ExistsAsync(uri);
 		}
 
-		public async Task<ResultDetails<bool>> AliasExistsAsync<T>()
+		public async Task<ResultDetails<bool>> AliasExistsForIndexAsync<T>(string alias)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: AliasExistsAsync for Type:{0}, Index: {1}",
@@ -84,7 +84,7 @@ namespace ElasticsearchCRUD.ContentExists
 				elasticSearchMapping.GetIndexForType(typeof(T))
 			);
 
-			var elasticsearchUrlForHeadRequest = string.Format("{0}/_alias/{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
+			var elasticsearchUrlForHeadRequest = string.Format("{0}/{1}/_alias/{2}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), alias);
 
 			var uri = new Uri(elasticsearchUrlForHeadRequest);
 			return await ExistsHeadRequest.ExistsAsync(uri);
@@ -108,7 +108,7 @@ namespace ElasticsearchCRUD.ContentExists
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
-					_traceProvider.Trace(TraceEventType.Information, "ElasticsearchContextExists: DocumentExists HttpStatusCode.NotFound");
+					_traceProvider.Trace(TraceEventType.Information, "ElasticsearchContextExists: Exists HttpStatusCode.NotFound");
 				}
 
 				return task.Result.PayloadResult;
@@ -117,7 +117,7 @@ namespace ElasticsearchCRUD.ContentExists
 			{
 				ae.Handle(x =>
 				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "ElasticsearchContextExists: DocumentExists {0}", typeof(T));
+					_traceProvider.Trace(TraceEventType.Warning, x, "ElasticsearchContextExists: Exists {0}", typeof(T));
 					if (x is ElasticsearchCrudException || x is HttpRequestException)
 					{
 						throw x;
@@ -127,8 +127,8 @@ namespace ElasticsearchCRUD.ContentExists
 				});
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextExists: Unknown error for DocumentExists  Type {0}",  typeof(T));
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextExists: Unknown error for DocumentExists Type {0}",  typeof(T)));
+			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextExists: Unknown error for Exists  Type {0}",  typeof(T));
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextExists: Unknown error for Exists Type {0}",  typeof(T)));
 		}
 	}
 }

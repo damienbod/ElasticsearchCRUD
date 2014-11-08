@@ -28,11 +28,22 @@ namespace ElasticsearchCRUD
 		private readonly string _connectionString;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
 
+		private ElasticsearchContextExists _elasticsearchContextExists;
+
 		/// <summary>
 		/// TraceProvider for all logs, trace etc. This can be replaced with any TraceProvider implementation.
 		/// </summary>
-		public ITraceProvider TraceProvider = new NullTraceProvider();
+		private ITraceProvider _traceProvider = new NullTraceProvider();
 
+		public ITraceProvider TraceProvider
+		{
+			get { return _traceProvider; }
+			set
+			{
+				_traceProvider = value;
+				InitialContext();
+			}
+		}
 		/// <summary>
 		/// This bool needs to be set to true if you want to delete an index. Per default this is false.
 		/// </summary>
@@ -49,6 +60,7 @@ namespace ElasticsearchCRUD
 			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticsearchContext with connection string: {0}", connectionString, "ElasticsearchContext");
+			InitialContext();
 		}
 
 		/// <summary>
@@ -62,6 +74,18 @@ namespace ElasticsearchCRUD
 			_elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver);
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticsearchContext with connection string: {0}", connectionString, "ElasticsearchContext");
+			InitialContext();
+		}
+
+		private void InitialContext()
+		{
+			_elasticsearchContextExists = new ElasticsearchContextExists(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
 		}
 
 		/// <summary>
@@ -403,15 +427,7 @@ namespace ElasticsearchCRUD
 		/// <returns>true or false</returns>
 		public bool DocumentExists<T>(object documentId, object parentId = null)
 		{
-			var elasticsearchContextExists = new ElasticsearchContextExists(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
-
-			return elasticsearchContextExists.Exists<T>(elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId));
+			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId));
 		}
 
 		/// <summary>
@@ -424,15 +440,47 @@ namespace ElasticsearchCRUD
 		/// <returns>true or false</returns>
 		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object documentId, object parentId = null)
 		{
-			var elasticsearchContextExists = new ElasticsearchContextExists(
-				TraceProvider,
-				_cancellationTokenSource,
-				_elasticsearchSerializerConfiguration,
-				_client,
-				_connectionString
-				);
+			return await _elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId);
+		}
 
-			return await elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId);
+		public bool IndexExists<T>()
+		{
+			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.IndexExistsAsync<T>());
+		}
+
+		public async Task<ResultDetails<bool>> IndexExistsAsync<T>()
+		{
+			return await _elasticsearchContextExists.IndexExistsAsync<T>();
+		}
+
+		public bool IndexTypeExists<T>()
+		{
+			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.IndexTypeExistsAsync<T>());
+		}
+
+		public async Task<ResultDetails<bool>> IndexTypeExistsAsync<T>()
+		{
+			return await _elasticsearchContextExists.IndexTypeExistsAsync<T>();
+		}
+
+		public bool AliasExistsForIndex<T>(string alias)
+		{
+			return _elasticsearchContextExists.Exists<T>(_elasticsearchContextExists.AliasExistsForIndexAsync<T>(alias));
+		}
+
+		public async Task<ResultDetails<bool>> AliasExistsForIndexAsync<T>(string alias)
+		{
+			return await _elasticsearchContextExists.AliasExistsForIndexAsync<T>(alias);
+		}
+
+		public bool AliasExists(string alias)
+		{
+			return _elasticsearchContextExists.Exists<Object>(_elasticsearchContextExists.AliasExistsAsync(alias));
+		}
+
+		public async Task<ResultDetails<bool>> AliasExistsAsync(string alias)
+		{
+			return await _elasticsearchContextExists.AliasExistsAsync(alias);
 		}
 
 		/// <summary>
