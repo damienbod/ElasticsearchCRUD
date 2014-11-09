@@ -71,6 +71,14 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.15</strong><em> 2014.11.09</em>
+- Added live Reindex support for child parent indexes
+- Added support for index exists
+- Added support for Alias exists
+- Added support for IndexType exists
+- Add support for Exists with any URI
+- Fixed Console TraceProvider Bug
+
 <strong>Version 1.0.14</strong><em> 2014.11.06</em>
 - Added live Reindex support
 - Added index and indexType mapping utilities
