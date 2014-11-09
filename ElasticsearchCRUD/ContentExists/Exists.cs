@@ -23,7 +23,7 @@ namespace ElasticsearchCRUD.ContentExists
 
 		public async Task<ResultDetails<bool>> ExistsAsync(Uri uri)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "ExistsAsync: Request HEAD with id: {0}, Type: {1}", uri.ToString());
+			_traceProvider.Trace(TraceEventType.Verbose, "ExistsAsync: Request HEAD with url: {0}", uri.ToString());
 			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
