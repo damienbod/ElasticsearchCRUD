@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextGet
@@ -28,38 +29,21 @@ namespace ElasticsearchCRUD.ContextGet
 
 		public T GetDocument<T>(object entityId, object parentId)
 		{
-			try
-			{
-				Task<ResultDetails<T>> task = Task.Run(() => GetDocumentAsync<T>(entityId, parentId));
-				task.Wait();
-				if (task.Result.Status == HttpStatusCode.NotFound)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticSearchContextGet: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("ElasticSearchContextGet: HttpStatusCode.NotFound");
-				}
-				if (task.Result.Status == HttpStatusCode.BadRequest)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticSearchContextGet: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("ElasticSearchContextGet: HttpStatusCode.BadRequest" + task.Result.Description);
-				}
-				return task.Result.PayloadResult;
-			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} GetChildEntity {0}, {1}", typeof(T), entityId, "ElasticSearchContextGet");
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
+			var syncExecutor = new SyncExecute(_traceProvider);
+			var result = syncExecutor.ExecuteResultDetails(GetDocumentAsync<T>(entityId, parentId));
 
-					throw new ElasticsearchCrudException(x.Message);
-				});
+			if (result.Status == HttpStatusCode.NotFound)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, "ElasticSearchContextGet: HttpStatusCode.NotFound");
+				throw new ElasticsearchCrudException("ElasticSearchContextGet: HttpStatusCode.NotFound");
+			}
+			if (result.Status == HttpStatusCode.BadRequest)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, "ElasticSearchContextGet: HttpStatusCode.BadRequest");
+				throw new ElasticsearchCrudException("ElasticSearchContextGet: HttpStatusCode.BadRequest" + result.Description);
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for GetChildEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContextGet");
-			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for GetChildEntity {0}, Type {1}", entityId, typeof(T), "ElasticSearchContextGet"));
+			return result.PayloadResult;
 		}
 
 		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object entityId, object parentId)
@@ -119,8 +103,5 @@ namespace ElasticsearchCRUD.ContextGet
 			}
 		}
 
-		
-
-	
 	}
 }
