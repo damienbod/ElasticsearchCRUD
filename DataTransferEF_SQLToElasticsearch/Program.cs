@@ -1,4 +1,5 @@
 ﻿using System;
+using DataTransferSQLToEl.ExampleReindexChildDocuments;
 
 namespace DataTransferSQLToEl
 {
@@ -6,12 +7,20 @@ namespace DataTransferSQLToEl
 	{
 		static void Main(string[] args)
 		{
-			Repo repo = new Repo();
-			//repo.SaveToElasticsearchPerson();
+			//Repo repo = new Repo();
+			////repo.SaveToElasticsearchPerson();
 			
-			repo.SaveToElasticsearchStateProvince();
-			var addressX = repo.GetAddressFromElasticsearch("22");
-			Console.WriteLine(addressX);
+			//repo.SaveToElasticsearchStateProvince();
+			//var addressX = repo.GetAddressFromElasticsearch("22");
+			//Console.WriteLine(addressX);
+
+			DateTime beginDateTime = DateTime.UtcNow;
+
+			Reindexer.ReindexStateProvince(beginDateTime);
+			Reindexer.ReindexStateProvinceAddress(beginDateTime);
+
+			Console.WriteLine("Created new index from version 1 index");
+			Console.ReadLine();
 		}
 	}
 }

@@ -54,6 +54,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ExampleReindexChildDocuments\AddressReindexConfiguration.cs" />
+    <Compile Include="ExampleReindexChildDocuments\Reindexer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repo.cs" />
@@ -64,6 +66,7 @@
     <Compile Include="SQLDomainModel\Person.cs" />
     <Compile Include="SQLDomainModel\SQLDataModel.cs" />
     <Compile Include="SQLDomainModel\StateProvince.cs" />
+    <Compile Include="ExampleReindexChildDocuments\StateProvinceReindexConfiguration.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
