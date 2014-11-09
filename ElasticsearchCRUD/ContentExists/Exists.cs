@@ -45,8 +45,10 @@ namespace ElasticsearchCRUD.ContentExists
 
 					_traceProvider.Trace(TraceEventType.Information, "ExistsAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
 				}
-
-				resultDetails.PayloadResult = true;
+				else
+				{
+					resultDetails.PayloadResult = true;
+				}
 
 				return resultDetails;
 			}

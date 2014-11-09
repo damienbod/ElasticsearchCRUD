@@ -9,7 +9,7 @@ namespace ElasticsearchCRUD.Tracing
 
 		public ConsoleTraceProvider()
 		{
-			
+			_traceEventTypelogLevel = TraceEventType.Verbose;
 		}
 
 		public ConsoleTraceProvider(TraceEventType traceEventTypelogLevel)

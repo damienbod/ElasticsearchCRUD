@@ -224,7 +224,6 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 	}
 
-
 	public class IndexAliasDtoTest
 	{
 		public long Id { get; set; }

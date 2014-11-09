@@ -46,7 +46,11 @@ namespace ElasticsearchCRUD
 		public ITraceProvider TraceProvider
 		{
 			get { return _traceProvider; }
-			set { _traceProvider = value; }
+			set
+			{
+				_traceProvider = value; 
+				InitialContext();
+			}
 		}
 		/// <summary>
 		/// This bool needs to be set to true if you want to delete an index. Per default this is false.
