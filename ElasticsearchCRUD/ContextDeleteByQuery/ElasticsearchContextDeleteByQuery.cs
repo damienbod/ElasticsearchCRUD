@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextDeleteByQuery
 {
@@ -85,38 +86,21 @@ namespace ElasticsearchCRUD.ContextDeleteByQuery
 
 		public ResultDetails<bool> SendDeleteByQuery<T>(string jsonContent)
 		{
-			try
-			{
-				Task<ResultDetails<bool>> task = Task.Run(() => DeleteByQueryAsync<T>(jsonContent));
-				task.Wait();
-				if (task.Result.Status == HttpStatusCode.NotFound)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextDeleteByQuery: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("ElasticsearchContextDeleteByQuery: HttpStatusCode.NotFound");
-				}
-				if (task.Result.Status == HttpStatusCode.BadRequest)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextDeleteByQuery: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("ElasticsearchContextDeleteByQuery: HttpStatusCode.BadRequest" + task.Result.Description);
-				}
-				return task.Result;
-			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} Search {0}, {1}", typeof(T), jsonContent, "ElasticsearchContextDeleteByQuery");
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
+			var syncExecutor = new SyncExecute(_traceProvider);
+			var result = syncExecutor.ExecuteResultDetails(DeleteByQueryAsync<T>(jsonContent));
 
-					throw new ElasticsearchCrudException(x.Message);
-				});
+			if (result.Status == HttpStatusCode.NotFound)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextDeleteByQuery: HttpStatusCode.NotFound");
+				throw new ElasticsearchCrudException("ElasticsearchContextDeleteByQuery: HttpStatusCode.NotFound");
+			}
+			if (result.Status == HttpStatusCode.BadRequest)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextDeleteByQuery: HttpStatusCode.BadRequest");
+				throw new ElasticsearchCrudException("ElasticsearchContextDeleteByQuery: HttpStatusCode.BadRequest" + result.Description);
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextDeleteByQuery");
-			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for Search {0}, Type {1}", jsonContent, typeof(T), "ElasticsearchContextDeleteByQuery"));
+			return result;
 		}
 
 	}

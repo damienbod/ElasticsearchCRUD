@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextSearch
 {
@@ -29,38 +30,21 @@ namespace ElasticsearchCRUD.ContextSearch
 
 		public T SearchById<T>(object entityId)
 		{
-			try
-			{
-				Task<ResultDetails<T>> task = Task.Run(() => SearchByIdAsync<T>(entityId));
-				task.Wait();
-				if (task.Result.Status == HttpStatusCode.NotFound)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.NotFound");
-				}
-				if (task.Result.Status == HttpStatusCode.BadRequest)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.BadRequest" + task.Result.Description);
-				}
-				return task.Result.PayloadResult;
-			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{2} SearchById {0}, {1}", typeof(T), entityId, "ElasticsearchContextSearch");
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
+			var syncExecutor = new SyncExecute(_traceProvider);
+			var result = syncExecutor.ExecuteResultDetails(SearchByIdAsync<T>(entityId));
 
-					throw new ElasticsearchCrudException(x.Message);
-				});
+			if (result.Status == HttpStatusCode.NotFound)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.NotFound");
+				throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.NotFound");
+			}
+			if (result.Status == HttpStatusCode.BadRequest)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextSearch: HttpStatusCode.BadRequest");
+				throw new ElasticsearchCrudException("ElasticsearchContextSearch: HttpStatusCode.BadRequest" + result.Description);
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, "{2}: Unknown error for SearchById {0}, Type {1}", entityId, typeof(T), "ElasticsearchContextSearch");
-			throw new ElasticsearchCrudException(string.Format("{2}: Unknown error for SearchById {0}, Type {1}", entityId, typeof(T), "ElasticsearchContextSearch"));
+			return result.PayloadResult;
 		}
 
 		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object entityId)
@@ -99,15 +83,15 @@ namespace ElasticsearchCRUD.ContextSearch
 			return resultDetails;
 		}
 
-		// {
-		//  "query" : {
-		//	  "filtered": {
-		//		"query": { 
-		//         "term": {"id": "47"}
-	    //       }
-		//	   }
-		//   }
-		// }
+		 //{
+		 // "query" : {
+		 //	 "filtered": {
+		 //	   "query": { 
+		 //		"term": {"id": "47"}
+		 //	  }
+		 //	  }
+		 //  }
+		 //}
 		private string BuildSearchById(object childId)
 		{
 			var buildJson = new StringBuilder();
