@@ -320,41 +320,99 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId);
 		}
 
+		/// <summary>
+		/// Send a HEAD request to Eleasticseach to find out if the item defined in the URL exists
+		/// </summary>
+		/// <param name="uri">Full URI of Elasticseach plus item</param>
+		/// <returns>true if it exists false for 404</returns>
+		public bool Exists(Uri uri)
+		{
+			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.ExistsAsync(uri));
+		}
+
+		/// <summary>
+		/// Async Send a HEAD request to Eleasticseach to find out if the item defined in the URL exists
+		/// </summary>
+		/// <param name="uri">Full URI of Elasticseach plus item</param>
+		/// <returns>true if it exists false for 404</returns>
+		public async Task<ResultDetails<bool>> ExistsAsync(Uri uri)
+		{
+			return await _elasticsearchContextExists.ExistsAsync(uri);
+		}
+
+		/// <summary>
+		/// async Checks if a index exists for the type T
+		/// </summary>
+		/// <typeparam name="T">Type used for the index exists HEAD request. Gets the index using the mapping</typeparam>
+		/// <returns>true if it exists false for 404</returns>
 		public bool IndexExists<T>()
 		{
 			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.IndexExistsAsync<T>());
 		}
 
+		/// <summary>
+		/// async Checks if a index exists for the type T
+		/// </summary>
+		/// <typeparam name="T">Type used for the index exists HEAD request. Gets the index using the mapping</typeparam>
+		/// <returns>true if it exists false for 404</returns>
 		public async Task<ResultDetails<bool>> IndexExistsAsync<T>()
 		{
 			return await _elasticsearchContextExists.IndexExistsAsync<T>();
 		}
 
+		/// <summary>
+		/// Checks if a type exists for an index for the type T
+		/// </summary>
+		/// <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+		/// <returns>true if it exists false for 404</returns>
 		public bool IndexTypeExists<T>()
 		{
 			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.IndexTypeExistsAsync<T>());
 		}
 
+		/// <summary>
+		/// Checks if a type exists for an index for the type T
+		/// </summary>
+		/// <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+		/// <returns>true if it exists false for 404</returns>
 		public async Task<ResultDetails<bool>> IndexTypeExistsAsync<T>()
 		{
 			return await _elasticsearchContextExists.IndexTypeExistsAsync<T>();
 		}
 
+		/// <summary>
+		/// Checks if an alias exists for an index for the type T
+		/// </summary>
+		/// <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+		/// <returns>true if the alias exists false for 404</returns>
 		public bool AliasExistsForIndex<T>(string alias)
 		{
 			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.AliasExistsForIndexAsync<T>(alias));
 		}
 
+		/// <summary>
+		/// async Checks if an alias exists for an index for the type T
+		/// </summary>
+		/// <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+		/// <returns>true if the alias exists false for 404</returns>
 		public async Task<ResultDetails<bool>> AliasExistsForIndexAsync<T>(string alias)
 		{
 			return await _elasticsearchContextExists.AliasExistsForIndexAsync<T>(alias);
 		}
 
+		/// <summary>
+		/// Checks if an alias exists
+		/// </summary>
+		/// <returns>true if the alias exists false for 404</returns>
 		public bool AliasExists(string alias)
 		{
 			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.AliasExistsAsync(alias));
 		}
 
+		/// <summary>
+		/// async Checks if an alias exists
+		/// </summary>
+		/// <returns>true if the alias exists false for 404</returns>
 		public async Task<ResultDetails<bool>> AliasExistsAsync(string alias)
 		{
 			return await _elasticsearchContextExists.AliasExistsAsync(alias);

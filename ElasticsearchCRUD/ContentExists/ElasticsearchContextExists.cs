@@ -107,5 +107,9 @@ namespace ElasticsearchCRUD.ContentExists
 			return syncExecutor.Execute(method);
 		}
 
+		public async Task<ResultDetails<bool>> ExistsAsync(Uri uri)
+		{
+			return await ExistsHeadRequest.ExistsAsync(uri);
+		}
 	}
 }

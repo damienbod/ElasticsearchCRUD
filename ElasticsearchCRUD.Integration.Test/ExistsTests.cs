@@ -83,6 +83,17 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void TestAliasExistsBadAlias()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				var found = context.AliasExists("existsaliastest".ToUpper());
+				Assert.IsFalse(found);
+			}
+		}
+
+		[Test]
 		public void TestAliasExistsForIndex()
 		{
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
