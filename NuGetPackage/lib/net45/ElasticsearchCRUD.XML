@@ -24,13 +24,14 @@
             </summary>
             <param name="alias">alias string used for the index.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.Reindex(System.String,System.Func{`0,System.Object},System.Func{`0,`1})">
+        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.Reindex(System.String,System.Func{`0,System.Object},System.Func{`0,`1},System.Func{`0,System.Object})">
             <summary>
             This method is used to reindex one index to a new index using a query, and two Functions.
             </summary>
             <param name="jsonContent">Json content for the search query</param>
             <param name="getKeyMethod">Func is require to define the _id required for the new index</param>
             <param name="convertMethod">Func used to map the old index to the new old, whatever your required mapping/conversion logic is</param>
+            <param name="getParentKey">Function to get the key method</param>
         </member>
         <member name="P:ElasticsearchCRUD.ElasticsearchCrudReindex`2.TraceProvider">
             <summary>
@@ -94,7 +95,7 @@
             Context for crud operations. 
             </summary>
         </member>
-        <member name="F:ElasticsearchCRUD.ElasticsearchContext.TraceProvider">
+        <member name="F:ElasticsearchCRUD.ElasticsearchContext._traceProvider">
             <summary>
             TraceProvider for all logs, trace etc. This can be replaced with any TraceProvider implementation.
             </summary>
@@ -279,6 +280,74 @@
             <param name="parentId">parent Id, required if hte docuemtnis a child document and routing is required.
             NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
             <returns>true or false</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Exists(System.Uri)">
+            <summary>
+            Send a HEAD request to Eleasticseach to find out if the item defined in the URL exists
+            </summary>
+            <param name="uri">Full URI of Elasticseach plus item</param>
+            <returns>true if it exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.ExistsAsync(System.Uri)">
+            <summary>
+            Async Send a HEAD request to Eleasticseach to find out if the item defined in the URL exists
+            </summary>
+            <param name="uri">Full URI of Elasticseach plus item</param>
+            <returns>true if it exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexExists``1">
+            <summary>
+            async Checks if a index exists for the type T
+            </summary>
+            <typeparam name="T">Type used for the index exists HEAD request. Gets the index using the mapping</typeparam>
+            <returns>true if it exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexExistsAsync``1">
+            <summary>
+            async Checks if a index exists for the type T
+            </summary>
+            <typeparam name="T">Type used for the index exists HEAD request. Gets the index using the mapping</typeparam>
+            <returns>true if it exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexTypeExists``1">
+            <summary>
+            Checks if a type exists for an index for the type T
+            </summary>
+            <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+            <returns>true if it exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexTypeExistsAsync``1">
+            <summary>
+            Checks if a type exists for an index for the type T
+            </summary>
+            <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+            <returns>true if it exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasExistsForIndex``1(System.String)">
+            <summary>
+            Checks if an alias exists for an index for the type T
+            </summary>
+            <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+            <returns>true if the alias exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasExistsForIndexAsync``1(System.String)">
+            <summary>
+            async Checks if an alias exists for an index for the type T
+            </summary>
+            <typeparam name="T">Type used for the index + plus exists HEAD request. Gets the index using the mapping</typeparam>
+            <returns>true if the alias exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasExists(System.String)">
+            <summary>
+            Checks if an alias exists
+            </summary>
+            <returns>true if the alias exists false for 404</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasExistsAsync(System.String)">
+            <summary>
+            async Checks if an alias exists
+            </summary>
+            <returns>true if the alias exists false for 404</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.ClearCacheForIndex``1">
             <summary>
