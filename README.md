@@ -71,7 +71,7 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
-<strong>Version 1.0.15</strong><em> 2014.11.09</em>
+<strong>Version 1.0.16</strong><em> 2014.11.09</em>
 - Added live Reindex support for child parent indexes
 - Added support for index exists
 - Added support for Alias exists
