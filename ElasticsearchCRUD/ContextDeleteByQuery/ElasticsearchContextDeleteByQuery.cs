@@ -87,7 +87,7 @@ namespace ElasticsearchCRUD.ContextDeleteByQuery
 		public ResultDetails<bool> SendDeleteByQuery<T>(string jsonContent)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			var result = syncExecutor.ExecuteResultDetails(DeleteByQueryAsync<T>(jsonContent));
+			var result = syncExecutor.ExecuteResultDetails(() => DeleteByQueryAsync<T>(jsonContent));
 
 			if (result.Status == HttpStatusCode.NotFound)
 			{

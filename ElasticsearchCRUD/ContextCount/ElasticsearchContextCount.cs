@@ -89,7 +89,7 @@ namespace ElasticsearchCRUD.ContextCount
 		public ResultDetails<long> PostCount<T>(string jsonContent)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(PostCountAsync<T>(jsonContent));		
+			return syncExecutor.ExecuteResultDetails(() => PostCountAsync<T>(jsonContent));		
 		}
 
 	}

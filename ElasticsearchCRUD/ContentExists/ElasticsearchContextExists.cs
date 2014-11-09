@@ -104,7 +104,7 @@ namespace ElasticsearchCRUD.ContentExists
 		public bool Exists(Task<ResultDetails<bool>> method)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.Execute(method);
+			return syncExecutor.Execute(() => method);
 		}
 
 		public async Task<ResultDetails<bool>> ExistsAsync(Uri uri)

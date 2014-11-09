@@ -31,7 +31,7 @@ namespace ElasticsearchCRUD.ContextSearch
 		public T SearchById<T>(object entityId)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			var result = syncExecutor.ExecuteResultDetails(SearchByIdAsync<T>(entityId));
+			var result = syncExecutor.ExecuteResultDetails(() => SearchByIdAsync<T>(entityId));
 
 			if (result.Status == HttpStatusCode.NotFound)
 			{

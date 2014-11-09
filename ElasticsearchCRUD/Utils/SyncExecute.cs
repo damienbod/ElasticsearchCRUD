@@ -16,11 +16,11 @@ namespace ElasticsearchCRUD.Utils
 			_traceProvider = traceProvider;
 		}
 
-		public T Execute<T>(Task<ResultDetails<T>> method)
+		public T Execute<T>(Func<Task<ResultDetails<T>>> method)
 		{
 			try
 			{
-				Task<ResultDetails<T>> task = Task.Run(() => method);
+				Task<ResultDetails<T>> task = Task.Run(() => method.Invoke());
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{
@@ -47,11 +47,11 @@ namespace ElasticsearchCRUD.Utils
 			throw new ElasticsearchCrudException(string.Format("SyncExecute: Unknown error for Exists Type {0}", typeof(T)));
 		}
 
-		public ResultDetails<T> ExecuteResultDetails<T>(Task<ResultDetails<T>> method)
+		public ResultDetails<T> ExecuteResultDetails<T>(Func<Task<ResultDetails<T>>> method)
 		{
 			try
 			{
-				Task<ResultDetails<T>> task = Task.Run(() => method);
+				Task<ResultDetails<T>> task = Task.Run(() => method.Invoke());
 				task.Wait();
 				if (task.Result.Status == HttpStatusCode.NotFound)
 				{

@@ -29,7 +29,7 @@ namespace ElasticsearchCRUD.ContextClearCache
 		public bool ClearCacheForIndex<T>()
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.Execute(ClearCacheForIndexAsync<T>());	
+			return syncExecutor.Execute(() => ClearCacheForIndexAsync<T>());	
 		}
 
 		public async Task<ResultDetails<bool>> ClearCacheForIndexAsync<T>()

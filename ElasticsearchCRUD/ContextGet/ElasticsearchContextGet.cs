@@ -30,7 +30,7 @@ namespace ElasticsearchCRUD.ContextGet
 		public T GetDocument<T>(object entityId, object parentId)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			var result = syncExecutor.ExecuteResultDetails(GetDocumentAsync<T>(entityId, parentId));
+			var result = syncExecutor.ExecuteResultDetails(() => GetDocumentAsync<T>(entityId, parentId));
 
 			if (result.Status == HttpStatusCode.NotFound)
 			{

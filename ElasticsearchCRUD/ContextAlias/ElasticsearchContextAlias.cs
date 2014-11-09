@@ -31,7 +31,7 @@ namespace ElasticsearchCRUD.ContextAlias
 		public bool SendAliasCommand(string contentJson)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.Execute(SendAliasCommandAsync(contentJson));	
+			return syncExecutor.Execute(() => SendAliasCommandAsync(contentJson));	
 		}
 
 		public async Task<ResultDetails<bool>> SendAliasCommandAsync(string contentJson)

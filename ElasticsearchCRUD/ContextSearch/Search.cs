@@ -114,7 +114,7 @@ namespace ElasticsearchCRUD.ContextSearch
 		public ResultDetails<Collection<T>> PostSearch<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(PostSearchAsync<T>(jsonContent, scrollId, scanAndScrollConfiguration));
+			return syncExecutor.ExecuteResultDetails(() => PostSearchAsync<T>(jsonContent, scrollId, scanAndScrollConfiguration));
 		}
 
 		public async Task<ResultDetails<string>> PostSearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
@@ -183,7 +183,7 @@ namespace ElasticsearchCRUD.ContextSearch
 		public ResultDetails<string> PostSearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration));
+			return syncExecutor.ExecuteResultDetails(() => PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration));
 		}
 
 	}

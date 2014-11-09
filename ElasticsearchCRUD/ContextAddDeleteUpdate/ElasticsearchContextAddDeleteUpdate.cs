@@ -37,7 +37,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		{
 			_saveChangesAndInitMappingsForChildDocuments = saveChangesAndInitMappingsForChildDocuments;
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(SaveChangesAsync(entityPendingChanges));
+			return syncExecutor.ExecuteResultDetails(() => SaveChangesAsync(entityPendingChanges));
 		}
 
 		public async Task<ResultDetails<string>> SaveChangesAsync(List<EntityContextInfo> entityPendingChanges)
