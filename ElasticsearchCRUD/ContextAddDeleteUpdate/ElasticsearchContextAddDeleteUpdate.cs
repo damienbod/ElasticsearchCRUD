@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate
@@ -35,33 +36,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		public ResultDetails<string> SaveChanges(List<EntityContextInfo> entityPendingChanges, bool saveChangesAndInitMappingsForChildDocuments)
 		{
 			_saveChangesAndInitMappingsForChildDocuments = saveChangesAndInitMappingsForChildDocuments;
-			try
-			{
-				var task = Task.Run(() => SaveChangesAsync(entityPendingChanges));
-				task.Wait();
-				if (!string.IsNullOrEmpty(task.Result.Description))
-				{
-					_traceProvider.Trace(TraceEventType.Verbose, "{0}: SaveChanges {1}", "ElasticsearchContextAddDeleteUpdate", task.Result.Description);
-				}
-
-				return task.Result;
-			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{0}: SaveChanges", "ElasticsearchContextAddDeleteUpdate");
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
-
-					throw new ElasticsearchCrudException(x.Message);
-				});
-			}
-
-			_traceProvider.Trace(TraceEventType.Error, "{0}: Unknown error for SaveChanges", "ElasticsearchContextAddDeleteUpdate");
-			throw new ElasticsearchCrudException("ElasticsearchContext: Unknown error for SaveChanges");
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(SaveChangesAsync(entityPendingChanges));
 		}
 
 		public async Task<ResultDetails<string>> SaveChangesAsync(List<EntityContextInfo> entityPendingChanges)

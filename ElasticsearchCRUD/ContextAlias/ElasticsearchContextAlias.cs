@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAlias
 {
@@ -29,38 +30,8 @@ namespace ElasticsearchCRUD.ContextAlias
 
 		public bool SendAliasCommand(string contentJson)
 		{
-			try
-			{
-				Task<ResultDetails<bool>> task = Task.Run(() => SendAliasCommandAsync(contentJson));
-				task.Wait();
-				if (task.Result.Status == HttpStatusCode.NotFound)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextAlias: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("ElasticsearchContextAlias: HttpStatusCode.NotFound");
-				}
-				if (task.Result.Status == HttpStatusCode.BadRequest)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextAlias: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("ElasticsearchContextAlias: HttpStatusCode.BadRequest" + task.Result.Description);
-				}
-				return task.Result.PayloadResult;
-			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{0} Exception", "ElasticsearchContextAlias");
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
-
-					throw new ElasticsearchCrudException(x.Message);
-				});
-			}
-
-			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextAlias: Executing Alias {0}", contentJson);
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Executing Alias {0}", contentJson));
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.Execute(SendAliasCommandAsync(contentJson));	
 		}
 
 		public async Task<ResultDetails<bool>> SendAliasCommandAsync(string contentJson)

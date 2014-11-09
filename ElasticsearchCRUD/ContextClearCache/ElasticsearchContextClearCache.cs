@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextClearCache
 {
@@ -27,38 +28,8 @@ namespace ElasticsearchCRUD.ContextClearCache
 
 		public bool ClearCacheForIndex<T>()
 		{
-			try
-			{
-				Task<ResultDetails<bool>> task = Task.Run(() => ClearCacheForIndexAsync<T>());
-				task.Wait();
-				if (task.Result.Status == HttpStatusCode.NotFound)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextClearCache: HttpStatusCode.NotFound");
-					throw new ElasticsearchCrudException("ElasticsearchContextClearCache: HttpStatusCode.NotFound");
-				}
-				if (task.Result.Status == HttpStatusCode.BadRequest)
-				{
-					_traceProvider.Trace(TraceEventType.Warning, "ElasticsearchContextClearCache: HttpStatusCode.BadRequest");
-					throw new ElasticsearchCrudException("ElasticsearchContextClearCache: HttpStatusCode.BadRequest" + task.Result.Description);
-				}
-				return task.Result.PayloadResult;
-			}
-			catch (AggregateException ae)
-			{
-				ae.Handle(x =>
-				{
-					_traceProvider.Trace(TraceEventType.Warning, x, "{1} ClearCacheForIndex {0}", typeof(T), "ElasticsearchContextClearCache");
-					if (x is ElasticsearchCrudException || x is HttpRequestException)
-					{
-						throw x;
-					}
-
-					throw new ElasticsearchCrudException(x.Message);
-				});
-			}
-
-			_traceProvider.Trace(TraceEventType.Error, "ElasticsearchContextClearCache: ClearCacheForIndex {0}", typeof(T));
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextClearCache: ClearCacheForIndex {0}", typeof(T)));
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.Execute(ClearCacheForIndexAsync<T>());	
 		}
 
 		public async Task<ResultDetails<bool>> ClearCacheForIndexAsync<T>()
