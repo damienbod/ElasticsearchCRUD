@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -24,6 +25,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestFixtureSetUp()
 		{
 			var existsDtoForTests = new ExistsDtoForTests { Id = 1, Description = "Test index for exist tests" };
+			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ExistsDtoForTestsTypeNot), new IndexMapping("existsdtofortestss"));
 
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
@@ -58,6 +60,18 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void TestIndexDoesNotExist()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				var found = context.IndexExists<ExistsDtoForTestsIndexNot>();
+				Assert.IsFalse(found);
+			}
+		}
+
+
+		[Test]
 		public void TestAliasExists()
 		{
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
@@ -76,6 +90,28 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.AliasExistsForIndex<ExistsDtoForTests>("existsaliastest");
 				Assert.IsTrue(found);
+			}
+		}
+
+		[Test]
+		public void TestIndexExistsForSpecialMapping()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				var found = context.IndexExists<ExistsDtoForTestsTypeNot>();
+				Assert.IsTrue(found);
+			}
+		}
+
+		[Test]
+		public void TestIndexTypeDoesNotExistsForSpecialMapping()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				var found = context.IndexTypeExists<ExistsDtoForTestsTypeNot>();
+				Assert.IsFalse(found);
 			}
 		}
 
@@ -104,6 +140,18 @@ namespace ElasticsearchCRUD.Integration.Test
 	}
 
 	public class ExistsDtoForTests
+	{
+		public long Id { get; set; }
+		public string Description { get; set; }
+	}
+
+	public class ExistsDtoForTestsIndexNot
+	{
+		public long Id { get; set; }
+		public string Description { get; set; }
+	}
+
+	public class ExistsDtoForTestsTypeNot
 	{
 		public long Id { get; set; }
 		public string Description { get; set; }
