@@ -27,6 +27,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="http://damienbod.wordpress.com/2014/11/07/live-reindex-in-elasticsearch/">Part 7: Live Reindex in Elasticsearch</a>
 
+<a href="http://damienbod.wordpress.com/2014/11/13/csv-export-using-elasticsearch-and-web-api/">Part 8: CSV export using Elasticsearch and Web API</a>
+
 ========================
 
 <strong>Examples:</strong>
