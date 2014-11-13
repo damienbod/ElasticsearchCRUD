@@ -55,6 +55,10 @@ This example demonstrates how to use Entity Framework as you primary database an
 
 This example shows how to do a live reindex in Elasticsearch. There is no downtime. The old index is accessed using an alias. The new index is created from the old index using scan and scroll and a document mapper. Then the alias to switched to access the new index. Then if required, the old index could be removed.
 
+<a href="https://github.com/damienbod/WebApiCSVExportFromElasticsearch">Web API CSV Export using Elasticsearch (scan and scroll)</a>
+
+This example shows how to export data from Elasticsearch ( _search scan and scroll) to Web API as a CSV file (using WebApiContrib.Formatting.Xlsx). The export is displayed in real time using SignalR. The example also provides a SignalR TraceProvider for ElasticsearchCRUD.
+
 <a href="https://github.com/damienbod/ElasticsearchCRUD/tree/master/ConsoleElasticsearchCrudExample">ConsoleElasticsearchCrudExample</a>
 
 A basic CRUD example.
