@@ -186,5 +186,68 @@ namespace ElasticsearchCRUD.ContextSearch
 			return syncExecutor.ExecuteResultDetails(() => PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration));
 		}
 
+		public async Task<ResultDetails<bool>> PostSearchExistsAsync<T>(string jsonContent)
+		{
+			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search exists: {0}, content: {1}", typeof(T), jsonContent, "Search");
+			var resultDetails = new ResultDetails<bool>
+			{
+				Status = HttpStatusCode.InternalServerError,
+				RequestBody = jsonContent
+			};
+
+			try
+			{
+				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+				var elasticsearchUrlForSearchExists = string.Format("{0}/{1}/{2}/_search/exists", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+
+				var content = new StringContent(jsonContent);
+				var uri = new Uri(elasticsearchUrlForSearchExists);
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP Post uri: {0}", uri.AbsoluteUri, "Search");
+
+				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+				resultDetails.RequestUrl = elasticsearchUrlForSearchExists;
+				var response = await _client.PostAsync(uri, content, _cancellationTokenSource.Token).ConfigureAwait(true);
+
+				resultDetails.Status = response.StatusCode;
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					_traceProvider.Trace(TraceEventType.Warning, "{2}: Post seach exists async response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "Search");
+					if (response.StatusCode == HttpStatusCode.BadRequest)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+						resultDetails.Description = errorInfo;
+						return resultDetails;
+					}
+
+					if (response.StatusCode == HttpStatusCode.NotFound)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+						resultDetails.Description = errorInfo;
+						return resultDetails;
+					}
+				}
+
+				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
+				var responseObject = JObject.Parse(responseString);
+
+
+				var source = responseObject["exists"];
+
+				resultDetails.PayloadResult = (bool)source;
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message, "Search");
+				return resultDetails;
+			}
+		}
+
+		public bool PostSearchExists<T>(string jsonContent)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(() => PostSearchExistsAsync<T>(jsonContent)).PayloadResult;
+		}
 	}
 }

@@ -72,7 +72,6 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var thirdDelete = context.DeleteIndexAsync<TestJsonIgnore>();
 				thirdDelete.Wait();
-
 			}
 		}
 
@@ -202,6 +201,42 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Get the entity
 				var entityResult = context.GetDocument<SkillTestEntity>(entityId);
 				Assert.AreEqual(entityResult.Id, entityId);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextSearchExists()
+		{
+			const int documentId = 34;
+			string searchJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
+
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(_entitiesForTests[documentId], documentId);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				Thread.Sleep(2000);
+				// Get the entity
+				var exists = context.SearchExists<SkillTestEntity>(searchJson);
+				Assert.IsTrue(exists);
+			}
+		}
+
+		[Test]
+		public void TestDefaultContextSearchNotExists()
+		{
+			const int documentId = 3574474;
+			string searchJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
+
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				// Get the entity
+				var exists = context.SearchExists<SkillTestEntity>(searchJson);
+				Assert.IsFalse(exists);
 			}
 		}
 

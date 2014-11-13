@@ -190,6 +190,28 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
+		/// executes a post request to checks if at least one document exists for the search query.
+		/// </summary>
+		/// <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+		/// <param name="searchJsonParameters">json query for elasticsearch</param>
+		/// <returns>true if one document exists for the search query</returns>
+		public bool SearchExists<T>(string searchJsonParameters)
+		{
+			return _search.PostSearchExists<T>(searchJsonParameters);
+		}
+
+		/// <summary>
+		/// async executes a post request to checks if at least one document exists for the search query.
+		/// </summary>
+		/// <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+		/// <param name="searchJsonParameters">json query for elasticsearch</param>
+		/// <returns>true if one document exists for the search query</returns>
+		public async Task<ResultDetails<bool>> SearchExistsAsync<T>(string searchJsonParameters)
+		{
+			return await _search.PostSearchExistsAsync<T>(searchJsonParameters);
+		}
+
+		/// <summary>
 		/// Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
 		/// If your doing a live reindexing, you should use a timestamp in the json content query.
 		/// </summary>
