@@ -145,7 +145,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			try
 			{
 				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
-				var elasticsearchUrlForIndexDelete = string.Format("{0}{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
+				var elasticsearchUrlForIndexDelete = string.Format("{0}/{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
 				var uri = new Uri(elasticsearchUrlForIndexDelete);
 				_traceProvider.Trace(TraceEventType.Warning, "{1}: Request HTTP Delete uri: {0}", uri.AbsoluteUri, "ElasticsearchContextAddDeleteUpdate");
 				var response = await _client.DeleteAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
