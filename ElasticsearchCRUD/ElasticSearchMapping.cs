@@ -150,7 +150,19 @@ namespace ElasticsearchCRUD
 				if (Attribute.IsDefined(property, typeof (KeyAttribute)))
 				{
 					var obj = property.GetValue(entity);
-					var routingDefinition = new RoutingDefinition { ParentId = parentEntityInfo.Id, RoutingId = parentEntityInfo.RoutingDefinition.RoutingId};
+
+					RoutingDefinition routingDefinition;
+					if (parentEntityInfo.RoutingDefinition.RoutingId != null)
+					{
+						// child of a child or lower...
+						routingDefinition = new RoutingDefinition { ParentId = parentEntityInfo.Id, RoutingId = parentEntityInfo.RoutingDefinition.RoutingId };
+					}
+					else
+					{
+						// This is a direct child
+						routingDefinition = new RoutingDefinition { ParentId = parentEntityInfo.Id, RoutingId = parentEntityInfo.Id };
+					}
+					
 					var child = new EntityContextInfo
 					{
 						Document = entity,

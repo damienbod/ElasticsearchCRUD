@@ -108,11 +108,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			WriteValue("_index", elasticsearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
-			WriteValue("_id", entityInfo.Id);
+			WriteValue("_id", entityInfo.Id);		
 			if (entityInfo.RoutingDefinition.ParentId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
 			{
 				// It's a document which belongs to a parent
 				WriteValue("_parent", entityInfo.RoutingDefinition.ParentId);
+			}
+			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
+			{
+				// It's a document which has a specific route
+				WriteValue("routing", entityInfo.RoutingDefinition.RoutingId);
 			}
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
@@ -139,6 +144,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			WriteValue("_type", elasticsearchMapping.GetDocumentType(item.EntityType));
 			WriteValue("_id", item.Id);
 			WriteValue("parent", item.RoutingDefinition.ParentId);
+			if (entityInfo.RoutingDefinition.RoutingId != null)
+			{
+				// It's a document which has a specific route
+				WriteValue("routing", entityInfo.RoutingDefinition.RoutingId);
+			}
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n"); //ES requires this \n separator
