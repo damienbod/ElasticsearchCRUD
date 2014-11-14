@@ -111,13 +111,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				var childDocs =
 					context.Search<ChildDocumentLevelTwoUserDefinedRouting>(
 						BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.ChildDocumentLevelOne.FirstOrDefault().Id,
-							"childdocumentlevelone"));
+							"childdocumentleveloneuserdefinedrouting"));
 				var childDocs2 =
 					context.Search<ChildDocumentLevelOneUserDefinedRouting>(
-						BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.Id, "parentdocument"));
+						BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.Id, "parentdocumentuserdefinedrouting"));
 				var childDocs3 =
 					context.Search<ChildDocumentLevelTwoUserDefinedRouting>(BuildSearchForChildDocumentsWithIdAndParentType(22,
-						"childdocumentlevelone"));
+						"childdocumentleveloneuserdefinedrouting"));
 
 				Assert.AreEqual(1, childDocs.TotalHits);
 				Assert.AreEqual(2, childDocs2.TotalHits);
