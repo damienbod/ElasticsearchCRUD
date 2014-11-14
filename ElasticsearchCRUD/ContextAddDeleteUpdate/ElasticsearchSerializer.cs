@@ -117,7 +117,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
 			{
 				// It's a document which has a specific route
-				WriteValue("routing", entityInfo.RoutingDefinition.RoutingId);
+				WriteValue("_routing", entityInfo.RoutingDefinition.RoutingId);
 			}
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
@@ -143,11 +143,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			WriteValue("_index", elasticsearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticsearchMapping.GetDocumentType(item.EntityType));
 			WriteValue("_id", item.Id);
-			WriteValue("parent", item.RoutingDefinition.ParentId);
-			if (entityInfo.RoutingDefinition.RoutingId != null)
+			WriteValue("_parent", item.RoutingDefinition.ParentId);
+			if (item.RoutingDefinition.RoutingId != null)
 			{
 				// It's a document which has a specific route
-				WriteValue("routing", entityInfo.RoutingDefinition.RoutingId);
+				WriteValue("_routing", item.RoutingDefinition.RoutingId);
 			}
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
