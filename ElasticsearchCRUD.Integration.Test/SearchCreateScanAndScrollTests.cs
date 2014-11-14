@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -25,6 +23,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.Fail("No data received within specified time");
 			}
 		}
+
 		[SetUp]
 		public void SetUp()
 		{
@@ -75,10 +74,31 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-				// lets elasticsearch have time to update
-				Thread.Sleep(2000);
 				context.ClearCacheForIndex<ScanScrollTypeV1>();
+			}
+
+			Task.Run(() =>
+			{
+				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				{
+					while (true)
+					{
+						var itemOk = context.SearchById<ScanScrollTypeV1>(2);
+						if (itemOk != null)
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}
+				}
+				// ReSharper disable once FunctionNeverReturns
+			});
+
+			WaitForDataOrFail();
+
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
 				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 300);
 				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 
@@ -95,15 +115,27 @@ namespace ElasticsearchCRUD.Integration.Test
 						processedResults++;
 						context.AddUpdateDocument(ConvertScanScrollTypeV1(item), item.Id);
 					}
-					context.SaveChanges();
-					
+					context.SaveChanges();				
 				}
-
-				// lets elasticsearch have time to update
-				Thread.Sleep(2000);
-				context.ClearCacheForIndex<ScanScrollTypeV2>();
-				Assert.AreEqual(10000, context.Count<ScanScrollTypeV2>());
 			}
+
+			Task.Run(() =>
+			{
+				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				{
+					while (true)
+					{
+						if (10000 == context.Count<ScanScrollTypeV2>())
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}
+				}
+// ReSharper disable once FunctionNeverReturns
+			});
+
+			WaitForDataOrFail();
 		}
 
 		private ScanScrollTypeV2 ConvertScanScrollTypeV1(ScanScrollTypeV1 item)

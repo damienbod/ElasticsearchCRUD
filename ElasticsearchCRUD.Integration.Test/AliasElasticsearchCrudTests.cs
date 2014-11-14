@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -9,7 +10,15 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class AliasElasticsearchCrudTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
 
+		private void WaitForDataOrFail()
+		{
+			if (!_resetEvent.WaitOne(5000))
+			{
+				Assert.Fail("No data received within specified time");
+			}
+		}
 		[TearDown]
 		public void TearDown()
 		{
@@ -161,18 +170,25 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.IsTrue(result);
 			}
 
-			// wait till el updates
-			Thread.Sleep(1000);
 
-			// Step 3 CUD using alias
-			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndex))
+			Task.Run(() =>
 			{
-				// create the index
-				//var itemNull = context.SearchById<IndexAliasDtoTest>(1);
-				var itemOk = context.SearchById<IndexAliasDtoTestThree>(2);
-				//Assert.IsNull(itemNull);
-				Assert.IsNotNull(itemOk);
-			}
+				using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndex))
+				{
+					while (true)
+					{
+						var itemOk = context.SearchById<IndexAliasDtoTestThree>(2);
+						if (itemOk != null)
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}
+				}
+			});
+
+
+			WaitForDataOrFail();
 
 			// delete index v1
 			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV1))

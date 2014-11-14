@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
@@ -24,6 +25,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.Fail("No data received within specified time");
 			}
 		}
+
 		[SetUp]
 		public void SetUp()
 		{
@@ -126,8 +128,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(7, found);
 			}
 		}
-
-		
 		
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextCount: Index not found")]
@@ -218,12 +218,27 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-				Thread.Sleep(2000);
-				// Get the entity
-				var exists = context.SearchExists<SkillTestEntity>(searchJson);
-				Assert.IsTrue(exists);
+	
 			}
+
+			Task.Run(() =>
+			{
+				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				{
+					while (true)
+					{
+						var exists = context.SearchExists<SkillTestEntity>(searchJson);
+						if (exists)
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}
+				}
+			});
+
+			// allow elasticsearch time to update...
+			WaitForDataOrFail();
 		}
 
 		[Test]
@@ -238,6 +253,48 @@ namespace ElasticsearchCRUD.Integration.Test
 				var exists = context.SearchExists<SkillTestEntity>(searchJson);
 				Assert.IsFalse(exists);
 			}
+		}
+
+		[Test]
+		public void TestDefaultContextSearchMatchAll()
+		{
+			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(_entitiesForTests[34], 34);
+				context.AddUpdateDocument(_entitiesForTests[35], 35);
+				context.SaveChanges();
+			}
+
+			Task.Run(() =>
+			{
+				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				{
+					while (true)
+					{
+						var exists = context.SearchExists<SkillTestEntity>(BuildSearchMatchAll());
+						if (exists)
+						{
+							_resetEvent.Set();
+						}
+						Thread.Sleep(200);
+					}
+				}
+			});
+
+			WaitForDataOrFail();
+		}
+
+		private string BuildSearchMatchAll()
+		{
+			var buildJson = new StringBuilder();
+			buildJson.AppendLine("{");
+			buildJson.AppendLine("\"query\": {");
+			buildJson.AppendLine("\"match_all\" : {}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+
+			return buildJson.ToString();
 		}
 
 		[Test]
