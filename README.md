@@ -77,6 +77,12 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.17</strong><em> 2014.11.14</em>
+- Added support for search exists
+- Added support for document routing child/parent/grandchild or whatever
+- Used routing pro code configuration
+- Bug Fix Grandchildren documents are not always saved to the proper shard
+
 <strong>Version 1.0.16</strong><em> 2014.11.09</em>
 - Added live Reindex support for child parent indexes
 - Added support for index exists
