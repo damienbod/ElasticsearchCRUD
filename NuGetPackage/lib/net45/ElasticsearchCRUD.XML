@@ -24,14 +24,14 @@
             </summary>
             <param name="alias">alias string used for the index.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.Reindex(System.String,System.Func{`0,System.Object},System.Func{`0,`1},System.Func{`0,System.Object})">
+        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.Reindex(System.String,System.Func{`0,System.Object},System.Func{`0,`1},System.Func{`0,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition})">
             <summary>
             This method is used to reindex one index to a new index using a query, and two Functions.
             </summary>
             <param name="jsonContent">Json content for the search query</param>
             <param name="getKeyMethod">Func is require to define the _id required for the new index</param>
             <param name="convertMethod">Func used to map the old index to the new old, whatever your required mapping/conversion logic is</param>
-            <param name="getParentKey">Function to get the key method</param>
+            <param name="getRoutingDefinition">Function to get the RoutingDefinition of the document</param>
         </member>
         <member name="P:ElasticsearchCRUD.ElasticsearchCrudReindex`2.TraceProvider">
             <summary>
@@ -57,6 +57,13 @@
         <member name="P:ElasticsearchCRUD.ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex">
             <summary>
             Context will save child objects as separate types in the same index if set. Otherwise child itemas are saved as nested objects.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ElasticsearchSerializerConfiguration.UserDefinedRouting">
+            <summary>
+            This defines idf you want to define your own routing. You should only do this if you know what you are doing
+            or you have grandchild documents in a parent child grandchild relationship. This makes certain that the grandchildren are
+            defined on the same shard. It also cuses that gets, etc required the routing value of the parent route document...
             </summary>
         </member>
         <member name="T:ElasticsearchCRUD.ElasticsearchMapping">
@@ -116,14 +123,14 @@
             <param name="elasticsearchMappingResolver">Resolver used for getting the index and type of a document type. The default 
             ElasticsearchSerializerConfiguration is used in this ctor.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AddUpdateDocument(System.Object,System.Object,System.Object)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AddUpdateDocument(System.Object,System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
             <summary>
             Adds a document to the pending changes list. Nor HTTP request is sent with this method. If the save changes is not called, the
             document is not added or updated in the search engine
             </summary>
             <param name="document">Document to be added or updated</param>
             <param name="id">document id</param>
-            <param name="parentId">parent id of the document. This is only used if the ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex
+            <param name="routingDefinition">parent id of the document. This is only used if the ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex
             property is set to true. The document is then saved with the parent routing. It will also be saved even if the parent does not exist.</param>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteDocument``1(System.Object)">
@@ -153,13 +160,13 @@
             </summary>
             <returns>Returns HTTP response information</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocument``1(System.Object,System.Object)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocument``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
             <summary>
             Gets a document by id. Elasticsearch GET API
             </summary>
             <typeparam name="T">type used for the document index and type definition</typeparam>
             <param name="documentId">document id</param>
-            <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
+            <param name="routingDefinition">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
             saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
             <returns>Document type T</returns>
         </member>
@@ -190,6 +197,22 @@
             /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
             <param name="scanAndScrollConfiguration">Required scroll configuration</param>
             <returns>A collection of documents of type T in a Task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExists``1(System.String)">
+            <summary>
+            executes a post request to checks if at least one document exists for the search query.
+            </summary>
+            <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+            <param name="searchJsonParameters">json query for elasticsearch</param>
+            <returns>true if one document exists for the search query</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExistsAsync``1(System.String)">
+            <summary>
+            async executes a post request to checks if at least one document exists for the search query.
+            </summary>
+            <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+            <param name="searchJsonParameters">json query for elasticsearch</param>
+            <returns>true if one document exists for the search query</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScroll``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
             <summary>
@@ -251,33 +274,33 @@
             <param name="jsonContent">json string using directly in Elasticsearch API. </param>
             <returns>Returns true if ok</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocumentAsync``1(System.Object,System.Object)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocumentAsync``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
             <summary>
             Gets a document by id. Elasticsearch GET API
             </summary>
             <typeparam name="T">type used for the document index and type definition</typeparam>
             <param name="documentId">document id</param>
-            <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
+            <param name="routingDefinition">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
             saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
             <returns>Document type T in a Task with result details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExists``1(System.Object,System.Object)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExists``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
             <summary>
             Checks if a document exists with a head request
             </summary>
             <typeparam name="T">Type of document to find</typeparam>
             <param name="documentId">Id of the document</param>
-            <param name="parentId">parent Id, required if hte docuemtnis a child document and routing is required.
+            <param name="routingDefinition">parent Id, required if hte docuemtnis a child document and routing is required.
             NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
             <returns>true or false</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExistsAsync``1(System.Object,System.Object)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExistsAsync``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
             <summary>
             Async Checks if a document exists with a head request
             </summary>
             <typeparam name="T">Type of document to find</typeparam>
             <param name="documentId">Id of the document</param>
-            <param name="parentId">parent Id, required if hte docuemtnis a child document and routing is required.
+            <param name="routingDefinition">parent Id, required if hte docuemtnis a child document and routing is required.
             NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
             <returns>true or false</returns>
         </member>
