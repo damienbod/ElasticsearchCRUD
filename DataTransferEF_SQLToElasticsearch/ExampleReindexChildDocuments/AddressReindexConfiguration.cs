@@ -1,4 +1,5 @@
 ﻿using DataTransferSQLToEl.SQLDomainModel;
+using ElasticsearchCRUD.ContextAddDeleteUpdate;
 
 namespace DataTransferSQLToEl
 {
@@ -9,9 +10,9 @@ namespace DataTransferSQLToEl
 			return arg.AddressID;
 		}
 
-		public static object GetParentKeyMethod(Address arg)
+		public static RoutingDefinition GetRoutingConfiguration(Address arg)
 		{
-			return arg.StateProvinceID;
+			return new RoutingDefinition { ParentId = arg.StateProvinceID };
 		}
 
 		public static AddressV2 CreateStateProvinceFromStateProvince(Address arg)

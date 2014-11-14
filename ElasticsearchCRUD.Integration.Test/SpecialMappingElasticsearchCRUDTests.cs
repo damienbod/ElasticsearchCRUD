@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -14,6 +11,8 @@ namespace ElasticsearchCRUD.Integration.Test
 		private List<SkillTestEntity> _entitiesForTests;
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+		private const string ConnectionString = "http://localhost:9200";
+
 		[SetUp]
 		public void SetUp()
 		{
@@ -50,7 +49,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TearDown()
 		{
 			_entitiesForTests = null;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<SkillTestEntity>();
@@ -66,7 +65,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(SkillTestEntity), new SkillTestEntityElasticsearchMapping());
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				for (int i = 0; i < 100; i++)
 				{

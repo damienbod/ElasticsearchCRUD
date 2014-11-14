@@ -40,7 +40,7 @@ namespace DataTransferSQLToEl.ExampleReindexChildDocuments
 				StateProvinceReindexConfiguration.BuildSearchModifiedDateTimeLessThan(beginDateTime),
 				AddressReindexConfiguration.GetKeyMethod,
 				AddressReindexConfiguration.CreateStateProvinceFromStateProvince,
-				AddressReindexConfiguration.GetParentKeyMethod
+				AddressReindexConfiguration.GetRoutingConfiguration
 				);
 		}
 	}

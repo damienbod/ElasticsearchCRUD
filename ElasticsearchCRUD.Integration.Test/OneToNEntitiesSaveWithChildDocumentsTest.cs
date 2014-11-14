@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
+using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
@@ -17,7 +19,7 @@ POST http:/localhost:9200/parentdocuments/parentdocument/7?_index
 PUT http://localhost:9200/parentdocuments/childdocumentlevelone/_mapping 
 {
   "childdocumentlevelone":{
-    "_parent": {"type": "parentdocument"}
+	"_parent": {"type": "parentdocument"}
   }
 }
 
@@ -27,7 +29,7 @@ POST http://localhost:9200/parentdocuments/childdocumentlevelone/21?parent=7
 PUT http://localhost:9200/parentdocuments/childdocumentleveltwo/_mapping
 {
   "childdocumentleveltwo":{
-    "_parent": {"type": "childdocumentlevelone"}
+	"_parent": {"type": "childdocumentlevelone"}
   }
 }
 
@@ -37,30 +39,30 @@ POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21
 http://localhost:9200/parentdocuments/parentdocument/_search
 {
   "query": {
-    "has_child": {
-      "type": "childdocumentlevelone",
-      "query" : {
-        "filtered": {
-          "query": { "match_all": {}}
+	"has_child": {
+	  "type": "childdocumentlevelone",
+	  "query" : {
+		"filtered": {
+		  "query": { "match_all": {}}
          
-        }
-      }
-    }
+		}
+	  }
+	}
   }
 }
 
 http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
 {
   "query": {
-    "has_parent": {
-      "type": "childdocumentlevelone",
-      "query" : {
-        "filtered": {
-          "query": { "match_all": {}}
+	"has_parent": {
+	  "type": "childdocumentlevelone",
+	  "query" : {
+		"filtered": {
+		  "query": { "match_all": {}}
          
-        }
-      }
-    }
+		}
+	  }
+	}
   }
 }
 
@@ -68,61 +70,61 @@ http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
 http://localhost:9200/parentdocuments/childdocumentlevelone/_search
 {
   "query": {
-    "filtered": {
-      "query": {"match_all": {}},
-      "filter": {
-        "and": [
-          {"term": {"id": 21}},
-          {
-            "has_parent": {
-              "type": "parentdocument",
-              "query": {
-                "term": {"id": "7"}
-              }
-            }
-          }
-        ]
-      }
-    }
+	"filtered": {
+	  "query": {"match_all": {}},
+	  "filter": {
+		"and": [
+		  {"term": {"id": 21}},
+		  {
+			"has_parent": {
+			  "type": "parentdocument",
+			  "query": {
+				"term": {"id": "7"}
+			  }
+			}
+		  }
+		]
+	  }
+	}
   }
 }
 
 http://localhost:9200/parentdocuments/22/_search
 {
   "query": {
-    "filtered": {
-      "query": {"match_all": {}},
-      "filter": {
-        "and": [
-          { "term": {"id": 46}},
-          { "has_parent": { "type": "childdocumentlevelone", "query": { "term": {"id": "21"} } } }
-        ]
-      }
-    }
+	"filtered": {
+	  "query": {"match_all": {}},
+	  "filter": {
+		"and": [
+		  { "term": {"id": 46}},
+		  { "has_parent": { "type": "childdocumentlevelone", "query": { "term": {"id": "21"} } } }
+		]
+	  }
+	}
   }
 }
 
 {
   "query": {
-    "filtered": {
-      "filter":{
-        "has_parent": {
-          "type": "childdocumentlevelone",
-          "query" : {
-            "filtered": {
-              "query": { "term": {"id": "21"}}
-            }
-          }
-        }
-      }
-    }
+	"filtered": {
+	  "filter":{
+		"has_parent": {
+		  "type": "childdocumentlevelone",
+		  "query" : {
+			"filtered": {
+			  "query": { "term": {"id": "21"}}
+			}
+		  }
+		}
+	  }
+	}
   } 
 
 {
   "query": {
-    "term": {
-      "_parent": "childdocumentlevelone#26"
-    }
+	"term": {
+	  "_parent": "childdocumentlevelone#26"
+	}
   }
 }
  
@@ -136,6 +138,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const bool SaveChildObjectsAsWellAsParent = true;
 		private const bool ProcessChildDocumentsAsSeparateChildIndex = true;
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
@@ -146,7 +149,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
 		{
-			//using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			//using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			//{
 			//	context.AllowDeleteForIndex = true;
 			//	var entityResult = context.DeleteIndexAsync<ParentDocument>();
@@ -160,10 +163,10 @@ namespace ElasticsearchCRUD.Integration.Test
 			const int parentId = 22;
 			// This could return NOT FOUND 404 or OK 200. It all depends is the routing matches the same shard. It does not search for the exact parent
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(71, parentId);
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(71, new RoutingDefinition { ParentId = parentId });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 71));
@@ -190,8 +193,49 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		[Test]
 		public void TestAddUpdateWithExistingMappingsTest()
-		{		
-			TestAddUpdateWithExistingMappings();
+		{
+			var parentDocument2 = ParentDocument2();
+
+			using (var context = new ElasticsearchContext(ConnectionString,
+				new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent,
+					ProcessChildDocumentsAsSeparateChildIndex)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(parentDocument2, parentDocument2.Id);
+
+				// Save to Elasticsearch
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+
+				Thread.Sleep(1500);
+				var roundTripResult = context.GetDocument<ParentDocument>(parentDocument2.Id);
+				var roundTripResultChildDocumentLevelOne =
+					context.GetDocument<ChildDocumentLevelOne>(parentDocument2.ChildDocumentLevelOne.First().Id,
+						new RoutingDefinition {ParentId = parentDocument2.Id});
+
+				var roundTripResultChildDocumentLevelTwo =
+					context.GetDocument<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
+						new RoutingDefinition {ParentId = parentDocument2.ChildDocumentLevelOne.First().Id});
+
+				Assert.AreEqual(parentDocument2.Id, roundTripResult.Id);
+				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
+				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
+					roundTripResultChildDocumentLevelTwo.Id);
+
+				var childDocs =
+					context.Search<ChildDocumentLevelTwo>(
+						BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.ChildDocumentLevelOne.FirstOrDefault().Id,
+							"childdocumentlevelone"));
+				var childDocs2 =
+					context.Search<ChildDocumentLevelOne>(BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.Id,
+						"parentdocument"));
+				var childDocs3 =
+					context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
+
+				Assert.AreEqual(1, childDocs.TotalHits);
+				Assert.AreEqual(2, childDocs2.TotalHits);
+				Assert.AreEqual(4, childDocs3.TotalHits);
+			}
 		}
 
 		[Test]
@@ -200,7 +244,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			const int parentId = 21;
 			// This could return NOT FOUND 404 or OK 200. It all depends is the routing matches the same shard. It does not search for the exact parent
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				var testObject = new ChildDocumentLevelTwo
 				{
@@ -209,13 +253,14 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(testObject, testObject.Id, parentId);
+				context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId });
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
+				Thread.Sleep(1500);
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 46));
@@ -228,8 +273,8 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			const int parentId = 332;
 			// This creates a new child doc with the parent 332 even though no parent for 332 exists
-			
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				var testObject = new ChildDocumentLevelTwo
 				{
@@ -238,13 +283,15 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(testObject, testObject.Id, parentId);
+				context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId });
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, parentId);
+				Thread.Sleep(1500);
+
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 47));
@@ -255,7 +302,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestSearchById()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
@@ -268,7 +315,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestParentSearchById()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
@@ -281,7 +328,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDocumentExists()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
@@ -293,11 +340,11 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDocumentExistsChildDoc()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
-				var found = context.DocumentExists<ChildDocumentLevelTwo>(71, 22);
+				var found = context.DocumentExists<ChildDocumentLevelTwo>(71, new RoutingDefinition { ParentId = 22 });
 				Assert.IsTrue(found);
 			}
 		}
@@ -306,7 +353,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(typeof(ElasticsearchCrudException))]
 		public void TestDocumentExistsChildDocBadRoute()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.DocumentExists<ChildDocumentLevelTwo>(71);
@@ -316,32 +363,32 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDocumentCountChildDocument()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
 				var found = context.Count<ChildDocumentLevelTwo>();
-				Assert.Greater(found,0);
+				Assert.Greater(found, 0);
 			}
 		}
-	
+
 		[Test]
 		public void TestDocumentCountChildDocumentWithQuery()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
 				var found = context.Count<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
-				Assert.Greater(found,0);
+				Assert.Greater(found, 0);
 			}
 		}
-		
+
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
 		public void TestParentSearchByIdNotFoundWrongType()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
@@ -355,7 +402,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
 		public void TestParentSearchByIdNotFoundWrongTypeChildDoc()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
@@ -370,7 +417,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
 		public void TestsearchByIdNotFound()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 
@@ -380,11 +427,11 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException),ExpectedMessage = "HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...")]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...")]
 		public void TestCreateIndexNewChildItemExceptionMissingParentIdTest()
 		{
 			const int parentId = 21;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				var testObject = new ChildDocumentLevelTwo
 				{
@@ -393,7 +440,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(testObject, testObject.Id, parentId);
+				context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId });
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
@@ -409,12 +456,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var parentDocument = ParentDocument();
 
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof (ChildDocumentLevelOne),
+			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOne),
 				new ElasticsearchMappingChildDocumentForParent());
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof (ChildDocumentLevelTwo),
+			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelTwo),
 				new ElasticsearchMappingChildDocumentForParent());
 			using (
-				var context = new ElasticsearchContext("http://localhost:9200/",
+				var context = new ElasticsearchContext(ConnectionString,
 					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = trace;
@@ -425,41 +472,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
 				context.GetDocument<ParentDocument>(parentDocument.Id);
-			}
-		}
-
-		private void TestAddUpdateWithExistingMappings()
-		{
-			var parentDocument2 = ParentDocument2();
-
-			using (
-				var context = new ElasticsearchContext("http://localhost:9200/",
-					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(parentDocument2, parentDocument2.Id);
-
-				// Save to Elasticsearch
-				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-
-				var roundTripResult = context.GetDocument<ParentDocument>(parentDocument2.Id);
-				var roundTripResultChildDocumentLevelOne =
-					context.GetDocument<ChildDocumentLevelOne>(parentDocument2.ChildDocumentLevelOne.First().Id, parentDocument2.Id);
-				var roundTripResultChildDocumentLevelTwo =
-					context.GetDocument<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
-						parentDocument2.ChildDocumentLevelOne.First().Id);
-				Assert.AreEqual(parentDocument2.Id, roundTripResult.Id);
-				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
-				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id, roundTripResultChildDocumentLevelTwo.Id);
-
-				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.ChildDocumentLevelOne.FirstOrDefault().Id, "childdocumentlevelone"));
-				var childDocs2 = context.Search<ChildDocumentLevelOne>(BuildSearchForChildDocumentsWithIdAndParentType(parentDocument2.Id, "parentdocument"));
-				var childDocs3 = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
-			
-				Assert.AreEqual(1, childDocs.TotalHits);
-				Assert.AreEqual(2, childDocs2.TotalHits);
-				Assert.AreEqual(4, childDocs3.TotalHits);
 			}
 		}
 
@@ -570,7 +582,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public long Id { get; set; }
 		public string D1 { get; set; }
 
-		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }	
+		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }
 	}
 
 	public class ChildDocumentLevelOne

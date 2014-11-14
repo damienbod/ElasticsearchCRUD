@@ -15,10 +15,11 @@ namespace ElasticsearchCRUD.Integration.Test
 		private List<ScanScrollTypeV1> _entitiesForTests;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+		private const string ConnectionString = "http://localhost:9200";
 
 		private void WaitForDataOrFail()
 		{
-			if (!_resetEvent.WaitOne(5000))
+			if (!_resetEvent.WaitOne(7000))
 			{
 				Assert.Fail("No data received within specified time");
 			}
@@ -49,7 +50,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			_entitiesForTests = null;
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<ScanScrollTypeV1>();
@@ -63,10 +64,10 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestScanAndScollReindexFor1000Entities()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				for (int i = 0; i < 10000; i++)
+				for (int i = 0; i < 1000; i++)
 				{
 					context.AddUpdateDocument(_entitiesForTests[i], i);
 				}
@@ -79,16 +80,16 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			Task.Run(() =>
 			{
-				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 				{
 					while (true)
 					{
+						Thread.Sleep(1300);
 						var itemOk = context.SearchById<ScanScrollTypeV1>(2);
 						if (itemOk != null)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 				// ReSharper disable once FunctionNeverReturns
@@ -96,10 +97,10 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			WaitForDataOrFail();
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 300);
+				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 100);
 				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 
 				var scrollId = result.ScrollId;
@@ -121,15 +122,15 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			Task.Run(() =>
 			{
-				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						if (10000 == context.Count<ScanScrollTypeV2>())
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 // ReSharper disable once FunctionNeverReturns

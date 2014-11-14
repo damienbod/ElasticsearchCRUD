@@ -73,13 +73,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Readme.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ElasticsearchCRUD\ElasticsearchCRUD.csproj">
       <Project>{d40fd7b8-3fbc-4f06-88ed-704e60b1a3af}</Project>
       <Name>ElasticsearchCRUD</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Readme.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

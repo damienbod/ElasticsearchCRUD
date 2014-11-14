@@ -91,12 +91,18 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <param name="document">Document to be added or updated</param>
 		/// <param name="id">document id</param>
-		/// <param name="parentId">parent id of the document. This is only used if the ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex
+		/// <param name="routingDefinition">parent id of the document. This is only used if the ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex
 		/// property is set to true. The document is then saved with the parent routing. It will also be saved even if the parent does not exist.</param>
-		public void AddUpdateDocument(object document, object id, object parentId = null)
+		public void AddUpdateDocument(object document, object id, RoutingDefinition routingDefinition = null)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Adding document: {0}, {1} to pending list", document.GetType().Name, id, "ElasticsearchContext");
-			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), EntityType = document.GetType(), Document = document, ParentId = parentId });
+			var data = new EntityContextInfo {Id = id.ToString(), EntityType = document.GetType(), Document = document};
+			if (routingDefinition != null)
+			{
+				data.RoutingDefinition = routingDefinition;
+			}
+				
+			_entityPendingChanges.Add(data);
 		}
 
 		/// <summary>
@@ -144,12 +150,12 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">type used for the document index and type definition</typeparam>
 		/// <param name="documentId">document id</param>
-		/// <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
+		/// <param name="routingDefinition">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
 		/// saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
 		/// <returns>Document type T</returns>
-		public T GetDocument<T>(object documentId, object parentId = null)
+		public T GetDocument<T>(object documentId, RoutingDefinition routingDefinition = null)
 		{
-			return _elasticsearchContextGet.GetDocument<T>(documentId, parentId);
+			return _elasticsearchContextGet.GetDocument<T>(documentId, routingDefinition);
 		}
 
 		/// <summary>
@@ -307,13 +313,12 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">type used for the document index and type definition</typeparam>
 		/// <param name="documentId">document id</param>
-		/// <param name="parentId">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
+		/// <param name="routingDefinition">Parent Id of the document if document is a child document Id the Id is incorrect, you may still recieve the child document (parentId might be
 		/// saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
 		/// <returns>Document type T in a Task with result details</returns>
-		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object documentId, object parentId = null)
+		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object documentId, RoutingDefinition routingDefinition = null)
 		{
-			return await _elasticsearchContextGet.GetDocumentAsync<T>(documentId, parentId);
-
+			return await _elasticsearchContextGet.GetDocumentAsync<T>(documentId, routingDefinition);
 		}
 
 		/// <summary>
@@ -321,12 +326,12 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type of document to find</typeparam>
 		/// <param name="documentId">Id of the document</param>
-		/// <param name="parentId">parent Id, required if hte docuemtnis a child document and routing is required.
+		/// <param name="routingDefinition">parent Id, required if hte docuemtnis a child document and routing is required.
 		/// NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
 		/// <returns>true or false</returns>
-		public bool DocumentExists<T>(object documentId, object parentId = null)
+		public bool DocumentExists<T>(object documentId, RoutingDefinition routingDefinition = null)
 		{
-			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId));
+			return _elasticsearchContextExists.Exists(_elasticsearchContextExists.DocumentExistsAsync<T>(documentId, routingDefinition));
 		}
 
 		/// <summary>
@@ -334,12 +339,12 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type of document to find</typeparam>
 		/// <param name="documentId">Id of the document</param>
-		/// <param name="parentId">parent Id, required if hte docuemtnis a child document and routing is required.
+		/// <param name="routingDefinition">parent Id, required if hte docuemtnis a child document and routing is required.
 		/// NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
 		/// <returns>true or false</returns>
-		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object documentId, object parentId = null)
+		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object documentId, RoutingDefinition routingDefinition = null)
 		{
-			return await _elasticsearchContextExists.DocumentExistsAsync<T>(documentId, parentId);
+			return await _elasticsearchContextExists.DocumentExistsAsync<T>(documentId, routingDefinition);
 		}
 
 		/// <summary>

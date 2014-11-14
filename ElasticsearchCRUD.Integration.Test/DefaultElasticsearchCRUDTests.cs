@@ -17,6 +17,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+		private const string ConnectionString = "http://localhost:9200";
 
 		private void WaitForDataOrFail()
 		{
@@ -63,7 +64,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			_entitiesForTests = null;
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<SkillTestEntity>();
@@ -80,7 +81,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextAdd100Entities()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 100; i++)
@@ -97,7 +98,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextCount()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 7; i++)
@@ -113,12 +114,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						found = context.Count<SkillTestEntity>();
 						if (found == 7)
 						{
 							_resetEvent.Set();
-						}
-						Thread.Sleep(200);
+						}	
 					}					
 				});
 
@@ -133,7 +134,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextCount: Index not found")]
 		public void TestDefaultContextCountWithNoIndex()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				 context.Count<SkillTestEntityNoIndex>();
 			}
@@ -168,7 +169,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestDefaultContextGetEntityAsync()
 		{
 			const int entityId = 34;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(_entitiesForTests[entityId], entityId);
@@ -189,7 +190,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestDefaultContextGetEntity()
 		{
 			const int entityId = 34;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(_entitiesForTests[entityId], entityId);
@@ -210,7 +211,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			const int documentId = 34;
 			string searchJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(_entitiesForTests[documentId], documentId);
@@ -223,16 +224,16 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			Task.Run(() =>
 			{
-				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						var exists = context.SearchExists<SkillTestEntity>(searchJson);
 						if (exists)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 			});
@@ -247,7 +248,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			const int documentId = 3574474;
 			string searchJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				// Get the entity
 				var exists = context.SearchExists<SkillTestEntity>(searchJson);
@@ -258,7 +259,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextSearchMatchAll()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(_entitiesForTests[34], 34);
@@ -268,16 +269,16 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			Task.Run(() =>
 			{
-				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						var exists = context.SearchExists<SkillTestEntity>(BuildSearchMatchAll());
 						if (exists)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 			});
@@ -302,7 +303,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestDefaultContextGetEntityNotFound()
 		{
 			const int entityId = 39994;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// Get the entity
@@ -316,7 +317,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestDefaultContextGetEntityIndexNotFound()
 		{
 			const int entityId = 39994;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// Get the entity
@@ -342,7 +343,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			const int entityId = 34;
 			SkillTestEntity resultfromGet;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// add a new entity
@@ -358,7 +359,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 
 			resultfromGet.Name = "updated";
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// update entity
@@ -379,7 +380,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestDefaultContextDeleteEntity()
 		{
 			const int entityId = 35;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(_entitiesForTests[entityId], entityId);
@@ -406,7 +407,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(typeof(ElasticsearchCrudException))]
 		public void TestDefaultContextDeleteEntityWhichDoesNotExist()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				// Delete the entity
@@ -438,7 +439,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void TestDefaultContextGetEntityWhichDoesNotExist()
 		{
 			const int entityId = 3004;
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var entityResult = context.GetDocumentAsync<SkillTestEntity>(entityId);
@@ -450,7 +451,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextSaveWithNoChanges()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var entityResult = context.SaveChangesAsync();
@@ -462,7 +463,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextDeleteIndex()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 100; i++)
@@ -475,7 +476,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
 			}
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AllowDeleteForIndex = true;
@@ -488,7 +489,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextDeleteIndexNotFound()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AllowDeleteForIndex = true;
@@ -502,7 +503,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(typeof(ElasticsearchCrudException))]
 		public void TestDefaultContextDeleteIndexNotActivated()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var entityResult = context.DeleteIndexAsync<SkillTestEntity>();
@@ -531,7 +532,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextAdd100EntitiesForTwoTypes()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 100; i++)
@@ -552,7 +553,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			const int documentId = 153;
 			string deleteJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 150; i < 160; i++)
@@ -569,12 +570,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						foundBefore = context.Count<SkillTestEntity>();
 						if (foundBefore > 9)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				});
 
@@ -602,7 +603,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			const int documentId155 = 155;
 
 			string deleteJson = "{\"query\": { \"ids\": { \"values\":  [\"" + documentId153 + "\", \"" + documentId155 + "\"]  }}}";
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 150; i < 160; i++)
@@ -619,12 +620,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						foundBefore = context.Count<SkillTestEntity>();
 						if (foundBefore > 9)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				});
 
@@ -646,7 +647,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextClearCache()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				for (int i = 150; i < 160; i++)
 				{
@@ -665,7 +666,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextClearCache: Could nor clear cache for index skilltestentitynoindexs")]
 		public void TestDefaultContextClearCacheForNoIndex()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				Assert.IsTrue(context.ClearCacheForIndex<SkillTestEntityNoIndex>());
 			}
@@ -677,7 +678,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			const int documentId = 965428;
 			string deleteJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 150; i < 160; i++)
@@ -696,7 +697,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestDefaultContextTestJsonIgnore()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 

@@ -11,6 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class DocumentsWithChildDocumentsTestNotAllowed
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+		private const string ConnectionString = "http://localhost:9200";
 
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "InitMappings: Not supported, child documents can only have one parent")]
@@ -23,7 +24,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelTwoEx),
 				new ElasticsearchMappingChildDocumentForParentEx());
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/",new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true)))
+			using (var context = new ElasticsearchContext(ConnectionString,new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(parentDocument, parentDocument.Id);
