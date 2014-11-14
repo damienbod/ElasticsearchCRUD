@@ -56,16 +56,10 @@ namespace ElasticsearchCRUD.ContextGet
 				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
 
-				string parentIdUrl = "";
-				if (routingDefinition != null &&  routingDefinition.ParentId != null)
-				{
-					parentIdUrl = "?parent=" + routingDefinition.ParentId;
-				}
-				var uri = new Uri(elasticsearchUrlForEntityGet + entityId + parentIdUrl);
+				var uri = new Uri(elasticsearchUrlForEntityGet + entityId + RoutingDefinition.GetRoutingUrl(routingDefinition));
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "ElasticSearchContextGet");
 				var response = await _client.GetAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
 				resultDetails.RequestUrl = uri.OriginalString;
-
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)

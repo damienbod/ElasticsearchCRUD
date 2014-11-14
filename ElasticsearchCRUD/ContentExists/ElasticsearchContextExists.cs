@@ -38,13 +38,7 @@ namespace ElasticsearchCRUD.ContentExists
 			var elasticsearchUrlForHeadRequest = string.Format("{0}/{1}/{2}/", _connectionString,
 				elasticSearchMapping.GetIndexForType(typeof (T)), elasticSearchMapping.GetDocumentType(typeof (T)));
 
-			string parentIdUrl = "";
-			if (routingDefinition != null && routingDefinition.ParentId != null)
-			{
-				parentIdUrl = "?parent=" + routingDefinition.ParentId;
-			}
-
-			var uri = new Uri(elasticsearchUrlForHeadRequest + entityId + parentIdUrl);
+			var uri = new Uri(elasticsearchUrlForHeadRequest + entityId + RoutingDefinition.GetRoutingUrl(routingDefinition));
 			return await ExistsHeadRequest.ExistsAsync(uri);
 		}
 

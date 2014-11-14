@@ -63,10 +63,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			{
 			  "childdocumentlevelone":{
 				"_parent": {"type": "parentdocument"}
-			  }
+			  },
+		      "_routing": {
+              "required": true,
+              "path": "catentry_id"
+              },
 			}
 		*/
-
 		public void CreateIndexMapping(string index, string parentType, string childType)
 		{
 			if (!CommandTypes.Contains("CreateMappingForIndex_" + index + parentType + childType))
