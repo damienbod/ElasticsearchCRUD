@@ -1,14 +1,20 @@
 ﻿using System;
+using ElasticsearchCRUD.ContextAddDeleteUpdate;
 
 namespace ElasticsearchCRUD
 {
 	public class EntityContextInfo
 	{
+		public EntityContextInfo()
+		{
+			RoutingDefinition = new RoutingDefinition();
+		}
+
 		public string Id { get; set; }
 		public bool DeleteDocument { get; set; }
 		public Type EntityType { get; set; }
 		public Type ParentEntityType { get; set; }
-		public object ParentId { get; set; }
+		public RoutingDefinition RoutingDefinition { get; set; }
 		public object Document { get; set; }
 	}
 }

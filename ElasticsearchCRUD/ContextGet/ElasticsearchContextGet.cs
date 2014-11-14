@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 using Newtonsoft.Json.Linq;
@@ -27,10 +28,10 @@ namespace ElasticsearchCRUD.ContextGet
 			_connectionString = connectionString;
 		}
 
-		public T GetDocument<T>(object entityId, object parentId)
+		public T GetDocument<T>(object entityId, RoutingDefinition routingDefinition)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			var result = syncExecutor.ExecuteResultDetails(() => GetDocumentAsync<T>(entityId, parentId));
+			var result = syncExecutor.ExecuteResultDetails(() => GetDocumentAsync<T>(entityId, routingDefinition));
 
 			if (result.Status == HttpStatusCode.NotFound)
 			{
@@ -46,7 +47,7 @@ namespace ElasticsearchCRUD.ContextGet
 			return result.PayloadResult;
 		}
 
-		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object entityId, object parentId)
+		public async Task<ResultDetails<T>> GetDocumentAsync<T>(object entityId, RoutingDefinition routingDefinition)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for select document with id: {0}, Type: {1}", entityId, typeof(T), "ElasticSearchContextGet");
 			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
@@ -56,9 +57,9 @@ namespace ElasticsearchCRUD.ContextGet
 				var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
 
 				string parentIdUrl = "";
-				if (parentId != null)
+				if (routingDefinition != null &&  routingDefinition.ParentId != null)
 				{
-					parentIdUrl = "?parent=" + parentId;
+					parentIdUrl = "?parent=" + routingDefinition.ParentId;
 				}
 				var uri = new Uri(elasticsearchUrlForEntityGet + entityId + parentIdUrl);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP GET uri: {0}", uri.AbsoluteUri, "ElasticSearchContextGet");

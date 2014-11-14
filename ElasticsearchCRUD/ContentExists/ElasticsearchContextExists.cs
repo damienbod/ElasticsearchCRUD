@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 
@@ -25,7 +25,7 @@ namespace ElasticsearchCRUD.ContentExists
 			ExistsHeadRequest = new Exists(_traceProvider, cancellationTokenSource, client);
 		}
 
-		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object entityId, object parentId)
+		public async Task<ResultDetails<bool>> DocumentExistsAsync<T>(object entityId, RoutingDefinition routingDefinition)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			_traceProvider.Trace(TraceEventType.Verbose, "ElasticsearchContextExists: IndexExistsAsync for Type:{0}, Index: {1}, IndexType: {2}, Entity {3}",
@@ -39,10 +39,11 @@ namespace ElasticsearchCRUD.ContentExists
 				elasticSearchMapping.GetIndexForType(typeof (T)), elasticSearchMapping.GetDocumentType(typeof (T)));
 
 			string parentIdUrl = "";
-			if (parentId != null)
+			if (routingDefinition != null && routingDefinition.ParentId != null)
 			{
-				parentIdUrl = "?parent=" + parentId;
+				parentIdUrl = "?parent=" + routingDefinition.ParentId;
 			}
+
 			var uri = new Uri(elasticsearchUrlForHeadRequest + entityId + parentIdUrl);
 			return await ExistsHeadRequest.ExistsAsync(uri);
 		}

@@ -70,7 +70,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
-				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+				context.AddUpdateDocument(indexAliasDtoTest,  indexAliasDtoTest.Id);
 				context.SaveChanges();
 
 				var result = context.AliasCreateForIndex("test", "indexaliasdtotests");

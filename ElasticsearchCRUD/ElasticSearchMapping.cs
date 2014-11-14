@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
+using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -129,7 +130,8 @@ namespace ElasticsearchCRUD
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			// Do class mapping for nested type
 			var entity = prop.GetValue(entityInfo.Document);
-			var child = new EntityContextInfo { Document = entity, ParentId = entityInfo.Id, EntityType = entity.GetType(), DeleteDocument = entityInfo.DeleteDocument};
+			var routingDefinition = new RoutingDefinition {ParentId = entityInfo.Id};
+			var child = new EntityContextInfo { Document = entity, RoutingDefinition = routingDefinition, EntityType = entity.GetType(), DeleteDocument = entityInfo.DeleteDocument };
 			MapEntityValues(child, elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
@@ -148,10 +150,11 @@ namespace ElasticsearchCRUD
 				if (Attribute.IsDefined(property, typeof (KeyAttribute)))
 				{
 					var obj = property.GetValue(entity);
+					var routingDefinition = new RoutingDefinition { ParentId = parentEntityInfo.Id, RoutingId = parentEntityInfo.RoutingDefinition.RoutingId};
 					var child = new EntityContextInfo
 					{
 						Document = entity,
-						ParentId = parentEntityInfo.Id,
+						RoutingDefinition = routingDefinition,
 						EntityType = GetEntityDocumentType(entity.GetType()),
 						ParentEntityType = GetEntityDocumentType(parentEntityInfo.EntityType),
 						DeleteDocument = parentEntityInfo.DeleteDocument,
@@ -305,8 +308,8 @@ namespace ElasticsearchCRUD
 						// collection of Objects
 						childElasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 						// Do class mapping for nested type
-
-						var child = new EntityContextInfo { Document = item, ParentId = parentEntityInfo.Id, EntityType = item.GetType(), DeleteDocument = parentEntityInfo.DeleteDocument };
+						var routingDefinition = new RoutingDefinition { ParentId = parentEntityInfo.Id, RoutingId = parentEntityInfo.RoutingDefinition.RoutingId };
+						var child = new EntityContextInfo { Document = item, RoutingDefinition = routingDefinition, EntityType = item.GetType(), DeleteDocument = parentEntityInfo.DeleteDocument };
 						MapEntityValues(child, childElasticsearchCrudJsonWriter);
 						childElasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 

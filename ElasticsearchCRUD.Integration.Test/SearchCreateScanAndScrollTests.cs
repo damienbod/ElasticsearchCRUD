@@ -18,7 +18,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		private void WaitForDataOrFail()
 		{
-			if (!_resetEvent.WaitOne(5000))
+			if (!_resetEvent.WaitOne(7000))
 			{
 				Assert.Fail("No data received within specified time");
 			}
