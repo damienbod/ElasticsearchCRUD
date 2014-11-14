@@ -9,11 +9,12 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class ExistsTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureTearDown]
 		public void TestFixtureTearDown()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<ExistsDtoForTests>();
@@ -27,7 +28,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			var existsDtoForTests = new ExistsDtoForTests { Id = 1, Description = "Test index for exist tests" };
 			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ExistsDtoForTestsTypeNot), new IndexMapping("existsdtofortestss"));
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(existsDtoForTests, existsDtoForTests.Id);
 				context.SaveChanges();
@@ -40,7 +41,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestIndexExists()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.IndexExists<ExistsDtoForTests>();
@@ -51,7 +52,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestIndexTypeExists()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.IndexTypeExists<ExistsDtoForTests>();
@@ -62,7 +63,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestIndexDoesNotExist()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.IndexExists<ExistsDtoForTestsIndexNot>();
@@ -74,7 +75,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestAliasExists()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.AliasExists("existsaliastest");
@@ -85,7 +86,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestAliasExistsBadAlias()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.AliasExists("existsaliastest".ToUpper());
@@ -96,7 +97,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestAliasExistsForIndex()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.AliasExistsForIndex<ExistsDtoForTests>("existsaliastest");
@@ -107,7 +108,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestIndexExistsForSpecialMapping()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.IndexExists<ExistsDtoForTestsTypeNot>();
@@ -118,7 +119,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestIndexTypeDoesNotExistsForSpecialMapping()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.IndexTypeExists<ExistsDtoForTestsTypeNot>();
@@ -129,7 +130,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestAliasNotExists()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.AliasExists("noexistsaliastest");
@@ -140,7 +141,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestAliasNotExistsForIndex()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var found = context.AliasExistsForIndex<ExistsDtoForTests>("noexistsaliastest");

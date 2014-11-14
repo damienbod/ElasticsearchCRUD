@@ -114,7 +114,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				// It's a document which belongs to a parent
 				WriteValue("_parent", entityInfo.RoutingDefinition.ParentId);
 			}
-			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
+			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex &&
+				_elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
 				// It's a document which has a specific route
 				WriteValue("_routing", entityInfo.RoutingDefinition.RoutingId);
@@ -144,7 +145,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			WriteValue("_type", elasticsearchMapping.GetDocumentType(item.EntityType));
 			WriteValue("_id", item.Id);
 			WriteValue("_parent", item.RoutingDefinition.ParentId);
-			if (item.RoutingDefinition.RoutingId != null)
+			if (item.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
 				// It's a document which has a specific route
 				WriteValue("_routing", item.RoutingDefinition.RoutingId);

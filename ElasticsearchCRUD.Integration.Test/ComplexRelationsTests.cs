@@ -11,11 +11,12 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class ComplexRelationsTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TearDown]
 		public void TearDown()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<TestNestedDocumentLevelOneHashSet>(); entityResult.Wait();
@@ -78,14 +79,14 @@ namespace ElasticsearchCRUD.Integration.Test
 					}
 			};
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(data, data.Id);
 				context.SaveChanges();
 			}
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneArray>(data.Id);
 				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
@@ -157,13 +158,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					}
 			};
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(data, data.Id);
 				context.SaveChanges();
 			}
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneCollection>(data.Id);
 				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
@@ -241,13 +242,13 @@ namespace ElasticsearchCRUD.Integration.Test
 					}
 			};
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(data,data.Id);
 				context.SaveChanges();
 			}
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneHashSet>(data.Id);
 				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
@@ -291,7 +292,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				}
 			};
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);

@@ -15,6 +15,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		private List<ScanScrollTypeV1> _entitiesForTests;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+		private const string ConnectionString = "http://localhost:9200";
 
 		private void WaitForDataOrFail()
 		{
@@ -49,7 +50,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			_entitiesForTests = null;
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<ScanScrollTypeV1>();
@@ -63,7 +64,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void TestScanAndScollReindexFor1000Entities()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 1000; i++)
@@ -79,7 +80,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			Task.Run(() =>
 			{
-				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 				{
 					while (true)
 					{
@@ -96,7 +97,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			WaitForDataOrFail();
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 100);
@@ -121,7 +122,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			Task.Run(() =>
 			{
-				using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+				using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 				{
 					while (true)
 					{

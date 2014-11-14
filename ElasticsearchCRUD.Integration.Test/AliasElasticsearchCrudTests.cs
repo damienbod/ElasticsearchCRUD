@@ -11,6 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+		private const string ConnectionString = "http://localhost:9200";
 
 		private void WaitForDataOrFail()
 		{
@@ -22,7 +23,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[TearDown]
 		public void TearDown()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<IndexAliasDtoTest>();
@@ -37,7 +38,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
 		public void CreateAliasForNoExistingIndex()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AliasCreateForIndex("test", "doesnotexistindex");
 			}
@@ -47,7 +48,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextAlias: index is not allowed in Elasticsearch: doeGGGtindex")]
 		public void CreateAliasForIndexBadIndex()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AliasCreateForIndex("test", "doeGGGtindex");
 			}
@@ -57,7 +58,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextAlias: alias is not allowed in Elasticsearch: tesHHHt")]
 		public void CreateAliasForIndexBadAlias()
 		{
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AliasCreateForIndex("tesHHHt", "doendex");
 			}
@@ -68,7 +69,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var indexAliasDtoTest = new IndexAliasDtoTest {Id = 1, Description = "Test index for aliases"};
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(indexAliasDtoTest,  indexAliasDtoTest.Id);
 				context.SaveChanges();
@@ -83,7 +84,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
 				context.SaveChanges();
@@ -102,7 +103,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
 				context.SaveChanges();
@@ -118,7 +119,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 			var indexAliasDtoTestTwo = new IndexAliasDtoTestTwo { Id = 1, Description = "Test Doc Type Two index for aliases" };
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
 				context.AddUpdateDocument(indexAliasDtoTestTwo, indexAliasDtoTestTwo.Id);
@@ -149,7 +150,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			elasticsearchMappingResolverDirectIndexV2.AddElasticSearchMappingForEntityType(typeof(IndexAliasDtoTestThree), mappingV2);
 
 			// Step 1 create index V1 and add alias
-			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV1))
+			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV1))
 			{
 				// create the index
 				context.AddUpdateDocument(indexAliasDtoTestV1, indexAliasDtoTestV1.Id);
@@ -160,7 +161,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 
 			// Step 2 create index V2 and replace alias
-			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV2))
+			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV2))
 			{
 				// create the index
 				context.AddUpdateDocument(indexAliasDtoTestV2, indexAliasDtoTestV2.Id);
@@ -173,7 +174,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			Task.Run(() =>
 			{
-				using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndex))
+				using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndex))
 				{
 					while (true)
 					{
@@ -186,13 +187,14 @@ namespace ElasticsearchCRUD.Integration.Test
 						
 					}
 				}
+// ReSharper disable once FunctionNeverReturns
 			});
 
 
 			WaitForDataOrFail();
 
 			// delete index v1
-			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV1))
+			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV1))
 			{
 				context.AllowDeleteForIndex = true;
 				var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
@@ -200,7 +202,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 
 			// delete index v2
-			using (var context = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolverDirectIndexV2))
+			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV2))
 			{
 				context.AllowDeleteForIndex = true;
 				var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
@@ -214,7 +216,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
 				context.SaveChanges();
