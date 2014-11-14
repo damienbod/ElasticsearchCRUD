@@ -89,6 +89,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
+				Thread.Sleep(1500);
+
 				var roundTripResult = context.GetDocument<ParentDocumentUserDefinedRouting>(parentDocument2.Id);
 				var roundTripResultChildDocumentLevelOne =
 					context.GetDocument<ChildDocumentLevelOneUserDefinedRouting>(parentDocument2.ChildDocumentLevelOne.First().Id,
