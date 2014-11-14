@@ -113,12 +113,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						found = context.Count<SkillTestEntity>();
 						if (found == 7)
 						{
 							_resetEvent.Set();
-						}
-						Thread.Sleep(200);
+						}	
 					}					
 				});
 
@@ -227,12 +227,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						var exists = context.SearchExists<SkillTestEntity>(searchJson);
 						if (exists)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 			});
@@ -272,12 +272,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						var exists = context.SearchExists<SkillTestEntity>(BuildSearchMatchAll());
 						if (exists)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 			});
@@ -569,12 +569,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						foundBefore = context.Count<SkillTestEntity>();
 						if (foundBefore > 9)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				});
 
@@ -619,12 +619,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						foundBefore = context.Count<SkillTestEntity>();
 						if (foundBefore > 9)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				});
 

@@ -177,12 +177,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(1000);
 						var itemOk = context.SearchById<IndexAliasDtoTestThree>(2);
 						if (itemOk != null)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
+						
 					}
 				}
 			});

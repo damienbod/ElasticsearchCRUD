@@ -66,7 +66,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				for (int i = 0; i < 10000; i++)
+				for (int i = 0; i < 1000; i++)
 				{
 					context.AddUpdateDocument(_entitiesForTests[i], i);
 				}
@@ -83,12 +83,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(1300);
 						var itemOk = context.SearchById<ScanScrollTypeV1>(2);
 						if (itemOk != null)
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 				// ReSharper disable once FunctionNeverReturns
@@ -99,7 +99,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticsearchContext("http://localhost:9200/", _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 300);
+				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 100);
 				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 
 				var scrollId = result.ScrollId;
@@ -125,11 +125,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					while (true)
 					{
+						Thread.Sleep(300);
 						if (10000 == context.Count<ScanScrollTypeV2>())
 						{
 							_resetEvent.Set();
 						}
-						Thread.Sleep(200);
 					}
 				}
 // ReSharper disable once FunctionNeverReturns

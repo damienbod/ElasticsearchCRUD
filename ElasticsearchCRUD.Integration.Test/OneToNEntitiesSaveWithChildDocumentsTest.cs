@@ -217,7 +217,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId });
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId, RoutingId=7 });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 46));
@@ -240,13 +240,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId });
+				context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId, RoutingId = 7});
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId });
+				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId, RoutingId = 7 });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
 				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 47));
@@ -395,7 +395,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				};
 
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId });
+				context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId, RoutingId = 7});
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
