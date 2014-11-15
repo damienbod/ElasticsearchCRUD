@@ -8,7 +8,7 @@
     <owners>damienbod</owners>
     <projectUrl>http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Elasticsearch simple CRUD operations</description>
+    <description>Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easily usage KISS</description>
 	<iconUrl>http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png</iconUrl>
 	<language>en-US</language>
 	<tags>Elasticsearch HttpClient</tags>
