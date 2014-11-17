@@ -55,6 +55,7 @@
     <Compile Include="ContentExists\ElasticsearchContextExists.cs" />
     <Compile Include="ContentExists\Exists.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexMapping.cs" />
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
     <Compile Include="ContextAddDeleteUpdate\RoutingDefinition.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />

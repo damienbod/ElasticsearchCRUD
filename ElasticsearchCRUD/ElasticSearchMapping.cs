@@ -32,7 +32,8 @@ namespace ElasticsearchCRUD
 		/// <param name="entityInfo">Information about the entity</param>
 		/// <param name="elasticsearchCrudJsonWriter">Serializer with added tracing</param>
 		/// <param name="beginMappingTree">begin new mapping tree</param>
-		public virtual void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
+		/// <param name="createPropertyMappings">This tells the serializer to create a Json property mapping from the entity and not the document itself</param>
+		public virtual void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false, bool createPropertyMappings = false)
 		{
 			try
 			{
@@ -58,9 +59,17 @@ namespace ElasticsearchCRUD
 							{
 								if (!ProcessChildDocumentsAsSeparateChildIndex || ProcessChildDocumentsAsSeparateChildIndex && beginMappingTree)
 								{
-									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}",
-										prop.Name.ToLower());
-									MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
+									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}", prop.Name.ToLower());
+
+									if (createPropertyMappings)
+									{
+										// TODO create property mapping using the attributes
+									}
+									else
+									{
+										MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
+									}
+									
 								}
 							}
 						}
