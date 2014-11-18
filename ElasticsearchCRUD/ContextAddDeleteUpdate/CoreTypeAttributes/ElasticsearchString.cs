@@ -53,7 +53,18 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
 
-			// TODO Norms Enabled and Loading
+			//"norms" : {
+			//		"enabled" : false
+			//	}
+			if (_normsEnabledSet || _normsLoadingSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("norms");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				WriteValue("enabled", _normsEnabled, elasticsearchCrudJsonWriter, _normsEnabledSet);
+				WriteValue("loading", _normsLoading.ToString(), elasticsearchCrudJsonWriter, _normsLoadingSet);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
+
 
 			WriteValue("index_options", _indexOptions.ToString(), elasticsearchCrudJsonWriter, _indexOptionsSet);
 			WriteValue("analyzer", _analyzer, elasticsearchCrudJsonWriter, _analyzerSet);

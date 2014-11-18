@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using NUnit.Framework;
 
@@ -17,7 +18,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				DescriptionSkillParent = "A test entity description",
 				Id = 7,
 				NameSkillParent = "cool",
-				SkillChildren = new[] { new SkillChild{} }
 			};
 
 			var propertyInfo = testSkillParentObject.GetType().GetProperties();
@@ -41,18 +41,33 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchString(Boost = 1.0)]
 		public string NameSkillParent { get; set; }
 
-		[ElasticsearchFloat(Boost = 2.5, Index = NumberIndex.no)]
+		[ElasticsearchDouble(Boost = 2.3, Index = NumberIndex.no)]
 		public double DoubleTestId { get; set; }
+
+		[ElasticsearchFloat(Boost = 2.2, Index = NumberIndex.no)]
 		public float FloatTestId { get; set; }
+
+		[ElasticsearchShort(Boost = 2.1, Index = NumberIndex.no)]
 		public short ShortTestId { get; set; }
+
+		[ElasticsearchInteger(Boost = 2.5, Index = NumberIndex.no, DocValues = true)]
 		public int IntTestId { get; set; }
+
+		[ElasticsearchByte(Store=true, IncludeInAll=true)]
 		public byte ByteTestId { get; set; }
-		[ElasticsearchString(Boost = 1.4, Index = StringIndex.analyzed)]
+
+		[ElasticsearchString(Boost = 1.7, Index = StringIndex.analyzed, NormsEnabled = true)]
 		public string DescriptionSkillParent { get; set; }
 
+		[ElasticsearchDate(Boost = 1.1)]
 		public DateTimeOffset CreatedSkillParent { get; set; }
+
 		public DateTimeOffset UpdatedSkillParent { get; set; }
 
-		public virtual SkillChild[] SkillChildren { get; set; }
+		[ElasticsearchBoolean(CopyTo = "descriptionskillparent")]
+		public bool TestBool { get; set; }
+
+		[ElasticsearchString(CopyToList = new[] { "descriptionskillparent", "nameskillparent"}, NormsEnabled = true, NormsLoading = NormsLoading.eager)]
+		public string TestString { get; set; }
 	}
 }

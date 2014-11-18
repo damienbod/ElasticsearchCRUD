@@ -88,7 +88,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			}
 		}
 
-		protected string JsonStringInternal(string typeProperty)
+		public override string JsonString()
 		{
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();

@@ -175,7 +175,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteValue("type", "double", elasticsearchCrudJsonWriter);
+			WriteValue("type", typeProperty, elasticsearchCrudJsonWriter);
 			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
 			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
 			WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
@@ -9,7 +10,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 		private string _similarity;
 		private bool _similaritySet;
 		private string _copyTo;
-		private List<string> _copyToList;
+		private string[] _copyToList;
 		private bool _copyToSet;
 		private bool _copyToListSet;
 
@@ -41,7 +42,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			}
 		}
 
-		public virtual List<string> CopyToList
+		public virtual string[] CopyToList
 		{
 			get { return _copyToList; }
 			set
@@ -58,10 +59,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			{
 				WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
 			}
-			else
+			else if (_copyToListSet)
 			{
-				// TODO write string array
-				//WriteValue("copy_to", _copyToList, elasticsearchCrudJsonWriter, _copyToListSet);
+				var json = JsonConvert.SerializeObject(_copyToList);
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("copy_to");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue(json);
 			}
 			
 		}
