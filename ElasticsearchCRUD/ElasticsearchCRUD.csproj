@@ -54,6 +54,10 @@
   <ItemGroup>
     <Compile Include="ContentExists\ElasticsearchContextExists.cs" />
     <Compile Include="ContentExists\Exists.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchCoreTypes.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchFloat.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchNumber.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchString.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexMapping.cs" />
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
