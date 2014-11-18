@@ -23,7 +23,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			var propertyInfo = testSkillParentObject.GetType().GetProperties();
 			foreach (var property in propertyInfo)
 			{
-				if (Attribute.IsDefined(property, typeof(ElasticsearchString)))
+				if (Attribute.IsDefined(property, typeof(ElasticsearchCoreTypes)))
 				{
 					var obj = property.Name.ToLower(); // (testSkillParentObject);
 					object[] attrs = property.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
@@ -36,10 +36,17 @@ namespace ElasticsearchCRUD.Integration.Test
 
 	public class MappingTypeTestEntity
 	{
+		[ElasticsearchLong(DocValues = false)]
 		public long Id { get; set; }
 		[ElasticsearchString(Boost = 1.0)]
 		public string NameSkillParent { get; set; }
 
+		[ElasticsearchFloat(Boost = 2.5, Index = NumberIndex.no)]
+		public double DoubleTestId { get; set; }
+		public float FloatTestId { get; set; }
+		public short ShortTestId { get; set; }
+		public int IntTestId { get; set; }
+		public byte ByteTestId { get; set; }
 		[ElasticsearchString(Boost = 1.4, Index = StringIndex.analyzed)]
 		public string DescriptionSkillParent { get; set; }
 

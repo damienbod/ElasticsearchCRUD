@@ -8,25 +8,25 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 	[AttributeUsage(AttributeTargets.Property , AllowMultiple = false, Inherited = true)]
 	public abstract class ElasticsearchNumber : ElasticsearchCoreTypes
 	{
-		protected string _indexName;
-		protected bool _store;
-		protected StringIndexNumber _index;
-		protected bool _docValues;
-		protected double _boost;
-		protected object _nullValue;
-		protected bool _includeInAll;
-		protected PrecisionStep _precisionStep;
+		private string _indexName;
+		private bool _store;
+		private NumberIndex _index;
+		private bool _docValues;
+		private double _boost;
+		private object _nullValue;
+		private bool _includeInAll;
+		private PrecisionStep _precisionStep;
 		private bool _ignoreMalformed;
 		private bool _coerce;
 
-		protected bool _indexNameSet;
-		protected bool _storeSet;
-		protected bool _indexSet;
-		protected bool _docValuesSet;
-		protected bool _boostSet;
-		protected bool _nullValueSet;
-		protected bool _includeInAllSet;
-		protected bool _precisionStepSet;
+		private bool _indexNameSet;
+		private bool _storeSet;
+		private bool _indexSet;
+		private bool _docValuesSet;
+		private bool _boostSet;
+		private bool _nullValueSet;
+		private bool _includeInAllSet;
+		private bool _precisionStepSet;
 		private bool _ignoreMalformedSet;
 		private bool _coerceSet;
 
@@ -62,7 +62,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 		/// index
 		/// Set to no if the value should not be indexed. Setting to no disables include_in_all. If set to no the field should be either stored in _source, have include_in_all enabled, or store be set to true for this to be useful.
 		/// </summary>
-		public virtual StringIndexNumber Index
+		public virtual NumberIndex Index
 		{
 			get { return _index; }
 			set
@@ -169,9 +169,30 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 				_coerceSet = true;
 			}
 		}
+
+		protected string JsonStringInternal(string typeProperty)
+		{
+			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+			WriteValue("type", "double", elasticsearchCrudJsonWriter);
+			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
+			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
+			WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);
+			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
+			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
+			WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
+			WriteValue("precision_step", _precisionStep, elasticsearchCrudJsonWriter, _precisionStepSet);			
+			WriteValue("ignore_malformed", _ignoreMalformed, elasticsearchCrudJsonWriter, _ignoreMalformedSet);
+			WriteValue("coerce", _coerce, elasticsearchCrudJsonWriter, _coerceSet);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+
+			return elasticsearchCrudJsonWriter.Stringbuilder.ToString();
+		}
 	}
 
-	public enum StringIndexNumber
+	public enum NumberIndex
 	{
 		no
 	}
@@ -184,4 +205,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 		_2147483647 = 2147483647
 
 	}
+
+	
 }

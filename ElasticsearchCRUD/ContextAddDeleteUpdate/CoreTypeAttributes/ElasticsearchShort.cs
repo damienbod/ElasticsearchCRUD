@@ -3,11 +3,11 @@
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-	public class ElasticsearchFloat : ElasticsearchNumber
+	public class ElasticsearchShort : ElasticsearchNumber
 	{
 		public override string JsonString()
 		{
-			return JsonStringInternal("float");
+			return JsonStringInternal("short");
 		}
 	}
 }
