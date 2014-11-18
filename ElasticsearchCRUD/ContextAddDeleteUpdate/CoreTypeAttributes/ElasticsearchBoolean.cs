@@ -115,11 +115,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
 			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
-			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
-			WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
+
+			WriteBaseValues(elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-
 			return elasticsearchCrudJsonWriter.Stringbuilder.ToString();
 		}
 	}

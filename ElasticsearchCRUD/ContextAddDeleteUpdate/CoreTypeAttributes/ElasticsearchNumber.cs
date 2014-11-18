@@ -186,12 +186,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			WriteValue("precision_step", _precisionStep, elasticsearchCrudJsonWriter, _precisionStepSet);			
 			WriteValue("ignore_malformed", _ignoreMalformed, elasticsearchCrudJsonWriter, _ignoreMalformedSet);
 			WriteValue("coerce", _coerce, elasticsearchCrudJsonWriter, _coerceSet);
-			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
-			WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
+			
+			WriteBaseValues(elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			return elasticsearchCrudJsonWriter.Stringbuilder.ToString();
 		}
+
+		
 	}
 
 	public enum NumberIndex

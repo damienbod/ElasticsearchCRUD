@@ -62,8 +62,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
 			WriteValue("ignore_above", _ignoreAbove, elasticsearchCrudJsonWriter, _ignoreAboveSet);
 			WriteValue("position_offset_gap", _positionOffsetGap, elasticsearchCrudJsonWriter, _positionOffsetGapSet);
-			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
-			WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
+
+			WriteBaseValues(elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			return elasticsearchCrudJsonWriter.Stringbuilder.ToString();

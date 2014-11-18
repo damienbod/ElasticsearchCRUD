@@ -37,7 +37,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 				_copyToSet = true;
 			}
 		}
-		
+
+		protected void WriteBaseValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
+			WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
+		}
 
 		protected void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
 		{
