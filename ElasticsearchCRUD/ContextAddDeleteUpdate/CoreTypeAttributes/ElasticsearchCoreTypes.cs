@@ -1,14 +1,17 @@
 using System;
+using System.Collections.Generic;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
 	public abstract class ElasticsearchCoreTypes : Attribute
 	{
-		protected string _similarity;
-		protected bool _similaritySet;
-		protected string _copyTo;
-		protected bool _copyToSet;
+		private string _similarity;
+		private bool _similaritySet;
+		private string _copyTo;
+		private List<string> _copyToList;
+		private bool _copyToSet;
+		private bool _copyToListSet;
 
 		public virtual string JsonString()
 		{
@@ -38,10 +41,29 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			}
 		}
 
+		public virtual List<string> CopyToList
+		{
+			get { return _copyToList; }
+			set
+			{
+				_copyToList = value;
+				_copyToListSet = true;
+			}
+		}
+
 		protected void WriteBaseValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
-			WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
+			if (_copyToSet)
+			{
+				WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
+			}
+			else
+			{
+				// TODO write string array
+				//WriteValue("copy_to", _copyToList, elasticsearchCrudJsonWriter, _copyToListSet);
+			}
+			
 		}
 
 		protected void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
