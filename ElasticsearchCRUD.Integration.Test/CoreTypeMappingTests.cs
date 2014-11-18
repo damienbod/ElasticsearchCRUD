@@ -34,6 +34,13 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 	}
 
+	public class FieldDataDefinition
+	{
+		[ElasticsearchString(Index=StringIndex.not_analyzed)]
+		public string Raw { get; set; }
+	}
+
+
 	public class MappingTypeTestEntity
 	{
 		[ElasticsearchLong(DocValues = false)]
@@ -56,7 +63,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchByte(Store=true, IncludeInAll=true)]
 		public byte ByteTestId { get; set; }
 
-		[ElasticsearchString(Boost = 1.7, Index = StringIndex.analyzed, NormsEnabled = true)]
+		[ElasticsearchString(Boost = 1.7, Index = StringIndex.analyzed, NormsEnabled = true, Fields = typeof(FieldDataDefinition) )]
 		public string DescriptionSkillParent { get; set; }
 
 		[ElasticsearchDate(Boost = 1.1)]

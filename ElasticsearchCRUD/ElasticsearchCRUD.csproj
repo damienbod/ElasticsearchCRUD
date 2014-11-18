@@ -66,6 +66,7 @@
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchNumber.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchShort.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchString.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\Fields.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexMapping.cs" />
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />

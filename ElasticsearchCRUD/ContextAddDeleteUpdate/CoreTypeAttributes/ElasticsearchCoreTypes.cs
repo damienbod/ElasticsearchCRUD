@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
@@ -13,6 +12,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 		private string[] _copyToList;
 		private bool _copyToSet;
 		private bool _copyToListSet;
+		private Type _fields;
+		private bool _fieldsSet;
 
 		public virtual string JsonString()
 		{
@@ -52,6 +53,17 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			}
 		}
 
+		public virtual Type Fields
+		{
+			get { return _fields; }
+			set
+			{
+				_fields = value;
+				_fieldsSet = true;
+			}
+		}
+		
+
 		protected void WriteBaseValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
@@ -65,7 +77,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("copy_to");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue(json);
 			}
-			
+			if (_fieldsSet)
+			{
+				var fields = new Fields {FieldClass = _fields};
+				fields.AddFieldData(elasticsearchCrudJsonWriter);
+			}		
 		}
 
 		protected void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
