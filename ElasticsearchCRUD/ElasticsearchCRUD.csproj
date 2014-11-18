@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="ContentExists\ElasticsearchContextExists.cs" />
     <Compile Include="ContentExists\Exists.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchBinary.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchBoolean.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchByte.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchCoreTypes.cs" />

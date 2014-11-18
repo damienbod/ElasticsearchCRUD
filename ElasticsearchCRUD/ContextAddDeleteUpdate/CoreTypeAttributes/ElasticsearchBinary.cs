@@ -3,22 +3,21 @@
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
 	[AttributeUsage(AttributeTargets.Property , AllowMultiple = false, Inherited = true)]
-	public class ElasticsearchBoolean : ElasticsearchCoreTypes
+	public class ElasticsearchBinary : ElasticsearchCoreTypes
 	{
 		private string _indexName;
-		private NumberIndex _index;
 		private bool _store;
 		private bool _docValues;
-		private double _boost;
-		private object _nullValue;		
+
+		private bool _compress;
+		private int _compressThreshold;		
 
 		private bool _indexNameSet;
 		private bool _storeSet;
 		private bool _docValuesSet;
-		private bool _boostSet;
-		private bool _nullValueSet;
-		private bool _indexSet;
-		
+		private bool _compressSet;
+		private bool _compressThresholdSet;
+
 		/// <summary>
 		/// index_name
 		/// The name of the field that will be stored in the index. Defaults to the property/field name.
@@ -34,16 +33,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 		}
 
 		/// <summary>
-		/// index
-		/// Set to no if the value should not be indexed. Setting to no disables include_in_all. If set to no the field should be either stored in _source, have include_in_all enabled, or store be set to true for this to be useful.
+		/// compress
+		/// Set to true to compress the stored binary value.
 		/// </summary>
-		public virtual NumberIndex Index
+		public virtual bool Compress
 		{
-			get { return _index; }
+			get { return _compress; }
 			set
 			{
-				_index = value;
-				_indexSet = true;
+				_compress = value;
+				_compressSet = true;
 			}
 		}
 
@@ -76,30 +75,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 		}
 
 		/// <summary>
-		/// boost
-		/// The boost value. Defaults to 1.0.
+		/// //compress_threshold
+		/// Compression will only be applied to stored binary fields that are greater than this size. Defaults to -1 
 		/// </summary>
-		public virtual double Boost
+		public virtual int CompressThreshold
 		{
-			get { return _boost; }
+			get { return _compressThreshold; }
 			set
 			{
-				_boost = value;
-				_boostSet = true;
-			}
-		}
-
-		/// <summary>
-		/// null_value
-		/// When there is a (JSON) null value for the field, use the null_value as the field value. Defaults to not adding the field at all.
-		/// </summary>
-		public virtual object NullValue
-		{
-			get { return _nullValue; }
-			set
-			{
-				_nullValue = value;
-				_nullValueSet = true;
+				_compressThreshold = value;
+				_compressThresholdSet = true;
 			}
 		}
 
@@ -108,16 +93,15 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteValue("type", "boolean", elasticsearchCrudJsonWriter);
-			WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);
+			WriteValue("type", "binary", elasticsearchCrudJsonWriter);
+			WriteValue("compress_threshold", _compressThreshold, elasticsearchCrudJsonWriter, _compressThresholdSet);
 			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
 			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
 			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
-			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
-			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
+			WriteValue("compress", _compress, elasticsearchCrudJsonWriter, _compressSet);
 			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
 			WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
-
+			
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			return elasticsearchCrudJsonWriter.Stringbuilder.ToString();

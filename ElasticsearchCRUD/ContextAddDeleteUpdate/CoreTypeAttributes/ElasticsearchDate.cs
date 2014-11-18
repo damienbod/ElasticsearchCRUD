@@ -165,7 +165,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 
 			WriteValue("type", "date", elasticsearchCrudJsonWriter);
 			WriteValue("format", _format, elasticsearchCrudJsonWriter, _formatSet);
-
 			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
 			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
 			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
@@ -174,8 +173,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
 			WriteValue("precision_step", _precisionStep, elasticsearchCrudJsonWriter, _precisionStepSet);			
 			WriteValue("ignore_malformed", _ignoreMalformed, elasticsearchCrudJsonWriter, _ignoreMalformedSet);
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			WriteValue("similarity", _similarity, elasticsearchCrudJsonWriter, _similaritySet);
+			WriteValue("copy_to", _copyTo, elasticsearchCrudJsonWriter, _copyToSet);
 
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			return elasticsearchCrudJsonWriter.Stringbuilder.ToString();
 		}
 	}
