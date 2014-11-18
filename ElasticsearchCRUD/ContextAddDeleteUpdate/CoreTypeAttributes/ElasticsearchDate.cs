@@ -2,33 +2,46 @@
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
-	/// <summary>
-	/// type The type of the number. Can be float, double, integer, long, short, byte. Required.
-	/// </summary>
 	[AttributeUsage(AttributeTargets.Property , AllowMultiple = false, Inherited = true)]
-	public abstract class ElasticsearchNumber : ElasticsearchCoreTypes
+	public class ElasticsearchDate : ElasticsearchCoreTypes
 	{
+		public ElasticsearchDate()
+		{
+			// The format is always set.
+			Format = "dateOptionalTime";
+		}
+		private string _format;
 		private string _indexName;
 		private bool _store;
-		private NumberIndex _index;
 		private bool _docValues;
 		private double _boost;
 		private object _nullValue;
 		private bool _includeInAll;
 		private int _precisionStep;
 		private bool _ignoreMalformed;
-		private bool _coerce;
 
 		private bool _indexNameSet;
 		private bool _storeSet;
-		private bool _indexSet;
 		private bool _docValuesSet;
 		private bool _boostSet;
 		private bool _nullValueSet;
 		private bool _includeInAllSet;
 		private bool _precisionStepSet;
 		private bool _ignoreMalformedSet;
-		private bool _coerceSet;
+		private bool _formatSet;
+
+		/// <summary>
+		/// The date format. Defaults to dateOptionalTime.
+		/// </summary>
+		public virtual string Format
+		{
+			get { return _format; }
+			set
+			{
+				_format = value;
+				_formatSet = true;
+			}
+		}
 
 		/// <summary>
 		/// index_name
@@ -58,19 +71,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			}
 		}
 
-		/// <summary>
-		/// index
-		/// Set to no if the value should not be indexed. Setting to no disables include_in_all. If set to no the field should be either stored in _source, have include_in_all enabled, or store be set to true for this to be useful.
-		/// </summary>
-		public virtual NumberIndex Index
-		{
-			get { return _index; }
-			set
-			{
-				_index = value;
-				_indexSet = true;
-			}
-		}
+
 
 		/// <summary>
 		/// doc_values
@@ -130,7 +131,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 
 		/// <summary>
 		/// precision_step
-		/// The precision step (influences the number of terms generated for each number value). Defaults to 16 for long, double, 8 for short, integer, float, and 2147483647 for byte.
+		/// The precision step (influences the number of terms generated for each number value). Defaults to 16.
 		/// </summary>
 		public virtual int PrecisionStep
 		{
@@ -156,44 +157,27 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			}
 		}
 
-		/// <summary>
-		/// coerce
-		/// Try convert strings to numbers and truncate fractions for integers. Defaults to true.
-		/// </summary>
-		public virtual bool Coerce
-		{
-			get { return _coerce; }
-			set
-			{
-				_coerce = value;
-				_coerceSet = true;
-			}
-		}
 
 		protected string JsonStringInternal(string typeProperty)
 		{
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteValue("type", "double", elasticsearchCrudJsonWriter);
+			WriteValue("type", "date", elasticsearchCrudJsonWriter);
+			WriteValue("format", _format, elasticsearchCrudJsonWriter, _formatSet);
+
 			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
 			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
-			WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);
 			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
 			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
 			WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
 			WriteValue("precision_step", _precisionStep, elasticsearchCrudJsonWriter, _precisionStepSet);			
 			WriteValue("ignore_malformed", _ignoreMalformed, elasticsearchCrudJsonWriter, _ignoreMalformedSet);
-			WriteValue("coerce", _coerce, elasticsearchCrudJsonWriter, _coerceSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			return elasticsearchCrudJsonWriter.Stringbuilder.ToString();
 		}
 	}
-
-	public enum NumberIndex
-	{
-		no
-	}	
 }
+
