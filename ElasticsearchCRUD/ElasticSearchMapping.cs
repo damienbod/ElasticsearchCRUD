@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -63,13 +64,38 @@ namespace ElasticsearchCRUD
 
 									if (createPropertyMappings)
 									{
-										// TODO create property mapping using the attributes
+										var obj = prop.Name.ToLower();
+										if (Attribute.IsDefined(prop, typeof (ElasticsearchCoreTypes)))
+										{									
+											object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
+
+											if ((attrs[0] as ElasticsearchCoreTypes) != null)
+											{
+												elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+												elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
+											}
+											
+										}
+										else
+										{
+											// no elasticsearch property defined
+											elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+											if (false)
+											{
+												elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("{ \"type\" : \"date\", \"format\": \"dateOptionalTime\"}");
+											}
+											else
+											{
+												elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("{ \"type\" : \"" + GetElasticsearchType(prop.PropertyType) + "\" }");
+											}
+
+										}
 									}
 									else
 									{
 										MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
 									}
-									
+
 								}
 							}
 						}
@@ -429,6 +455,12 @@ namespace ElasticsearchCRUD
 				type = type.BaseType;
 			}
 			return type.Name.ToLower() + "s";
+		}
+
+		public string GetElasticsearchType(Type propertyType)
+		{
+			// TODO
+			//prop.PropertyType.FullName
 		}
 	}
 }

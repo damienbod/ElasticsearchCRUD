@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using NUnit.Framework;
 
@@ -9,7 +8,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class CoreTypeMappingTests
 	{
 		[Test]
-		public void ReflectionAttributeElasticsearchString()
+		public void ReflectionAttributeElasticsearchMappings()
 		{
 			var testSkillParentObject = new MappingTypeTestEntity
 			{
@@ -25,7 +24,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				if (Attribute.IsDefined(property, typeof(ElasticsearchCoreTypes)))
 				{
-					var obj = property.Name.ToLower(); // (testSkillParentObject);
+					var obj = property.Name.ToLower(); 
 					object[] attrs = property.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
 
 					Console.WriteLine(obj + " : " + (attrs[0] as ElasticsearchCoreTypes).JsonString());
@@ -39,7 +38,6 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchString(Index=StringIndex.not_analyzed)]
 		public string Raw { get; set; }
 	}
-
 
 	public class MappingTypeTestEntity
 	{

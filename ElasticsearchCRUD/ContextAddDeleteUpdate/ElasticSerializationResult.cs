@@ -2,7 +2,7 @@
 {
 	public class ElasticSerializationResult
 	{
-		public InitMappings InitMappings { get; set; }
+		public IndexMappings IndexMappings { get; set; }
 
 		public string Content { get; set; }
 	}
