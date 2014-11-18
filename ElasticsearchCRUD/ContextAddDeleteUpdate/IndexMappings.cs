@@ -97,6 +97,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
+			// TODO just create mapping for the first result of each entity
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			elasticsearchMapping.MapEntityValues(entityInfo, _elasticsearchCrudJsonWriter, true, createPropertyMappings);
@@ -107,6 +108,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
 		{
+			// TODO just create mapping for the first result of each entity
 			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 

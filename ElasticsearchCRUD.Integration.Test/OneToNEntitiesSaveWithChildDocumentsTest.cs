@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
@@ -579,7 +580,9 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class ParentDocument
 	{
 		[Key]
+		[ElasticsearchLong(Boost=1.2)]
 		public long Id { get; set; }
+	
 		public string D1 { get; set; }
 
 		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }

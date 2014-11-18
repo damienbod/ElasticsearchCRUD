@@ -461,6 +461,7 @@ namespace ElasticsearchCRUD
 		{
 			// TODO
 			//prop.PropertyType.FullName
+			return "string";
 		}
 	}
 }
