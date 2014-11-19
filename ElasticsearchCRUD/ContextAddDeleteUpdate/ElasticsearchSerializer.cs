@@ -30,6 +30,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			{
 				return null;
 			}
+
 			_elasticSerializationResult = new ElasticSerializationResult();
 			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 
@@ -53,6 +54,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			_elasticsearchCrudJsonWriter.Dispose();
 			_elasticSerializationResult.Content = _elasticsearchCrudJsonWriter.Stringbuilder.ToString();
+			_elasticSerializationResult.IndexMappings = _indexMappings;
 			return _elasticSerializationResult;
 		}
 

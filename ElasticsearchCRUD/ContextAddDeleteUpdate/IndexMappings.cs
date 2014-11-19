@@ -12,10 +12,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 	public class IndexMappings
 	{
 		private readonly ITraceProvider _traceProvider;
-		private ElasticsearchCrudJsonWriter _elasticsearchCrudJsonWriter;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
-		private ElasticSerializationResult _elasticSerializationResult = new ElasticSerializationResult();
-		private bool createPropertyMappings = true;
+		private const bool CreatePropertyMappings = true;
+		private readonly List<string> _processedItems = new List<string>();
 
 		public List<string> CommandTypes = new List<string>();
 		public List<MappingCommand> Commands = new List<MappingCommand>();
@@ -64,18 +63,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			return resultDetails;
 		}
 
-
 		public IndexMappings(ITraceProvider traceProvider, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
 		{
 			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_traceProvider = traceProvider;
-		}
-
-		private void CreatePropertyMappingCommand(string propertyMapping, string index, string documentType)
-		{
-			var command = new MappingCommand { Url = string.Format("/{0}/{1}/_mapping", index, documentType), RequestType = "PUT" };
-			command.Content = propertyMapping;
-			Commands.Add(command);
 		}
 
 		public void CreatePropertyMappingForTopEntity(EntityContextInfo entityInfo)
@@ -102,18 +93,35 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticSearchMapping.ChildIndexEntities.Clear();
 		}
 
-		private readonly List<string> _processedItems = new List<string>(); 
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
-			ProccessPropertyMappings(item, elasticsearchMapping);
+			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+			CreateParentMappingForDocument(
+				elasticsearchCrudJsonWriter, 
+				elasticsearchMapping.GetDocumentType(item.EntityType), 
+				elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
+
+			if (entityInfo.RoutingDefinition.RoutingId != null)
+			{
+				CreateForceRoutingMappingForDocument(elasticsearchCrudJsonWriter);
+			}
+			
+			ProccessPropertyMappings(elasticsearchCrudJsonWriter, item, elasticsearchMapping);
 		}
 
 		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
 		{
-			ProccessPropertyMappings(entityInfo, elasticsearchMapping);
+			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+
+			if (entityInfo.RoutingDefinition.RoutingId != null)
+			{
+				CreateForceRoutingMappingForDocument(elasticsearchCrudJsonWriter);
+			}
+
+			ProccessPropertyMappings(elasticsearchCrudJsonWriter, entityInfo, elasticsearchMapping);
 		}
 
-		private void ProccessPropertyMappings(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
+		private void ProccessPropertyMappings(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
 		{
 			var itemType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);
 			if (_processedItems.Contains(itemType))
@@ -122,23 +130,61 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			_processedItems.Add(itemType);
 
-			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			//"skill": {
-			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			//"properties": {
-			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticsearchMapping.MapEntityValues(entityInfo, _elasticsearchCrudJsonWriter, true, createPropertyMappings);
+			elasticsearchMapping.MapEntityValues(entityInfo, elasticsearchCrudJsonWriter, true, CreatePropertyMappings);
 
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 
-			CreatePropertyMappingCommand(_elasticsearchCrudJsonWriter.GetJsonString(), elasticsearchMapping.GetIndexForType(entityInfo.EntityType), itemType);
+			CreatePropertyMappingCommand(elasticsearchCrudJsonWriter.GetJsonString(), elasticsearchMapping.GetIndexForType(entityInfo.EntityType), itemType);
 		}
+
+		private void CreatePropertyMappingCommand(string propertyMapping, string index, string documentType)
+		{
+			var command = new MappingCommand { Url = string.Format("/{0}/{1}/_mapping", index, documentType), RequestType = "PUT" };
+			command.Content = propertyMapping;
+			Commands.Add(command);
+		}
+
+		private void CreateParentMappingForDocument(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, string childType, string parentType)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(childType);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_parent");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(parentType);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+
+		/// <summary>
+		/// "_routing": {
+		/// "required": true
+		/// },
+		/// </summary>
+		/// <param name="elasticsearchCrudJsonWriter"></param>
+		private void CreateForceRoutingMappingForDocument(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_routing");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("required");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteValue("true");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+
 	}
 
 
