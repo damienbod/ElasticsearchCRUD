@@ -30,7 +30,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{				
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId);
-				context.SaveChangesAndInitMappingsForChildDocuments();	
+				context.SaveChangesAndInitMappings();	
 			}
 		}
 	}

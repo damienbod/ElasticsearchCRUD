@@ -65,7 +65,7 @@ namespace DataTransferSQLToEl
 
 						if (firstRun)
 						{
-							elasticSearchContext.SaveChangesAndInitMappingsForChildDocuments();
+							elasticSearchContext.SaveChangesAndInitMappings();
 							firstRun = false;
 						}
 						else

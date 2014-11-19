@@ -357,7 +357,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AddUpdateDocument(parentDocument, parentDocument.Id);
 
 				// Save to Elasticsearch
-				var ret = context.SaveChangesAndInitMappingsForChildDocuments();
+				var ret = context.SaveChangesAndInitMappings();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
 				context.GetDocument<ParentDocumentUserDefinedRouting>(parentDocument.Id);

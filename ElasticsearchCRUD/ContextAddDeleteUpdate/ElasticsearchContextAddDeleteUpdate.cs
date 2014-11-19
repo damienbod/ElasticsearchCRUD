@@ -20,7 +20,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
 		private readonly HttpClient _client;
 		private readonly string _connectionString;
-		private bool _saveChangesAndInitMappingsForChildDocuments;
+		private bool _saveChangesAndInitMappings;
 		private readonly Uri _elasticsearchUrlBatch;
 
 		public ElasticsearchContextAddDeleteUpdate(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
@@ -35,7 +35,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		public ResultDetails<string> SaveChanges(List<EntityContextInfo> entityPendingChanges, bool saveChangesAndInitMappingsForChildDocuments)
 		{
-			_saveChangesAndInitMappingsForChildDocuments = saveChangesAndInitMappingsForChildDocuments;
+			_saveChangesAndInitMappings = saveChangesAndInitMappingsForChildDocuments;
 			var syncExecutor = new SyncExecute(_traceProvider);
 			return syncExecutor.ExecuteResultDetails(() => SaveChangesAsync(entityPendingChanges));
 		}
@@ -54,13 +54,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			try
 			{
 				string serializedEntities;
-				using (var serializer = new ElasticsearchSerializer(_traceProvider, _elasticsearchSerializerConfiguration, _saveChangesAndInitMappingsForChildDocuments))
+				using (var serializer = new ElasticsearchSerializer(_traceProvider, _elasticsearchSerializerConfiguration, _saveChangesAndInitMappings))
 				{
 					var result = serializer.Serialize(entityPendingChanges);
-					if (_saveChangesAndInitMappingsForChildDocuments)
+					if (_saveChangesAndInitMappings)
 					{
 						await result.IndexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
-						_saveChangesAndInitMappingsForChildDocuments = false;
+						_saveChangesAndInitMappings = false;
 					}
 					serializedEntities = result.Content;
 				}

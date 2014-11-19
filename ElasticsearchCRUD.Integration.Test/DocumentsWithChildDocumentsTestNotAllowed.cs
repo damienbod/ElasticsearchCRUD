@@ -30,7 +30,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AddUpdateDocument(parentDocument, parentDocument.Id);
 
 				// Save to Elasticsearch
-				context.SaveChangesAndInitMappingsForChildDocuments();
+				context.SaveChangesAndInitMappings();
 			}
 		}
 

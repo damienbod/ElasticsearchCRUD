@@ -122,7 +122,7 @@ namespace ElasticsearchCRUD
 		/// if the child documents are saved as separate index types. ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex= true
 		/// </summary>
 		/// <returns>Returns HTTP response information</returns>
-		public ResultDetails<string> SaveChangesAndInitMappingsForChildDocuments()
+		public ResultDetails<string> SaveChangesAndInitMappings()
 		{
 			return _elasticsearchContextAddDeleteUpdate.SaveChanges(_entityPendingChanges, true);
 		}
