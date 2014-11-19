@@ -135,22 +135,31 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// <param name="item"></param>
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
-			var itemType = elasticsearchMapping.GetDocumentType(item.EntityType);
-			if (_processedItems.Contains(itemType))
+			var childType = elasticsearchMapping.GetDocumentType(item.EntityType);
+			var parentType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);
+
+			if (_processedItems.Contains(childType))
 			{
+				var test = CommandTypes.Find(t => t.StartsWith(childType));
+				if (test != childType + "_" + parentType)
+				{
+					throw new ElasticsearchCrudException("InitMappings: Not supported, child documents can only have one parent");
+				}
 				return;
 			}
-			_processedItems.Add(itemType);
+			_processedItems.Add(childType);
+
+			CommandTypes.Add(childType + "_" + parentType);
 
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(itemType);
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(childType);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			CreateParentMappingForDocument(
 				elasticsearchCrudJsonWriter,
-				elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
+				elasticsearchMapping.GetDocumentType(item.ParentEntityType));
 
 			if (item.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
@@ -229,8 +238,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_shards");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfShards);
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_replicas");
-			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfReplicas);
+			//elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_replicas");
+			//elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfReplicas);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
