@@ -101,7 +101,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				elasticsearchMapping.GetDocumentType(item.EntityType), 
 				elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
 
-			if (entityInfo.RoutingDefinition.RoutingId != null)
+			if (item.RoutingDefinition.RoutingId != null)
 			{
 				CreateForceRoutingMappingForDocument(elasticsearchCrudJsonWriter);
 			}
@@ -156,14 +156,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		private void CreateParentMappingForDocument(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, string childType, string parentType)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(childType);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_parent");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(parentType);
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
@@ -176,12 +174,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// <param name="elasticsearchCrudJsonWriter"></param>
 		private void CreateForceRoutingMappingForDocument(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_routing");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("required");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteValue("true");
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 

@@ -463,7 +463,10 @@ namespace ElasticsearchCRUD.Integration.Test
 				new ElasticsearchMappingChildDocumentForParent());
 			using (
 				var context = new ElasticsearchContext(ConnectionString,
-					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+					new ElasticsearchSerializerConfiguration(
+						_elasticsearchMappingResolver, 
+						SaveChildObjectsAsWellAsParent, 
+						ProcessChildDocumentsAsSeparateChildIndex,true)))
 			{
 				context.TraceProvider = trace;
 				context.AddUpdateDocument(parentDocument, parentDocument.Id);
