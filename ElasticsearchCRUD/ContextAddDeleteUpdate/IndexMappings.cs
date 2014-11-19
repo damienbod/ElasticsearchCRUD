@@ -192,15 +192,23 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		private void CreateMappingCommandForTypeWithExistingIndex(string propertyMapping, string index, string documentType)
 		{
-			var command = new MappingCommand { Url = string.Format("/{0}/{1}/_mappings", index, documentType), RequestType = "PUT" };
-			command.Content = propertyMapping;
+			var command = new MappingCommand
+			{
+				Url = string.Format("/{0}/{1}/_mappings", index, documentType),
+				RequestType = "PUT",
+				Content = propertyMapping
+			};
 			Commands.Add(command);
 		}
 
 		private void CreateIndexCommand(string indexJsonConfiguration, string index)
 		{
-			var command = new MappingCommand { Url = string.Format("/{0}/", index ), RequestType = "PUT" };
-			command.Content = indexJsonConfiguration;
+			var command = new MappingCommand
+			{
+				Url = string.Format("/{0}/", index),
+				RequestType = "PUT",
+				Content = indexJsonConfiguration
+			};
 			Commands.Add(command);
 		}
 
@@ -231,15 +239,15 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// "settings" : {
 		/// "number_of_shards" : 1
 		/// },
-		private void CreateIndexSettings(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, int  numberOfShards, int numberOfReplicas)
+		private void CreateIndexSettings(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, int numberOfShards, int numberOfReplicas)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("settings");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_shards");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfShards);
-			//elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_replicas");
-			//elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfReplicas);
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_replicas");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfReplicas);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
