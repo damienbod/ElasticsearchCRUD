@@ -585,6 +585,14 @@ namespace ElasticsearchCRUD.Integration.Test
 	
 		public string D1 { get; set; }
 
+		[ElasticsearchDate(Store=true)]
+		public DateTime DataTimeD1 { get; set; }
+		public DateTime DataTimeD2 { get; set; }
+
+		[ElasticsearchDate(Boost = 2.0)]
+		public DateTimeOffset DataTimeOffsetD3 { get; set; }
+		public DateTimeOffset DataTimeOffsetD4 { get; set; }
+
 		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }
 	}
 

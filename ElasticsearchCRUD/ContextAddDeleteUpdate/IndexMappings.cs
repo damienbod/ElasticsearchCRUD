@@ -97,23 +97,36 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
-			// TODO just create mapping for the first result of each entity
+			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+			//"skill": {
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+			//"properties": {
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			elasticsearchMapping.MapEntityValues(entityInfo, _elasticsearchCrudJsonWriter, true, createPropertyMappings);
 
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 		}
 
 		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
 		{
-			// TODO just create mapping for the first result of each entity
 			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+			//"skill": {
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+			//"properties": {
+			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			elasticsearchMapping.MapEntityValues(entityInfo, _elasticsearchCrudJsonWriter, true, createPropertyMappings);
 
+			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 

@@ -60,7 +60,7 @@ namespace ElasticsearchCRUD
 							{
 								if (!ProcessChildDocumentsAsSeparateChildIndex || ProcessChildDocumentsAsSeparateChildIndex && beginMappingTree)
 								{
-									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}", prop.Name.ToLower());
+									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}, {1}", prop.Name.ToLower(), prop.PropertyType.FullName);
 
 									if (createPropertyMappings)
 									{
@@ -80,7 +80,7 @@ namespace ElasticsearchCRUD
 										{
 											// no elasticsearch property defined
 											elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
-											if (false)
+											if (prop.PropertyType.FullName == "System.DateTime" || prop.PropertyType.FullName == "System.DateTimeOffset")
 											{
 												elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("{ \"type\" : \"date\", \"format\": \"dateOptionalTime\"}");
 											}
@@ -457,11 +457,58 @@ namespace ElasticsearchCRUD
 			return type.Name.ToLower() + "s";
 		}
 
+		/// <summary>
+		/// bool System.Boolean
+		/// byte System.Byte
+		/// sbyte System.SByte 
+		/// char System.Char
+		/// decimal System.Decimal => string
+		/// double System.Double
+		/// float System.Single
+		/// int System.Int32
+		/// uint System.UInt32
+		/// long System.Int64
+		/// ulong System.UInt64
+		/// short System.Int16
+		/// ushort System.UInt16
+		/// string System.String 
+		/// </summary>
+		/// <param name="propertyType"></param>
+		/// <returns>
+		/// string,  boolean, and null.
+		/// float, double, byte, short, integer, and long
+		/// date
+		/// binary
+		/// </returns>
 		public string GetElasticsearchType(Type propertyType)
 		{
-			// TODO
-			//prop.PropertyType.FullName
-			return "string";
+			switch (propertyType.FullName)
+			{
+				case "System.Boolean":
+					return "bool";
+				case "System.Byte":
+					return "byte";
+				case "System.SByte":
+					return "byte";
+				case "System.Double":
+					return "double";
+				case "System.Single":
+					return "float";
+				case "System.Int32":
+					return "integer";
+				case "System.UInt32":
+					return "integer";
+				case "System.Int64":
+					return "long";
+				case "System.UInt64":
+					return "long";
+				case "System.Int16":
+					return "short";
+				case "System.UInt16":
+					return "short";
+				default:
+					return "string";
+			}
 		}
 	}
 }
