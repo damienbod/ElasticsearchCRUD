@@ -55,6 +55,7 @@
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
     <Compile Include="DocumentsWithChildDocumentsTestNotAllowed.cs" />
     <Compile Include="ExistsTests.cs" />
+    <Compile Include="MappingTests.cs" />
     <Compile Include="OneToNEntitiesSaveWithChildDocumentsTestWithRouting.cs" />
     <Compile Include="OneToNEntitiesSaveWithChildDocumentsTest.cs" />
     <Compile Include="OneToNNestedElasticsearchCrudTests.cs" />

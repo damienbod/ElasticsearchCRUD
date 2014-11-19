@@ -25,6 +25,7 @@ namespace ElasticsearchCRUD
 		public bool ProcessChildDocumentsAsSeparateChildIndex { get; set; }
 
 		public List<EntityContextInfo> ChildIndexEntities = new List<EntityContextInfo>();
+		private bool _createPropertyMappings;
 
 		/// <summary>
 		/// Ovveride this if your default mapping needs to be changed.
@@ -38,6 +39,7 @@ namespace ElasticsearchCRUD
 		{
 			try
 			{
+				_createPropertyMappings = createPropertyMappings;
 				BeginNewEntityToDocumentMapping(entityInfo, beginMappingTree);
 
 				TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: SerializedTypes new Type added: {0}", GetDocumentType(entityInfo.Document.GetType()));
@@ -163,12 +165,29 @@ namespace ElasticsearchCRUD
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower());
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+			if (_createPropertyMappings)
+			{
+				// "properties": {
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			}
 			// Do class mapping for nested type
 			var entity = prop.GetValue(entityInfo.Document);
 			var routingDefinition = new RoutingDefinition {ParentId = entityInfo.Id};
 			var child = new EntityContextInfo { Document = entity, RoutingDefinition = routingDefinition, EntityType = entity.GetType(), DeleteDocument = entityInfo.DeleteDocument };
-			MapEntityValues(child, elasticsearchCrudJsonWriter);
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			
+			if (_createPropertyMappings)
+			{
+				MapEntityValues(child, elasticsearchCrudJsonWriter, false, true);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
+			else
+			{
+				MapEntityValues(child, elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
 		}
 
 		private void ProcessSingleObjectAsChildDocument(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop)
