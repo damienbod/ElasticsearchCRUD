@@ -150,12 +150,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
 		{
-			//using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			//{
-			//	context.AllowDeleteForIndex = true;
-			//	var entityResult = context.DeleteIndexAsync<ParentDocument>();
-			//	entityResult.Wait();
-			//}
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<ParentDocument>();
+				entityResult.Wait();
+			}
 		}
 
 		[Test]

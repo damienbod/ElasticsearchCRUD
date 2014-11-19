@@ -71,6 +71,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_traceProvider = traceProvider;
 		}
 
+		private void CreatePropertyMappingCommand(string propertyMapping, string index, string documentType)
+		{
+			var command = new MappingCommand { Url = string.Format("/{0}/{1}/_mapping", index, documentType), RequestType = "PUT" };
+			command.Content = propertyMapping;
+			Commands.Add(command);
+		}
+
 		public void CreatePropertyMappingForTopEntity(EntityContextInfo entityInfo)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
@@ -130,7 +137,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 
-			// TODO add to command
+			CreatePropertyMappingCommand(_elasticsearchCrudJsonWriter.GetJsonString(), elasticsearchMapping.GetIndexForType(entityInfo.EntityType), itemType);
 		}
 	}
 
