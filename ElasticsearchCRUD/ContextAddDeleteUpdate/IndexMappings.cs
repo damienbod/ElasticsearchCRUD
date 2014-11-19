@@ -136,20 +136,20 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
 			var childType = elasticsearchMapping.GetDocumentType(item.EntityType);
-			var parentType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);
+			var parentType = elasticsearchMapping.GetDocumentType(item.ParentEntityType);
 
+			var processedId = childType + "_" + parentType;
 			if (_processedItems.Contains(childType))
 			{
 				var test = CommandTypes.Find(t => t.StartsWith(childType));
-				if (test != childType + "_" + parentType)
+				if (test != processedId)
 				{
 					throw new ElasticsearchCrudException("InitMappings: Not supported, child documents can only have one parent");
 				}
 				return;
 			}
 			_processedItems.Add(childType);
-
-			CommandTypes.Add(childType + "_" + parentType);
+			CommandTypes.Add(processedId);
 
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
