@@ -384,7 +384,7 @@ namespace ElasticsearchCRUD.Integration.Test
 					},
 					new ChildDocumentLevelOneUserDefinedRouting
 					{
-						D2 = "p7.p21.p22",
+						D2 = "p7.p22",
 						Id = 22,
 						ChildDocumentLevelTwo = new ChildDocumentLevelTwoUserDefinedRouting
 						{

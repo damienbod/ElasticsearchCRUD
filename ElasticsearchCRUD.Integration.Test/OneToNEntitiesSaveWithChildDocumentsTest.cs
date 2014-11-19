@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
@@ -149,12 +150,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
 		{
-			//using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			//{
-			//	context.AllowDeleteForIndex = true;
-			//	var entityResult = context.DeleteIndexAsync<ParentDocument>();
-			//	entityResult.Wait();
-			//}
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<ParentDocument>();
+				entityResult.Wait();
+			}
 		}
 
 		[Test]
@@ -211,11 +212,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ParentDocument>(parentDocument2.Id);
 				var roundTripResultChildDocumentLevelOne =
 					context.GetDocument<ChildDocumentLevelOne>(parentDocument2.ChildDocumentLevelOne.First().Id,
-						new RoutingDefinition {ParentId = parentDocument2.Id});
+						new RoutingDefinition { ParentId = parentDocument2.Id });
 
 				var roundTripResultChildDocumentLevelTwo =
 					context.GetDocument<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
-						new RoutingDefinition {ParentId = parentDocument2.ChildDocumentLevelOne.First().Id});
+						new RoutingDefinition { ParentId = parentDocument2.ChildDocumentLevelOne.First().Id });
 
 				Assert.AreEqual(parentDocument2.Id, roundTripResult.Id);
 				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
@@ -462,7 +463,10 @@ namespace ElasticsearchCRUD.Integration.Test
 				new ElasticsearchMappingChildDocumentForParent());
 			using (
 				var context = new ElasticsearchContext(ConnectionString,
-					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+					new ElasticsearchSerializerConfiguration(
+						_elasticsearchMappingResolver, 
+						SaveChildObjectsAsWellAsParent, 
+						ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = trace;
 				context.AddUpdateDocument(parentDocument, parentDocument.Id);
@@ -495,7 +499,7 @@ namespace ElasticsearchCRUD.Integration.Test
 					},
 					new ChildDocumentLevelOne
 					{
-						D2 = "p7.p21.p22",
+						D2 = "p7.p22",
 						Id = 22,
 						ChildDocumentLevelTwo = new ChildDocumentLevelTwo
 						{
@@ -579,8 +583,18 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class ParentDocument
 	{
 		[Key]
+		[ElasticsearchLong(Boost=1.2)]
 		public long Id { get; set; }
+	
 		public string D1 { get; set; }
+
+		[ElasticsearchDate(Store=true)]
+		public DateTime DateTimeDataWithAttribute { get; set; }
+		public DateTime DateTimeData { get; set; }
+
+		[ElasticsearchDate(Boost = 2.0, Similarity="BM25")]
+		public DateTimeOffset DateTimeOffsetDataWithAttribute { get; set; }
+		public DateTimeOffset DateTimeOffsetData { get; set; }
 
 		public virtual ICollection<ChildDocumentLevelOne> ChildDocumentLevelOne { get; set; }
 	}

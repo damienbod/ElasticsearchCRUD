@@ -11,12 +11,17 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		private readonly ITraceProvider _traceProvider;
 		private ElasticsearchCrudJsonWriter _elasticsearchCrudJsonWriter;
 		private readonly ElasticsearchSerializerConfiguration _elasticsearchSerializerConfiguration;
+		private readonly bool _saveChangesAndInitMappingsForChildDocuments;
 		private ElasticSerializationResult _elasticSerializationResult = new ElasticSerializationResult();
+		private readonly IndexMappings _indexMappings;
 
-		public ElasticsearchSerializer(ITraceProvider traceProvider, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
+		public ElasticsearchSerializer(ITraceProvider traceProvider, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, bool saveChangesAndInitMappingsForChildDocuments)
 		{
 			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
+			_saveChangesAndInitMappingsForChildDocuments = saveChangesAndInitMappingsForChildDocuments;
 			_traceProvider = traceProvider;
+			_indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
+			_elasticSerializationResult.IndexMappings = _indexMappings;
 		}
 
 		public ElasticSerializationResult Serialize(IEnumerable<EntityContextInfo> entities)
@@ -25,6 +30,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			{
 				return null;
 			}
+
 			_elasticSerializationResult = new ElasticSerializationResult();
 			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 
@@ -48,6 +54,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			_elasticsearchCrudJsonWriter.Dispose();
 			_elasticSerializationResult.Content = _elasticsearchCrudJsonWriter.Stringbuilder.ToString();
+			_elasticSerializationResult.IndexMappings = _indexMappings;
 			return _elasticSerializationResult;
 		}
 
@@ -70,20 +77,23 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();	
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 		}
-
+	
 		private void AddUpdateEntity(EntityContextInfo entityInfo)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
 			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
-			
+
+			if (_saveChangesAndInitMappingsForChildDocuments)
+			{
+				_indexMappings.CreatePropertyMappingForTopEntity(entityInfo);
+			}
+
 			CreateBulkContentForParentDocument(entityInfo, elasticSearchMapping);
 
 			if (_elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
 			{
-				var initMappings = InitMappingIndex(entityInfo, elasticSearchMapping);
-
 				if (elasticSearchMapping.ChildIndexEntities.Count > 1)
 				{
 					// Only save the top level items now
@@ -91,11 +101,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					foreach (var item in elasticSearchMapping.ChildIndexEntities)
 					{
 						CreateBulkContentForChildDocument(entityInfo, elasticSearchMapping, item);
-						CreateCommandForChildDocument(entityInfo, initMappings, elasticSearchMapping, item);
 					}
 				}
-
-				_elasticSerializationResult.InitMappings = initMappings;
 			}
 			elasticSearchMapping.ChildIndexEntities.Clear();			
 		}
@@ -159,43 +166,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
-		}
-
-		private static void CreateCommandForChildDocument(EntityContextInfo entityInfo, InitMappings initMappings,
-			ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
-		{
-			initMappings.CreateIndexMapping(
-				elasticsearchMapping.GetIndexForType(entityInfo.EntityType),
-				elasticsearchMapping.GetDocumentType(item.ParentEntityType),
-				elasticsearchMapping.GetDocumentType(item.Document.GetType())
-				);
-
-			var contentJson = new ElasticsearchCrudJsonWriter();
-			contentJson.JsonWriter.WriteStartObject();
-			elasticsearchMapping.MapEntityValues(item, contentJson, true);
-			contentJson.JsonWriter.WriteEndObject();
-
-			initMappings.CreateIndex(
-				elasticsearchMapping.GetIndexForType(entityInfo.EntityType),
-				elasticsearchMapping.GetDocumentType(item.EntityType),
-				item.RoutingDefinition.ParentId.ToString(),
-				item.Id, contentJson.GetJsonString());
-		}
-
-		private static InitMappings InitMappingIndex(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
-		{
-			var contentJsonParent = new ElasticsearchCrudJsonWriter();
-			contentJsonParent.JsonWriter.WriteStartObject();
-			elasticsearchMapping.MapEntityValues(entityInfo, contentJsonParent, true);
-			contentJsonParent.JsonWriter.WriteEndObject();
-			var initMappings = new InitMappings();
-
-			initMappings.CreateIndex(
-				elasticsearchMapping.GetIndexForType(entityInfo.EntityType),
-				elasticsearchMapping.GetDocumentType(entityInfo.EntityType),
-				null,
-				entityInfo.Id, contentJsonParent.GetJsonString());
-			return initMappings;
 		}
 
 		private void WriteValue(string key, object valueObj)

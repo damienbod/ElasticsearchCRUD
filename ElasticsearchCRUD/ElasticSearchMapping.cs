@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -32,7 +33,8 @@ namespace ElasticsearchCRUD
 		/// <param name="entityInfo">Information about the entity</param>
 		/// <param name="elasticsearchCrudJsonWriter">Serializer with added tracing</param>
 		/// <param name="beginMappingTree">begin new mapping tree</param>
-		public virtual void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false)
+		/// <param name="createPropertyMappings">This tells the serializer to create a Json property mapping from the entity and not the document itself</param>
+		public virtual void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false, bool createPropertyMappings = false)
 		{
 			try
 			{
@@ -58,9 +60,42 @@ namespace ElasticsearchCRUD
 							{
 								if (!ProcessChildDocumentsAsSeparateChildIndex || ProcessChildDocumentsAsSeparateChildIndex && beginMappingTree)
 								{
-									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}",
-										prop.Name.ToLower());
-									MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
+									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}, {1}", prop.Name.ToLower(), prop.PropertyType.FullName);
+
+									if (createPropertyMappings)
+									{
+										var obj = prop.Name.ToLower();
+										if (Attribute.IsDefined(prop, typeof (ElasticsearchCoreTypes)))
+										{									
+											object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
+
+											if ((attrs[0] as ElasticsearchCoreTypes) != null)
+											{
+												elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+												elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
+											}
+											
+										}
+										else
+										{
+											// no elasticsearch property defined
+											elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+											if (prop.PropertyType.FullName == "System.DateTime" || prop.PropertyType.FullName == "System.DateTimeOffset")
+											{
+												elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("{ \"type\" : \"date\", \"format\": \"dateOptionalTime\"}");
+											}
+											else
+											{
+												elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("{ \"type\" : \"" + GetElasticsearchType(prop.PropertyType) + "\" }");
+											}
+
+										}
+									}
+									else
+									{
+										MapValue(prop.Name.ToLower(), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
+									}
+
 								}
 							}
 						}
@@ -420,6 +455,60 @@ namespace ElasticsearchCRUD
 				type = type.BaseType;
 			}
 			return type.Name.ToLower() + "s";
+		}
+
+		/// <summary>
+		/// bool System.Boolean
+		/// byte System.Byte
+		/// sbyte System.SByte 
+		/// char System.Char
+		/// decimal System.Decimal => string
+		/// double System.Double
+		/// float System.Single
+		/// int System.Int32
+		/// uint System.UInt32
+		/// long System.Int64
+		/// ulong System.UInt64
+		/// short System.Int16
+		/// ushort System.UInt16
+		/// string System.String 
+		/// </summary>
+		/// <param name="propertyType"></param>
+		/// <returns>
+		/// string,  boolean, and null.
+		/// float, double, byte, short, integer, and long
+		/// date
+		/// binary
+		/// </returns>
+		public string GetElasticsearchType(Type propertyType)
+		{
+			switch (propertyType.FullName)
+			{
+				case "System.Boolean":
+					return "bool";
+				case "System.Byte":
+					return "byte";
+				case "System.SByte":
+					return "byte";
+				case "System.Double":
+					return "double";
+				case "System.Single":
+					return "float";
+				case "System.Int32":
+					return "integer";
+				case "System.UInt32":
+					return "integer";
+				case "System.Int64":
+					return "long";
+				case "System.UInt64":
+					return "long";
+				case "System.Int16":
+					return "short";
+				case "System.UInt16":
+					return "short";
+				default:
+					return "string";
+			}
 		}
 	}
 }

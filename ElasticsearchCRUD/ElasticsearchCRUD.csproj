@@ -54,7 +54,21 @@
   <ItemGroup>
     <Compile Include="ContentExists\ElasticsearchContextExists.cs" />
     <Compile Include="ContentExists\Exists.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchBinary.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchBoolean.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchByte.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchCoreTypes.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchDate.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchDouble.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchFloat.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchInteger.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchLong.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchNumber.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchShort.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchString.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\Fields.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexMappings.cs" />
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
     <Compile Include="ContextAddDeleteUpdate\RoutingDefinition.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />
@@ -69,7 +83,6 @@
     <Compile Include="ElasticsearchCrudReindex.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />
-    <Compile Include="ContextAddDeleteUpdate\InitMappings.cs" />
     <Compile Include="ContextSearch\Search.cs" />
     <Compile Include="Utils\IndexMapping.cs" />
     <Compile Include="Utils\IndexTypeDescription.cs" />

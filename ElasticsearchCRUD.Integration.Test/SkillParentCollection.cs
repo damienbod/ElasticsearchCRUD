@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
