@@ -95,26 +95,26 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticSearchMapping.ChildIndexEntities.Clear();
 		}
 
+		private readonly List<string> _processedItems = new List<string>(); 
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
-			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
-			//"skill": {
-			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-
-			//"properties": {
-			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-
-			elasticsearchMapping.MapEntityValues(entityInfo, _elasticsearchCrudJsonWriter, true, createPropertyMappings);
-
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
+			ProccessPropertyMappings(item, elasticsearchMapping);
 		}
 
 		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
 		{
+			ProccessPropertyMappings(entityInfo, elasticsearchMapping);
+		}
+
+		private void ProccessPropertyMappings(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
+		{
+			var itemType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);
+			if (_processedItems.Contains(itemType))
+			{
+				return;
+			}
+			_processedItems.Add(itemType);
+
 			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			//"skill": {
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(elasticsearchMapping.GetDocumentType(entityInfo.EntityType));
@@ -130,12 +130,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");
 
-		}
-
-		private void WriteValue(string key, object valueObj)
-		{
-			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
-			_elasticsearchCrudJsonWriter.JsonWriter.WriteValue(valueObj);
+			// TODO add to command
 		}
 	}
 
