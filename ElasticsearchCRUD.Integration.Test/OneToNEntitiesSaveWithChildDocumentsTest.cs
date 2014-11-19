@@ -212,11 +212,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ParentDocument>(parentDocument2.Id);
 				var roundTripResultChildDocumentLevelOne =
 					context.GetDocument<ChildDocumentLevelOne>(parentDocument2.ChildDocumentLevelOne.First().Id,
-						new RoutingDefinition {ParentId = parentDocument2.Id});
+						new RoutingDefinition { ParentId = parentDocument2.Id });
 
 				var roundTripResultChildDocumentLevelTwo =
 					context.GetDocument<ChildDocumentLevelTwo>(parentDocument2.ChildDocumentLevelOne.First().ChildDocumentLevelTwo.Id,
-						new RoutingDefinition {ParentId = parentDocument2.ChildDocumentLevelOne.First().Id});
+						new RoutingDefinition { ParentId = parentDocument2.ChildDocumentLevelOne.First().Id });
 
 				Assert.AreEqual(parentDocument2.Id, roundTripResult.Id);
 				Assert.AreEqual(parentDocument2.ChildDocumentLevelOne.First().Id, roundTripResultChildDocumentLevelOne.Id);
@@ -466,7 +466,7 @@ namespace ElasticsearchCRUD.Integration.Test
 					new ElasticsearchSerializerConfiguration(
 						_elasticsearchMappingResolver, 
 						SaveChildObjectsAsWellAsParent, 
-						ProcessChildDocumentsAsSeparateChildIndex,true)))
+						ProcessChildDocumentsAsSeparateChildIndex)))
 			{
 				context.TraceProvider = trace;
 				context.AddUpdateDocument(parentDocument, parentDocument.Id);
