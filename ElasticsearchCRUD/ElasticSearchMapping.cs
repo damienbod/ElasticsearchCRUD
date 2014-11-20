@@ -124,6 +124,10 @@ namespace ElasticsearchCRUD
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is an Object: {0}", prop.ToString());
 			// This is a single object and not a reference to it's parent
 
+			if (createPropertyMappings && prop.GetValue(entityInfo.Document) == null)
+			{
+				prop.SetValue(entityInfo.Document,Activator.CreateInstance(prop.PropertyType));
+			}
 			if (prop.GetValue(entityInfo.Document) != null  && SaveChildObjectsAsWellAsParent)
 			{
 				var child = GetDocumentType(prop.GetValue(entityInfo.Document).GetType());

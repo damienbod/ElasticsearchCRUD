@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -31,7 +31,11 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				context.AllowDeleteForIndex = true;
 				var entityResult4 = context.DeleteIndexAsync<MappingTestsParentWithSimpleList>();
-				entityResult4.Wait();		
+				entityResult4.Wait();
+
+				context.AllowDeleteForIndex = true;
+				var entityResult5 = context.DeleteIndexAsync<MappingTestsParentNull>();
+				entityResult5.Wait();
 			}
 		}
 
@@ -167,8 +171,44 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+		[Test]
+		public void CreateNewIndexAndMappingForNullNestedChild()
+		{
+			var mappingTestsParent = new MappingTestsParentNull
+			{
+				Calls = 3,
+				MappingTestsParentId = 2
+			};
+
+			using (
+				var context = new ElasticsearchContext(ConnectionString,
+					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId);
+				context.SaveChangesAndInitMappings();
+
+				Thread.Sleep(1500);
+				var doc = context.GetDocument<MappingTestsParentNull>(mappingTestsParent.MappingTestsParentId);
+
+				Assert.IsNotNull(doc);
+			}
+		}
+
 	}
 
+	public class MappingTestsParentNull
+	{
+		public int MappingTestsParentId { get; set; }
+
+		[ElasticsearchInteger(Store = true)]
+		public int Calls { get; set; }
+
+		[ElasticsearchString(Boost = 1.2, Fields = typeof(FieldDataDef), Index = StringIndex.analyzed)]
+		public string DescriptionBothAnayzedAndNotAnalyzed { get; set; }
+
+		public MappingTestsChild MappingTestsItem { get; set; }
+	}
 
 	public class MappingTestsParent
 	{
@@ -177,7 +217,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchInteger(Store=true)]
 		public int Calls { get; set; }
 
-		[ElasticsearchString(Boost = 1.7, Fields = typeof(FieldDataDef), Index = StringIndex.analyzed)]
+		[ElasticsearchString(Boost = 1.2, Fields = typeof(FieldDataDef), Index = StringIndex.analyzed)]
 		public string DescriptionBothAnayzedAndNotAnalyzed { get; set; }
 
 		public MappingTestsChild MappingTestsItem { get; set; }
@@ -187,7 +227,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		public int MappingTestsChildId { get; set; }
 
-		[ElasticsearchString(Boost=1.7)]
+		[ElasticsearchString(Boost=1.3)]
 		public string Description { get; set; }
 
 	}
@@ -209,7 +249,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchInteger(Store = true)]
 		public int Calls { get; set; }
 
-		[ElasticsearchString(Boost = 1.7, Fields= typeof(FieldDataDef), Index=StringIndex.analyzed)]
+		[ElasticsearchString(Boost = 1.4, Fields= typeof(FieldDataDef), Index=StringIndex.analyzed)]
 		public string DescriptionBothAnayzedAndNotAnalyzed { get; set; }
 
 		public MappingTestsChild[] MappingTestsItemArray { get; set; }
