@@ -24,6 +24,38 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticSerializationResult.IndexMappings = _indexMappings;
 		}
 
+		public ElasticSerializationResult SerializeMapping(IEnumerable<EntityContextInfo> entities)
+		{
+			if (entities == null)
+			{
+				return null;
+			}
+
+			_elasticSerializationResult = new ElasticSerializationResult();
+			_elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+
+			foreach (var entity in entities)
+			{
+				string index = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
+				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
+				{
+					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");
+					throw new ElasticsearchCrudException(string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
+				}
+
+				if (_saveChangesAndInitMappingsForChildDocuments)
+				{
+					_indexMappings.CreatePropertyMappingForTopEntity(entity);
+				}
+			}
+
+			_elasticsearchCrudJsonWriter.Dispose();
+			_elasticSerializationResult.Content = _elasticsearchCrudJsonWriter.Stringbuilder.ToString();
+			_elasticSerializationResult.IndexMappings = _indexMappings;
+			return _elasticSerializationResult;
+		}
+
+
 		public ElasticSerializationResult Serialize(IEnumerable<EntityContextInfo> entities)
 		{
 			if (entities == null)
@@ -84,11 +116,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticSearchMapping.TraceProvider = _traceProvider;
 			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
-
-			if (_saveChangesAndInitMappingsForChildDocuments)
-			{
-				_indexMappings.CreatePropertyMappingForTopEntity(entityInfo);
-			}
 
 			CreateBulkContentForParentDocument(entityInfo, elasticSearchMapping);
 

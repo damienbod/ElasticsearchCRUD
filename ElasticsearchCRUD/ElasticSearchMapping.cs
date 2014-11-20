@@ -153,7 +153,14 @@ namespace ElasticsearchCRUD
 
 			if (createPropertyMappings && prop.GetValue(entityInfo.Document) == null)
 			{
-				prop.SetValue(entityInfo.Document, Activator.CreateInstance(prop.PropertyType));
+				if (prop.PropertyType.IsArray)
+				{
+					prop.SetValue(entityInfo.Document, Array.CreateInstance(prop.PropertyType.GetElementType(), 1));
+				}
+				else
+				{
+					prop.SetValue(entityInfo.Document, Activator.CreateInstance(prop.PropertyType));
+				}	
 			}
 
 			if (prop.GetValue(entityInfo.Document) != null && SaveChildObjectsAsWellAsParent)
@@ -364,7 +371,16 @@ namespace ElasticsearchCRUD
 		{
 			if (createPropertyMappings)
 			{
-				var item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
+				object item;
+				if (prop.PropertyType.GenericTypeArguments.Length == 0)
+				{
+					item = Activator.CreateInstance(prop.PropertyType.GetElementType());
+				}
+				else
+				{
+					item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
+				}
+
 				CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, createPropertyMappings);
 			}
 			else
@@ -382,7 +398,15 @@ namespace ElasticsearchCRUD
 		private void MapIEnumerableEntitiesForMapping(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter,
 			 EntityContextInfo parentEntityInfo, PropertyInfo prop, bool createPropertyMappings)
 		{
-			var item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
+			object item;
+			if (prop.PropertyType.GenericTypeArguments.Length == 0)
+			{
+				item = Activator.CreateInstance(prop.PropertyType.GetElementType());
+			}
+			else
+			{
+				item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
+			}
 
 			var typeofArrayItem = item.GetType();
 			if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" &&

@@ -139,7 +139,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const bool SaveChildObjectsAsWellAsParent = true;
 		private const bool ProcessChildDocumentsAsSeparateChildIndex = true;
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
@@ -152,9 +152,9 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<ParentDocument>();
-				entityResult.Wait();
+				//context.AllowDeleteForIndex = true;
+				//var entityResult = context.DeleteIndexAsync<ParentDocument>();
+				//entityResult.Wait();
 			}
 		}
 

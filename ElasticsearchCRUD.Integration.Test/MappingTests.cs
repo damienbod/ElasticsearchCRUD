@@ -206,7 +206,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void CreateNewIndexAndMappingForNestedNullListOfChild()
 		{
-			var mappingTestsParent = new MappingTestsParentWithList
+			var mappingTestsParent = new MappingTestsParentWithListNull
 			{
 				Calls = 3,
 				MappingTestsParentId = 3
@@ -221,7 +221,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.SaveChangesAndInitMappings();
 
 				Thread.Sleep(1500);
-				var doc = context.GetDocument<MappingTestsParentWithList>(mappingTestsParent.MappingTestsParentId);
+				var doc = context.GetDocument<MappingTestsParentWithListNull>(mappingTestsParent.MappingTestsParentId);
 
 				Assert.IsNotNull(doc);
 			}
