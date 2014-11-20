@@ -99,6 +99,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					}
 				}
 			}
+
+			elasticSearchMapping.ChildIndexEntities.Clear();
 		}
 
 		/// <summary>
