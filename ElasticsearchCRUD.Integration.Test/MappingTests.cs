@@ -147,6 +147,9 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchInteger(Store=true)]
 		public int Calls { get; set; }
 
+		[ElasticsearchString(Boost = 1.7, Fields = typeof(FieldDataDef), Index = StringIndex.analyzed)]
+		public string DescriptionBothAnayzedAndNotAnalyzed { get; set; }
+
 		public MappingTestsChild MappingTestsItem { get; set; }
 	}
 
@@ -176,6 +179,15 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchInteger(Store = true)]
 		public int Calls { get; set; }
 
+		[ElasticsearchString(Boost = 1.7, Fields= typeof(FieldDataDef), Index=StringIndex.analyzed)]
+		public string DescriptionBothAnayzedAndNotAnalyzed { get; set; }
+
 		public MappingTestsChild[] MappingTestsItemArray { get; set; }
+	}
+
+	public class FieldDataDef
+	{
+		[ElasticsearchString(Index = StringIndex.not_analyzed)]
+		public string Raw { get; set; }
 	}
 }
