@@ -36,6 +36,15 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AllowDeleteForIndex = true;
 				var entityResult5 = context.DeleteIndexAsync<MappingTestsParentNull>();
 				entityResult5.Wait();
+
+				context.AllowDeleteForIndex = true;
+				var entityResult6 = context.DeleteIndexAsync<MappingTestsParentWithListNull>();
+				entityResult6.Wait();
+				
+				context.AllowDeleteForIndex = true;
+				var entityResult7 = context.DeleteIndexAsync<MappingTestsParentWithArrayNull>();
+				entityResult7.Wait();
+				
 			}
 		}
 
@@ -132,7 +141,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-
 		[Test]
 		public void CreateNewIndexAndMappingForNestedArrayOfChild()
 		{
@@ -195,6 +203,54 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+		[Test]
+		public void CreateNewIndexAndMappingForNestedNullListOfChild()
+		{
+			var mappingTestsParent = new MappingTestsParentWithList
+			{
+				Calls = 3,
+				MappingTestsParentId = 3
+			};
+
+			using (
+				var context = new ElasticsearchContext(ConnectionString,
+					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId);
+				context.SaveChangesAndInitMappings();
+
+				Thread.Sleep(1500);
+				var doc = context.GetDocument<MappingTestsParentWithList>(mappingTestsParent.MappingTestsParentId);
+
+				Assert.IsNotNull(doc);
+			}
+		}
+
+		[Test]
+		public void CreateNewIndexAndMappingForNestedNullArrayOfChild()
+		{
+			var mappingTestsParent = new MappingTestsParentWithArrayNull
+			{
+				Calls = 3,
+				MappingTestsParentId = 3
+			};
+
+			using (
+				var context = new ElasticsearchContext(ConnectionString,
+					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId);
+				context.SaveChangesAndInitMappings();
+
+				Thread.Sleep(1500);
+				var doc = context.GetDocument<MappingTestsParentWithArray>(mappingTestsParent.MappingTestsParentId);
+
+				Assert.IsNotNull(doc);
+			}
+		}
+
 	}
 
 	public class MappingTestsParentNull
@@ -242,6 +298,17 @@ namespace ElasticsearchCRUD.Integration.Test
 		public List<MappingTestsChild> MappingTestsItemList { get; set; }
 	}
 
+
+	public class MappingTestsParentWithListNull
+	{
+		public int MappingTestsParentId { get; set; }
+
+		[ElasticsearchInteger(Store = true)]
+		public int Calls { get; set; }
+
+		public List<MappingTestsChild> MappingTestsItemList { get; set; }
+	}
+
 	public class MappingTestsParentWithArray
 	{
 		public int MappingTestsParentId { get; set; }
@@ -250,6 +317,19 @@ namespace ElasticsearchCRUD.Integration.Test
 		public int Calls { get; set; }
 
 		[ElasticsearchString(Boost = 1.4, Fields= typeof(FieldDataDef), Index=StringIndex.analyzed)]
+		public string DescriptionBothAnayzedAndNotAnalyzed { get; set; }
+
+		public MappingTestsChild[] MappingTestsItemArray { get; set; }
+	}
+
+	public class MappingTestsParentWithArrayNull
+	{
+		public int MappingTestsParentId { get; set; }
+
+		[ElasticsearchInteger(Store = true)]
+		public int Calls { get; set; }
+
+		[ElasticsearchString(Boost = 1.9, Fields = typeof(FieldDataDef), Index = StringIndex.analyzed)]
 		public string DescriptionBothAnayzedAndNotAnalyzed { get; set; }
 
 		public MappingTestsChild[] MappingTestsItemArray { get; set; }

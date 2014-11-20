@@ -150,6 +150,12 @@ namespace ElasticsearchCRUD
 		private void ProcessArrayOrCollection(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop, bool createPropertyMappings)
 		{
 			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: IsPropertyACollection: {0}", prop.Name.ToLower());
+
+			if (createPropertyMappings && prop.GetValue(entityInfo.Document) == null)
+			{
+				prop.SetValue(entityInfo.Document, Activator.CreateInstance(prop.PropertyType));
+			}
+
 			if (prop.GetValue(entityInfo.Document) != null && SaveChildObjectsAsWellAsParent)
 			{
 				if (ProcessChildDocumentsAsSeparateChildIndex)
@@ -315,13 +321,13 @@ namespace ElasticsearchCRUD
 				var ienumerable = (Array)prop.GetValue(entityInfo.Document);
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
-					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo, createPropertyMappings);
+					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo, prop, createPropertyMappings);
 				}
 				else
 				{
 					if (createPropertyMappings)
 					{
-						MapIEnumerableEntitiesForMapping(elasticsearchCrudJsonWriter, ienumerable, entityInfo, true);	
+						MapIEnumerableEntitiesForMapping(elasticsearchCrudJsonWriter, entityInfo, prop,true);	
 					}
 					else
 					{
@@ -335,15 +341,16 @@ namespace ElasticsearchCRUD
 			{
 				// It is a collection
 				var ienumerable = (IEnumerable)prop.GetValue(entityInfo.Document);
+
 				if (ProcessChildDocumentsAsSeparateChildIndex)
 				{
-					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo, createPropertyMappings);
+					MapIEnumerableEntitiesForChildIndexes(elasticsearchCrudJsonWriter, ienumerable, entityInfo, prop, createPropertyMappings);
 				}
 				else
 				{
 					if (createPropertyMappings)
 					{
-						MapIEnumerableEntitiesForMapping(elasticsearchCrudJsonWriter, ienumerable, entityInfo, true);
+						MapIEnumerableEntitiesForMapping(elasticsearchCrudJsonWriter, entityInfo, prop, true);
 					}
 					else
 					{
@@ -353,63 +360,66 @@ namespace ElasticsearchCRUD
 			}
 		}
 
-		private void MapIEnumerableEntitiesForChildIndexes(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, IEnumerable ienumerable, EntityContextInfo parentEntityInfo, bool createPropertyMappings)
+		private void MapIEnumerableEntitiesForChildIndexes(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, IEnumerable ienumerable, EntityContextInfo parentEntityInfo,PropertyInfo prop, bool createPropertyMappings)
 		{
-			if (ienumerable != null)
+			if (createPropertyMappings)
 			{
-				foreach (var item in ienumerable)
-				{
-					CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, createPropertyMappings);
-				}
+				var item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
+				CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, createPropertyMappings);
 			}
+			else
+			{
+				if (ienumerable != null)
+				{
+					foreach (var item in ienumerable)
+					{
+						CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, createPropertyMappings);
+					}
+				}
+			} 			
 		}
 
 		private void MapIEnumerableEntitiesForMapping(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter,
-			IEnumerable ienumerable, EntityContextInfo parentEntityInfo, bool createPropertyMappings)
+			 EntityContextInfo parentEntityInfo, PropertyInfo prop, bool createPropertyMappings)
 		{
-			if (ienumerable != null)
-			{
-				foreach (var item in ienumerable)
-				{
-					var typeofArrayItem = item.GetType();
-					if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" && typeofArrayItem.FullName != "System.Decimal")
-					{
-						// collection of Objects
-						elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			var item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
 
-						// "properties": {
-						elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
-						elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-								
-						// Do class mapping for nested type
-						var routingDefinition = new RoutingDefinition
-						{
-							ParentId = parentEntityInfo.Id,
-							RoutingId = parentEntityInfo.RoutingDefinition.RoutingId
-						};
-						var child = new EntityContextInfo
-						{
-							Document = item,
-							RoutingDefinition = routingDefinition,
-							EntityType = item.GetType(),
-							DeleteDocument = parentEntityInfo.DeleteDocument
-						};
-						MapEntityValues(child, elasticsearchCrudJsonWriter, false, createPropertyMappings);
-						elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-						elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-					}
-					else
-					{
-						// {"type": "ienumerable"}
-						// collection of simple types
-						elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-						elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
-						elasticsearchCrudJsonWriter.JsonWriter.WriteValue(GetElasticsearchType(item.GetType()));
-						elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();					
-					}
-					// Only process the first item
-					break;
-				}
+			var typeofArrayItem = item.GetType();
+			if (typeofArrayItem.IsClass && typeofArrayItem.FullName != "System.String" &&
+				typeofArrayItem.FullName != "System.Decimal")
+			{
+				// collection of Objects
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+				// "properties": {
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+				// Do class mapping for nested type
+				var routingDefinition = new RoutingDefinition
+				{
+					ParentId = parentEntityInfo.Id,
+					RoutingId = parentEntityInfo.RoutingDefinition.RoutingId
+				};
+				var child = new EntityContextInfo
+				{
+					Document = item,
+					RoutingDefinition = routingDefinition,
+					EntityType = item.GetType(),
+					DeleteDocument = parentEntityInfo.DeleteDocument
+				};
+				MapEntityValues(child, elasticsearchCrudJsonWriter, false, createPropertyMappings);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
+			else
+			{
+				// {"type": "ienumerable"}
+				// collection of simple types
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(GetElasticsearchType(item.GetType()));
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 		}
 
