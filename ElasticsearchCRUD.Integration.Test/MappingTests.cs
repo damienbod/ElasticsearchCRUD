@@ -43,7 +43,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				Calls = 3,
 				MappingTestsParentId = 2,
 				Call2s="test",
-				MappingTestsItemIntList = new List<int> { 2, 7, 44, 176}
+				MappingTestsItemIntList = new List<int> { 2, 7, 44, 176},
+				MappingTestsItemShortArray =  new short[] { 4,7,89,9}
 			};
 
 			using (
@@ -228,6 +229,8 @@ namespace ElasticsearchCRUD.Integration.Test
 		public int Calls { get; set; }
 
 		public List<int> MappingTestsItemIntList { get; set; }
+
+		public short[] MappingTestsItemShortArray { get; set; }
 
 		[ElasticsearchString(Index=StringIndex.not_analyzed)]
 		public string Call2s { get; set; }
