@@ -381,7 +381,7 @@ namespace ElasticsearchCRUD
 					item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
 				}
 
-				CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, createPropertyMappings);
+				CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, true);
 			}
 			else
 			{
@@ -389,7 +389,7 @@ namespace ElasticsearchCRUD
 				{
 					foreach (var item in ienumerable)
 					{
-						CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, createPropertyMappings);
+						CreateChildEntityForDocumentIndex(parentEntityInfo, elasticsearchCrudJsonWriter, item, false);
 					}
 				}
 			} 			
