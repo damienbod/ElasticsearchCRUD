@@ -152,9 +152,9 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				//context.AllowDeleteForIndex = true;
-				//var entityResult = context.DeleteIndexAsync<ParentDocument>();
-				//entityResult.Wait();
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<ParentDocument>();
+				entityResult.Wait();
 			}
 		}
 

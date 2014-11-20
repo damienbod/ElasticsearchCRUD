@@ -17,34 +17,49 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				context.AllowDeleteForIndex = true;
-				var entityResult1 = context.DeleteIndexAsync<MappingTestsParent>();
-				entityResult1.Wait();
+				if (context.IndexExists<MappingTestsParent>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult1 = context.DeleteIndexAsync<MappingTestsParent>();
+					entityResult1.Wait();
+				}
+				if (context.IndexExists<MappingTestsParentWithList>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult2 = context.DeleteIndexAsync<MappingTestsParentWithList>();
+					entityResult2.Wait();
+				}
+				if (context.IndexExists<MappingTestsParentWithArray>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult3 = context.DeleteIndexAsync<MappingTestsParentWithArray>();
+					entityResult3.Wait();
+				}
+				if (context.IndexExists<MappingTestsParentWithSimpleList>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult4 = context.DeleteIndexAsync<MappingTestsParentWithSimpleList>();
+					entityResult4.Wait();
+				}
+				if (context.IndexExists<MappingTestsParentNull>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult5 = context.DeleteIndexAsync<MappingTestsParentNull>();
+					entityResult5.Wait();
+				}
+				if (context.IndexExists<MappingTestsParentWithListNull>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult6 = context.DeleteIndexAsync<MappingTestsParentWithListNull>();
+					entityResult6.Wait();
+				}
+				if (context.IndexExists<MappingTestsParentWithArrayNull>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult7 = context.DeleteIndexAsync<MappingTestsParentWithArrayNull>();
+					entityResult7.Wait();
+				}
 
-				context.AllowDeleteForIndex = true;
-				var entityResult2 = context.DeleteIndexAsync<MappingTestsParentWithList>();
-				entityResult2.Wait();
-
-				context.AllowDeleteForIndex = true;
-				var entityResult3 = context.DeleteIndexAsync<MappingTestsParentWithArray>();
-				entityResult3.Wait();
-
-				context.AllowDeleteForIndex = true;
-				var entityResult4 = context.DeleteIndexAsync<MappingTestsParentWithSimpleList>();
-				entityResult4.Wait();
-
-				context.AllowDeleteForIndex = true;
-				var entityResult5 = context.DeleteIndexAsync<MappingTestsParentNull>();
-				entityResult5.Wait();
-
-				context.AllowDeleteForIndex = true;
-				var entityResult6 = context.DeleteIndexAsync<MappingTestsParentWithListNull>();
-				entityResult6.Wait();
-				
-				context.AllowDeleteForIndex = true;
-				var entityResult7 = context.DeleteIndexAsync<MappingTestsParentWithArrayNull>();
-				entityResult7.Wait();
-				
 			}
 		}
 
