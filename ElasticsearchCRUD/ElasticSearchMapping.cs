@@ -155,7 +155,7 @@ namespace ElasticsearchCRUD
 			{
 				if (prop.PropertyType.IsArray)
 				{
-					prop.SetValue(entityInfo.Document, Array.CreateInstance(prop.PropertyType.GetElementType(), 1));
+					prop.SetValue(entityInfo.Document, Array.CreateInstance(prop.PropertyType.GetElementType(), 0));
 				}
 				else
 				{

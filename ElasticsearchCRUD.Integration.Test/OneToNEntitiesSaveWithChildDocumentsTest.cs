@@ -139,7 +139,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const bool SaveChildObjectsAsWellAsParent = true;
 		private const bool ProcessChildDocumentsAsSeparateChildIndex = true;
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()
