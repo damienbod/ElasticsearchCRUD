@@ -28,9 +28,38 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AllowDeleteForIndex = true;
 				var entityResult3 = context.DeleteIndexAsync<MappingTestsParentWithArray>();
 				entityResult3.Wait();
+
+				context.AllowDeleteForIndex = true;
+				var entityResult4 = context.DeleteIndexAsync<MappingTestsParentWithSimpleList>();
+				entityResult4.Wait();		
 			}
 		}
 
+		[Test]
+		public void CreateNewIndexAndMappingWithSimpleList()
+		{
+			var mappingTestsParent = new MappingTestsParentWithSimpleList
+			{
+				Calls = 3,
+				MappingTestsParentId = 2,
+				Call2s="test",
+				MappingTestsItemIntList = new List<int> { 2, 7, 44, 176}
+			};
+
+			using (
+				var context = new ElasticsearchContext(ConnectionString,
+					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId);
+				context.SaveChangesAndInitMappings();
+
+				Thread.Sleep(1500);
+				var doc = context.GetDocument<MappingTestsParentWithSimpleList>(mappingTestsParent.MappingTestsParentId);
+
+				Assert.IsNotNull(doc);
+			}
+		}
 		[Test]
 		public void CreateNewIndexAndMappingForNestedChild()
 		{
@@ -189,5 +218,18 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		[ElasticsearchString(Index = StringIndex.not_analyzed)]
 		public string Raw { get; set; }
+	}
+
+	public class MappingTestsParentWithSimpleList
+	{
+		public int MappingTestsParentId { get; set; }
+
+		[ElasticsearchInteger(Store = true)]
+		public int Calls { get; set; }
+
+		public List<int> MappingTestsItemIntList { get; set; }
+
+		[ElasticsearchString(Index=StringIndex.not_analyzed)]
+		public string Call2s { get; set; }
 	}
 }

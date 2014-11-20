@@ -6,6 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Tracing;
+using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
@@ -37,6 +38,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				else
 				{
 					response = await client.PutAsync(baseUrl + command.Url, content, cancellationTokenSource.Token).ConfigureAwait(true);
+				}
+
+				if (response.StatusCode == HttpStatusCode.BadRequest )
+				{
+					var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+					var responseObject = JObject.Parse(errorInfo);
+					var source = responseObject["error"];
+					throw new ElasticsearchCrudException("IndexMappings: Execute Request POST BadRequest: " + source);
 				}
 
 				//resultDetails.Status = response.StatusCode;
