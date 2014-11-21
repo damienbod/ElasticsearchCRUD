@@ -4,6 +4,324 @@
         <name>ElasticsearchCRUD</name>
     </assembly>
     <members>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchCoreTypes.Similarity">
+            <summary>
+            "similarity":"BM25"
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBinary.IndexName">
+            <summary>
+            index_name
+            The name of the field that will be stored in the index. Defaults to the property/field name.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBinary.Compress">
+            <summary>
+            compress
+            Set to true to compress the stored binary value.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBinary.Store">
+            <summary>
+            store
+            Set to true to actually store the field in the index, false to not store it. Defaults to false (note, the JSON document itself is stored, and it can be retrieved from it).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBinary.DocValues">
+            <summary>
+            doc_values
+            Set to true to store field values in a column-stride fashion. Automatically set to true when the fielddata format is doc_values.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBinary.CompressThreshold">
+            <summary>
+            //compress_threshold
+            Compression will only be applied to stored binary fields that are greater than this size. Defaults to -1 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBoolean.IndexName">
+            <summary>
+            index_name
+            The name of the field that will be stored in the index. Defaults to the property/field name.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBoolean.Index">
+            <summary>
+            index
+            Set to no if the value should not be indexed. Setting to no disables include_in_all. If set to no the field should be either stored in _source, have include_in_all enabled, or store be set to true for this to be useful.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBoolean.Store">
+            <summary>
+            store
+            Set to true to actually store the field in the index, false to not store it. Defaults to false (note, the JSON document itself is stored, and it can be retrieved from it).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBoolean.DocValues">
+            <summary>
+            doc_values
+            Set to true to store field values in a column-stride fashion. Automatically set to true when the fielddata format is doc_values.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBoolean.Boost">
+            <summary>
+            boost
+            The boost value. Defaults to 1.0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchBoolean.NullValue">
+            <summary>
+            null_value
+            When there is a (JSON) null value for the field, use the null_value as the field value. Defaults to not adding the field at all.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber">
+            <summary>
+            type The type of the number. Can be float, double, integer, long, short, byte. Required.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.IndexName">
+            <summary>
+            index_name
+            The name of the field that will be stored in the index. Defaults to the property/field name.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.Store">
+            <summary>
+            store
+            Set to true to actually store the field in the index, false to not store it. Defaults to false (note, the JSON document itself is stored, and it can be retrieved from it).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.Index">
+            <summary>
+            index
+            Set to no if the value should not be indexed. Setting to no disables include_in_all. If set to no the field should be either stored in _source, have include_in_all enabled, or store be set to true for this to be useful.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.DocValues">
+            <summary>
+            doc_values
+            Set to true to store field values in a column-stride fashion. Automatically set to true when the fielddata format is doc_values.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.Boost">
+            <summary>
+            boost
+            The boost value. Defaults to 1.0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.NullValue">
+            <summary>
+            null_value
+            When there is a (JSON) null value for the field, use the null_value as the field value. Defaults to not adding the field at all.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.IncludeInAll">
+            <summary>
+            include_in_all
+            Should the field be included in the _all field (if enabled). If index is set to no this defaults to false, otherwise, defaults to true or to the parent object type setting.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.PrecisionStep">
+            <summary>
+            precision_step
+            The precision step (influences the number of terms generated for each number value). Defaults to 16 for long, double, 8 for short, integer, float, and 2147483647 for byte.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.IgnoreMalformed">
+            <summary>
+            ignore_malformed
+            Ignored a malformed number. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNumber.Coerce">
+            <summary>
+            coerce
+            Try convert strings to numbers and truncate fractions for integers. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.Format">
+            <summary>
+            The date format. Defaults to dateOptionalTime.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.IndexName">
+            <summary>
+            index_name
+            The name of the field that will be stored in the index. Defaults to the property/field name.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.Store">
+            <summary>
+            store
+            Set to true to actually store the field in the index, false to not store it. Defaults to false (note, the JSON document itself is stored, and it can be retrieved from it).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.DocValues">
+            <summary>
+            doc_values
+            Set to true to store field values in a column-stride fashion. Automatically set to true when the fielddata format is doc_values.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.Boost">
+            <summary>
+            boost
+            The boost value. Defaults to 1.0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.NullValue">
+            <summary>
+            null_value
+            When there is a (JSON) null value for the field, use the null_value as the field value. Defaults to not adding the field at all.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.IncludeInAll">
+            <summary>
+            include_in_all
+            Should the field be included in the _all field (if enabled). If index is set to no this defaults to false, otherwise, defaults to true or to the parent object type setting.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.PrecisionStep">
+            <summary>
+            precision_step
+            The precision step (influences the number of terms generated for each number value). Defaults to 16.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.IgnoreMalformed">
+            <summary>
+            ignore_malformed
+            Ignored a malformed number. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.IndexName">
+            <summary>
+            index_name
+            The name of the field that will be stored in the index. Defaults to the property/field name.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.Store">
+            <summary>
+            store
+            Set to true to actually store the field in the index, false to not store it. Defaults to false (note, the JSON document itself is stored, and it can be retrieved from it).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.Index">
+            <summary>
+            index
+            Set to analyzed for the field to be indexed and searchable after being broken down into token using an analyzer. not_analyzed means that its still searchable, but does not go through any analysis process or broken down into tokens. no means that it won’t be searchable at all (as an individual field; it may still be included in _all). Setting to no disables include_in_all. Defaults to analyzed.	
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.DocValues">
+            <summary>
+            doc_values
+            Set to true to store field values in a column-stride fashion. Automatically set to true when the fielddata format is doc_values.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.TermVector">
+            <summary>
+            term_vector
+            Possible values are no, yes, with_offsets, with_positions, with_positions_offsets. Defaults to no.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.Boost">
+            <summary>
+            boost
+            The boost value. Defaults to 1.0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.NullValue">
+            <summary>
+            null_value
+            When there is a (JSON) null value for the field, use the null_value as the field value. Defaults to not adding the field at all.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.NormsEnabled">
+            <summary>
+            norms: {enabled: value}
+            Boolean value if norms should be enabled or not. Defaults to true for analyzed fields, and to false for not_analyzed fields. See the section about norms.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.NormsLoading">
+            <summary>
+            norms: {loading: value}
+            Describes how norms should be loaded, possible values are eager and lazy (default). It is possible to change the default value to eager for all fields by configuring the index setting index.norms.loading to eager.		
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.IndexOptions">
+            <summary>
+            index_options
+            Allows to set the indexing options, possible values are docs (only doc numbers are indexed), freqs (doc numbers and term frequencies), and positions (doc numbers, term frequencies and positions). Defaults to positions for analyzed fields, and to docs for not_analyzed fields. It is also possible to set it to offsets (doc numbers, term frequencies, positions and offsets).	
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.Analyzer">
+            <summary>
+            analyzer
+            The analyzer used to analyze the text contents when analyzed during indexing and when searching using a query string. Defaults to the globally configured analyzer.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.IndexAnalyzer">
+            <summary>
+            index_analyzer
+            The analyzer used to analyze the text contents when analyzed during indexing.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.SearchAnalyzer">
+            <summary>
+            search_analyzer
+            The analyzer used to analyze the field when part of a query string. Can be updated on an existing field.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.IncludeInAll">
+            <summary>
+            include_in_all
+            Should the field be included in the _all field (if enabled). If index is set to no this defaults to false, otherwise, defaults to true or to the parent object type setting.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.IgnoreAbove">
+            <summary>
+            ignore_above
+            The analyzer will ignore strings larger than this size. Useful for generic not_analyzed fields that should ignore long text.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.PositionOffsetGap">
+            <summary>
+            position_offset_gap
+            Position increment gap between field instances with the same field name. Defaults to 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.Fields.FieldClass">
+            <summary>
+            You can define all the Elasticsearch properties here
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForEntityForParentDocument(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexDefinition)">
+            <summary>
+            Create a new index for the parent document
+            </summary>
+            <param name="entityInfo"></param>
+            <param name="elasticsearchMapping"></param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForChildDocument(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.EntityContextInfo)">
+            <summary>
+            Create a new mapping for the child type in the parent document index
+            </summary>
+            <param name="entityInfo"></param>
+            <param name="elasticsearchMapping"></param>
+            <param name="item"></param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreateForceRoutingMappingForDocument(ElasticsearchCRUD.ElasticsearchCrudJsonWriter)">
+            <summary>
+            "_routing": {
+            "required": true
+            },
+            </summary>
+            <param name="elasticsearchCrudJsonWriter"></param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreateIndexSettings(ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Int32,System.Int32)">
+            "settings" : {
+            "number_of_shards" : 1
+            },
+        </member>
         <member name="F:ElasticsearchCRUD.ElasticsearchCrudReindex`2.ScanAndScrollConfiguration">
             <summary>
             Scan ans scroll settings for the reindex. You should keep this small, otherwise the response request will be too larger.
@@ -72,7 +390,7 @@
             Everything is lowercase and the index is pluralized
             </summary>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.MapEntityValues(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Boolean)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.MapEntityValues(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Boolean,System.Boolean)">
             <summary>
             Ovveride this if your default mapping needs to be changed.
             default type is lowercase for properties, indes pluralized and type to lower
@@ -80,6 +398,7 @@
             <param name="entityInfo">Information about the entity</param>
             <param name="elasticsearchCrudJsonWriter">Serializer with added tracing</param>
             <param name="beginMappingTree">begin new mapping tree</param>
+            <param name="createPropertyMappings">This tells the serializer to create a Json property mapping from the entity and not the document itself</param>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchMapping.GetDocumentType(System.Type)">
             <summary>
@@ -96,6 +415,31 @@
             </summary>
             <param name="type">Type of class used</param>
             <returns>The index used in Elasticsearch for this type</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.GetElasticsearchType(System.Type)">
+            <summary>
+            bool System.Boolean
+            byte System.Byte
+            sbyte System.SByte 
+            char System.Char
+            decimal System.Decimal => string
+            double System.Double
+            float System.Single
+            int System.Int32
+            uint System.UInt32
+            long System.Int64
+            ulong System.UInt64
+            short System.Int16
+            ushort System.UInt16
+            string System.String 
+            </summary>
+            <param name="propertyType"></param>
+            <returns>
+            string,  boolean, and null.
+            float, double, byte, short, integer, and long
+            date
+            binary
+            </returns>
         </member>
         <member name="T:ElasticsearchCRUD.ElasticsearchContext">
             <summary>
@@ -141,7 +485,7 @@
             <typeparam name="T">This type is used to get the index and type of the document</typeparam>
             <param name="id">id of the document which will be deleted.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SaveChangesAndInitMappingsForChildDocuments">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SaveChangesAndInitMappings">
             <summary>
             Saves all the changes in the pending list of changes, add, update and delete. It also creates mappings and indexes
             if the child documents are saved as separate index types. ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex= true

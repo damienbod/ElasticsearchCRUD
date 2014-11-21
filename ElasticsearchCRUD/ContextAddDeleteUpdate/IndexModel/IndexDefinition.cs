@@ -5,7 +5,7 @@
 		public IndexDefinition()
 		{
 			// settings the default values
-			IndexSettings = new IndexSettings {number_of_replicas = 2, number_of_shards = 2};
+			IndexSettings = new IndexSettings {number_of_replicas = 1, number_of_shards = 5};
 			RoutingDefinition = new RoutingDefinition();
 		}
 
