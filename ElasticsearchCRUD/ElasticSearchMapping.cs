@@ -601,7 +601,7 @@ namespace ElasticsearchCRUD
 			switch (propertyType.FullName)
 			{
 				case "System.Boolean":
-					return "bool";
+					return "boolean";
 				case "System.Byte":
 					return "byte";
 				case "System.SByte":
