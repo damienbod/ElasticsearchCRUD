@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
 
@@ -78,14 +79,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_traceProvider = traceProvider;
 		}
 
-		public void CreatePropertyMappingForTopEntity(EntityContextInfo entityInfo)
+		public void CreatePropertyMappingForTopEntity(EntityContextInfo entityInfo, IndexDefinition indexDefinition)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
 			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
 
-			CreatePropertyMappingForEntityForParentDocument(entityInfo, elasticSearchMapping);
+			CreatePropertyMappingForEntityForParentDocument(entityInfo, elasticSearchMapping, indexDefinition);
 
 			if (_elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
 			{
@@ -108,7 +109,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// </summary>
 		/// <param name="entityInfo"></param>
 		/// <param name="elasticsearchMapping"></param>
-		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
+		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, IndexDefinition indexDefinition)
 		{
 			var itemType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);
 			if (_processedItems.Contains(itemType))
@@ -120,7 +121,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-			CreateIndexSettings(elasticsearchCrudJsonWriter, 5, 1);
+			CreateIndexSettings(elasticsearchCrudJsonWriter, indexDefinition.IndexSettings.number_of_shards, indexDefinition.IndexSettings.number_of_replicas);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("mappings");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();

@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()

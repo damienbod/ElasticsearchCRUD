@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContentExists;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextAlias;
 using ElasticsearchCRUD.ContextClearCache;
 using ElasticsearchCRUD.ContextCount;
@@ -42,6 +43,8 @@ namespace ElasticsearchCRUD
 		/// TraceProvider for all logs, trace etc. This can be replaced with any TraceProvider implementation.
 		/// </summary>
 		private ITraceProvider _traceProvider = new NullTraceProvider();
+
+		private ElasticsearchContextCreateIndex _elasticsearchContextCreateIndex;
 
 		public ITraceProvider TraceProvider
 		{
@@ -145,6 +148,26 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
+
+		public ResultDetails<string> CreateIndex<T>(IndexDefinition indexDefinition = null)
+		{
+			if (indexDefinition == null)
+			{
+				indexDefinition = new IndexDefinition();
+			}
+			return _elasticsearchContextCreateIndex.CreateIndex<T>(indexDefinition);
+		}
+
+		public async Task<ResultDetails<string>> CreateIndexAsync<T>(IndexDefinition indexDefinition = null)
+		{
+			if (indexDefinition == null)
+			{
+				indexDefinition = new IndexDefinition();
+			}
+			return await _elasticsearchContextCreateIndex.CreateIndexAsync<T>(indexDefinition);
+		}
+
+		
 		/// <summary>
 		/// Gets a document by id. Elasticsearch GET API
 		/// </summary>
@@ -637,6 +660,15 @@ namespace ElasticsearchCRUD
 				_client,
 				_connectionString
 				);
+
+			_elasticsearchContextCreateIndex = new ElasticsearchContextCreateIndex(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+			
 
 		}
 
