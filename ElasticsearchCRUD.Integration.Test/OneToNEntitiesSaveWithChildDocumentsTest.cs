@@ -535,7 +535,8 @@ namespace ElasticsearchCRUD.Integration.Test
 			var parentDocument = new ParentDocument
 			{
 				Id = 8,
-				D1 = "p8",
+				D1 = "p8", 
+				BoolCheck=true,
 				ChildDocumentLevelOne = new Collection<ChildDocumentLevelOne>
 				{
 					new ChildDocumentLevelOne
@@ -591,6 +592,8 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchDate(Store=true)]
 		public DateTime DateTimeDataWithAttribute { get; set; }
 		public DateTime DateTimeData { get; set; }
+
+		public bool BoolCheck { get; set; }
 
 		[ElasticsearchDate(Boost = 2.0, Similarity="BM25")]
 		public DateTimeOffset DateTimeOffsetDataWithAttribute { get; set; }
