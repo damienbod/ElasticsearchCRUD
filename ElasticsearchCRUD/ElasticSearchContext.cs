@@ -114,10 +114,15 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">This type is used to get the index and type of the document</typeparam>
 		/// <param name="id">id of the document which will be deleted.</param>
-		public void DeleteDocument<T>(object id)
+		/// <param name="routingDefinition"></param>
+		public void DeleteDocument<T>(object id, RoutingDefinition routingDefinition = null)
 		{
+			if (routingDefinition == null)
+			{
+				routingDefinition = new RoutingDefinition();
+			}
 			TraceProvider.Trace(TraceEventType.Verbose, "{2}: Request to delete document with id: {0}, Type: {1}, adding to pending list", id, typeof(T).Name, "ElasticsearchContext");
-			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteDocument = true, EntityType = typeof(T), Document = null});
+			_entityPendingChanges.Add(new EntityContextInfo { Id = id.ToString(), DeleteDocument = true, EntityType = typeof(T), Document = null,RoutingDefinition = routingDefinition});
 		}
 
 		/// <summary>

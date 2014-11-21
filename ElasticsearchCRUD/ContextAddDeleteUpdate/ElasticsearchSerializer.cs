@@ -106,6 +106,17 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			WriteValue("_index", elasticSearchMapping.GetIndexForType(entityInfo.EntityType));
 			WriteValue("_type", elasticSearchMapping.GetDocumentType(entityInfo.EntityType));
 			WriteValue("_id", entityInfo.Id);
+			if (entityInfo.RoutingDefinition.ParentId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
+			{
+				// It's a document which belongs to a parent
+				WriteValue("_parent", entityInfo.RoutingDefinition.ParentId);
+			}
+			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex &&
+				_elasticsearchSerializerConfiguration.UserDefinedRouting)
+			{
+				// It's a document which has a specific route
+				WriteValue("_routing", entityInfo.RoutingDefinition.RoutingId);
+			}
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();	
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");

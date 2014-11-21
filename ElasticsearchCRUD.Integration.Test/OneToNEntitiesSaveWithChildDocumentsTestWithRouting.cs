@@ -124,6 +124,20 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(1, childDocs.TotalHits);
 				Assert.AreEqual(2, childDocs2.TotalHits);
 				Assert.AreEqual(4, childDocs3.TotalHits);
+
+				context.DeleteDocument<ChildDocumentLevelTwoUserDefinedRouting>(73, new RoutingDefinition { ParentId = 22, RoutingId = 7 });
+				context.DeleteDocument<ChildDocumentLevelTwoUserDefinedRouting>(72);
+				context.SaveChanges();
+
+				Thread.Sleep(1000);
+
+				childDocs3 =
+					context.Search<ChildDocumentLevelTwoUserDefinedRouting>(BuildSearchForChildDocumentsWithIdAndParentType(22,
+						"childdocumentleveloneuserdefinedrouting"));
+
+				
+				Assert.AreEqual(2, childDocs3.TotalHits);
+
 			}
 		}
 
@@ -396,17 +410,17 @@ namespace ElasticsearchCRUD.Integration.Test
 							new ChildDocumentLevelTwoUserDefinedRouting
 							{
 								Id = 71,
-								D3 = "p7.p21.testComplex71"
+								D3 = "p7.p22.testComplex71"
 							},
 							new ChildDocumentLevelTwoUserDefinedRouting
 							{
 								Id = 72,
-								D3 = "p7.p21.testComplex72"
+								D3 = "p7.p22.testComplex72"
 							},
 							new ChildDocumentLevelTwoUserDefinedRouting
 							{
 								Id = 73,
-								D3 = "p7.p21.testComplex73"
+								D3 = "p7.p22.testComplex73"
 							}
 						}
 					}				
