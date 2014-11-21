@@ -43,6 +43,8 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		private ITraceProvider _traceProvider = new NullTraceProvider();
 
+		private ElasticsearchContextCreateIndex _elasticsearchContextCreateIndex;
+
 		public ITraceProvider TraceProvider
 		{
 			get { return _traceProvider; }
@@ -145,6 +147,18 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
+
+		public ResultDetails<string> CreateIndex<T>(RoutingDefinition routingDefinition)
+		{
+			return _elasticsearchContextCreateIndex.CreateIndex<T>(routingDefinition);
+		}
+
+		public async Task<ResultDetails<string>> CreateIndexAsync<T>(RoutingDefinition routingDefinition)
+		{
+			return await _elasticsearchContextCreateIndex.CreateIndexAsync<T>(routingDefinition);
+		}
+
+		
 		/// <summary>
 		/// Gets a document by id. Elasticsearch GET API
 		/// </summary>
@@ -637,6 +651,15 @@ namespace ElasticsearchCRUD
 				_client,
 				_connectionString
 				);
+
+			_elasticsearchContextCreateIndex = new ElasticsearchContextCreateIndex(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+			
 
 		}
 

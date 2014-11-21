@@ -68,6 +68,7 @@
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchString.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\Fields.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
+    <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextCreateIndex.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexMappings.cs" />
     <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
     <Compile Include="ContextAddDeleteUpdate\RoutingDefinition.cs" />

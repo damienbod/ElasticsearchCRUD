@@ -52,6 +52,7 @@
     <Compile Include="AliasElasticsearchCrudTests.cs" />
     <Compile Include="ComplexRelationsTests.cs" />
     <Compile Include="CoreTypeMappingTests.cs" />
+    <Compile Include="CreateIndexTest.cs" />
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
     <Compile Include="DocumentsWithChildDocumentsTestNotAllowed.cs" />
     <Compile Include="ExistsTests.cs" />
