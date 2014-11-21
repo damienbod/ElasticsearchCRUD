@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -59,7 +59,37 @@ namespace ElasticsearchCRUD.Integration.Test
 					var entityResult7 = context.DeleteIndexAsync<MappingTestsParentWithArrayNull>();
 					entityResult7.Wait();
 				}
+				if (context.IndexExists<MappingTestsParentWithSimpleNullAndNullArrayList>())
+				{
+					context.AllowDeleteForIndex = true;
+					var entityResult8 = context.DeleteIndexAsync<MappingTestsParentWithSimpleNullAndNullArrayList>();
+					entityResult8.Wait();
+				}
+			}
+		}
 
+		[Test]
+		public void CreateNewIndexAndMappingWithSimpleNullListAndNullArrayList()
+		{
+			var mappingTestsParent = new MappingTestsParentWithSimpleNullAndNullArrayList
+			{
+				Calls = 3,
+				MappingTestsParentId = 2,
+				Call2s="test"
+			};
+
+			using (
+				var context = new ElasticsearchContext(ConnectionString,
+					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId);
+				context.SaveChangesAndInitMappings();
+
+				Thread.Sleep(1500);
+				var doc = context.GetDocument<MappingTestsParentWithSimpleNullAndNullArrayList>(mappingTestsParent.MappingTestsParentId);
+
+				Assert.IsNotNull(doc);
 			}
 		}
 
@@ -89,6 +119,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.IsNotNull(doc);
 			}
 		}
+
 		[Test]
 		public void CreateNewIndexAndMappingForNestedChild()
 		{
@@ -368,6 +399,21 @@ namespace ElasticsearchCRUD.Integration.Test
 		public short[] MappingTestsItemShortArray { get; set; }
 
 		[ElasticsearchString(Index=StringIndex.not_analyzed)]
+		public string Call2s { get; set; }
+	}
+
+	public class MappingTestsParentWithSimpleNullAndNullArrayList
+	{
+		public int MappingTestsParentId { get; set; }
+
+		[ElasticsearchInteger(Store = true)]
+		public int Calls { get; set; }
+
+		public List<int> MappingTestsItemIntList { get; set; }
+
+		public short[] MappingTestsItemShortArray { get; set; }
+
+		[ElasticsearchString(Index = StringIndex.not_analyzed)]
 		public string Call2s { get; set; }
 	}
 }
