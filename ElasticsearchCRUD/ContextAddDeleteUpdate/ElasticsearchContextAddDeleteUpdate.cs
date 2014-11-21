@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 using Newtonsoft.Json.Linq;
@@ -58,7 +59,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				{
 					if (_saveChangesAndInitMappings)
 					{
-						var resultMappings = serializer.SerializeMapping(entityPendingChanges);
+						var resultMappings = serializer.SerializeMapping(entityPendingChanges, new IndexDefinition());
 						await resultMappings.IndexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 						_saveChangesAndInitMappings = false;
 					}

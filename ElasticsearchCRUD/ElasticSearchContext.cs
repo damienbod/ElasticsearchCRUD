@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using ElasticsearchCRUD.ContentExists;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextAlias;
 using ElasticsearchCRUD.ContextClearCache;
 using ElasticsearchCRUD.ContextCount;
@@ -148,14 +149,22 @@ namespace ElasticsearchCRUD
 		}
 
 
-		public ResultDetails<string> CreateIndex<T>(RoutingDefinition routingDefinition)
+		public ResultDetails<string> CreateIndex<T>(IndexDefinition indexDefinition = null)
 		{
-			return _elasticsearchContextCreateIndex.CreateIndex<T>(routingDefinition);
+			if (indexDefinition == null)
+			{
+				indexDefinition = new IndexDefinition();
+			}
+			return _elasticsearchContextCreateIndex.CreateIndex<T>(indexDefinition);
 		}
 
-		public async Task<ResultDetails<string>> CreateIndexAsync<T>(RoutingDefinition routingDefinition)
+		public async Task<ResultDetails<string>> CreateIndexAsync<T>(IndexDefinition indexDefinition = null)
 		{
-			return await _elasticsearchContextCreateIndex.CreateIndexAsync<T>(routingDefinition);
+			if (indexDefinition == null)
+			{
+				indexDefinition = new IndexDefinition();
+			}
+			return await _elasticsearchContextCreateIndex.CreateIndexAsync<T>(indexDefinition);
 		}
 
 		

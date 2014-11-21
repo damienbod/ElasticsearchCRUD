@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate
@@ -24,7 +25,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticSerializationResult.IndexMappings = _indexMappings;
 		}
 
-		public ElasticSerializationResult SerializeMapping(IEnumerable<EntityContextInfo> entities)
+		public ElasticSerializationResult SerializeMapping(IEnumerable<EntityContextInfo> entities, IndexDefinition indexDefinition)
 		{
 			if (entities == null)
 			{
@@ -45,7 +46,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 				if (_saveChangesAndInitMappingsForChildDocuments)
 				{
-					_indexMappings.CreatePropertyMappingForTopEntity(entity);
+					_indexMappings.CreatePropertyMappingForTopEntity(entity, indexDefinition);
 				}
 			}
 

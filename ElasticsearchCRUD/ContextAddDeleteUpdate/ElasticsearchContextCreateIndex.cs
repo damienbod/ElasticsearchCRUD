@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 
@@ -28,13 +29,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_connectionString = connectionString;
 		}
 
-		public ResultDetails<string> CreateIndex<T>(RoutingDefinition routingDefinition)
+		public ResultDetails<string> CreateIndex<T>(IndexDefinition indexDefinition)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => CreateIndexAsync<T>(routingDefinition));
+			return syncExecutor.ExecuteResultDetails(() => CreateIndexAsync<T>(indexDefinition));
 		}
 
-		public async Task<ResultDetails<string>> CreateIndexAsync<T>(RoutingDefinition routingDefinition)
+		public async Task<ResultDetails<string>> CreateIndexAsync<T>(IndexDefinition indexDefinition)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{0}: Save changes to Elasticsearch started", "ElasticsearchContextCreateIndex");
 			var resultDetails = new ResultDetails<string> {Status = HttpStatusCode.InternalServerError};
@@ -46,13 +47,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					var item = Activator.CreateInstance<T>();
 					var entityContextInfo = new EntityContextInfo
 					{
-						RoutingDefinition = routingDefinition,
+						RoutingDefinition = indexDefinition.RoutingDefinition,
 						Document = item,
 						EntityType = typeof (T),
 						Id = "0"
 					};
 
-					var resultMappings = serializer.SerializeMapping(new List<EntityContextInfo> { entityContextInfo });
+					var resultMappings = serializer.SerializeMapping(new List<EntityContextInfo> { entityContextInfo }, indexDefinition);
 					await resultMappings.IndexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 				}
 
