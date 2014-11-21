@@ -77,6 +77,15 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.18</strong><em> 2014.11.21</em>
+- support for Elasticsearch Core Types mappings as Attribute definitions
+(string, float, double, byte, short, integer,long, date, boolean, binary)
+- support for  similarity mappings
+- support copy_to mappings
+- support fields mappings (multi-fields)
+- support CreateIndex simple, nested or child/parent document with or without routing
+- support for auto init mapping, simple, nested or child/parent document with or without routing
+
 <strong>Version 1.0.17</strong><em> 2014.11.14</em>
 - Added support for search exists
 - Added support for document routing child/parent/grandchild or whatever
