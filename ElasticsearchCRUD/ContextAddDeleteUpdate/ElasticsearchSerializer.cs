@@ -133,7 +133,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			if (_elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
 			{
-				if (elasticSearchMapping.ChildIndexEntities.Count > 1)
+				if (elasticSearchMapping.ChildIndexEntities.Count > 0)
 				{
 					// Only save the top level items now
 					elasticSearchMapping.SaveChildObjectsAsWellAsParent = false;
