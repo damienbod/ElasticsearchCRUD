@@ -77,6 +77,13 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.19</strong><em> 2014.11.22</em>
+- support for Delete mapping (Index Type)
+- support for sync delete index
+- bug fix: bool types should not require an [ElasticsearchBoolean] attribute to create mapping 
+- DeleteDocument, add support/tests for explicit routed documents
+- IndexType Mapping fix for grandchild documents serialization
+
 <strong>Version 1.0.18</strong><em> 2014.11.21</em>
 - support for Elasticsearch Core Types mappings as Attribute definitions
 (string, float, double, byte, short, integer,long, date, boolean, binary)
