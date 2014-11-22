@@ -154,8 +154,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		{
 			if (!allowDeleteForIndex)
 			{
-				_traceProvider.Trace(TraceEventType.Error, "{0}: Delete Index, index type is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context", "ElasticsearchContextAddDeleteUpdate");
-				throw new ElasticsearchCrudException("ElasticsearchContext: Index, index type is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
+				_traceProvider.Trace(TraceEventType.Error, "{0}: Delete Index, index type is not activated for this context. If you want to activate it, set the AllowDeleteForIndex property of the context", "ElasticsearchContextAddDeleteUpdate");
+				throw new ElasticsearchCrudException("ElasticsearchContext: Index, index type is not activated for this context. If you want to activate it, set the AllowDeleteForIndex property of the context");
 			}
 			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request to delete complete index for Type: {0}", typeof(T), "ElasticsearchContextAddDeleteUpdate");
 

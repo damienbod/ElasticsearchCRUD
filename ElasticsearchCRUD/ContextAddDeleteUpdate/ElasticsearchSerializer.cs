@@ -180,15 +180,21 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		private void CreateBulkContentForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping,
 			EntityContextInfo item)
 		{
-			// TODO Delete document if exists
+			var childMapping =
+				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.EntityType);
+
+			var parentMapping =
+				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.ParentEntityType);
+
+
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
 			// Write the batch "index" operation header
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			// Always write to the same index
-			WriteValue("_index", elasticsearchMapping.GetIndexForType(entityInfo.EntityType));
-			WriteValue("_type", elasticsearchMapping.GetDocumentType(item.EntityType));
+			WriteValue("_index", childMapping.GetIndexForType(entityInfo.EntityType));
+			WriteValue("_type", childMapping.GetDocumentType(item.EntityType));
 			WriteValue("_id", item.Id);
 			WriteValue("_parent", item.RoutingDefinition.ParentId);
 			if (item.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.UserDefinedRouting)
