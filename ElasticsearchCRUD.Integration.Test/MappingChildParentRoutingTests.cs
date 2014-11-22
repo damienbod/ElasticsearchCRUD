@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net;
+using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
@@ -11,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingChildParentRoutingTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -27,7 +28,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		public void DeleteChildTypeFromExistingIndex()
+		public void DeleteNonExistingChildTypeFromExistingIndex()
 		{
 			CreateIndex();
 
@@ -42,9 +43,12 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AllowDeleteForIndex = true;
 				var result = context.DeleteIndexType<MappingChildParentRoutingTestsLevel2>();
 				Assert.IsTrue(result);
+
+				Thread.Sleep(1000);
+				result = context.DeleteIndexType<MappingChildParentRoutingTestsLevel2>();
+				Assert.IsFalse(result);
 			}
 		}
-
 
 		private void CreateIndex()
 		{

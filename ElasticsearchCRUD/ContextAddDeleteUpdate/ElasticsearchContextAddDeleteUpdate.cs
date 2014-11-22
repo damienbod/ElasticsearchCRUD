@@ -177,11 +177,18 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					}
 				}
 
-				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Delete Index Request response: {0}", responseString, "ElasticsearchContextAddDeleteUpdate");
-				resultDetails.Description = responseString;
-				resultDetails.PayloadResult = true;
-
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					resultDetails.PayloadResult = false;
+				}
+				else
+				{
+					var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+					_traceProvider.Trace(TraceEventType.Verbose, "{1}: Delete Index Request response: {0}", responseString, "ElasticsearchContextAddDeleteUpdate");
+					resultDetails.Description = responseString;
+					resultDetails.PayloadResult = true;
+				}
+				
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)
