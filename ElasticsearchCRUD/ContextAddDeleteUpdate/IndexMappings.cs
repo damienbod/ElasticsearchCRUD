@@ -148,8 +148,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// <param name="item"></param>
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
-			var childType = elasticsearchMapping.GetDocumentType(item.EntityType);
-			var parentType = elasticsearchMapping.GetDocumentType(item.ParentEntityType);
+			var childMapping =
+				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.EntityType);
+
+			var parentMapping =
+				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.ParentEntityType);
+
+			var childType = childMapping.GetDocumentType(item.EntityType);
+			var parentType = parentMapping.GetDocumentType(item.ParentEntityType);
 
 			var processedId = childType + "_" + parentType;
 			if (_processedItems.Contains(childType))
@@ -182,7 +188,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			ProccessPropertyMappingsWithoutTypeName(elasticsearchCrudJsonWriter, item, elasticsearchMapping);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			CreateMappingCommandForTypeWithExistingIndex(elasticsearchCrudJsonWriter.GetJsonString(), elasticsearchMapping.GetIndexForType(entityInfo.EntityType), elasticsearchMapping.GetDocumentType(item.EntityType));
+			CreateMappingCommandForTypeWithExistingIndex(elasticsearchCrudJsonWriter.GetJsonString(), elasticsearchMapping.GetIndexForType(entityInfo.EntityType), childMapping.GetDocumentType(item.EntityType));
 		}
 
 		private void ProccessPropertyMappings(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping)
