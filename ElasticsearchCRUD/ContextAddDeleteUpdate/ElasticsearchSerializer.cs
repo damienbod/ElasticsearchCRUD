@@ -183,10 +183,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			var childMapping =
 				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.EntityType);
 
-			var parentMapping =
-				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.ParentEntityType);
-
-
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
 			// Write the batch "index" operation header
@@ -207,7 +203,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n"); //ES requires this \n separator
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticsearchMapping.MapEntityValues(item, _elasticsearchCrudJsonWriter, true);
+			childMapping.MapEntityValues(item, _elasticsearchCrudJsonWriter, true);
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteRaw("\n");

@@ -34,8 +34,8 @@ namespace ElasticsearchCRUD
 			_oldIndexTypeDescription = oldIndexTypeDescription;
 			_newIndexTypeDescription = newIndexTypeDescription;
 			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-			elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(TNew), MappingUtils.GetElasticsearchMapping(newIndexTypeDescription));
-			elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(TOld), MappingUtils.GetElasticsearchMapping(oldIndexTypeDescription));
+			elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(TNew), MappingUtils.GetElasticsearchMapping<TNew>(newIndexTypeDescription));
+			elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(TOld), MappingUtils.GetElasticsearchMapping<TOld>(oldIndexTypeDescription));
 			_context = new ElasticsearchContext(connectionString, elasticsearchMappingResolver);
 		}
 

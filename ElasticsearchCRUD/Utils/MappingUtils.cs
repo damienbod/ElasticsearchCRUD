@@ -2,14 +2,14 @@
 {
 	public static class MappingUtils
 	{
-		public static ElasticsearchMapping GetElasticsearchMapping(IndexTypeDescription indexTypeDescription)
+		public static ElasticsearchMapping GetElasticsearchMapping<T>(IndexTypeDescription indexTypeDescription)
 		{
-			return new IndexTypeMapping(indexTypeDescription.Index, indexTypeDescription.IndexType);
+			return new IndexTypeMapping(indexTypeDescription.Index, indexTypeDescription.IndexType, typeof(T));
 		}
 
-		public static ElasticsearchMapping GetElasticsearchMapping(string index, string indexType)
+		public static ElasticsearchMapping GetElasticsearchMapping<T>(string index, string indexType)
 		{
-			return new IndexTypeMapping(index, indexType);
+			return new IndexTypeMapping(index, indexType, typeof(T));
 		}
 
 		public static ElasticsearchMapping GetElasticsearchMapping(string index)

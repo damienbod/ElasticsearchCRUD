@@ -7,7 +7,7 @@ namespace DataTransferSQLToEl
 	{
 		static void Main(string[] args)
 		{
-			//Repo repo = new Repo();
+			Repo repo = new Repo();
 			////repo.SaveToElasticsearchPerson();
 			
 			//repo.SaveToElasticsearchStateProvince();

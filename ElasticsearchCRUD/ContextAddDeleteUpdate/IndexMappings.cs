@@ -185,7 +185,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				CreateForceRoutingMappingForDocument(elasticsearchCrudJsonWriter);
 			}
 
-			ProccessPropertyMappingsWithoutTypeName(elasticsearchCrudJsonWriter, item, elasticsearchMapping);
+			ProccessPropertyMappingsWithoutTypeName(elasticsearchCrudJsonWriter, item, childMapping);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			CreateMappingCommandForTypeWithExistingIndex(elasticsearchCrudJsonWriter.GetJsonString(), elasticsearchMapping.GetIndexForType(entityInfo.EntityType), childMapping.GetDocumentType(item.EntityType));

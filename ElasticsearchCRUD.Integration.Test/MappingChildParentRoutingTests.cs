@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingChildParentRoutingTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -96,11 +96,11 @@ namespace ElasticsearchCRUD.Integration.Test
 			};
 
 			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel1),
-			MappingUtils.GetElasticsearchMapping(new IndexTypeDescription("masterindex", "level1")));
+			MappingUtils.GetElasticsearchMapping<MappingChildParentRoutingTestsLevel1>(new IndexTypeDescription("masterindex", "level1")));
 			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel2),
-				MappingUtils.GetElasticsearchMapping(new IndexTypeDescription("masterindex", "level2")));
+				MappingUtils.GetElasticsearchMapping <MappingChildParentRoutingTestsLevel2>(new IndexTypeDescription("masterindex", "level2")));
 			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel3),
-				MappingUtils.GetElasticsearchMapping(new IndexTypeDescription("masterindex", "level3")));
+				MappingUtils.GetElasticsearchMapping <MappingChildParentRoutingTestsLevel3>(new IndexTypeDescription("masterindex", "level3")));
 
 			using ( var context = new ElasticsearchContext(ConnectionString,
 					new ElasticsearchSerializerConfiguration( _elasticsearchMappingResolver,true,true,true)))

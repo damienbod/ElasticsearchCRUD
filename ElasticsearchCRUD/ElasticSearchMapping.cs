@@ -130,6 +130,7 @@ namespace ElasticsearchCRUD
 			}
 			if (prop.GetValue(entityInfo.Document) != null  && SaveChildObjectsAsWellAsParent)
 			{
+				// TODO wrong type by grandchildren...
 				var child = GetDocumentType(prop.GetValue(entityInfo.Document).GetType());
 				var parent = GetDocumentType(entityInfo.EntityType);
 				if (!SerializedTypes.Contains(child + parent))
