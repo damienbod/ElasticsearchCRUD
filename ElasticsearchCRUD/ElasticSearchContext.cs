@@ -592,6 +592,17 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.DeleteIndexAsync<T>(AllowDeleteForIndex);
 		}
 
+		/// <summary>
+		/// Delete the whole index type if it exists and Elasticsearch allows delete index. This can be used for deleting child types in an existing index.
+		/// Property AllowDeleteForIndex must also be set to true.
+		/// </summary>
+		/// <typeparam name="T">Type used to get the index to delete.</typeparam>
+		/// <returns>Result details in a task</returns>
+		public async Task<ResultDetails<T>> DeleteIndexTypeAsync<T>()
+		{
+			return await _elasticsearchContextAddDeleteUpdate.DeleteIndexTypeAsync<T>(AllowDeleteForIndex);
+		}
+
 		private void InitialContext()
 		{
 			_elasticsearchContextExists = new ElasticsearchContextExists(
