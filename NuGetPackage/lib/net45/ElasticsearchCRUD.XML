@@ -300,6 +300,7 @@
             </summary>
             <param name="entityInfo"></param>
             <param name="elasticsearchMapping"></param>
+            <param name="indexDefinition"></param>
         </member>
         <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForChildDocument(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.EntityContextInfo)">
             <summary>
@@ -477,13 +478,14 @@
             <param name="routingDefinition">parent id of the document. This is only used if the ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex
             property is set to true. The document is then saved with the parent routing. It will also be saved even if the parent does not exist.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteDocument``1(System.Object)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteDocument``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
             <summary>
             Adds a document to the pending changes list to be deletedd. Nor HTTP request is sent with this method. If the save changes is not called, the
             document is not added or updated in the search engine
             </summary>
             <typeparam name="T">This type is used to get the index and type of the document</typeparam>
             <param name="id">id of the document which will be deleted.</param>
+            <param name="routingDefinition"></param>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.SaveChangesAndInitMappings">
             <summary>
@@ -801,6 +803,30 @@
             </summary>
             <typeparam name="T">Type used to get the index to delete.</typeparam>
             <returns>Result details in a task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndex``1">
+            <summary>
+            Delete the whole index if it exists and Elasticsearch allows delete index.
+            Property AllowDeleteForIndex must also be set to true.
+            </summary>
+            <typeparam name="T">Type used to get the index to delete.</typeparam>
+            <returns>Result details in a , true if ok</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndexTypeAsync``1">
+            <summary>
+            Async Delete the whole index type if it exists and Elasticsearch allows delete index. This can be used for deleting child types in an existing index.
+            Property AllowDeleteForIndex must also be set to true.
+            </summary>
+            <typeparam name="T">Type used to get the index to delete.</typeparam>
+            <returns>Result details in a task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndexType``1">
+            <summary>
+            Delete the whole index type if it exists and Elasticsearch allows delete index. This can be used for deleting child types in an existing index.
+            Property AllowDeleteForIndex must also be set to true.
+            </summary>
+            <typeparam name="T">Type used to get the index to delete.</typeparam>
+            <returns>Result details in a true if ok</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.Dispose">
             <summary>
