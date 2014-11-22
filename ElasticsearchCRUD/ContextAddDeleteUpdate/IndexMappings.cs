@@ -109,6 +109,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// </summary>
 		/// <param name="entityInfo"></param>
 		/// <param name="elasticsearchMapping"></param>
+		/// <param name="indexDefinition"></param>
 		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, IndexDefinition indexDefinition)
 		{
 			var itemType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);

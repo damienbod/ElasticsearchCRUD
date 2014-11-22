@@ -20,8 +20,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				if (context.IndexExists<MappingTestsParent>())
 				{
 					context.AllowDeleteForIndex = true;
-					var entityResult1 = context.DeleteIndexAsync<MappingTestsParent>();
-					entityResult1.Wait();
+					var entityResult1 = context.DeleteIndex<MappingTestsParent>();
 				}
 				if (context.IndexExists<MappingTestsParentWithList>())
 				{

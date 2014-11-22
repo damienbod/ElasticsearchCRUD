@@ -134,8 +134,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-
-		public async Task<ResultDetails<T>> DeleteIndexAsync<T>(bool allowDeleteForIndex)
+		public async Task<ResultDetails<bool>> DeleteIndexAsync<T>(bool allowDeleteForIndex)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			var elasticsearchUrlForIndexDelete = string.Format("{0}/{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
@@ -143,7 +142,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			return await DeleteInternalAsync<T>(allowDeleteForIndex, uri);
 		}
 
-		public async Task<ResultDetails<T>> DeleteIndexTypeAsync<T>(bool allowDeleteForIndex)
+		public async Task<ResultDetails<bool>> DeleteIndexTypeAsync<T>(bool allowDeleteForIndex)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			var elasticsearchUrlForIndexDelete = string.Format("{0}/{1}/{2}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
@@ -151,7 +150,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			return await DeleteInternalAsync<T>(allowDeleteForIndex, uri);
 		}
 
-		public async Task<ResultDetails<T>> DeleteInternalAsync<T>(bool allowDeleteForIndex, Uri uri)
+		public async Task<ResultDetails<bool>> DeleteInternalAsync<T>(bool allowDeleteForIndex, Uri uri)
 		{
 			if (!allowDeleteForIndex)
 			{
@@ -160,7 +159,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request to delete complete index for Type: {0}", typeof(T), "ElasticsearchContextAddDeleteUpdate");
 
-			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
+			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
 				_traceProvider.Trace(TraceEventType.Warning, "{1}: Request HTTP Delete uri: {0}", uri.AbsoluteUri, "ElasticsearchContextAddDeleteUpdate");
@@ -181,6 +180,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Delete Index Request response: {0}", responseString, "ElasticsearchContextAddDeleteUpdate");
 				resultDetails.Description = responseString;
+				resultDetails.PayloadResult = true;
 
 				return resultDetails;
 			}
