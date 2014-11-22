@@ -134,28 +134,42 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
+
 		public async Task<ResultDetails<T>> DeleteIndexAsync<T>(bool allowDeleteForIndex)
+		{
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			var elasticsearchUrlForIndexDelete = string.Format("{0}/{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
+			var uri = new Uri(elasticsearchUrlForIndexDelete);
+			return await DeleteInternalAsync<T>(allowDeleteForIndex, uri);
+		}
+
+		public async Task<ResultDetails<T>> DeleteIndexTypeAsync<T>(bool allowDeleteForIndex)
+		{
+			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
+			var elasticsearchUrlForIndexDelete = string.Format("{0}/{1}/{2}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+			var uri = new Uri(elasticsearchUrlForIndexDelete);
+			return await DeleteInternalAsync<T>(allowDeleteForIndex, uri);
+		}
+
+		public async Task<ResultDetails<T>> DeleteInternalAsync<T>(bool allowDeleteForIndex, Uri uri)
 		{
 			if (!allowDeleteForIndex)
 			{
-				_traceProvider.Trace(TraceEventType.Error, "{0}: Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context", "ElasticsearchContextAddDeleteUpdate");
-				throw new ElasticsearchCrudException("ElasticsearchContext: Delete Index is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
+				_traceProvider.Trace(TraceEventType.Error, "{0}: Delete Index, index type is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context", "ElasticsearchContextAddDeleteUpdate");
+				throw new ElasticsearchCrudException("ElasticsearchContext: Index, index type is not activated for this context. If ou want to activate it, set the AllowDeleteForIndex property of the context");
 			}
 			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request to delete complete index for Type: {0}", typeof(T), "ElasticsearchContextAddDeleteUpdate");
 
 			var resultDetails = new ResultDetails<T> { Status = HttpStatusCode.InternalServerError };
 			try
 			{
-				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
-				var elasticsearchUrlForIndexDelete = string.Format("{0}/{1}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)));
-				var uri = new Uri(elasticsearchUrlForIndexDelete);
 				_traceProvider.Trace(TraceEventType.Warning, "{1}: Request HTTP Delete uri: {0}", uri.AbsoluteUri, "ElasticsearchContextAddDeleteUpdate");
 				var response = await _client.DeleteAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
 
 				resultDetails.Status = response.StatusCode;
 				if (response.StatusCode != HttpStatusCode.OK)
 				{
-					_traceProvider.Trace(TraceEventType.Warning, "{2}: DeleteIndexAsync response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "ElasticsearchContextAddDeleteUpdate");
+					_traceProvider.Trace(TraceEventType.Warning, "{2}: Delete Index, index type response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase, "ElasticsearchContextAddDeleteUpdate");
 					if (response.StatusCode == HttpStatusCode.BadRequest)
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
