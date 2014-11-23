@@ -29,6 +29,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="http://damienbod.wordpress.com/2014/11/13/csv-export-using-elasticsearch-and-web-api/">Part 8: CSV export using Elasticsearch and Web API</a>
 
+<a href="http://damienbod.wordpress.com/2014/11/23/elasticsearch-parent-child-grandchild-documents-and-routing/">Part 9: Elasticsearch Parent, Child, Grandchild Documents and Routing</a>
+
 ========================
 
 <strong>Examples:</strong>
