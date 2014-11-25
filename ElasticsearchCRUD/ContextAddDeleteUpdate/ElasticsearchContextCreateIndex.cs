@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
@@ -42,26 +43,37 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			try
 			{
-				using (var serializer = new ElasticsearchSerializer(_traceProvider, _elasticsearchSerializerConfiguration, true))
+				var item = Activator.CreateInstance<T>();
+				var entityContextInfo = new EntityContextInfo
 				{
-					var item = Activator.CreateInstance<T>();
-					var entityContextInfo = new EntityContextInfo
-					{
-						RoutingDefinition = indexDefinition.RoutingDefinition,
-						Document = item,
-						EntityType = typeof (T),
-						Id = "0"
-					};
+					RoutingDefinition = indexDefinition.RoutingDefinition,
+					Document = item,
+					EntityType = typeof (T),
+					Id = "0"
+				};
 
-					var resultMappings = serializer.SerializeMapping(new List<EntityContextInfo> { entityContextInfo }, indexDefinition.IndexSettings);
-					await resultMappings.IndexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
+				string index =
+					_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(
+						entityContextInfo.EntityType).GetIndexForType(entityContextInfo.EntityType);
+				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
+				{
+					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index,
+						"ElasticsearchCrudJsonWriter");
+					throw new ElasticsearchCrudException(
+						string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
 				}
+
+				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
+				indexMappings.CreateIndexSettingsForDocument(entityContextInfo, indexDefinition.IndexSettings);
+				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, index);
+				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message, "ElasticsearchContextCreateIndex");
+				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message,
+					"ElasticsearchContextCreateIndex");
 				resultDetails.Description = "OperationCanceledException";
 				return resultDetails;
 			}

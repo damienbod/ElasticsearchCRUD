@@ -25,6 +25,14 @@ namespace ElasticsearchCRUD.Integration.Test
 					context.AllowDeleteForIndex = true;
 					context.DeleteIndex<MappingChildParentRoutingTestsLevel1>();
 				}
+
+				if (context.IndexExists<ListMappingChildParentRoutingTestsLevel1>())
+				{
+					context.AllowDeleteForIndex = true;
+					context.DeleteIndex<ListMappingChildParentRoutingTestsLevel1>();
+				}
+
+				
 			}
 		}
 

@@ -57,14 +57,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				string serializedEntities;
 				using (var serializer = new ElasticsearchSerializer(_traceProvider, _elasticsearchSerializerConfiguration, _saveChangesAndInitMappings))
 				{
+					var result = serializer.Serialize(entityPendingChanges);
 					if (_saveChangesAndInitMappings)
 					{
-						var resultMappings = serializer.SerializeMapping(entityPendingChanges, new IndexSettings());
-						await resultMappings.IndexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
-						_saveChangesAndInitMappings = false;
+						await result.IndexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 					}
-
-					var result = serializer.Serialize(entityPendingChanges);		
+					_saveChangesAndInitMappings = false;
 					serializedEntities = result.Content;
 				}
 				var content = new StringContent(serializedEntities);
