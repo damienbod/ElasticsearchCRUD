@@ -45,7 +45,7 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		private ITraceProvider _traceProvider = new NullTraceProvider();
 
-		private ElasticsearchContextCreateIndex _elasticsearchContextCreateIndex;
+		private ElasticsearchContextIndexMapping _elasticsearchContextIndexMapping;
 
 		public ITraceProvider TraceProvider
 		{
@@ -161,7 +161,7 @@ namespace ElasticsearchCRUD
 			{
 				indexDefinition = new IndexDefinition();
 			}
-			return _elasticsearchContextCreateIndex.CreateIndex<T>(indexDefinition);
+			return _elasticsearchContextIndexMapping.CreateIndexWithMapping<T>(indexDefinition);
 		}
 
 		public async Task<ResultDetails<string>> CreateIndexAsync<T>(IndexDefinition indexDefinition = null)
@@ -170,7 +170,7 @@ namespace ElasticsearchCRUD
 			{
 				indexDefinition = new IndexDefinition();
 			}
-			return await _elasticsearchContextCreateIndex.CreateIndexAsync<T>(indexDefinition);
+			return await _elasticsearchContextIndexMapping.CreateIndexWithMappingAsync<T>(indexDefinition);
 		}
 
 		
@@ -702,7 +702,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			_elasticsearchContextCreateIndex = new ElasticsearchContextCreateIndex(
+			_elasticsearchContextIndexMapping = new ElasticsearchContextIndexMapping(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,

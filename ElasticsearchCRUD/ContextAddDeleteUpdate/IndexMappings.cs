@@ -79,9 +79,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_traceProvider = traceProvider;
 		}
 
-		public void CreateIndexSettingsForDocument(EntityContextInfo entityInfo, IndexSettings indexSettings)
+		public void CreateIndexSettingsForDocument(string index, IndexSettings indexSettings)
 		{
-			var elasticsearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
@@ -89,7 +88,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
-			CreateIndexCommand(elasticsearchCrudJsonWriter.GetJsonString(), elasticsearchMapping.GetIndexForType(entityInfo.EntityType));
+			CreateIndexCommand(elasticsearchCrudJsonWriter.GetJsonString(), index);
 		}
 
 		public void CreatePropertyMappingForTopDocument(EntityContextInfo entityInfo, string index)
