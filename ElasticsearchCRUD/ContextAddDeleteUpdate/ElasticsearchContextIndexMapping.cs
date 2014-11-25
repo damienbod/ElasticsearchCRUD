@@ -101,15 +101,15 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-		public ResultDetails<string> TypeMappingForIndex<T>(MappingDefinition mappingDefinition)
+		public ResultDetails<string> CreateTypeMappingForIndex<T>(MappingDefinition mappingDefinition)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => TypeMappingForIndexAsync<T>(mappingDefinition));
+			return syncExecutor.ExecuteResultDetails(() => CreateTypeMappingForIndexAsync<T>(mappingDefinition));
 		}
 
-		public async Task<ResultDetails<string>> TypeMappingForIndexAsync<T>(MappingDefinition mappingDefinition)
+		public async Task<ResultDetails<string>> CreateTypeMappingForIndexAsync<T>(MappingDefinition mappingDefinition)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{0}: TypeMappingForIndex Elasticsearch started", "ElasticsearchContextIndexMapping");
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateTypeMappingForIndex Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 
 			try
@@ -131,7 +131,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: TypeMappingForIndexAsync Request OperationCanceledException: {0}", oex.Message,
+				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: CreateTypeMappingForIndexAsync Request OperationCanceledException: {0}", oex.Message,
 					"ElasticsearchContextIndexMapping");
 				resultDetails.Description = "OperationCanceledException";
 				return resultDetails;
