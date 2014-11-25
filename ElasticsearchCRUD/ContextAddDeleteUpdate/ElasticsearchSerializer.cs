@@ -25,7 +25,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_elasticSerializationResult.IndexMappings = _indexMappings;
 		}
 
-		public ElasticSerializationResult SerializeMapping(IEnumerable<EntityContextInfo> entities, IndexDefinition indexDefinition)
+		public ElasticSerializationResult SerializeMapping(IEnumerable<EntityContextInfo> entities, IndexSettings indexSettings)
 		{
 			if (entities == null)
 			{
@@ -37,7 +37,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			foreach (var entity in entities)
 			{
-				string index = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
+				string index = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entity.EntityType).GetIndexForType(entity.EntityType);
 				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 				{
 					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");
@@ -46,7 +46,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 				if (_saveChangesAndInitMappingsForChildDocuments)
 				{
-					_indexMappings.CreatePropertyMappingForTopEntity(entity, indexDefinition);
+					_indexMappings.CreateIndexSettingsForDocument(entity, indexSettings);
+					_indexMappings.CreatePropertyMappingForTopDocument(entity, index);
 				}
 			}
 
@@ -69,7 +70,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			foreach (var entity in entities)
 			{
-				string index = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entity.GetType()).GetIndexForType(entity.GetType());
+				string index = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entity.EntityType).GetIndexForType(entity.EntityType);
 				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
 				{
 					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");

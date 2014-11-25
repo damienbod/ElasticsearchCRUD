@@ -37,7 +37,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		public async Task<ResultDetails<string>> CreateIndexAsync<T>(IndexDefinition indexDefinition)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{0}: Save changes to Elasticsearch started", "ElasticsearchContextCreateIndex");
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndex Elasticsearch started", "ElasticsearchContextCreateIndex");
 			var resultDetails = new ResultDetails<string> {Status = HttpStatusCode.InternalServerError};
 
 			try
@@ -53,7 +53,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 						Id = "0"
 					};
 
-					var resultMappings = serializer.SerializeMapping(new List<EntityContextInfo> { entityContextInfo }, indexDefinition);
+					var resultMappings = serializer.SerializeMapping(new List<EntityContextInfo> { entityContextInfo }, indexDefinition.IndexSettings);
 					await resultMappings.IndexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 				}
 
@@ -62,6 +62,43 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			catch (OperationCanceledException oex)
 			{
 				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message, "ElasticsearchContextCreateIndex");
+				resultDetails.Description = "OperationCanceledException";
+				return resultDetails;
+			}
+		}
+
+		public ResultDetails<string> TypeMappingForIndex<T>(MappingDefinition mappingDefinition)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(() => TypeMappingForIndexAsync<T>(mappingDefinition));
+		}
+
+		public async Task<ResultDetails<string>> TypeMappingForIndexAsync<T>(MappingDefinition mappingDefinition)
+		{
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: TypeMappingForIndex Elasticsearch started", "ElasticsearchContextCreateIndex");
+			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
+
+			try
+			{
+				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
+
+				var item = Activator.CreateInstance<T>();
+				var entityContextInfo = new EntityContextInfo
+				{
+					RoutingDefinition = mappingDefinition.RoutingDefinition,
+					Document = item,
+					EntityType = typeof (T),
+					Id = "0"
+				};
+				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, mappingDefinition.Index);
+				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
+
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: TypeMappingForIndexAsync Request OperationCanceledException: {0}", oex.Message,
+					"ElasticsearchContextCreateIndex");
 				resultDetails.Description = "OperationCanceledException";
 				return resultDetails;
 			}
