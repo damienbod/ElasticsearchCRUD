@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
@@ -38,11 +39,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			foreach (var entity in entities)
 			{
 				string index = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entity.EntityType).GetIndexForType(entity.EntityType);
-				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
-				{
-					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchCrudJsonWriter");
-					throw new ElasticsearchCrudException(string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
-				}
+				MappingUtils.GuardAgainstBadIndexName(index);
 
 				if (_saveChangesAndInitMappingsForChildDocuments)
 				{

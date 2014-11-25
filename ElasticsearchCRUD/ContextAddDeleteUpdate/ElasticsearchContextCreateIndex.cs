@@ -55,13 +55,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				string index =
 					_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(
 						entityContextInfo.EntityType).GetIndexForType(entityContextInfo.EntityType);
-				if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
-				{
-					_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index,
-						"ElasticsearchCrudJsonWriter");
-					throw new ElasticsearchCrudException(
-						string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
-				}
+				MappingUtils.GuardAgainstBadIndexName(index);
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
 				indexMappings.CreateIndexSettingsForDocument(entityContextInfo, indexDefinition.IndexSettings);

@@ -1,4 +1,7 @@
-﻿namespace ElasticsearchCRUD.Utils
+﻿using System.Diagnostics;
+using System.Text.RegularExpressions;
+
+namespace ElasticsearchCRUD.Utils
 {
 	public static class MappingUtils
 	{
@@ -15,6 +18,14 @@
 		public static ElasticsearchMapping GetElasticsearchMapping(string index)
 		{
 			return new IndexMapping(index);
+		}
+
+		public static void GuardAgainstBadIndexName(string index)
+		{
+			if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
+			{
+				throw new ElasticsearchCrudException(string.Format("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: {0}", index));
+			}
 		}
 	}
 }

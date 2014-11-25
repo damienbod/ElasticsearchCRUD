@@ -56,22 +56,10 @@ namespace ElasticsearchCRUD.ContextAlias
 			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Cound Not Execute Alias  {0}", contentJson));
 		}
 
-		public void ValidateAlias(string alias)
-		{
-			if (Regex.IsMatch(alias, "[\\\\/*?\",<>|\\sA-Z]"))
-			{
-				_traceProvider.Trace(TraceEventType.Error, "{1}: alias is not allowed in Elasticsearch: {0}", alias, "ElasticsearchContextAlias");
-				throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: alias is not allowed in Elasticsearch: {0}", alias));
-			}
-		}
 
-		public void ValidateIndex(string index)
+		public void ValidateIndexOrAlias(string index)
 		{
-			if (Regex.IsMatch(index, "[\\\\/*?\",<>|\\sA-Z]"))
-			{
-				_traceProvider.Trace(TraceEventType.Error, "{1}: index is not allowed in Elasticsearch: {0}", index, "ElasticsearchContextAlias");
-				throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: index is not allowed in Elasticsearch: {0}", index));
-			}
+			MappingUtils.GuardAgainstBadIndexName(index);
 		}
 
 		//{
@@ -82,8 +70,8 @@ namespace ElasticsearchCRUD.ContextAlias
 		//}'
 		public string BuildCreateOrRemoveAlias(AliasAction action, string alias, string index)
 		{
-			ValidateAlias(alias);
-			ValidateIndex(index);
+			ValidateIndexOrAlias(alias);
+			ValidateIndexOrAlias(index);
 
 			var sb = new StringBuilder();
 			BuildAliasBegin(sb);
@@ -94,9 +82,9 @@ namespace ElasticsearchCRUD.ContextAlias
 
 		public string BuildAliasChangeIndex(string alias, string indexOld, string indexNew)
 		{
-			ValidateAlias(alias);
-			ValidateIndex(indexOld);
-			ValidateIndex(indexNew);
+			ValidateIndexOrAlias(alias);
+			ValidateIndexOrAlias(indexOld);
+			ValidateIndexOrAlias(indexNew);
 
 			var sb = new StringBuilder();
 			BuildAliasBegin(sb);

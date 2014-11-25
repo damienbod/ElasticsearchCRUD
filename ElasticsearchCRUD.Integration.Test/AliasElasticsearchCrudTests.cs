@@ -45,7 +45,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextAlias: index is not allowed in Elasticsearch: doeGGGtindex")]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: doeGGGtindex")]
 		public void CreateAliasForIndexBadIndex()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -55,7 +55,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextAlias: alias is not allowed in Elasticsearch: tesHHHt")]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: tesHHHt")]
 		public void CreateAliasForIndexBadAlias()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
