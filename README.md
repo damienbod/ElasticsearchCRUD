@@ -1,4 +1,4 @@
-ElasticsearchCRUD
+ElasticsearchCRUD [![NuGet Status](http://img.shields.io/nuget/v/ElasticsearchCRUD.svg?style=flat-square)](https://www.nuget.org/packages/ElasticsearchCRUD/)
 ========================
 <strong>Documentation:</strong>
  http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/
@@ -28,6 +28,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 <a href="http://damienbod.wordpress.com/2014/11/07/live-reindex-in-elasticsearch/">Part 7: Live Reindex in Elasticsearch</a>
 
 <a href="http://damienbod.wordpress.com/2014/11/13/csv-export-using-elasticsearch-and-web-api/">Part 8: CSV export using Elasticsearch and Web API</a>
+
+<a href="http://damienbod.wordpress.com/2014/11/23/elasticsearch-parent-child-grandchild-documents-and-routing/">Part 9: Elasticsearch Parent, Child, Grandchild Documents and Routing</a>
 
 ========================
 
