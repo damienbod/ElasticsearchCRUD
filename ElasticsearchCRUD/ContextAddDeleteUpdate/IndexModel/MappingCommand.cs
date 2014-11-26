@@ -1,4 +1,4 @@
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 {
 	public class MappingCommand
 	{

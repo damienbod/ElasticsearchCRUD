@@ -72,8 +72,9 @@
     <Compile Include="ContextAddDeleteUpdate\IndexMappings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexSettings.cs" />
-    <Compile Include="ContextAddDeleteUpdate\MappingCommand.cs" />
-    <Compile Include="ContextAddDeleteUpdate\RoutingDefinition.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\MappingCommand.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeParameters.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\RoutingDefinition.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />
     <Compile Include="ContextClearCache\ElasticsearchContextClearCache.cs" />
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchCrudReindex.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
-    <Compile Include="ContextAddDeleteUpdate\ElasticSerializationResult.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\ElasticSerializationResult.cs" />
     <Compile Include="ContextSearch\Search.cs" />
     <Compile Include="Utils\IndexMapping.cs" />
     <Compile Include="Utils\IndexTypeDescription.cs" />

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
-using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
@@ -95,6 +94,9 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				context.IndexClose("mappingtestsparentwithsimplenullandnullarraylists");
 				context.IndexOpen("mappingtestsparentwithsimplenullandnullarraylists");
+				var result = context.IndexOptimize("mappingtestsparentwithsimplenullandnullarraylists");
+
+				Assert.GreaterOrEqual(3,result.PayloadResult);
 			}
 		}
 

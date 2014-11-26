@@ -154,6 +154,16 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
+		public ResultDetails<int> IndexOptimize(string index, OptimizeParameters optimizeParameters = null)
+		{
+			return _elasticsearchContextIndexMapping.IndexOptimize(index, optimizeParameters);
+		}
+
+		public async Task<ResultDetails<int>> IndexOptimizeAsync(string index, OptimizeParameters optimizeParameters = null)
+		{
+			return await _elasticsearchContextIndexMapping.IndexOptimizeAsync( index,  optimizeParameters);
+		}
+
 		public ResultDetails<bool> IndexClose(string index)
 		{
 			return _elasticsearchContextIndexMapping.CloseIndex(index);

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;

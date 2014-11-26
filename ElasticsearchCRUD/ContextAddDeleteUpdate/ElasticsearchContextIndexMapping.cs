@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
+using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 {
@@ -261,6 +262,70 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				_traceProvider.Trace(TraceEventType.Verbose, oex, "ExistsAsync:  Get Request OperationCanceledException: {0}", oex.Message);
 				return resultDetails;
 			}
+		}
+
+		
+		public async Task<ResultDetails<int>> IndexOptimizeAsync(string index, OptimizeParameters optimizeParameters)
+		{
+			if (string.IsNullOrEmpty(index))
+			{
+				throw new ElasticsearchCrudException("CreateIndexAsync: index is required");
+			}
+
+			if (optimizeParameters == null)
+			{
+				optimizeParameters = new OptimizeParameters();
+			}
+
+			var elasticsearchUrlForPostRequest = string.Format("{0}/{1}/_optimize{2}", _connectionString, index, optimizeParameters.GetOptimizeParameters());
+			var uri = new Uri(elasticsearchUrlForPostRequest);
+			_traceProvider.Trace(TraceEventType.Verbose, "IndexOptimizeAsync Request POST with url: {0}", uri.ToString());
+
+			var resultDetails = new ResultDetails<int> { Status = HttpStatusCode.InternalServerError };
+			try
+			{
+				var request = new HttpRequestMessage(HttpMethod.Post, uri);
+				var response = await _client.SendAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+				resultDetails.RequestUrl = uri.OriginalString;
+
+				resultDetails.Status = response.StatusCode;
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					resultDetails.PayloadResult = 0;
+					if (response.StatusCode == HttpStatusCode.BadRequest)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+						resultDetails.Description = errorInfo;
+						throw new ElasticsearchCrudException("ClostIndexAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+					}
+
+					_traceProvider.Trace(TraceEventType.Information, "ClostIndexAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
+				}
+				else
+				{
+					var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
+					var responseObject = JObject.Parse(responseString);
+
+					var source = (int)responseObject["_shards"]["successful"];
+					resultDetails.TotalHits = (long)responseObject["_shards"]["total"];
+
+					resultDetails.PayloadResult = source;
+				}
+
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "ExistsAsync:  Get Request OperationCanceledException: {0}", oex.Message);
+				return resultDetails;
+			}
+		}
+
+		public ResultDetails<int> IndexOptimize(string index, OptimizeParameters optimizeParameters)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(() => IndexOptimizeAsync(index, optimizeParameters));
 		}
 	}
 }

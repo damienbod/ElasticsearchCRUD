@@ -1,5 +1,6 @@
 ﻿using DataTransferSQLToEl.SQLDomainModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 
 namespace DataTransferSQLToEl
 {
