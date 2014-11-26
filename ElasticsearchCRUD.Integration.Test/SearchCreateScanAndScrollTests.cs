@@ -75,7 +75,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-				context.ClearCacheForIndex<ScanScrollTypeV1>();
+				context.IndexClearCache<ScanScrollTypeV1>();
 			}
 
 			Task.Run(() =>

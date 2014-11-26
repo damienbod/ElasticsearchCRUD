@@ -2,6 +2,7 @@
 {
 	public class OptimizeParameters
 	{
+		// TODO
 		// max_num_segments
 		// The number of segments to optimize to. To fully optimize the index, set it to 1. Defaults to simply checking if a merge needs to execute, and if so, executes it.
 

@@ -531,7 +531,7 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type used to get the index name</typeparam>
 		/// <returns>returns true if cache has been cleared</returns>
-		public bool ClearCacheForIndex<T>()
+		public bool IndexClearCache<T>()
 		{
 			return _elasticsearchContextClearCache.ClearCacheForIndex<T>();
 		}
@@ -541,7 +541,7 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type used to get the index name</typeparam>
 		/// <returns>returns true if cache has been cleared</returns>
-		public async Task<ResultDetails<bool>> ClearCacheForIndexAsync<T>()
+		public async Task<ResultDetails<bool>> IndexClearCacheAsync<T>()
 		{
 			return await _elasticsearchContextClearCache.ClearCacheForIndexAsync<T>();
 		}

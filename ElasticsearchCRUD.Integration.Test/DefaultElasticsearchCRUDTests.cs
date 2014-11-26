@@ -586,7 +586,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
 				// Clear thecache so count or get returns the latest value
-				context.ClearCacheForIndex<SkillTestEntity>();
+				context.IndexClearCache<SkillTestEntity>();
 				long foundAfter = context.Count<SkillTestEntity>();
 
 				Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
@@ -636,7 +636,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
 				// Clear thecache so count or get returns the latest value
-				context.ClearCacheForIndex<SkillTestEntity>();
+				context.IndexClearCache<SkillTestEntity>();
 				var foundAfter = context.Count<SkillTestEntity>();
 
 				Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
@@ -658,7 +658,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 
-				Assert.IsTrue(context.ClearCacheForIndex<SkillTestEntity>());
+				Assert.IsTrue(context.IndexClearCache<SkillTestEntity>());
 			}
 		}
 
@@ -668,7 +668,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.ClearCacheForIndex<SkillTestEntityNoIndex>());
+				Assert.IsTrue(context.IndexClearCache<SkillTestEntityNoIndex>());
 			}
 		}
 
