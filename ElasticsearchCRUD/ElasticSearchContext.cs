@@ -154,6 +154,23 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
+		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings = null)
+		{
+			if (string.IsNullOrEmpty(index))
+			{
+				throw new ElasticsearchCrudException("CreateIndex: index is required");
+			}
+			return _elasticsearchContextIndexMapping.CreateIndexWithMapping(index, indexSettings);
+		}
+
+		public async Task<ResultDetails<string>> CreateIndexAsync(string index, IndexSettings indexSettings = null)
+		{
+			if (string.IsNullOrEmpty(index))
+			{
+				throw new ElasticsearchCrudException("CreateIndex: index is required");
+			}
+			return await _elasticsearchContextIndexMapping.CreateIndexWithMappingAsync(index, indexSettings);
+		}
 
 		public ResultDetails<string> CreateIndex<T>(IndexDefinition indexDefinition = null)
 		{
@@ -171,6 +188,24 @@ namespace ElasticsearchCRUD
 				indexDefinition = new IndexDefinition();
 			}
 			return await _elasticsearchContextIndexMapping.CreateIndexWithMappingAsync<T>(indexDefinition);
+		}
+
+		public ResultDetails<string> CreateTypeMappingForIndex<T>(MappingDefinition mappingDefinition)
+		{
+			if (mappingDefinition == null)
+			{
+				throw new ElasticsearchCrudException("A mapping definition with the parent index is required");
+			}
+			return _elasticsearchContextIndexMapping.CreateTypeMappingForIndex<T>(mappingDefinition);
+		}
+
+		public async Task<ResultDetails<string>> CreateTypeMappingForIndexAsync<T>(MappingDefinition mappingDefinition)
+		{
+			if (mappingDefinition == null)
+			{
+				throw new ElasticsearchCrudException("A mapping definition with the parent index is required");
+			}
+			return await _elasticsearchContextIndexMapping.CreateTypeMappingForIndexAsync<T>(mappingDefinition);
 		}
 
 		
