@@ -36,7 +36,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		public async Task<ResultDetails<string>> CreateIndexWithMappingAsync<T>(IndexDefinition indexDefinition)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndexWithMapping Elasticsearch started", "ElasticsearchContextIndexMapping");
+			if (indexDefinition == null)
+			{
+				indexDefinition = new IndexDefinition();
+			}
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndex Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> {Status = HttpStatusCode.InternalServerError};
 
 			try
@@ -71,15 +75,24 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-		public ResultDetails<string> CreateIndexWithMapping(string index, IndexSettings indexSettings)
+		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => CreateIndexWithMappingAsync(index, indexSettings));
+			return syncExecutor.ExecuteResultDetails(() => CreateIndexAsync(index, indexSettings));
 		}
 
-		public async Task<ResultDetails<string>> CreateIndexWithMappingAsync(string index, IndexSettings indexSettings)
+		public async Task<ResultDetails<string>> CreateIndexAsync(string index, IndexSettings indexSettings)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndexWithMapping Elasticsearch started", "ElasticsearchContextIndexMapping");
+			if (string.IsNullOrEmpty(index))
+			{
+				throw new ElasticsearchCrudException("CreateIndexAsync: index is required");
+			}
+			if (indexSettings == null)
+			{
+				indexSettings = new IndexSettings();
+			}
+
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndex Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 
 			try
@@ -109,6 +122,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		public async Task<ResultDetails<string>> CreateTypeMappingForIndexAsync<T>(MappingDefinition mappingDefinition)
 		{
+			if (mappingDefinition == null)
+			{
+				throw new ElasticsearchCrudException("CreateTypeMappingForIndexAsync: A mapping definition with the parent index is required");
+			}
 			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateTypeMappingForIndex Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 

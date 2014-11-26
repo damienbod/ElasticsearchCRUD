@@ -1,7 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
+using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -296,6 +299,93 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+		[Test]
+		public void CreateNewIndexAndMappingForNestedChildInTwoSteps()
+		{
+			const string index = "newindextestmappingtwostep";
+			IElasticsearchMappingResolver elasticsearchMappingResolver;
+			var mappingTestsParent = SetupIndexMappingTests(index, out elasticsearchMappingResolver);
+
+			using ( var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.CreateIndex(index);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<MappingTestsParent>());
+				context.CreateTypeMappingForIndex<MappingTestsParent>(new MappingDefinition {Index = index});
+
+				Thread.Sleep(1500);
+
+				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId);
+				context.SaveChanges();
+
+				Thread.Sleep(1500);
+				var doc = context.GetDocument<MappingTestsParent>(mappingTestsParent.MappingTestsParentId);
+
+				Assert.IsNotNull(doc);
+
+				if (context.IndexExists<MappingTestsParent>())
+				{
+					context.AllowDeleteForIndex = true;
+					context.DeleteIndex<MappingTestsParent>();
+				}
+			}
+		}
+
+		[Test]
+		public void CreateNewIndexAndMappingForNestedChildInTwoStepsWithRouting()
+		{
+			const string index = "newindextestmappingtwostep";
+			IElasticsearchMappingResolver elasticsearchMappingResolver;
+			var mappingTestsParent = SetupIndexMappingTests(index, out elasticsearchMappingResolver);
+			var routing = new RoutingDefinition {RoutingId = "coolrouting"};
+			var config = new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver,true,false,true);
+			using (var context = new ElasticsearchContext(ConnectionString, config))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.CreateIndex(index);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<MappingTestsParent>());
+				context.CreateTypeMappingForIndex<MappingTestsParent>(new MappingDefinition { Index = index, RoutingDefinition = routing });
+
+				Thread.Sleep(1500);
+
+				context.AddUpdateDocument(mappingTestsParent, mappingTestsParent.MappingTestsParentId, routing);
+				context.SaveChanges();
+
+				Thread.Sleep(1500);
+				var doc = context.GetDocument<MappingTestsParent>(mappingTestsParent.MappingTestsParentId, routing);
+
+				Assert.IsNotNull(doc);
+
+				if (context.IndexExists<MappingTestsParent>())
+				{
+					context.AllowDeleteForIndex = true;
+					context.DeleteIndex<MappingTestsParent>();
+				}
+			}
+		}
+
+		private static MappingTestsParent SetupIndexMappingTests(string index, out IElasticsearchMappingResolver elasticsearchMappingResolver)
+		{
+			var mappingTestsParent = new MappingTestsParent
+			{
+				Calls = 3,
+				MappingTestsParentId = 2,
+				MappingTestsItem = new MappingTestsChild
+				{
+					Description = "Hello nested",
+					MappingTestsChildId = 5
+				}
+			};
+
+			elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+			elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof (MappingTestsParent),
+				MappingUtils.GetElasticsearchMapping(index));
+			return mappingTestsParent;
+		}
 	}
 
 	public class MappingTestsParentNull
