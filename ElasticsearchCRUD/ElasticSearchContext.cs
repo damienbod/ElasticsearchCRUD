@@ -154,43 +154,62 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
-		public ResultDetails<string> UpdateSettings(string index, IndexSettings indexSettings = null)
+		public ResultDetails<bool> IndexClose(string index)
 		{
-			return _elasticsearchContextIndexMapping.UpdateSettings(index, indexSettings);
+			return _elasticsearchContextIndexMapping.CloseIndex(index);
 		}
 
-		public async Task<ResultDetails<string>> UpdateSettingsAsync(string index, IndexSettings indexSettings = null)
+		public async Task<ResultDetails<bool>> IndexCloseAsync(string index)
 		{
-			return await _elasticsearchContextIndexMapping.UpdateSettingsAsync(index, indexSettings);
+			return await _elasticsearchContextIndexMapping.CloseIndexAsync(index);
 		}
 
+		public ResultDetails<bool> IndexOpen(string index)
+		{
+			return _elasticsearchContextIndexMapping.OpenIndex(index);
+		}
 
-		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings = null)
+		public async Task<ResultDetails<bool>> IndexOpenAsync(string index)
+		{
+			return await _elasticsearchContextIndexMapping.OpenIndexAsync(index);
+		}
+
+		public ResultDetails<string> IndexUpdateSettings(string index, IndexSettings indexSettings = null)
+		{
+			return _elasticsearchContextIndexMapping.UpdateIndexSettings(index, indexSettings);
+		}
+
+		public async Task<ResultDetails<string>> IndexUpdateSettingsAsync(string index, IndexSettings indexSettings = null)
+		{
+			return await _elasticsearchContextIndexMapping.UpdateIndexSettingsAsync(index, indexSettings);
+		}
+
+		public ResultDetails<string> IndexCreate(string index, IndexSettings indexSettings = null)
 		{
 			return _elasticsearchContextIndexMapping.CreateIndex(index, indexSettings);
 		}
 
-		public async Task<ResultDetails<string>> CreateIndexAsync(string index, IndexSettings indexSettings = null)
+		public async Task<ResultDetails<string>> IndexCreateAsync(string index, IndexSettings indexSettings = null)
 		{
 			return await _elasticsearchContextIndexMapping.CreateIndexAsync(index, indexSettings);
 		}
 
-		public ResultDetails<string> CreateIndex<T>(IndexDefinition indexDefinition = null)
+		public ResultDetails<string> IndexCreate<T>(IndexDefinition indexDefinition = null)
 		{
 			return _elasticsearchContextIndexMapping.CreateIndexWithMapping<T>(indexDefinition);
 		}
 
-		public async Task<ResultDetails<string>> CreateIndexAsync<T>(IndexDefinition indexDefinition = null)
+		public async Task<ResultDetails<string>> IndexCreateAsync<T>(IndexDefinition indexDefinition = null)
 		{
 			return await _elasticsearchContextIndexMapping.CreateIndexWithMappingAsync<T>(indexDefinition);
 		}
 
-		public ResultDetails<string> CreateTypeMappingForIndex<T>(MappingDefinition mappingDefinition)
+		public ResultDetails<string> IndexCreateTypeMapping<T>(MappingDefinition mappingDefinition)
 		{
 			return _elasticsearchContextIndexMapping.CreateTypeMappingForIndex<T>(mappingDefinition);
 		}
 
-		public async Task<ResultDetails<string>> CreateTypeMappingForIndexAsync<T>(MappingDefinition mappingDefinition)
+		public async Task<ResultDetails<string>> IndexCreateTypeMappingAsync<T>(MappingDefinition mappingDefinition)
 		{
 			return await _elasticsearchContextIndexMapping.CreateTypeMappingForIndexAsync<T>(mappingDefinition);
 		}

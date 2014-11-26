@@ -30,7 +30,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using ( var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.CreateIndex<MappingTestsParent>();
+				context.IndexCreate<MappingTestsParent>();
 
 				Thread.Sleep(1500);
 				var result = context.IndexExists<MappingTestsParent>();

@@ -92,6 +92,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				var doc = context.GetDocument<MappingTestsParentWithSimpleNullAndNullArrayList>(mappingTestsParent.MappingTestsParentId);
 
 				Assert.IsNotNull(doc);
+
+				context.IndexClose("mappingtestsparentwithsimplenullandnullarraylists");
+				context.IndexOpen("mappingtestsparentwithsimplenullandnullarraylists");
 			}
 		}
 
@@ -309,11 +312,11 @@ namespace ElasticsearchCRUD.Integration.Test
 			using ( var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.CreateIndex(index);
+				context.IndexCreate(index);
 
 				Thread.Sleep(1500);
 				Assert.IsTrue(context.IndexExists<MappingTestsParent>());
-				context.CreateTypeMappingForIndex<MappingTestsParent>(new MappingDefinition {Index = index});
+				context.IndexCreateTypeMapping<MappingTestsParent>(new MappingDefinition { Index = index });
 
 				Thread.Sleep(1500);
 
@@ -348,11 +351,11 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.AllowDeleteForIndex = true;
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.CreateIndex(index);
+				context.IndexCreate(index);
 
 				Thread.Sleep(1500);
 				Assert.IsTrue(context.IndexExists<MappingTestsParent>());
-				context.CreateTypeMappingForIndex<MappingTestsParent>(new MappingDefinition { Index = index, RoutingDefinition = routing });
+				context.IndexCreateTypeMapping<MappingTestsParent>(new MappingDefinition { Index = index, RoutingDefinition = routing });
 
 				Thread.Sleep(1500);
 

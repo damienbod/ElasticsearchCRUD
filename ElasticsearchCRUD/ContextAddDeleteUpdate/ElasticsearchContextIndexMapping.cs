@@ -155,20 +155,20 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-		public ResultDetails<string> UpdateSettings(string index, IndexSettings indexSettings)
+		public ResultDetails<string> UpdateIndexSettings(string index, IndexSettings indexSettings)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => UpdateSettingsAsync(index, indexSettings));
+			return syncExecutor.ExecuteResultDetails(() => UpdateIndexSettingsAsync(index, indexSettings));
 		}
 
-		public async Task<ResultDetails<string>> UpdateSettingsAsync(string index, IndexSettings indexSettings)
+		public async Task<ResultDetails<string>> UpdateIndexSettingsAsync(string index, IndexSettings indexSettings)
 		{
 			if (indexSettings == null)
 			{
 				indexSettings = new IndexSettings { NumberOfShards = 5, NumberOfReplicas = 1 };
 			}
 
-			_traceProvider.Trace(TraceEventType.Verbose, "{0}: UpdateSettingsAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: UpdateIndexSettingsAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 
 			try
@@ -185,6 +185,80 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message,
 					"ElasticsearchContextIndexMapping");
 				resultDetails.Description = "OperationCanceledException";
+				return resultDetails;
+			}
+		}
+
+		public ResultDetails<bool> CloseIndex(string index)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(() => CloseIndexAsync(index));
+		}
+
+		public async Task<ResultDetails<bool>> CloseIndexAsync(string index)
+		{
+			if (string.IsNullOrEmpty(index))
+			{
+				throw new ElasticsearchCrudException("CreateIndexAsync: index is required");
+			}
+
+			var elasticsearchUrlForPostRequest = string.Format("{0}/{1}/_close", _connectionString, index);
+			var uri = new Uri(elasticsearchUrlForPostRequest);
+			return await CloseOpenIndexAsync(uri);
+		}
+
+		public ResultDetails<bool> OpenIndex(string index)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(() => OpenIndexAsync(index));
+		}
+
+		public async Task<ResultDetails<bool>> OpenIndexAsync(string index)
+		{
+			if (string.IsNullOrEmpty(index))
+			{
+				throw new ElasticsearchCrudException("CreateIndexAsync: index is required");
+			}
+
+			var elasticsearchUrlForPostRequest = string.Format("{0}/{1}/_open", _connectionString, index);
+			var uri = new Uri(elasticsearchUrlForPostRequest);
+			return await CloseOpenIndexAsync(uri);
+		}
+
+		private async Task<ResultDetails<bool>> CloseOpenIndexAsync(Uri uri)
+		{
+			_traceProvider.Trace(TraceEventType.Verbose, "CloseOpenIndexAsync Request POST with url: {0}", uri.ToString());
+			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
+			try
+			{
+				var request = new HttpRequestMessage(HttpMethod.Post, uri);
+				var response = await _client.SendAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+				resultDetails.RequestUrl = uri.OriginalString;
+
+				resultDetails.Status = response.StatusCode;
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					resultDetails.PayloadResult = false;
+					if (response.StatusCode == HttpStatusCode.BadRequest)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+						resultDetails.Description = errorInfo;
+						throw new ElasticsearchCrudException("ClostIndexAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+					}
+
+					_traceProvider.Trace(TraceEventType.Information, "ClostIndexAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
+				}
+				else
+				{
+					resultDetails.PayloadResult = true;
+				}
+
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "ExistsAsync:  Get Request OperationCanceledException: {0}", oex.Message);
 				return resultDetails;
 			}
 		}
