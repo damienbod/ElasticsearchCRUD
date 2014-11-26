@@ -267,11 +267,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		
 		public async Task<ResultDetails<int>> IndexOptimizeAsync(string index, OptimizeParameters optimizeParameters)
 		{
-			if (string.IsNullOrEmpty(index))
-			{
-				throw new ElasticsearchCrudException("CreateIndexAsync: index is required");
-			}
-
 			if (optimizeParameters == null)
 			{
 				optimizeParameters = new OptimizeParameters();
