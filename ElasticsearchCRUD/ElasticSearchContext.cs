@@ -154,6 +154,17 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
+		public ResultDetails<string> UpdateSettings(string index, IndexSettings indexSettings = null)
+		{
+			return _elasticsearchContextIndexMapping.UpdateSettings(index, indexSettings);
+		}
+
+		public async Task<ResultDetails<string>> UpdateSettingsAsync(string index, IndexSettings indexSettings = null)
+		{
+			return await _elasticsearchContextIndexMapping.UpdateSettingsAsync(index, indexSettings);
+		}
+
+
 		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings = null)
 		{
 			return _elasticsearchContextIndexMapping.CreateIndex(index, indexSettings);

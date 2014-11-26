@@ -82,15 +82,22 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		public void CreateIndexSettingsForDocument(string index, IndexSettings indexSettings)
 		{
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
-
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			CreateIndexSettings(elasticsearchCrudJsonWriter, indexSettings);
-
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			CreateIndexCommand(elasticsearchCrudJsonWriter.GetJsonString(), index);
 		}
 
+		public void UpdateSettings(string index, IndexSettings indexSettings)
+		{
+			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			indexSettings.WriteJson(elasticsearchCrudJsonWriter);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+
+			SettingsCommand(elasticsearchCrudJsonWriter.GetJsonString(), index);
+		}
 		public void CreatePropertyMappingForTopDocument(EntityContextInfo entityInfo, string index)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
@@ -228,11 +235,22 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			Commands.Add(command);
 		}
 
+		private void SettingsCommand(string indexJsonConfiguration, string index)
+		{
+			var command = new MappingCommand
+			{
+				Url = string.Format("/{0}/_settings", index),
+				RequestType = "POST",
+				Content = indexJsonConfiguration
+			};
+			Commands.Add(command);
+		}
+
 		private void CreateIndexCommand(string indexJsonConfiguration, string index)
 		{
 			var command = new MappingCommand
 			{
-				Url = string.Format("/{0}/", index),
+				Url = string.Format("/{0}", index),
 				RequestType = "PUT",
 				Content = indexJsonConfiguration
 			};

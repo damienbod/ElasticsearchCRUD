@@ -155,5 +155,38 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
+		public ResultDetails<string> UpdateSettings(string index, IndexSettings indexSettings)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(() => UpdateSettingsAsync(index, indexSettings));
+		}
+
+		public async Task<ResultDetails<string>> UpdateSettingsAsync(string index, IndexSettings indexSettings)
+		{
+			if (indexSettings == null)
+			{
+				indexSettings = new IndexSettings { NumberOfShards = 5, NumberOfReplicas = 1 };
+			}
+
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: UpdateSettingsAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
+			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
+
+			try
+			{
+
+				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
+				indexMappings.UpdateSettings(index, indexSettings);
+				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
+
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message,
+					"ElasticsearchContextIndexMapping");
+				resultDetails.Description = "OperationCanceledException";
+				return resultDetails;
+			}
+		}
 	}
 }
