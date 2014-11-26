@@ -7,7 +7,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 		public IndexDefinition()
 		{
 			// settings the default values
-			IndexSettings = new IndexSettings {number_of_replicas = 1, number_of_shards = 5};
+			IndexSettings = new IndexSettings {NumberOfReplicas = 1, NumberOfShards = 5};
 		}
 
 		public IndexSettings IndexSettings { get; set; }

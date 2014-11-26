@@ -333,6 +333,9 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+		/// <summary>
+		/// TODO clean up the sleeps...
+		/// </summary>
 		[Test]
 		public void CreateNewIndexAndMappingForNestedChildInTwoStepsWithRouting()
 		{
@@ -343,6 +346,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			var config = new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver,true,false,true);
 			using (var context = new ElasticsearchContext(ConnectionString, config))
 			{
+				context.AllowDeleteForIndex = true;
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.CreateIndex(index);
 
@@ -357,12 +361,18 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				Thread.Sleep(1500);
 				var doc = context.GetDocument<MappingTestsParent>(mappingTestsParent.MappingTestsParentId, routing);
+				Thread.Sleep(1500);
 
 				Assert.IsNotNull(doc);
 
+				context.DeleteIndexType<MappingTestsParent>();
+				Thread.Sleep(1500);
+
+				Assert.IsFalse(context.IndexTypeExists<MappingTestsParent>());
+
 				if (context.IndexExists<MappingTestsParent>())
 				{
-					context.AllowDeleteForIndex = true;
+					
 					context.DeleteIndex<MappingTestsParent>();
 				}
 			}

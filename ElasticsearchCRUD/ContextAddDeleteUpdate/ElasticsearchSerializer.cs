@@ -43,7 +43,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 				if (_saveChangesAndInitMappingsForChildDocuments)
 				{
-					_indexMappings.CreateIndexSettingsForDocument(index, new IndexSettings() );
+					_indexMappings.CreateIndexSettingsForDocument(index, new IndexSettings{NumberOfShards=5,NumberOfReplicas=1} );
 					_indexMappings.CreatePropertyMappingForTopDocument(entity, index);
 				}
 
@@ -132,7 +132,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				// It's a document which belongs to a parent
 				WriteValue("_parent", entityInfo.RoutingDefinition.ParentId);
 			}
-			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex &&
+			if (entityInfo.RoutingDefinition.RoutingId != null &&
 				_elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
 				// It's a document which has a specific route

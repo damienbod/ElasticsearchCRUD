@@ -89,7 +89,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			if (indexSettings == null)
 			{
-				indexSettings = new IndexSettings();
+				indexSettings = new IndexSettings{NumberOfShards=5,NumberOfReplicas=1};
 			}
 
 			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndex Elasticsearch started", "ElasticsearchContextIndexMapping");

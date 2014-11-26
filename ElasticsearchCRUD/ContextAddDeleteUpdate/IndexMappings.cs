@@ -84,7 +84,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-			CreateIndexSettings(elasticsearchCrudJsonWriter, indexSettings.number_of_shards, indexSettings.number_of_replicas);
+			CreateIndexSettings(elasticsearchCrudJsonWriter, indexSettings);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
@@ -266,15 +266,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// "settings" : {
 		/// "number_of_shards" : 1
 		/// },
-		private void CreateIndexSettings(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, int numberOfShards, int numberOfReplicas)
+		private void CreateIndexSettings(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, IndexSettings indexSettings)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("settings");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_shards");
-			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfShards);
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("number_of_replicas");
-			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(numberOfReplicas);
+			indexSettings.WriteJson(elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
