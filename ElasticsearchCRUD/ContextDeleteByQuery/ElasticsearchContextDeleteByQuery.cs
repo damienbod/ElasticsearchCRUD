@@ -74,13 +74,13 @@ namespace ElasticsearchCRUD.ContextDeleteByQuery
 				}
 
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
-				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
+				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Delete Request response: {0}", responseString, "Search");
 
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Verbose, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message, "Search");
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "{1}: Delete Request OperationCanceledException: {0}", oex.Message, "Search");
 				return resultDetails;
 			}
 		}
