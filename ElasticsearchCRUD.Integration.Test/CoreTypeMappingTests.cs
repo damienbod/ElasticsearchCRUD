@@ -1,5 +1,6 @@
 ﻿using System;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -7,6 +8,27 @@ namespace ElasticsearchCRUD.Integration.Test
 	[TestFixture]
 	public class CoreTypeMappingTests
 	{
+		[Test]
+		public void OptimizeParametersPefaultTest()
+		{
+			var optimizeParameters = new OptimizeParameters();
+			Assert.IsNullOrEmpty(optimizeParameters.GetOptimizeParameters());
+		}
+
+		[Test]
+		public void OptimizeParametersPefaultSetAll()
+		{
+			var optimizeParameters = new OptimizeParameters
+			{
+				Flush = false,
+				NumberOfShards = 4,
+				OnlyExpungeDeletesSet = true,
+				WaitForMerge = false
+			};
+
+			Assert.AreEqual(optimizeParameters.GetOptimizeParameters(), "?max_num_segments=4&only_expunge_deletes=true&flush=false&wait_for_merge=false");
+		}
+
 		[Test]
 		public void ReflectionAttributeElasticsearchMappings()
 		{
