@@ -14,6 +14,7 @@ using ElasticsearchCRUD.ContextCount;
 using ElasticsearchCRUD.ContextDeleteByQuery;
 using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 

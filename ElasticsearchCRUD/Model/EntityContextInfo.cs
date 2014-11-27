@@ -1,8 +1,7 @@
 ﻿using System;
-using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 
-namespace ElasticsearchCRUD
+namespace ElasticsearchCRUD.Model
 {
 	public class EntityContextInfo
 	{

@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace ElasticsearchCRUD.Utils
+namespace ElasticsearchCRUD.Model
 {
 	public class IndexTypeMapping : ElasticsearchMapping
 	{
 		private readonly string _index;
 		private readonly string _indexType;
-		private Type _type;
+		private readonly Type _type;
 
 		public IndexTypeMapping(string index, string indexType, Type type) 
 		{

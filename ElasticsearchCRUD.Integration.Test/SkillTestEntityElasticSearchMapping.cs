@@ -1,4 +1,5 @@
 ﻿using System;
+using ElasticsearchCRUD.Model;
 using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.Integration.Test

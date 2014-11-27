@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 using Newtonsoft.Json.Linq;

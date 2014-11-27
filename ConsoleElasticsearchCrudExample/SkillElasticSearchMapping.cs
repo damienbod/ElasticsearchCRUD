@@ -1,5 +1,6 @@
 ﻿using System;
 using ElasticsearchCRUD;
+using ElasticsearchCRUD.Model;
 using Newtonsoft.Json;
 
 namespace ConsoleElasticsearchCrudExample

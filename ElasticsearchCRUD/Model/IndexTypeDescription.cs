@@ -1,4 +1,4 @@
-﻿namespace ElasticsearchCRUD.Utils
+﻿namespace ElasticsearchCRUD.Model
 {
 	public class IndexTypeDescription
 	{

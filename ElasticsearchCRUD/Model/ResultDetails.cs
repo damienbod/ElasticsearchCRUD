@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace ElasticsearchCRUD
+namespace ElasticsearchCRUD.Model
 {
 	public class ResultDetails<T>
 	{

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using DataTransferSQLToEl.SQLDomainModel;
 using ElasticsearchCRUD;
 using ElasticsearchCRUD.ContextSearch;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 

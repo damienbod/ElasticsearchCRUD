@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ElasticsearchCRUD.Utils
+namespace ElasticsearchCRUD.Model
 {
 	public class IndexMapping : ElasticsearchMapping
 	{

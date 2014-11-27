@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 using NUnit.Framework;

@@ -88,9 +88,9 @@
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\ElasticSerializationResult.cs" />
     <Compile Include="ContextSearch\Search.cs" />
-    <Compile Include="Utils\IndexMapping.cs" />
-    <Compile Include="Utils\IndexTypeDescription.cs" />
-    <Compile Include="Utils\IndexTypeMapping.cs" />
+    <Compile Include="Model\IndexMapping.cs" />
+    <Compile Include="Model\IndexTypeDescription.cs" />
+    <Compile Include="Model\IndexTypeMapping.cs" />
     <Compile Include="Utils\MappingUtils.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticsearchContext.cs" />
@@ -98,12 +98,12 @@
     <Compile Include="ElasticsearchMappingResolver.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchSerializer.cs" />
     <Compile Include="ElasticsearchMapping.cs" />
-    <Compile Include="EntityContextInfo.cs" />
+    <Compile Include="Model\EntityContextInfo.cs" />
     <Compile Include="IElasticsearchMappingResolver.cs" />
     <Compile Include="Tracing\ITraceProvider.cs" />
     <Compile Include="Tracing\NullTraceProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ResultDetails.cs" />
+    <Compile Include="Model\ResultDetails.cs" />
     <Compile Include="Tracing\TraceProvider.cs" />
     <Compile Include="Utils\SyncExecute.cs" />
   </ItemGroup>
