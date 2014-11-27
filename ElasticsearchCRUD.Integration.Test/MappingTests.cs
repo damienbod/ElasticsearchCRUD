@@ -94,7 +94,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				context.IndexClose("mappingtestsparentwithsimplenullandnullarraylists");
 				context.IndexOpen("mappingtestsparentwithsimplenullandnullarraylists");
-				var result = context.IndexOptimize("mappingtestsparentwithsimplenullandnullarraylists");
+				var result = context.IndexOptimize("mappingtestsparentwithsimplenullandnullarraylists", new OptimizeParameters{NumberOfShards=3, Flush=true});
 
 				Assert.GreaterOrEqual(result.PayloadResult, 1);
 			}
