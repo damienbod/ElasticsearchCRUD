@@ -101,6 +101,34 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void OpenIndexWhichDoesNotExist()
+		{
+
+			using ( var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.IndexClose("help");
+			}
+		}
+
+		[Test]
+		public void CloseIndexWhichDoesNotExist()
+		{
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.IndexClose("help");
+			}
+		}
+		[Test]
+		public void OptimizeIndexWhichDoesNotExist()
+		{
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				var result = context.IndexOptimize("help", new OptimizeParameters { NumberOfShards = 3, Flush = true });
+			}
+		}
+		[Test]
 		public void CreateNewIndexAndMappingWithSimpleList()
 		{
 			var mappingTestsParent = new MappingTestsParentWithSimpleList

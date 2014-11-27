@@ -226,45 +226,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			return await CloseOpenIndexAsync(uri);
 		}
 
-		private async Task<ResultDetails<bool>> CloseOpenIndexAsync(Uri uri)
+		public ResultDetails<int> IndexOptimize(string index, OptimizeParameters optimizeParameters)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, "CloseOpenIndexAsync Request POST with url: {0}", uri.ToString());
-			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
-			try
-			{
-				var request = new HttpRequestMessage(HttpMethod.Post, uri);
-				var response = await _client.SendAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false);
-
-				resultDetails.RequestUrl = uri.OriginalString;
-
-				resultDetails.Status = response.StatusCode;
-				if (response.StatusCode != HttpStatusCode.OK)
-				{
-					resultDetails.PayloadResult = false;
-					if (response.StatusCode == HttpStatusCode.BadRequest)
-					{
-						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-						resultDetails.Description = errorInfo;
-						throw new ElasticsearchCrudException("ClostIndexAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
-					}
-
-					_traceProvider.Trace(TraceEventType.Information, "ClostIndexAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
-				}
-				else
-				{
-					resultDetails.PayloadResult = true;
-				}
-
-				return resultDetails;
-			}
-			catch (OperationCanceledException oex)
-			{
-				_traceProvider.Trace(TraceEventType.Verbose, oex, "ExistsAsync:  Get Request OperationCanceledException: {0}", oex.Message);
-				return resultDetails;
-			}
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.ExecuteResultDetails(() => IndexOptimizeAsync(index, optimizeParameters));
 		}
 
-		
 		public async Task<ResultDetails<int>> IndexOptimizeAsync(string index, OptimizeParameters optimizeParameters)
 		{
 			if (optimizeParameters == null)
@@ -317,10 +284,44 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-		public ResultDetails<int> IndexOptimize(string index, OptimizeParameters optimizeParameters)
+		private async Task<ResultDetails<bool>> CloseOpenIndexAsync(Uri uri)
 		{
-			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => IndexOptimizeAsync(index, optimizeParameters));
+			_traceProvider.Trace(TraceEventType.Verbose, "CloseOpenIndexAsync Request POST with url: {0}", uri.ToString());
+			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
+			try
+			{
+				var request = new HttpRequestMessage(HttpMethod.Post, uri);
+				var response = await _client.SendAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+				resultDetails.RequestUrl = uri.OriginalString;
+
+				resultDetails.Status = response.StatusCode;
+				if (response.StatusCode != HttpStatusCode.OK)
+				{
+					resultDetails.PayloadResult = false;
+					if (response.StatusCode == HttpStatusCode.BadRequest)
+					{
+						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+						resultDetails.Description = errorInfo;
+						throw new ElasticsearchCrudException("ClostIndexAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+					}
+
+					_traceProvider.Trace(TraceEventType.Information, "ClostIndexAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
+				}
+				else
+				{
+					resultDetails.PayloadResult = true;
+				}
+
+				return resultDetails;
+			}
+			catch (OperationCanceledException oex)
+			{
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "ExistsAsync:  Get Request OperationCanceledException: {0}", oex.Message);
+				return resultDetails;
+			}
 		}
+
+		
 	}
 }
