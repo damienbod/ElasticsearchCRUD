@@ -41,7 +41,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			{
 				indexDefinition = new IndexDefinition();
 			}
-			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndex Elasticsearch started", "ElasticsearchContextIndexMapping");
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndexWithMappingAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> {Status = HttpStatusCode.InternalServerError};
 
 			try
@@ -69,7 +69,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message,
+				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: CreateIndexWithMappingAsync Request OperationCanceledException: {0}", oex.Message,
 					"ElasticsearchContextIndexMapping");
 				resultDetails.Description = "OperationCanceledException";
 				return resultDetails;
@@ -93,7 +93,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				indexSettings = new IndexSettings{NumberOfShards=5,NumberOfReplicas=1};
 			}
 
-			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndex Elasticsearch started", "ElasticsearchContextIndexMapping");
+			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndexAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 
 			try
@@ -108,7 +108,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message,
+				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: CreateIndexAsync Request OperationCanceledException: {0}", oex.Message,
 					"ElasticsearchContextIndexMapping");
 				resultDetails.Description = "OperationCanceledException";
 				return resultDetails;
@@ -183,7 +183,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: Get Request OperationCanceledException: {0}", oex.Message,
+				_traceProvider.Trace(TraceEventType.Warning, oex, "{1}: UpdateIndexSettingsAsync OperationCanceledException: {0}", oex.Message,
 					"ElasticsearchContextIndexMapping");
 				resultDetails.Description = "OperationCanceledException";
 				return resultDetails;
@@ -200,7 +200,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		{
 			if (string.IsNullOrEmpty(index))
 			{
-				throw new ElasticsearchCrudException("CreateIndexAsync: index is required");
+				throw new ElasticsearchCrudException("CloseIndexAsync: index is required");
 			}
 
 			var elasticsearchUrlForPostRequest = string.Format("{0}/{1}/_close", _connectionString, index);
@@ -218,7 +218,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		{
 			if (string.IsNullOrEmpty(index))
 			{
-				throw new ElasticsearchCrudException("CreateIndexAsync: index is required");
+				throw new ElasticsearchCrudException("OpenIndexAsync: index is required");
 			}
 
 			var elasticsearchUrlForPostRequest = string.Format("{0}/{1}/_open", _connectionString, index);
@@ -259,10 +259,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 						resultDetails.Description = errorInfo;
-						throw new ElasticsearchCrudException("ClostIndexAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+						throw new ElasticsearchCrudException("IndexOptimizeAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+					}
+					if (response.StatusCode == HttpStatusCode.NotFound)
+					{
+						throw new ElasticsearchCrudException("IndexOptimizeAsync: HttpStatusCode.NotFound index does not exist");
 					}
 
-					_traceProvider.Trace(TraceEventType.Information, "ClostIndexAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
+					_traceProvider.Trace(TraceEventType.Information, "IndexOptimizeAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
 				}
 				else
 				{
@@ -279,7 +283,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Verbose, oex, "ExistsAsync:  Get Request OperationCanceledException: {0}", oex.Message);
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "IndexOptimizeAsync:  Get Request OperationCanceledException: {0}", oex.Message);
 				return resultDetails;
 			}
 		}
@@ -303,10 +307,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					{
 						var errorInfo = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
 						resultDetails.Description = errorInfo;
-						throw new ElasticsearchCrudException("ClostIndexAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+						throw new ElasticsearchCrudException("CloseOpenIndexAsync: HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...");
+					}
+					if (response.StatusCode == HttpStatusCode.NotFound)
+					{
+						throw new ElasticsearchCrudException("CloseOpenIndexAsync: HttpStatusCode.NotFound index does not exist");
 					}
 
-					_traceProvider.Trace(TraceEventType.Information, "ClostIndexAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
+					_traceProvider.Trace(TraceEventType.Information, "CloseOpenIndexAsync:  response status code: {0}, {1}", response.StatusCode, response.ReasonPhrase);
 				}
 				else
 				{
@@ -317,7 +325,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 			catch (OperationCanceledException oex)
 			{
-				_traceProvider.Trace(TraceEventType.Verbose, oex, "ExistsAsync:  Get Request OperationCanceledException: {0}", oex.Message);
+				_traceProvider.Trace(TraceEventType.Verbose, oex, "CloseOpenIndexAsync:  POST Request OperationCanceledException: {0}", oex.Message);
 				return resultDetails;
 			}
 		}

@@ -101,6 +101,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		[ExpectedException(ExpectedMessage = "CloseOpenIndexAsync: HttpStatusCode.NotFound index does not exist")]
 		public void OpenIndexWhichDoesNotExist()
 		{
 
@@ -111,6 +112,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		[ExpectedException(ExpectedMessage = "CloseOpenIndexAsync: HttpStatusCode.NotFound index does not exist")]
 		public void CloseIndexWhichDoesNotExist()
 		{
 
@@ -121,6 +123,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		[ExpectedException(ExpectedMessage = "IndexOptimizeAsync: HttpStatusCode.NotFound index does not exist")]
 		public void OptimizeIndexWhichDoesNotExist()
 		{
 
