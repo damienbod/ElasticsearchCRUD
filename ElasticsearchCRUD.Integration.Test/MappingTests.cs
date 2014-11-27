@@ -119,6 +119,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.IndexClose("help");
 			}
 		}
+
 		[Test]
 		public void OptimizeIndexWhichDoesNotExist()
 		{
@@ -128,6 +129,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var result = context.IndexOptimize("help", new OptimizeParameters { NumberOfShards = 3, Flush = true });
 			}
 		}
+
 		[Test]
 		public void CreateNewIndexAndMappingWithSimpleList()
 		{
