@@ -1,4 +1,6 @@
-﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
+﻿using System.Collections.Generic;
+
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 {
 	public class IndexUpdateSettings
 	{
@@ -37,6 +39,16 @@
 		private bool _cacheFilterExpireSet;
 		private string _gatewaySnapshotInterval;
 		private bool _gatewaySnapshotIntervalSet;
+		private List<RoutingAllocation> _routingAllocationInclude;
+		private bool _routingAllocationIncludeSet;
+		private List<RoutingAllocation> _routingAllocationExclude;
+		private bool _routingAllocationExcludeSet;
+		private List<RoutingAllocation> _routingAllocationRequire;
+		private bool _routingAllocationRequireSet;
+		private RoutingAllocationEnableEnum _routingAllocationEnable;
+		private bool _routingAllocationEnableSet;
+		private string _routingAllocationTotalShardsPerNode;
+		private bool _routingAllocationTotalShardsPerNodeSet;
 
 		/// <summary>
 		/// index.number_of_replicas
@@ -287,33 +299,83 @@
 			}
 		}
 
+		/// <summary>
+		/// index.routing.allocation.include.*
+		///	A node matching any rule will be allowed to host shards from the index. 
+		/// </summary>
+		public List<RoutingAllocation> RoutingAllocationInclude
+		{
+			get { return _routingAllocationInclude; }
+			set
+			{
+				_routingAllocationInclude = value;
+				_routingAllocationIncludeSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.routing.allocation.exclude.*
+		///	A node matching any rule will NOT be allowed to host shards from the index. 
+		/// </summary>
+		public List<RoutingAllocation> RoutingAllocationExclude
+		{
+			get { return _routingAllocationExclude; }
+			set
+			{
+				_routingAllocationExclude = value;
+				_routingAllocationExcludeSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.routing.allocation.require.*
+		///	Only nodes matching all rules will be allowed to host shards from the index. 
+		/// </summary>
+		public List<RoutingAllocation> RoutingAllocationRequire
+		{
+			get { return _routingAllocationRequire; }
+			set
+			{
+				_routingAllocationRequire = value;
+				_routingAllocationRequireSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.routing.allocation.enable
+		/// Enables shard allocation for a specific index. It can be set to:
+        /// all (default) - Allows shard allocation for all shards.
+		/// primaries - Allows shard allocation only for primary shards.
+		/// new_primaries - Allows shard allocation only for primary shards for new indices.
+		/// none - No shard allocation is allowed. 
+		/// </summary>
+		public RoutingAllocationEnableEnum RoutingAllocationEnable
+		{
+			get { return _routingAllocationEnable; }
+			set
+			{
+				_routingAllocationEnable = value;
+				_routingAllocationEnableSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.routing.allocation.total_shards_per_node
+		///	Controls the total number of shards (replicas and primaries) allowed to be allocated on a single node. Defaults to unbounded (-1). 
+		/// </summary>
+		public string RoutingAllocationTotalShardsPerNode
+		{
+			get { return _routingAllocationTotalShardsPerNode; }
+			set
+			{
+				_routingAllocationTotalShardsPerNode = value;
+				_routingAllocationTotalShardsPerNodeSet = true;
+			}
+		}
 
 
-//index.routing.allocation.include.*
-//	A node matching any rule will be allowed to host shards from the index. 
-//index.routing.allocation.exclude.*
-//	A node matching any rule will NOT be allowed to host shards from the index. 
-//index.routing.allocation.require.*
-//	Only nodes matching all rules will be allowed to host shards from the index. 
-//index.routing.allocation.disable_allocation
-//	Disable allocation. Defaults to false. Deprecated in favour for index.routing.allocation.enable. 
-//index.routing.allocation.disable_new_allocation
-//	Disable new allocation. Defaults to false. Deprecated in favour for index.routing.allocation.enable. 
-//index.routing.allocation.disable_replica_allocation
-//	Disable replica allocation. Defaults to false. Deprecated in favour for index.routing.allocation.enable. 
-//index.routing.allocation.enable
 
-//	Enables shard allocation for a specific index. It can be set to:
-
-//		all (default) - Allows shard allocation for all shards.
-//		primaries - Allows shard allocation only for primary shards.
-//		new_primaries - Allows shard allocation only for primary shards for new indices.
-//		none - No shard allocation is allowed. 
-
-//index.routing.allocation.total_shards_per_node
-//	Controls the total number of shards (replicas and primaries) allowed to be allocated on a single node. Defaults to unbounded (-1). 
 //index.recovery.initial_shards
-
 //	When using local gateway a particular shard is recovered only if there can be allocated quorum shards in the cluster. It can be set to:
 
 //		quorum (default)
@@ -356,6 +418,14 @@
 			WriteValue("cache.filter.max_size", _cacheFilterMaxSize, elasticsearchCrudJsonWriter, _cacheFilterMaxSizeSet);
 			WriteValue("cache.filter.expire", _cacheFilterExpire, elasticsearchCrudJsonWriter, _cacheFilterExpireSet);
 			WriteValue("gateway.snapshot_interval", _gatewaySnapshotInterval, elasticsearchCrudJsonWriter, _gatewaySnapshotIntervalSet);
+
+			WriteListValue("routing.allocation.include.", _routingAllocationInclude, elasticsearchCrudJsonWriter, _routingAllocationIncludeSet);
+			WriteListValue("routing.allocation.exclude.", _routingAllocationExclude, elasticsearchCrudJsonWriter, _routingAllocationExcludeSet);
+			WriteListValue("routing.allocation.require.", _routingAllocationRequire, elasticsearchCrudJsonWriter, _routingAllocationRequireSet);
+
+			WriteValue("routing.allocation.enable", _routingAllocationEnable.ToString(), elasticsearchCrudJsonWriter, _routingAllocationEnableSet);
+			WriteValue("routing.allocation.total_shards_per_node", _routingAllocationTotalShardsPerNode, elasticsearchCrudJsonWriter, _routingAllocationTotalShardsPerNodeSet);
+
 			
 			
 		}
@@ -367,6 +437,33 @@
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
 				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(valueObj);
 			}
+		}
+
+		private void WriteListValue(string key, List<RoutingAllocation> valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
+		{
+			if (writeValue)
+			{
+				foreach (var obj in valueObj)
+				{
+					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key + obj.Key);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteValue(obj.Value);
+				}
+				
+			}
+		}
+
+		public class RoutingAllocation
+		{
+			public string Key { get; set; }
+			public string Value { get; set; }
+		}
+
+		public enum RoutingAllocationEnableEnum
+		{
+			all,
+		    primaries,
+		    new_primaries,
+		    none
 		}
 	}
 }
