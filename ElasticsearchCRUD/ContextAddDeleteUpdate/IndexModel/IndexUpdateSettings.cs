@@ -19,8 +19,12 @@
 		private bool _blocksMetadataSet;
 		private ushort _indexConcurrency;
 		private bool _indexConcurrencySet;
-
-		
+		private bool _codecBloomLoad;
+		private bool _codecBloomLoadSet;
+		private bool _failOnMergeFailure;
+		private bool _failOnMergeFailureSet;
+		private string _translogFlushThresholdOps;
+		private bool _translogFlushThresholdOpsSet;
 
 		/// <summary>
 		/// index.number_of_replicas
@@ -144,12 +148,50 @@
 			}
 		}
 
-//index.codec.bloom.load
-//	Whether to load the bloom filter. Defaults to false. 
-//index.fail_on_merge_failure
-//	Default to true. 
-//index.translog.flush_threshold_ops
-//	When to flush based on operations. 
+		/// <summary>
+		/// index.codec.bloom.load
+		///	Whether to load the bloom filter. Defaults to false. 
+		/// </summary>
+		public bool CodecBloomLoad
+		{
+			get { return _codecBloomLoad; }
+			set
+			{
+				_codecBloomLoad = value;
+				_codecBloomLoadSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.fail_on_merge_failure
+		///	Default to true. 
+		/// </summary>
+		public bool FailOnMergeFailure
+		{
+			get { return _failOnMergeFailure; }
+			set
+			{
+				_failOnMergeFailure = value;
+				_failOnMergeFailureSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.translog.flush_threshold_ops
+		///	When to flush based on operations. 
+		/// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/index-modules-translog.html
+		/// </summary>
+		public string TranslogFlushThresholdOps
+		{
+			get { return _translogFlushThresholdOps; }
+			set
+			{
+				_translogFlushThresholdOps = value;
+				_translogFlushThresholdOpsSet = true;
+			}
+		}
+
+
 //index.translog.flush_threshold_size
 //	When to flush based on translog (bytes) size. 
 //index.translog.flush_threshold_period
@@ -221,6 +263,10 @@
 			WriteValue("blocks.write", _blocksWrite, elasticsearchCrudJsonWriter, _blocksWriteSet);
 			WriteValue("blocks.metadata", _blocksMetadata, elasticsearchCrudJsonWriter, _blocksMetadataSet);
 			WriteValue("index_concurrency", _indexConcurrency, elasticsearchCrudJsonWriter, _indexConcurrencySet);
+			WriteValue("codec.bloom.load", _codecBloomLoad, elasticsearchCrudJsonWriter, _codecBloomLoadSet);
+			WriteValue("fail_on_merge_failure", _failOnMergeFailure, elasticsearchCrudJsonWriter, _failOnMergeFailureSet);
+			WriteValue("translog.flush_threshold_ops", _translogFlushThresholdOps, elasticsearchCrudJsonWriter, _translogFlushThresholdOpsSet);
+			
 			
 		}
 
