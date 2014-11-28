@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -346,8 +346,9 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using ( var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver)))
 			{
+
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.IndexCreate(index);
+				context.IndexCreate(index, new IndexSettings{BlocksWrite =true, NumberOfShards = 7});
 
 				Thread.Sleep(1500);
 				Assert.IsTrue(context.IndexExists<MappingTestsParent>());
@@ -411,6 +412,64 @@ namespace ElasticsearchCRUD.Integration.Test
 				if (context.IndexExists<MappingTestsParent>())
 				{
 					
+					context.DeleteIndex<MappingTestsParent>();
+				}
+			}
+		}
+
+		[Test]
+		public void UpdateIndexSettings()
+		{
+			const string index = "newindextestmappingtwostep";
+			IElasticsearchMappingResolver elasticsearchMappingResolver;
+			var mappingTestsParent = SetupIndexMappingTests(index, out elasticsearchMappingResolver);
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver)))
+			{
+
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate(index, new IndexSettings { BlocksWrite = true, NumberOfShards = 7 });
+
+				//context.IndexClose(index);
+				context.IndexUpdateSettings(index, new IndexUpdateSettings {  NumberOfReplicas = 2 });
+				//context.IndexOpen(index);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<MappingTestsParent>());
+				
+
+				if (context.IndexExists<MappingTestsParent>())
+				{
+					context.AllowDeleteForIndex = true;
+					context.DeleteIndex<MappingTestsParent>();
+				}
+			}
+		}
+
+		[Test]
+		public void UpdateIndexSettingsClosedIndex()
+		{
+			const string index = "newindextestmappingtwostep";
+			IElasticsearchMappingResolver elasticsearchMappingResolver;
+			var mappingTestsParent = SetupIndexMappingTests(index, out elasticsearchMappingResolver);
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver)))
+			{
+
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate(index, new IndexSettings { BlocksWrite = true, NumberOfShards = 7 });
+
+				context.IndexClose(index);
+				context.IndexUpdateSettings(index, new IndexUpdateSettings { NumberOfReplicas = 2 });
+				context.IndexOpen(index);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<MappingTestsParent>());
+
+
+				if (context.IndexExists<MappingTestsParent>())
+				{
+					context.AllowDeleteForIndex = true;
 					context.DeleteIndex<MappingTestsParent>();
 				}
 			}

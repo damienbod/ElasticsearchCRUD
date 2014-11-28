@@ -157,19 +157,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-		public ResultDetails<string> UpdateIndexSettings(string index, IndexSettings indexSettings)
+		public ResultDetails<string> UpdateIndexSettings(string index, IndexUpdateSettings indexUpdateSettings)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => UpdateIndexSettingsAsync(index, indexSettings));
+			return syncExecutor.ExecuteResultDetails(() => UpdateIndexSettingsAsync(index, indexUpdateSettings));
 		}
 
-		public async Task<ResultDetails<string>> UpdateIndexSettingsAsync(string index, IndexSettings indexSettings)
+		public async Task<ResultDetails<string>> UpdateIndexSettingsAsync(string index, IndexUpdateSettings indexUpdateSettings)
 		{
-			if (indexSettings == null)
-			{
-				indexSettings = new IndexSettings { NumberOfShards = 5, NumberOfReplicas = 1 };
-			}
-
 			_traceProvider.Trace(TraceEventType.Verbose, "{0}: UpdateIndexSettingsAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 
@@ -177,7 +172,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			{
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
-				indexMappings.UpdateSettings(index, indexSettings);
+				indexMappings.UpdateSettings(index, indexUpdateSettings);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
 				return resultDetails;

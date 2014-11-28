@@ -72,6 +72,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexMappings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexSettings.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexUpdateSettings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\MappingCommand.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeParameters.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\RoutingDefinition.cs" />

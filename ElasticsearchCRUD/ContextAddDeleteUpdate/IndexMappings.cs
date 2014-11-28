@@ -90,13 +90,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			CreateIndexCommand(elasticsearchCrudJsonWriter.GetJsonString(), index);
 		}
 
-		public void UpdateSettings(string index, IndexSettings indexSettings)
+		public void UpdateSettings(string index, IndexUpdateSettings indexUpdateSettings)
 		{
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("index");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-			indexSettings.WriteJson(elasticsearchCrudJsonWriter);
+			indexUpdateSettings.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
@@ -244,7 +244,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			var command = new MappingCommand
 			{
 				Url = string.Format("/{0}/_settings", index),
-				RequestType = "POST",
+				RequestType = "PUT",
 				Content = indexJsonConfiguration
 			};
 			Commands.Add(command);
