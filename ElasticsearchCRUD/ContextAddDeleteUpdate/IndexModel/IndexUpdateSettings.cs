@@ -25,6 +25,18 @@
 		private bool _failOnMergeFailureSet;
 		private string _translogFlushThresholdOps;
 		private bool _translogFlushThresholdOpsSet;
+		private string _translogFlushThresholdSize;
+		private bool _translogFlushThresholdSizeSet;
+		private string _translogflushThresholdPeriod;
+		private bool _translogflushThresholdPeriodSet;
+		private string _translogDisableFlush;
+		private bool _translogDisableFlushSet;
+		private string _cacheFilterMaxSize;
+		private bool _cacheFilterMaxSizeSet;
+		private string _cacheFilterExpire;
+		private bool _cacheFilterExpireSet;
+		private string _gatewaySnapshotInterval;
+		private bool _gatewaySnapshotIntervalSet;
 
 		/// <summary>
 		/// index.number_of_replicas
@@ -191,21 +203,92 @@
 			}
 		}
 
+		/// <summary>
+		/// index.translog.flush_threshold_size
+		///	When to flush based on translog (bytes) size. 
+		/// </summary>
+		public string TranslogFlushThresholdSize
+		{
+			get { return _translogFlushThresholdSize; }
+			set
+			{
+				_translogFlushThresholdSize = value;
+				_translogFlushThresholdSizeSet = true;
+			}
+		}
 
-//index.translog.flush_threshold_size
-//	When to flush based on translog (bytes) size. 
-//index.translog.flush_threshold_period
-//	When to flush based on a period of not flushing. 
-//index.translog.disable_flush
-//	Disables flushing. Note, should be set for a short interval and then enabled. 
-//index.cache.filter.max_size
-//	The maximum size of filter cache (per segment in shard). Set to -1 to disable. 
-//index.cache.filter.expire
-//	The expire after access time for filter cache. Set to -1 to disable. 
-//index.gateway.snapshot_interval
-//	The gateway snapshot interval (only applies to shared gateways). Defaults to 10s. 
-//merge policy
-//	All the settings for the merge policy currently configured. A different merge policy can’t be set. 
+		/// <summary>
+		/// index.translog.flush_threshold_period
+		///	When to flush based on a period of not flushing. 
+		/// </summary>
+		public string TranslogflushThresholdPeriod
+		{
+			get { return _translogflushThresholdPeriod; }
+			set
+			{
+				_translogflushThresholdPeriod = value;
+				_translogflushThresholdPeriodSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.translog.disable_flush
+		///	Disables flushing. Note, should be set for a short interval and then enabled.
+		/// </summary>
+		public string TranslogDisableFlush
+		{
+			get { return _translogDisableFlush; }
+			set
+			{
+				_translogDisableFlush = value;
+				_translogDisableFlushSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.cache.filter.max_size
+		///	The maximum size of filter cache (per segment in shard). Set to -1 to disable. 
+		/// </summary>
+		public string CacheFilterMaxSize
+		{
+			get { return _cacheFilterMaxSize; }
+			set
+			{
+				_cacheFilterMaxSize = value;
+				_cacheFilterMaxSizeSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.cache.filter.expire
+		///	The expire after access time for filter cache. Set to -1 to disable. 
+		/// </summary>
+		public string CacheFilterExpire
+		{
+			get { return _cacheFilterExpire; }
+			set
+			{
+				_cacheFilterExpire = value;
+				_cacheFilterExpireSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.gateway.snapshot_interval
+		///	The gateway snapshot interval (only applies to shared gateways). Defaults to 10s. 
+		/// </summary>
+		public string GatewaySnapshotInterval
+		{
+			get { return _gatewaySnapshotInterval; }
+			set
+			{
+				_gatewaySnapshotInterval = value;
+				_gatewaySnapshotIntervalSet = true;
+			}
+		}
+
+
+
 //index.routing.allocation.include.*
 //	A node matching any rule will be allowed to host shards from the index. 
 //index.routing.allocation.exclude.*
@@ -253,6 +336,7 @@
 //	All the settings for slow log. 
 //index.warmer.enabled
 //	See Warmers. Defaults to true. 
+
 		public virtual void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			WriteValue("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
@@ -266,6 +350,12 @@
 			WriteValue("codec.bloom.load", _codecBloomLoad, elasticsearchCrudJsonWriter, _codecBloomLoadSet);
 			WriteValue("fail_on_merge_failure", _failOnMergeFailure, elasticsearchCrudJsonWriter, _failOnMergeFailureSet);
 			WriteValue("translog.flush_threshold_ops", _translogFlushThresholdOps, elasticsearchCrudJsonWriter, _translogFlushThresholdOpsSet);
+			WriteValue("translog.flush_threshold_size", _translogFlushThresholdSize, elasticsearchCrudJsonWriter, _translogFlushThresholdSizeSet);
+			WriteValue("translog.flush_threshold_period", _translogflushThresholdPeriod, elasticsearchCrudJsonWriter, _translogflushThresholdPeriodSet);
+			WriteValue("translog.disable_flush", _translogDisableFlush, elasticsearchCrudJsonWriter, _translogDisableFlushSet);
+			WriteValue("cache.filter.max_size", _cacheFilterMaxSize, elasticsearchCrudJsonWriter, _cacheFilterMaxSizeSet);
+			WriteValue("cache.filter.expire", _cacheFilterExpire, elasticsearchCrudJsonWriter, _cacheFilterExpireSet);
+			WriteValue("gateway.snapshot_interval", _gatewaySnapshotInterval, elasticsearchCrudJsonWriter, _gatewaySnapshotIntervalSet);
 			
 			
 		}
