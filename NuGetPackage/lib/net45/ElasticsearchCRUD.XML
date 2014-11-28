@@ -294,15 +294,15 @@
             You can define all the Elasticsearch properties here
             </summary>
         </member>
-        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForEntityForParentDocument(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexDefinition)">
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForEntityForParentDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,System.String)">
             <summary>
             Create a new index for the parent document
             </summary>
             <param name="entityInfo"></param>
             <param name="elasticsearchMapping"></param>
-            <param name="indexDefinition"></param>
+            <param name="index"></param>
         </member>
-        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForChildDocument(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.EntityContextInfo)">
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForChildDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.Model.EntityContextInfo)">
             <summary>
             Create a new mapping for the child type in the parent document index
             </summary>
@@ -318,10 +318,228 @@
             </summary>
             <param name="elasticsearchCrudJsonWriter"></param>
         </member>
-        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreateIndexSettings(ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Int32,System.Int32)">
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreateIndexSettings(ElasticsearchCRUD.ElasticsearchCrudJsonWriter,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexSettings)">
             "settings" : {
             "number_of_shards" : 1
             },
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.NumberOfReplicas">
+            <summary>
+            index.number_of_replicas
+            The number of replicas each shard has. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RefreshInterval">
+            <summary>
+            index.refresh_interval
+            The async refresh interval of a shard. 
+            -----
+            bulk Indexing Usage 
+            For example, the update settings API can be used to dynamically change the index from being more performant for bulk indexing, 
+            and then move it to more real time indexing state. Before the bulk indexing is started, use:
+             "refresh_interval" : "-1"
+            (Another optimization option is to start the index without any replicas, and only later adding them, but that really depends on the use case).
+            Then, once bulk indexing is done, the settings can be updated (back to the defaults for example):
+            "refresh_interval" : "1s"
+            And, an optimize should be called:
+            curl -XPOST 'http://localhost:9200/test/_optimize?max_num_segments=5'
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.AutoExpandReplicas" -->
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksReadOnly">
+            <summary>
+            index.blocks.read_only
+            Set to true to have the index read only, false to allow writes and metadata changes. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksRead">
+            <summary>
+            index.blocks.read
+            Set to true to disable read operations against the index. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksWrite">
+            <summary>
+            index.blocks.write
+            Set to true to disable write operations against the index. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksMetadata">
+            <summary>
+            index.blocks.metadata
+            Set to true to disable metadata operations against the index.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.IndexConcurrency">
+            <summary>
+            index.index_concurrency
+            Defaults to 8. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CodecBloomLoad">
+            <summary>
+            index.codec.bloom.load
+            Whether to load the bloom filter. Defaults to false. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.FailOnMergeFailure">
+            <summary>
+            index.fail_on_merge_failure
+            Default to true. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogFlushThresholdOps">
+            <summary>
+            index.translog.flush_threshold_ops
+            When to flush based on operations. 
+            http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/index-modules-translog.html
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogFlushThresholdSize">
+            <summary>
+            index.translog.flush_threshold_size
+            When to flush based on translog (bytes) size. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogflushThresholdPeriod">
+            <summary>
+            index.translog.flush_threshold_period
+            When to flush based on a period of not flushing. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogDisableFlush">
+            <summary>
+            index.translog.disable_flush
+            Disables flushing. Note, should be set for a short interval and then enabled.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CacheFilterMaxSize">
+            <summary>
+            index.cache.filter.max_size
+            The maximum size of filter cache (per segment in shard). Set to -1 to disable. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CacheFilterExpire">
+            <summary>
+            index.cache.filter.expire
+            The expire after access time for filter cache. Set to -1 to disable. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.GatewaySnapshotInterval">
+            <summary>
+            index.gateway.snapshot_interval
+            The gateway snapshot interval (only applies to shared gateways). Defaults to 10s. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationInclude">
+            <summary>
+            index.routing.allocation.include.*
+            A node matching any rule will be allowed to host shards from the index. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationExclude">
+            <summary>
+            index.routing.allocation.exclude.*
+            A node matching any rule will NOT be allowed to host shards from the index. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationRequire">
+            <summary>
+            index.routing.allocation.require.*
+            Only nodes matching all rules will be allowed to host shards from the index. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationEnable">
+            <summary>
+            index.routing.allocation.enable
+            Enables shard allocation for a specific index. It can be set to:
+            all (default) - Allows shard allocation for all shards.
+            primaries - Allows shard allocation only for primary shards.
+            new_primaries - Allows shard allocation only for primary shards for new indices.
+            none - No shard allocation is allowed. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationTotalShardsPerNode">
+            <summary>
+            index.routing.allocation.total_shards_per_node
+            Controls the total number of shards (replicas and primaries) allowed to be allocated on a single node. Defaults to unbounded (-1). 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RecoveryInitialShards">
+             <summary>
+             index.recovery.initial_shards
+            	When using local gateway a particular shard is recovered only if there can be allocated quorum shards in the cluster. It can be set to:
+            
+            		quorum (default)
+            		quorum-1 (or half)
+            		full
+            		full-1.
+            		Number values are also supported, e.g. 1. 
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TtlDisablePurge">
+            <summary>
+            index.ttl.disable_purge
+            Disables temporarily the purge of expired docs. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.GcDeletes">
+            <summary>
+            index.gc_deletes
+            Disables temporarily the purge of expired docs. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogFsType">
+            <summary>
+            index.translog.fs.type
+            Either simple or buffered (default). 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CompoundFormat">
+            <summary>
+            index.compound_format
+            See index.compound_format in the section called “Index Settingsedit”. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CompoundOnFlush">
+            <summary>
+            index.compound_on_flush
+            See `index.compound_on_flush in the section called “Index Settingsedit”. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.WarmerEnabled">
+            <summary>
+            index.warmer.enabled
+            See Warmers. Defaults to true. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.GetOptimizeParameters">
+            <summary>
+            Returns the set parameters for the optimize Request
+            </summary>
+            <returns></returns>
+        </member>
+        <!-- Badly formed XML comment ignored for member "P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.NumberOfShards" -->
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.OnlyExpungeDeletesSet">
+            <summary>
+            only_expunge_deletes
+            Should the optimize process only expunge segments with deletes in it. In Lucene, a document is not deleted from a segment, just marked as deleted. 
+            During a merge process of segments, a new segment is created that does not have those deletes. 
+            This flag allows to only merge segments that have deletes. Defaults to false. 
+            Note that this won’t override the index.merge.policy.expunge_deletes_allowed threshold.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.Flush">
+            <summary>
+            flush
+            Should a flush be performed after the optimize. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.WaitForMerge">
+            <summary>
+            wait_for_merge
+            Should the request wait for the merge to end. Defaults to true. Note, a merge can potentially be a very heavy operation, so it might make sense to run it set to false. 
+            </summary>
         </member>
         <member name="F:ElasticsearchCRUD.ElasticsearchCrudReindex`2.ScanAndScrollConfiguration">
             <summary>
@@ -329,7 +547,7 @@
             Default is 5 seconds with a size of 500 documents pro shard.
             </summary>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.#ctor(ElasticsearchCRUD.Utils.IndexTypeDescription,ElasticsearchCRUD.Utils.IndexTypeDescription,System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.#ctor(ElasticsearchCRUD.Model.IndexTypeDescription,ElasticsearchCRUD.Model.IndexTypeDescription,System.String)">
             <summary>
             Reindex constructor. The class reuires a index and a type for the old index and also the new index. The old index can then be converteds or reindexed to the new index.
             </summary>
@@ -343,7 +561,7 @@
             </summary>
             <param name="alias">alias string used for the index.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.Reindex(System.String,System.Func{`0,System.Object},System.Func{`0,`1},System.Func{`0,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition})">
+        <member name="M:ElasticsearchCRUD.ElasticsearchCrudReindex`2.Reindex(System.String,System.Func{`0,System.Object},System.Func{`0,`1},System.Func{`0,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition})">
             <summary>
             This method is used to reindex one index to a new index using a query, and two Functions.
             </summary>
@@ -391,7 +609,7 @@
             Everything is lowercase and the index is pluralized
             </summary>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.MapEntityValues(ElasticsearchCRUD.EntityContextInfo,ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Boolean,System.Boolean)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchMapping.MapEntityValues(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchCrudJsonWriter,System.Boolean,System.Boolean)">
             <summary>
             Ovveride this if your default mapping needs to be changed.
             default type is lowercase for properties, indes pluralized and type to lower
@@ -468,7 +686,7 @@
             <param name="elasticsearchMappingResolver">Resolver used for getting the index and type of a document type. The default 
             ElasticsearchSerializerConfiguration is used in this ctor.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AddUpdateDocument(System.Object,System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AddUpdateDocument(System.Object,System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition)">
             <summary>
             Adds a document to the pending changes list. Nor HTTP request is sent with this method. If the save changes is not called, the
             document is not added or updated in the search engine
@@ -478,7 +696,7 @@
             <param name="routingDefinition">parent id of the document. This is only used if the ElasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex
             property is set to true. The document is then saved with the parent routing. It will also be saved even if the parent does not exist.</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteDocument``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteDocument``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition)">
             <summary>
             Adds a document to the pending changes list to be deletedd. Nor HTTP request is sent with this method. If the save changes is not called, the
             document is not added or updated in the search engine
@@ -506,7 +724,128 @@
             </summary>
             <returns>Returns HTTP response information</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocument``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexOptimize(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters)">
+            <summary>
+            The optimize API allows to optimize one or more indices through an API. 
+            The optimize process basically optimizes the index for faster search operations (and relates to the number of segments a Lucene index holds within each shard). 
+            The optimize operation allows to reduce the number of segments by merging them.
+            </summary>
+            <param name="index">index to optimize</param>
+            <param name="optimizeParameters">all the possible parameters</param>
+            <returns>number of successfully optimized</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexOptimizeAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters)">
+            <summary>
+            Async The optimize API allows to optimize one or more indices through an API. 
+            The optimize process basically optimizes the index for faster search operations (and relates to the number of segments a Lucene index holds within each shard). 
+            The optimize operation allows to reduce the number of segments by merging them.
+            </summary>
+            <param name="index">index to optimize</param>
+            <param name="optimizeParameters">all the possible parameters</param>
+            <returns>number of successfully optimized</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexClose(System.String)">
+            <summary>
+            The open and close index APIs allow to close an index, and later on opening it. 
+            A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+             A closed index can be opened which will then go through the normal recovery process.
+            </summary>
+            <param name="index">index to be closed</param>
+            <returns>true ids successfuly</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCloseAsync(System.String)">
+            <summary>
+            Async The open and close index APIs allow to close an index, and later on opening it. 
+            A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+             A closed index can be opened which will then go through the normal recovery process.
+            </summary>
+            <param name="index">index to be closed</param>
+            <returns>true ids successfuly</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexOpen(System.String)">
+            <summary>
+            The open and close index APIs allow to close an index, and later on opening it. 
+            A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+             A closed index can be opened which will then go through the normal recovery process.
+            </summary>
+            <param name="index">index to be opened</param>
+            <returns>true ids successfuly</returns>
+            
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexOpenAsync(System.String)">
+            <summary>
+            Async The open and close index APIs allow to close an index, and later on opening it. 
+            A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+             A closed index can be opened which will then go through the normal recovery process.
+            </summary>
+            <param name="index">index to be opened</param>
+            <returns>true ids successfuly</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexUpdateSettings(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings,System.String)">
+            <summary>
+            Change specific index level settings in real time
+            Can change a single index or global changes
+            </summary>
+            <param name="indexUpdateSettings">index settings, see properties doc for details</param>
+            <param name="index">index to be updated, if null, updatesa all indices</param>
+            <returns>string with details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexUpdateSettingsAsync(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings,System.String)">
+            <summary>
+            Async Change specific index level settings in real time
+            Can change a single index or global changes
+            </summary>
+            <param name="indexUpdateSettings">index settings, see properties doc for details</param>
+            <param name="index">index to be updated, if null, updatesa all indices</param>
+            <returns>string with details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexSettings)">
+            <summary>
+            Creates a new index
+            </summary>
+            <param name="index">index name to lower string!</param>
+            <param name="indexSettings">settings for the new index</param>
+            <returns>details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexSettings)">
+            <summary>
+            Async Creates a new index
+            </summary>
+            <param name="index">index name to lower string!</param>
+            <param name="indexSettings">settings for the new index</param>
+            <returns>details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexDefinition)">
+            <summary>
+            Creates a new index from a Type and also all the property mappings and index definitions
+            </summary>
+            <param name="indexDefinition">settings for the new index</param>
+            <returns>details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexDefinition)">
+            <summary>
+            Async Creates a new index from a Type and also all the property mappings and index definitions
+            </summary>
+            <param name="indexDefinition">settings for the new index</param>
+            <returns>details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateTypeMapping``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingDefinition)">
+            <summary>
+            Creates propety mappings for an existing index
+            </summary>
+            <typeparam name="T">Type for the mapping</typeparam>
+            <param name="mappingDefinition">Routing index definitions</param>
+            <returns>details of the request</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateTypeMappingAsync``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingDefinition)">
+            <summary>
+            Async Creates propety mappings for an existing index
+            </summary>
+            <typeparam name="T">Type for the mapping</typeparam>
+            <param name="mappingDefinition">Routing index definitions</param>
+            <returns>details of the request</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocument``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition)">
             <summary>
             Gets a document by id. Elasticsearch GET API
             </summary>
@@ -620,7 +959,7 @@
             <param name="jsonContent">json string using directly in Elasticsearch API. </param>
             <returns>Returns true if ok</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocumentAsync``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocumentAsync``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition)">
             <summary>
             Gets a document by id. Elasticsearch GET API
             </summary>
@@ -630,7 +969,7 @@
             saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
             <returns>Document type T in a Task with result details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExists``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExists``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition)">
             <summary>
             Checks if a document exists with a head request
             </summary>
@@ -640,7 +979,7 @@
             NOTE: if the parent Id is incorrect but save on the same shard as the correct parentId, the document will be found!</param>
             <returns>true or false</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExistsAsync``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.RoutingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DocumentExistsAsync``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition)">
             <summary>
             Async Checks if a document exists with a head request
             </summary>
@@ -718,14 +1057,14 @@
             </summary>
             <returns>true if the alias exists false for 404</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.ClearCacheForIndex``1">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexClearCache``1">
             <summary>
             Clears the cache for the index. The index is defined using the Type
             </summary>
             <typeparam name="T">Type used to get the index name</typeparam>
             <returns>returns true if cache has been cleared</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.ClearCacheForIndexAsync``1">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexClearCacheAsync``1">
             <summary>
             Async Clears the cache for the index. The index is defined using the Type
             </summary>
