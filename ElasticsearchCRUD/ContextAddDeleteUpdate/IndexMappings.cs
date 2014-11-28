@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
@@ -82,6 +83,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 		public void CreateIndexSettingsForDocument(string index, IndexSettings indexSettings)
 		{
+			if (_processedItems.Contains("_index" + index))
+			{
+				return;
+			}
+			_processedItems.Add("_index" + index);
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			CreateIndexSettings(elasticsearchCrudJsonWriter, indexSettings);
@@ -136,11 +142,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, string index)
 		{
 			var itemType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);
-			if (_processedItems.Contains(itemType))
+			if (_processedItems.Contains("_mapping" +itemType))
 			{
 				return;
 			}
-			_processedItems.Add(itemType);
+			_processedItems.Add("_mapping" +itemType);
 
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
@@ -236,6 +242,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				RequestType = "PUT",
 				Content = propertyMapping
 			};
+			Console.WriteLine("XXXCreateMappingCommandForTypeWithExistingIndex: " + index + ": " + documentType);
 			Commands.Add(command);
 		}
 
@@ -247,6 +254,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				RequestType = "PUT",
 				Content = indexJsonConfiguration
 			};
+			Console.WriteLine("XXXSettingsCommand: " + index);
 			Commands.Add(command);
 		}
 
@@ -258,6 +266,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				RequestType = "PUT",
 				Content = indexJsonConfiguration
 			};
+			Console.WriteLine("XXXCreateIndexCommand: " + index);
 			Commands.Add(command);
 		}
 

@@ -10,6 +10,8 @@ namespace DataTransferSQLToEl.SQLDomainModel
 		public SQLDataModel()
 			: base("name=SQLDataModel")
 		{
+			// Turn off the Migrations, (NOT a code first Db)
+			Database.SetInitializer<SQLDataModel>(null);
 			//this.Configuration.LazyLoadingEnabled = false;
 
 		}
