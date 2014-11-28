@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
@@ -431,7 +432,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.IndexCreate(index, new IndexSettings { BlocksWrite = true, NumberOfShards = 7 });
 
 				//context.IndexClose(index);
-				context.IndexUpdateSettings(index, new IndexUpdateSettings {  NumberOfReplicas = 2 });
+				context.IndexUpdateSettings(new IndexUpdateSettings {  NumberOfReplicas = 2 }, index );
 				//context.IndexOpen(index);
 
 				Thread.Sleep(1500);
@@ -460,7 +461,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.IndexCreate(index, new IndexSettings { BlocksWrite = true, NumberOfShards = 7 });
 
 				context.IndexClose(index);
-				context.IndexUpdateSettings(index, new IndexUpdateSettings { NumberOfReplicas = 2 });
+				context.IndexUpdateSettings(new IndexUpdateSettings { NumberOfReplicas = 2 }, index);
 				context.IndexOpen(index);
 
 				Thread.Sleep(1500);
@@ -472,6 +473,20 @@ namespace ElasticsearchCRUD.Integration.Test
 					context.AllowDeleteForIndex = true;
 					context.DeleteIndex<MappingTestsParent>();
 				}
+			}
+		}
+
+		[Test]
+		public void UpdateIndexSettingsGlobal()
+		{
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchMappingResolver()))
+			{
+				context.IndexCreate<MappingTestsParent>();
+				context.TraceProvider = new ConsoleTraceProvider();
+				var result = context.IndexUpdateSettings(new IndexUpdateSettings { NumberOfReplicas = 1 });
+				context.AllowDeleteForIndex = true;
+				context.DeleteIndex<MappingTestsParent>();
+				Assert.AreEqual("completed", result.PayloadResult);
 			}
 		}
 

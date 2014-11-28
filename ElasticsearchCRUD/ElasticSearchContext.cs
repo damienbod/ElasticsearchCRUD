@@ -185,14 +185,14 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextIndexMapping.OpenIndexAsync(index);
 		}
 
-		public ResultDetails<string> IndexUpdateSettings(string index, IndexUpdateSettings indexUpdateSettings)
+		public ResultDetails<string> IndexUpdateSettings(IndexUpdateSettings indexUpdateSettings, string index = null)
 		{
-			return _elasticsearchContextIndexMapping.UpdateIndexSettings(index, indexUpdateSettings);
+			return _elasticsearchContextIndexMapping.UpdateIndexSettings(indexUpdateSettings, index);
 		}
 
-		public async Task<ResultDetails<string>> IndexUpdateSettingsAsync(string index, IndexUpdateSettings indexUpdateSettings)
+		public async Task<ResultDetails<string>> IndexUpdateSettingsAsync(IndexUpdateSettings indexUpdateSettings, string index = null)
 		{
-			return await _elasticsearchContextIndexMapping.UpdateIndexSettingsAsync(index, indexUpdateSettings);
+			return await _elasticsearchContextIndexMapping.UpdateIndexSettingsAsync(indexUpdateSettings, index);
 		}
 
 		public ResultDetails<string> IndexCreate(string index, IndexSettings indexSettings = null)
