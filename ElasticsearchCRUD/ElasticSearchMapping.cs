@@ -220,6 +220,11 @@ namespace ElasticsearchCRUD
 				{
 					var obj = property.GetValue(entity);
 
+					if (obj == null && createPropertyMappings)
+					{
+						obj = "0";
+					}
+
 					RoutingDefinition routingDefinition;
 					if (parentEntityInfo.RoutingDefinition.RoutingId != null)
 					{
