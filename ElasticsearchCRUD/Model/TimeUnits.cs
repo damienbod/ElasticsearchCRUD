@@ -1,4 +1,4 @@
-﻿namespace ElasticsearchCRUD.ContextSearch
+﻿namespace ElasticsearchCRUD.Model
 {
 	public enum TimeUnits
 	{

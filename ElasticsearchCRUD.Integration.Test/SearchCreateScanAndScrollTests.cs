@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextSearch;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
