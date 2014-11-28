@@ -3,13 +3,24 @@
 	public class IndexSettings
 	{
 		private int _numberOfShards;
-		private bool _numberOfShardsSet = true;
+		private bool _numberOfShardsSet;
 		private int _numberOfReplicas;
-		private bool _numberOfReplicasSet = true;
+		private bool _numberOfReplicasSet;
 
 		private string _refreshInterval;
-		private bool _refreshIntervalSet = true;
-		
+		private bool _refreshIntervalSet;
+		private string _autoExpandReplicas;
+		private bool _autoExpandReplicasSet;
+		private bool _blocksReadOnly;
+		private bool _blocksReadOnlySet;
+		private bool _blocksRead;
+		private bool _blocksReadSet;
+		private bool _blocksWrite;
+		private bool _blocksWriteSet;
+		private bool _blocksMetadata;
+		private bool _blocksMetadataSet;
+		private ushort _indexConcurrency;
+		private bool _indexConcurrencySet;
 
 		public int NumberOfShards
 		{
@@ -35,9 +46,10 @@
 			}
 		}
 
-
-		 
 		/// <summary>
+		/// index.refresh_interval
+		///	The async refresh interval of a shard. 
+		/// -----
 		/// bulk Indexing Usage 
 		/// For example, the update settings API can be used to dynamically change the index from being more performant for bulk indexing, 
 		/// and then move it to more real time indexing state. Before the bulk indexing is started, use:
@@ -58,20 +70,90 @@
 			}
 		}
 
-//index.auto_expand_replicas (string)
-//	Set to a dash delimited lower and upper bound (e.g. 0-5) or one may use all as the upper bound (e.g. 0-all), or false to disable it. 
-//index.blocks.read_only
-//	Set to true to have the index read only, false to allow writes and metadata changes. 
-//index.blocks.read
-//	Set to true to disable read operations against the index. 
-//index.blocks.write
-//	Set to true to disable write operations against the index. 
-//index.blocks.metadata
-//	Set to true to disable metadata operations against the index. 
-//index.refresh_interval
-//	The async refresh interval of a shard. 
-//index.index_concurrency
-//	Defaults to 8. 
+		/// <summary>
+		/// index.auto_expand_replicas (string)
+		//	Set to a dash delimited lower and upper bound (e.g. 0-5) or one may use all as the upper bound (e.g. 0-all), or false to disable it. 
+		/// </summary>
+		public string AutoExpandReplicas
+		{
+			get { return _autoExpandReplicas; }
+			set
+			{
+				_autoExpandReplicas = value;
+				_autoExpandReplicasSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.blocks.read_only
+		///	Set to true to have the index read only, false to allow writes and metadata changes. 
+		/// </summary>
+		public bool BlocksReadOnly
+		{
+			get { return _blocksReadOnly; }
+			set
+			{
+				_blocksReadOnly = value;
+				_blocksReadOnlySet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.blocks.read
+		///	Set to true to disable read operations against the index. 
+		/// </summary>
+		public bool BlocksRead
+		{
+			get { return _blocksRead; }
+			set
+			{
+				_blocksRead = value;
+				_blocksReadSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.blocks.write
+		///	Set to true to disable write operations against the index. 
+		/// </summary>
+		public bool BlocksWrite
+		{
+			get { return _blocksRead; }
+			set
+			{
+				_blocksWrite = value;
+				_blocksWriteSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.blocks.metadata
+		///	Set to true to disable metadata operations against the index.
+		/// </summary>
+		public bool BlocksMetadata
+		{
+			get { return _blocksMetadata; }
+			set
+			{
+				_blocksMetadata = value;
+				_blocksMetadataSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.index_concurrency
+		///	Defaults to 8. 
+		/// </summary>
+		public ushort IndexConcurrency
+		{
+			get { return _indexConcurrency; }
+			set
+			{
+				_indexConcurrency = value;
+				_indexConcurrencySet = true;
+			}
+		}
+
 //index.codec.bloom.load
 //	Whether to load the bloom filter. Defaults to false. 
 //index.fail_on_merge_failure
@@ -144,6 +226,12 @@
 			WriteValue("number_of_shards", _numberOfShards, elasticsearchCrudJsonWriter, _numberOfShardsSet);
 			WriteValue("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
 			WriteValue("refresh_interval", _refreshInterval, elasticsearchCrudJsonWriter, _refreshIntervalSet);
+			WriteValue("auto_expand_replicas", _autoExpandReplicas, elasticsearchCrudJsonWriter, _autoExpandReplicasSet);
+			WriteValue("blocks.read_only", _blocksReadOnly, elasticsearchCrudJsonWriter, _blocksReadOnlySet);
+			WriteValue("blocks.read", _blocksRead, elasticsearchCrudJsonWriter, _blocksReadSet);
+			WriteValue("blocks.write", _blocksWrite, elasticsearchCrudJsonWriter, _blocksWriteSet);
+			WriteValue("blocks.metadata", _blocksMetadata, elasticsearchCrudJsonWriter, _blocksMetadataSet);
+			WriteValue("index_concurrency", _indexConcurrency, elasticsearchCrudJsonWriter, _indexConcurrencySet);
 			
 		}
 
