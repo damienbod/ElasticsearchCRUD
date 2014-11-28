@@ -49,6 +49,20 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 		private bool _routingAllocationEnableSet;
 		private string _routingAllocationTotalShardsPerNode;
 		private bool _routingAllocationTotalShardsPerNodeSet;
+		private string _recoveryInitialShards;
+		private bool _recoveryInitialShardsSet;
+		private bool _ttlDisablePurge;
+		private bool _ttlDisablePurgeSet;
+		private bool _gcDeletes;
+		private bool _gcDeletesSet;
+		private TranslogFsTypeEnum _translogFsType;
+		private bool _translogFsTypeSet;
+		private bool _compoundFormat;
+		private bool _compoundFormatSet;
+		private bool _compoundOnFlush;
+		private bool _compoundOnFlushSet;
+		private bool _warmerEnabled;
+		private bool _warmerEnabledSet;
 
 		/// <summary>
 		/// index.number_of_replicas
@@ -373,31 +387,109 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 			}
 		}
 
+		/// <summary>
+		/// index.recovery.initial_shards
+		///	When using local gateway a particular shard is recovered only if there can be allocated quorum shards in the cluster. It can be set to:
+		///
+		///		quorum (default)
+		///		quorum-1 (or half)
+		///		full
+		///		full-1.
+		///		Number values are also supported, e.g. 1. 
+		/// </summary>
+		public string RecoveryInitialShards
+		{
+			get { return _recoveryInitialShards; }
+			set
+			{
+				_recoveryInitialShards = value;
+				_recoveryInitialShardsSet = true;
+			}
+		}
 
+		/// <summary>
+		/// index.ttl.disable_purge
+		///	Disables temporarily the purge of expired docs. 
+		/// </summary>
+		public bool TtlDisablePurge
+		{
+			get { return _ttlDisablePurge; }
+			set
+			{
+				_ttlDisablePurge = value;
+				_ttlDisablePurgeSet = true;
+			}
+		}
 
-//index.recovery.initial_shards
-//	When using local gateway a particular shard is recovered only if there can be allocated quorum shards in the cluster. It can be set to:
+		/// <summary>
+		/// index.gc_deletes
+		///	Disables temporarily the purge of expired docs. 
+		/// </summary>
+		public bool GcDeletes
+		{
+			get { return _gcDeletes; }
+			set
+			{
+				_gcDeletes = value;
+				_gcDeletesSet = true;
+			}
+		}
 
-//		quorum (default)
-//		quorum-1 (or half)
-//		full
-//		full-1.
-//		Number values are also supported, e.g. 1. 
+		/// <summary>
+		/// index.translog.fs.type
+		///	Either simple or buffered (default). 
+		/// </summary>
+		public TranslogFsTypeEnum TranslogFsType
+		{
+			get { return _translogFsType; }
+			set
+			{
+				_translogFsType = value;
+				_translogFsTypeSet = true;
+			}
+		}
 
-//index.gc_deletes , index.ttl.disable_purge
-//	Disables temporarily the purge of expired docs. 
-//store level throttling
-//	All the settings for the store level throttling policy currently configured. 
-//index.translog.fs.type
-//	Either simple or buffered (default). 
-//index.compound_format
-//	See index.compound_format in the section called “Index Settingsedit”. 
-//index.compound_on_flush
-//	See `index.compound_on_flush in the section called “Index Settingsedit”. 
-//Index Slow Log
-//	All the settings for slow log. 
-//index.warmer.enabled
-//	See Warmers. Defaults to true. 
+		/// <summary>
+		/// index.compound_format
+		///	See index.compound_format in the section called “Index Settingsedit”. 
+		/// </summary>
+		public bool CompoundFormat
+		{
+			get { return _compoundFormat; }
+			set
+			{
+				_compoundFormat = value;
+				_compoundFormatSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.compound_on_flush
+		///	See `index.compound_on_flush in the section called “Index Settingsedit”. 
+		/// </summary>
+		public bool CompoundOnFlush
+		{
+			get { return _compoundOnFlush; }
+			set
+			{
+				_compoundOnFlush = value;
+				_compoundOnFlushSet = true;
+			}
+		}
+
+		/// <summary>
+		/// index.warmer.enabled
+		///	See Warmers. Defaults to true. 
+		/// </summary>
+		public bool WarmerEnabled
+		{
+			get { return _warmerEnabled; }
+			set
+			{
+				_warmerEnabled = value;
+				_warmerEnabledSet = true;
+			}
+		}
 
 		public virtual void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -425,7 +517,15 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 
 			WriteValue("routing.allocation.enable", _routingAllocationEnable.ToString(), elasticsearchCrudJsonWriter, _routingAllocationEnableSet);
 			WriteValue("routing.allocation.total_shards_per_node", _routingAllocationTotalShardsPerNode, elasticsearchCrudJsonWriter, _routingAllocationTotalShardsPerNodeSet);
+			WriteValue("recovery.initial_shards", _recoveryInitialShards, elasticsearchCrudJsonWriter, _recoveryInitialShardsSet);
 
+			WriteValue("index.gc_deletes", _gcDeletes, elasticsearchCrudJsonWriter, _gcDeletesSet);
+			WriteValue("ttl.disable_purge", _ttlDisablePurge, elasticsearchCrudJsonWriter, _ttlDisablePurgeSet);
+			WriteValue("translog.fs.type", _translogFsType.ToString(), elasticsearchCrudJsonWriter, _translogFsTypeSet);
+			WriteValue("compound_format", _compoundFormat, elasticsearchCrudJsonWriter, _compoundFormatSet);
+			WriteValue("compound_on_flush", _compoundOnFlush, elasticsearchCrudJsonWriter, _compoundOnFlushSet);
+			WriteValue("warmer.enabled", _warmerEnabled, elasticsearchCrudJsonWriter, _warmerEnabledSet);
+			
 			
 			
 		}
@@ -464,6 +564,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 		    primaries,
 		    new_primaries,
 		    none
+		}
+
+		public enum TranslogFsTypeEnum
+		{
+			simple,
+		    buffered
 		}
 	}
 }
