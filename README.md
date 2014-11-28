@@ -79,6 +79,14 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.20</strong><em> 2014.11.28</em>
+- support optimize index 
+- support close index
+- support open index
+- support update index settings 
+- support CreateMapping for existing index
+- support specific routing in mappings
+
 <strong>Version 1.0.19</strong><em> 2014.11.22</em>
 - support for Delete mapping (Index Type)
 - support for sync delete index
