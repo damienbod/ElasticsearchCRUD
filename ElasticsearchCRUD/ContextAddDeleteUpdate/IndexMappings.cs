@@ -242,7 +242,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				RequestType = "PUT",
 				Content = propertyMapping
 			};
-			Console.WriteLine("XXXCreateMappingCommandForTypeWithExistingIndex: " + index + ": " + documentType);
+			//Console.WriteLine("XXXCreateMappingCommandForTypeWithExistingIndex: " + index + ": " + documentType);
 			Commands.Add(command);
 		}
 
@@ -254,7 +254,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				RequestType = "PUT",
 				Content = indexJsonConfiguration
 			};
-			Console.WriteLine("XXXSettingsCommand: " + index);
+			//Console.WriteLine("XXXSettingsCommand: " + index);
 			Commands.Add(command);
 		}
 
@@ -266,7 +266,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				RequestType = "PUT",
 				Content = indexJsonConfiguration
 			};
-			Console.WriteLine("XXXCreateIndexCommand: " + index);
+			//Console.WriteLine("XXXCreateIndexCommand: " + index);
 			Commands.Add(command);
 		}
 
