@@ -481,7 +481,11 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchMappingResolver()))
 			{
-				context.IndexCreate<MappingTestsParent>();
+				if (!context.IndexExists<MappingTestsParent>())
+				{
+					context.IndexCreate<MappingTestsParent>();
+				}
+				
 				context.TraceProvider = new ConsoleTraceProvider();
 				var result = context.IndexUpdateSettings(new IndexUpdateSettings { NumberOfReplicas = 1 });
 				context.AllowDeleteForIndex = true;

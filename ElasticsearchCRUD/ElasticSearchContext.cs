@@ -155,76 +155,168 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAddDeleteUpdate.SaveChangesAsync(_entityPendingChanges);
 		}
 
+		/// <summary>
+		/// The optimize API allows to optimize one or more indices through an API. 
+		/// The optimize process basically optimizes the index for faster search operations (and relates to the number of segments a Lucene index holds within each shard). 
+		/// The optimize operation allows to reduce the number of segments by merging them.
+		/// </summary>
+		/// <param name="index">index to optimize</param>
+		/// <param name="optimizeParameters">all the possible parameters</param>
+		/// <returns>number of successfully optimized</returns>
 		public ResultDetails<int> IndexOptimize(string index = null, OptimizeParameters optimizeParameters = null)
 		{
 			return _elasticsearchContextIndexMapping.IndexOptimize(index, optimizeParameters);
 		}
 
+		/// <summary>
+		/// Async The optimize API allows to optimize one or more indices through an API. 
+		/// The optimize process basically optimizes the index for faster search operations (and relates to the number of segments a Lucene index holds within each shard). 
+		/// The optimize operation allows to reduce the number of segments by merging them.
+		/// </summary>
+		/// <param name="index">index to optimize</param>
+		/// <param name="optimizeParameters">all the possible parameters</param>
+		/// <returns>number of successfully optimized</returns>
 		public async Task<ResultDetails<int>> IndexOptimizeAsync(string index = null, OptimizeParameters optimizeParameters = null)
 		{
 			return await _elasticsearchContextIndexMapping.IndexOptimizeAsync( index,  optimizeParameters);
 		}
 
+		/// <summary>
+		/// The open and close index APIs allow to close an index, and later on opening it. 
+		/// A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+		///  A closed index can be opened which will then go through the normal recovery process.
+		/// </summary>
+		/// <param name="index">index to be closed</param>
+		/// <returns>true ids successfuly</returns>
 		public ResultDetails<bool> IndexClose(string index)
 		{
 			return _elasticsearchContextIndexMapping.CloseIndex(index);
 		}
 
+		/// <summary>
+		/// Async The open and close index APIs allow to close an index, and later on opening it. 
+		/// A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+		///  A closed index can be opened which will then go through the normal recovery process.
+		/// </summary>
+		/// <param name="index">index to be closed</param>
+		/// <returns>true ids successfuly</returns>
 		public async Task<ResultDetails<bool>> IndexCloseAsync(string index)
 		{
 			return await _elasticsearchContextIndexMapping.CloseIndexAsync(index);
 		}
 
+		/// <summary>
+		/// The open and close index APIs allow to close an index, and later on opening it. 
+		/// A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+		///  A closed index can be opened which will then go through the normal recovery process.
+		/// </summary>
+		/// <param name="index">index to be opened</param>
+		/// <returns>true ids successfuly</returns>
+		/// 
 		public ResultDetails<bool> IndexOpen(string index)
 		{
 			return _elasticsearchContextIndexMapping.OpenIndex(index);
 		}
 
+		/// <summary>
+		/// Async The open and close index APIs allow to close an index, and later on opening it. 
+		/// A closed index has almost no overhead on the cluster (except for maintaining its metadata), and is blocked for read/write operations.
+		///  A closed index can be opened which will then go through the normal recovery process.
+		/// </summary>
+		/// <param name="index">index to be opened</param>
+		/// <returns>true ids successfuly</returns>
 		public async Task<ResultDetails<bool>> IndexOpenAsync(string index)
 		{
 			return await _elasticsearchContextIndexMapping.OpenIndexAsync(index);
 		}
 
+		/// <summary>
+		/// Change specific index level settings in real time
+		/// Can change a single index or global changes
+		/// </summary>
+		/// <param name="indexUpdateSettings">index settings, see properties doc for details</param>
+		/// <param name="index">index to be updated, if null, updatesa all indices</param>
+		/// <returns>string with details</returns>
 		public ResultDetails<string> IndexUpdateSettings(IndexUpdateSettings indexUpdateSettings, string index = null)
 		{
 			return _elasticsearchContextIndexMapping.UpdateIndexSettings(indexUpdateSettings, index);
 		}
 
+		/// <summary>
+		/// Async Change specific index level settings in real time
+		/// Can change a single index or global changes
+		/// </summary>
+		/// <param name="indexUpdateSettings">index settings, see properties doc for details</param>
+		/// <param name="index">index to be updated, if null, updatesa all indices</param>
+		/// <returns>string with details</returns>
 		public async Task<ResultDetails<string>> IndexUpdateSettingsAsync(IndexUpdateSettings indexUpdateSettings, string index = null)
 		{
 			return await _elasticsearchContextIndexMapping.UpdateIndexSettingsAsync(indexUpdateSettings, index);
 		}
 
+		/// <summary>
+		/// Creates a new index
+		/// </summary>
+		/// <param name="index">index name to lower string!</param>
+		/// <param name="indexSettings">settings for the new index</param>
+		/// <returns>details</returns>
 		public ResultDetails<string> IndexCreate(string index, IndexSettings indexSettings = null)
 		{
 			return _elasticsearchContextIndexMapping.CreateIndex(index, indexSettings);
 		}
 
+		/// <summary>
+		/// Async Creates a new index
+		/// </summary>
+		/// <param name="index">index name to lower string!</param>
+		/// <param name="indexSettings">settings for the new index</param>
+		/// <returns>details</returns>
 		public async Task<ResultDetails<string>> IndexCreateAsync(string index, IndexSettings indexSettings = null)
 		{
 			return await _elasticsearchContextIndexMapping.CreateIndexAsync(index, indexSettings);
 		}
 
+		/// <summary>
+		/// Creates a new index from a Type and also all the property mappings and index definitions
+		/// </summary>
+		/// <param name="indexDefinition">settings for the new index</param>
+		/// <returns>details</returns>
 		public ResultDetails<string> IndexCreate<T>(IndexDefinition indexDefinition = null)
 		{
 			return _elasticsearchContextIndexMapping.CreateIndexWithMapping<T>(indexDefinition);
 		}
 
+		/// <summary>
+		/// Async Creates a new index from a Type and also all the property mappings and index definitions
+		/// </summary>
+		/// <param name="indexDefinition">settings for the new index</param>
+		/// <returns>details</returns>
 		public async Task<ResultDetails<string>> IndexCreateAsync<T>(IndexDefinition indexDefinition = null)
 		{
 			return await _elasticsearchContextIndexMapping.CreateIndexWithMappingAsync<T>(indexDefinition);
 		}
 
+		/// <summary>
+		/// Creates propety mappings for an existing index
+		/// </summary>
+		/// <typeparam name="T">Type for the mapping</typeparam>
+		/// <param name="mappingDefinition">Routing index definitions</param>
+		/// <returns>details of the request</returns>
 		public ResultDetails<string> IndexCreateTypeMapping<T>(MappingDefinition mappingDefinition)
 		{
 			return _elasticsearchContextIndexMapping.CreateTypeMappingForIndex<T>(mappingDefinition);
 		}
 
+		/// <summary>
+		/// Async Creates propety mappings for an existing index
+		/// </summary>
+		/// <typeparam name="T">Type for the mapping</typeparam>
+		/// <param name="mappingDefinition">Routing index definitions</param>
+		/// <returns>details of the request</returns>
 		public async Task<ResultDetails<string>> IndexCreateTypeMappingAsync<T>(MappingDefinition mappingDefinition)
 		{
 			return await _elasticsearchContextIndexMapping.CreateTypeMappingForIndexAsync<T>(mappingDefinition);
 		}
-
 		
 		/// <summary>
 		/// Gets a document by id. Elasticsearch GET API
