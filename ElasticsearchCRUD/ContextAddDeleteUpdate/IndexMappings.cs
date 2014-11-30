@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
@@ -109,14 +110,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			SettingsCommand(elasticsearchCrudJsonWriter.GetJsonString(), index);
 		}
-		public void CreatePropertyMappingForTopDocument(EntityContextInfo entityInfo, string index)
+		public void CreatePropertyMappingForTopDocument(EntityContextInfo entityInfo, MappingDefinition mappingDefinition)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(entityInfo.EntityType);
 			elasticSearchMapping.TraceProvider = _traceProvider;
 			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
 
-			CreatePropertyMappingForEntityForParentDocument(entityInfo, elasticSearchMapping, index);
+			CreatePropertyMappingForEntityForParentDocument(entityInfo, elasticSearchMapping, mappingDefinition);
 
 			if (_elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex)
 			{
@@ -139,8 +140,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// </summary>
 		/// <param name="entityInfo"></param>
 		/// <param name="elasticsearchMapping"></param>
-		/// <param name="index"></param>
-		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, string index)
+		/// <param name="mappingDefinition">mapping definitions for the index type</param>
+		private void CreatePropertyMappingForEntityForParentDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, MappingDefinition mappingDefinition)
 		{
 			var itemType = elasticsearchMapping.GetDocumentType(entityInfo.EntityType);
 			if (_processedItems.Contains("_mapping" +itemType))
@@ -155,7 +156,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			// TODO add _source 
-			// TODO add _all
+			mappingDefinition.Source.WriteJson(elasticsearchCrudJsonWriter);
+			mappingDefinition.All.WriteValue(elasticsearchCrudJsonWriter);
 
 			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
@@ -174,7 +176,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
-			CreateMappingCommandForTypeWithExistingIndex(elasticsearchCrudJsonWriter.GetJsonString(), index, itemType);
+			CreateMappingCommandForTypeWithExistingIndex(elasticsearchCrudJsonWriter.GetJsonString(), mappingDefinition.Index, itemType);
 		
 		}
 

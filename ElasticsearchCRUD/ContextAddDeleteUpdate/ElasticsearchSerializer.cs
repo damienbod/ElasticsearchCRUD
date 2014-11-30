@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
@@ -46,7 +47,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				if (_saveChangesAndInitMappingsForChildDocuments)
 				{
 					_indexMappings.CreateIndexSettingsForDocument(index, new IndexSettings{NumberOfShards=5,NumberOfReplicas=1} );
-					_indexMappings.CreatePropertyMappingForTopDocument(entity, index);
+					_indexMappings.CreatePropertyMappingForTopDocument(entity, new MappingDefinition{Index=index});
 				}
 
 				if (entity.DeleteDocument)

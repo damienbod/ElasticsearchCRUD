@@ -32,6 +32,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
+			// TODO
 			//WriteValue("number_of_shards", _numberOfShards, elasticsearchCrudJsonWriter, _numberOfShardsSet);
 
 		}

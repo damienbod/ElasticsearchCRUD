@@ -65,7 +65,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
 				indexMappings.CreateIndexSettingsForDocument(index, indexDefinition.IndexSettings);
-				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, index);
+				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, indexDefinition.Mapping);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
 				return resultDetails;
@@ -145,7 +145,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					EntityType = typeof (T),
 					Id = "0"
 				};
-				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, mappingDefinition.Index);
+				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, mappingDefinition);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
 				return resultDetails;
