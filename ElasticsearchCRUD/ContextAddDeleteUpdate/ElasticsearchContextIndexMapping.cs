@@ -65,6 +65,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
 				indexMappings.CreateIndexSettingsForDocument(index, indexDefinition.IndexSettings);
+				indexDefinition.Mapping.Index = index;
 				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, indexDefinition.Mapping);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
