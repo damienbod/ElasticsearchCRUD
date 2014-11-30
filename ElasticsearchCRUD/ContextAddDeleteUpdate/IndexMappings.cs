@@ -127,7 +127,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					elasticSearchMapping.SaveChildObjectsAsWellAsParent = false;
 					foreach (var item in elasticSearchMapping.ChildIndexEntities)
 					{
-						CreatePropertyMappingForChildDocument(entityInfo, elasticSearchMapping, item);
+						CreatePropertyMappingForChildDocument(entityInfo, elasticSearchMapping, item, mappingDefinition);
 					}
 				}
 			}
@@ -155,7 +155,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(itemType);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			// TODO add _source 
 			mappingDefinition.Source.WriteJson(elasticsearchCrudJsonWriter);
 			mappingDefinition.All.WriteValue(elasticsearchCrudJsonWriter);
 
@@ -186,10 +185,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// <param name="entityInfo"></param>
 		/// <param name="elasticsearchMapping"></param>
 		/// <param name="item"></param>
-		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
+		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item, MappingDefinition mappingDefinition)
 		{
-			
-
 			var childMapping =
 				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.EntityType);
 
@@ -218,8 +215,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(childType);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			// TODO add _source 
-			// TODO add _all
+			mappingDefinition.Source.WriteJson(elasticsearchCrudJsonWriter);
+			mappingDefinition.All.WriteValue(elasticsearchCrudJsonWriter);
 
 			CreateParentMappingForDocument(
 				elasticsearchCrudJsonWriter,

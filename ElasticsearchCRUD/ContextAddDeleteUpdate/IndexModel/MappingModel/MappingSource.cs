@@ -4,6 +4,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 {
 	public class MappingSource
 	{
+		private bool _enabled;
+		private bool _enabledSet;
+
+		private List<string> _includes;
+		private bool _includesSet;
+		private List<string> _excludes;
+		private bool _excludesSet;
+
 		/// <summary>
 		/// The _source field is an automatically generated field that stores the actual JSON that was used as the indexed document. 
 		/// It is not indexed (searchable), just stored. When executing "fetch" requests, like get or search, the _source field is returned by default.
@@ -14,7 +22,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 		///   }
 		/// }
 		/// </summary>
-		public bool Enabled { get; set; }
+		
+		public bool Enabled
+		{
+			get { return _enabled; }
+			set
+			{
+				_enabled = value;
+				_enabledSet = true;
+			}
+		}
 
 		/// <summary>
 		/// {
@@ -23,26 +40,53 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 		///			"includes" : ["path1.*", "path2.*"],
 		///			"excludes" : ["path3.*"]
 		///		}
-		///	}
-		///}
+		///	 }
+		/// }
 		/// </summary>
-		public List<string> Includes { get; set; }
+		public List<string> Includes
+		{
+			get { return _includes; }
+			set
+			{
+				_includes = value;
+				_includesSet = true;
+			}
+		}
 
-		public List<string> Excludes { get; set; }
+		public List<string> Excludes
+		{
+			get { return _excludes; }
+			set
+			{
+				_excludes = value;
+				_excludesSet = true;
+			}
+		}
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			// TODO
-			//WriteValue("number_of_shards", _numberOfShards, elasticsearchCrudJsonWriter, _numberOfShardsSet);
+			WriteSourceEnabledIfSet(elasticsearchCrudJsonWriter);
 
 		}
 
-		private void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
+		private void WriteSourceEnabledIfSet(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			if (writeValue)
+			if (_enabledSet)
 			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
-				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(valueObj);
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_source");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("enabled");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(_enabled);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
+			else if (_includesSet || _excludesSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_source");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				
+
+
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 		}
 
@@ -53,7 +97,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 				foreach (var obj in valueObj)
 				{
 					//elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key + obj.Key);
-					//elasticsearchCrudJsonWriter.JsonWriter.WriteValue(obj.Value);
+					//elasticsearchCrudJsonWriter.JsonWriter.WriteSourceEnabledIfSet(obj.Value);
 				}
 
 			}
