@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
 	public class IndexUpdateSettings
 	{
@@ -525,9 +525,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 			WriteValue("compound_format", _compoundFormat, elasticsearchCrudJsonWriter, _compoundFormatSet);
 			WriteValue("compound_on_flush", _compoundOnFlush, elasticsearchCrudJsonWriter, _compoundOnFlushSet);
 			WriteValue("warmer.enabled", _warmerEnabled, elasticsearchCrudJsonWriter, _warmerEnabledSet);
-			
-			
-			
 		}
 
 		protected void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)

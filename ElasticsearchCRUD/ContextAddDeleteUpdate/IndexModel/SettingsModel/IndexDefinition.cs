@@ -2,15 +2,21 @@
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
-	public class IndexDefinition : MappingDefinition
+	public class IndexDefinition 
 	{
 		public IndexDefinition()
 		{
 			// settings the default values
 			IndexSettings = new IndexSettings {NumberOfReplicas = 1, NumberOfShards = 5};
+			Mapping = new MappingDefinition();
 		}
 
 		public IndexSettings IndexSettings { get; set; }
+
+		/// <summary>
+		/// TODO change this to a list so n mappings can be defined
+		/// </summary>
+		public MappingDefinition Mapping { get; set; }
 
 	}
 }

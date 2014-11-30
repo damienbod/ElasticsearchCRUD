@@ -52,7 +52,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				var item = Activator.CreateInstance<T>();
 				var entityContextInfo = new EntityContextInfo
 				{
-					RoutingDefinition = indexDefinition.RoutingDefinition,
+					RoutingDefinition = indexDefinition.Mapping.RoutingDefinition,
 					Document = item,
 					EntityType = typeof (T),
 					Id = "0"
