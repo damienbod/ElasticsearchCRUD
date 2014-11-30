@@ -14,7 +14,28 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 	/// </summary>
 	public class MappingAll
 	{
-		public bool Enabled { get; set; }
+		private bool _enabled;
+		private bool _enabledSet;
 
+		public bool Enabled {
+			get { return _enabled; }
+			set
+			{
+				_enabled = value;
+				_enabledSet = true;
+			}
+		}
+
+		public void WriteValue(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			if (_enabledSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_all");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("enabled");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(_enabled);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
+		}
 	}
 }
