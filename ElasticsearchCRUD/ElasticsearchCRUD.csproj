@@ -70,10 +70,14 @@
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextIndexMapping.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexMappings.cs" />
-    <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexDefinition.cs" />
-    <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexSettings.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexDefinition.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexSettings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\IndexUpdateSettings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\MappingCommand.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\MappingModel\MappingAll.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\MappingModel\MappingAnalyzer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\MappingModel\MappingDefinition.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\MappingModel\MappingSource.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeParameters.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\RoutingDefinition.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />

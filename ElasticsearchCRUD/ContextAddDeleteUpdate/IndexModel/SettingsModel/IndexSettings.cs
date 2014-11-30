@@ -1,4 +1,4 @@
-﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
+﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
 	public class IndexSettings : IndexUpdateSettings
 	{

@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json.Linq;
@@ -153,6 +154,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(itemType);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
+			// TODO add _source 
+			// TODO add _all
+
 			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
 				CreateForceRoutingMappingForDocument(elasticsearchCrudJsonWriter);
@@ -182,6 +186,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// <param name="item"></param>
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item)
 		{
+			
+
 			var childMapping =
 				_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(item.EntityType);
 
@@ -209,6 +215,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(childType);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+			// TODO add _source 
+			// TODO add _all
 
 			CreateParentMappingForDocument(
 				elasticsearchCrudJsonWriter,

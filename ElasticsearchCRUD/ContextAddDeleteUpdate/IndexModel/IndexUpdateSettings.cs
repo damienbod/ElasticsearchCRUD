@@ -104,7 +104,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 
 		/// <summary>
 		/// index.auto_expand_replicas (string)
-		//	Set to a dash delimited lower and upper bound (e.g. 0-5) or one may use all as the upper bound (e.g. 0-all), or false to disable it. 
+		///	Set to a dash delimited lower and upper bound (e.g. 0-5) or one may use all as the upper bound (e.g. 0-all), or false to disable it. 
 		/// </summary>
 		public string AutoExpandReplicas
 		{

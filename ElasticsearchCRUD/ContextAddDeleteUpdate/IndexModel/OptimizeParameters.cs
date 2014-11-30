@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 
 		/// <summary>
 		/// max_num_segments
-		// The number of segments to optimize to. To fully optimize the index, set it to 1. Defaults to simply checking if a merge needs to execute, and if so, executes it.
+		/// The number of segments to optimize to. To fully optimize the index, set it to 1. Defaults to simply checking if a merge needs to execute, and if so, executes it.
 		/// </summary>
 		public int NumberOfShards
 		{

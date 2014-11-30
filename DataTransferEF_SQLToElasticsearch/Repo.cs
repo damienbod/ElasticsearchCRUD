@@ -46,7 +46,6 @@ namespace DataTransferSQLToEl
 				{
 					int pointer = 0;
 					const int interval = 20;
-					bool firstRun = true;
 					int length = databaseEfModel.StateProvince.Count();
 
 					while (pointer < length)
