@@ -157,6 +157,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			mappingDefinition.Source.WriteJson(elasticsearchCrudJsonWriter);
 			mappingDefinition.All.WriteValue(elasticsearchCrudJsonWriter);
+			mappingDefinition.Analyzer.WriteValue(elasticsearchCrudJsonWriter);
 
 			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
@@ -185,6 +186,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 		/// <param name="entityInfo"></param>
 		/// <param name="elasticsearchMapping"></param>
 		/// <param name="item"></param>
+		/// <param name="mappingDefinition">definition for the type mappings</param>
 		private void CreatePropertyMappingForChildDocument(EntityContextInfo entityInfo, ElasticsearchMapping elasticsearchMapping, EntityContextInfo item, MappingDefinition mappingDefinition)
 		{
 			var childMapping =
@@ -217,6 +219,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 			mappingDefinition.Source.WriteJson(elasticsearchCrudJsonWriter);
 			mappingDefinition.All.WriteValue(elasticsearchCrudJsonWriter);
+			mappingDefinition.Analyzer.WriteValue(elasticsearchCrudJsonWriter);
 
 			CreateParentMappingForDocument(
 				elasticsearchCrudJsonWriter,
