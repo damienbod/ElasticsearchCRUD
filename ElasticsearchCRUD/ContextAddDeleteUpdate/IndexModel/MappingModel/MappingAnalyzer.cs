@@ -18,5 +18,29 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 	/// </summary>
 	public class MappingAnalyzer
 	{
+		private string _path;
+		private bool _pathSet;
+
+		public string Path
+		{
+			get { return _path; }
+			set
+			{
+				_path = value;
+				_pathSet = true;
+			}
+		}
+
+		public void WriteValue(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			if (_pathSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_analyzer");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("path");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(_path);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
+		}
 	}
 }

@@ -83,22 +83,27 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 			{
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("_source");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-				
 
+				WriteListValue("includes", _includes, elasticsearchCrudJsonWriter, _includesSet);
+				WriteListValue("excludes", _excludes, elasticsearchCrudJsonWriter, _excludesSet);
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 		}
 
-		private void WriteListValue(string key, List<string> valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
+		private void WriteListValue(string key, IEnumerable<string> valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
 		{
 			if (writeValue)
 			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
+
 				foreach (var obj in valueObj)
 				{
-					//elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key + obj.Key);
-					//elasticsearchCrudJsonWriter.JsonWriter.WriteSourceEnabledIfSet(obj.Value);
+					
+					elasticsearchCrudJsonWriter.JsonWriter.WriteValue(obj);
 				}
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
 
 			}
 		}
