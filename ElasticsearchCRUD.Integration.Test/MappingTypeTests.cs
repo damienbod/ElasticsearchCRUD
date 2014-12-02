@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Text;
+using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.Tracing;
@@ -11,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingTypeTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -53,11 +55,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AddUpdateDocument(mappingTypeAll, mappingTypeAll.Id);
 				context.SaveChanges();
 
-				Thread.Sleep(1000);
+				Thread.Sleep(1500);
 
-				// TODO do a Match word search on the _all field
-				var doc = context.GetDocument<MappingTypeAllTest>(1);
-				Assert.GreaterOrEqual(doc.Id, 1);
+
+				var doc = context.Search<MappingTypeAllTest>(BuildSearchById(1));
+				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id, 1);
 			}
 		}
 
@@ -83,10 +85,28 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AddUpdateDocument(mappingTypeAll, mappingTypeAll.Id);
 				context.SaveChanges();
 
-				Thread.Sleep(1000);
-				var doc = context.GetDocument<MappingTypeSourceTest>(1);
-				Assert.GreaterOrEqual(doc.Id, 1);
+				Thread.Sleep(1500);
+
+				var doc = context.Search<MappingTypeSourceTest>(BuildSearchById(1));
+				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id, 1);
+				Assert.IsNull(doc.PayloadResult.Hits.HitsResult.First().Source);
 			}
+		}
+
+		private string BuildSearchById(object childId)
+		{
+			var buildJson = new StringBuilder();
+			buildJson.AppendLine("{");
+			buildJson.AppendLine("\"query\": {");
+			buildJson.AppendLine("\"filtered\": {");
+			buildJson.AppendLine("\"query\": {");
+			buildJson.AppendLine("\"term\": {\"_id\": " + childId + "}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+
+			return buildJson.ToString();
 		}
 	}
 

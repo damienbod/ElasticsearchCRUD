@@ -52,7 +52,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwoUserDefinedRouting>(71, new RoutingDefinition { ParentId = parentId, RoutingId = 7 });
 
 				var childDocs = context.Search<ChildDocumentLevelTwoUserDefinedRouting>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentleveloneuserdefinedrouting"));
-				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 71));
+				Assert.IsNotNull(childDocs.PayloadResult.Hits.HitsResult.First(t => t.Id == 71));
 				Assert.AreEqual(71, roundTripResult.Id);
 			}
 		}
@@ -122,9 +122,9 @@ namespace ElasticsearchCRUD.Integration.Test
 					context.Search<ChildDocumentLevelTwoUserDefinedRouting>(BuildSearchForChildDocumentsWithIdAndParentType(22,
 						"childdocumentleveloneuserdefinedrouting"));
 
-				Assert.AreEqual(1, childDocs.TotalHits);
-				Assert.AreEqual(2, childDocs2.TotalHits);
-				Assert.AreEqual(4, childDocs3.TotalHits);
+				Assert.AreEqual(1, childDocs.PayloadResult.Hits.Total);
+				Assert.AreEqual(2, childDocs2.PayloadResult.Hits.Total);
+				Assert.AreEqual(4, childDocs3.PayloadResult.Hits.Total);
 
 				context.DeleteDocument<ChildDocumentLevelTwoUserDefinedRouting>(73, new RoutingDefinition { ParentId = 22, RoutingId = 7 });
 				context.DeleteDocument<ChildDocumentLevelTwoUserDefinedRouting>(72);
@@ -136,8 +136,8 @@ namespace ElasticsearchCRUD.Integration.Test
 					context.Search<ChildDocumentLevelTwoUserDefinedRouting>(BuildSearchForChildDocumentsWithIdAndParentType(22,
 						"childdocumentleveloneuserdefinedrouting"));
 
-				
-				Assert.AreEqual(2, childDocs3.TotalHits);
+
+				Assert.AreEqual(2, childDocs3.PayloadResult.Hits.Total);
 
 			}
 		}
@@ -167,7 +167,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwoUserDefinedRouting>(testObject.Id, new RoutingDefinition { ParentId = parentId, RoutingId = 7 });
 
 				var childDocs = context.Search<ChildDocumentLevelTwoUserDefinedRouting>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentleveloneuserdefinedrouting"));
-				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 46));
+				Assert.IsNotNull(childDocs.PayloadResult.Hits.HitsResult.First(t => t.Id == 46));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}
@@ -198,7 +198,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwoUserDefinedRouting>(testObject.Id, new RoutingDefinition { ParentId = parentId, RoutingId = 7 });
 
 				var childDocs = context.Search<ChildDocumentLevelTwoUserDefinedRouting>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentleveloneuserdefinedrouting"));
-				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 47));
+				Assert.IsNotNull(childDocs.PayloadResult.Hits.HitsResult.First(t => t.Id == 47));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}

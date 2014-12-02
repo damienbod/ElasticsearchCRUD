@@ -74,27 +74,27 @@ namespace ElasticsearchCRUD
 		{
 			var result = _context.SearchCreateScanAndScroll<TOld>(jsonContent, ScanAndScrollConfiguration);
 
-			var scrollId = result.ScrollId;
-			TraceProvider.Trace(TraceEventType.Information, "ElasticsearchCrudReindex: Reindex: Total Hits in scan: {0}", result.TotalHits);
+			var scrollId = result.PayloadResult.ScrollId;
+			TraceProvider.Trace(TraceEventType.Information, "ElasticsearchCrudReindex: Reindex: Total SearchResult in scan: {0}", result.PayloadResult.Hits.Total);
 
 			int indexProccessed = 0;
-			while (result.TotalHits > indexProccessed)
+			while (result.PayloadResult.Hits.Total > indexProccessed)
 			{
-				TraceProvider.Trace(TraceEventType.Information, "ElasticsearchCrudReindex: Reindex: creating new documents, indexProccessed: {0} Hits: {1}", indexProccessed, result.TotalHits);
+				TraceProvider.Trace(TraceEventType.Information, "ElasticsearchCrudReindex: Reindex: creating new documents, indexProccessed: {0} SearchResult: {1}", indexProccessed, result.PayloadResult.Hits.Total);
 
 				var resultCollection = _context.Search<TOld>("",scrollId, ScanAndScrollConfiguration);
-				scrollId = resultCollection.ScrollId;
+				scrollId = resultCollection.PayloadResult.ScrollId;
 
-				foreach (var item in resultCollection.PayloadResult)
+				foreach (var item in resultCollection.PayloadResult.Hits.HitsResult)
 				{
 					indexProccessed++;
 					if (getRoutingDefinition != null)
 					{
-						_context.AddUpdateDocument(convertMethod(item), getKeyMethod(item), getRoutingDefinition(item));
+						_context.AddUpdateDocument(convertMethod(item.Source), getKeyMethod(item.Source), getRoutingDefinition(item.Source));
 					}
 					else
 					{
-						_context.AddUpdateDocument(convertMethod(item), getKeyMethod(item));
+						_context.AddUpdateDocument(convertMethod(item.Source), getKeyMethod(item.Source));
 					}
 					
 				}
