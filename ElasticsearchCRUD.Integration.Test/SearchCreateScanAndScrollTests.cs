@@ -104,18 +104,18 @@ namespace ElasticsearchCRUD.Integration.Test
 				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 100);
 				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 
-				var scrollId = result.ScrollId;
+				var scrollId = result.PayloadResult.ScrollId;
 
 				int processedResults = 0;
-				while (result.TotalHits > processedResults)
+				while (result.PayloadResult.Hits.Total > processedResults)
 				{
 					var resultCollection = context.Search<ScanScrollTypeV1>("", scrollId, scanScrollConfig);
-					scrollId = resultCollection.ScrollId;
+					scrollId = resultCollection.PayloadResult.ScrollId;
 
-					foreach (var item in resultCollection.PayloadResult)
+					foreach (var item in resultCollection.PayloadResult.Hits.HitsResult)
 					{
 						processedResults++;
-						context.AddUpdateDocument(ConvertScanScrollTypeV1(item), item.Id);
+						context.AddUpdateDocument(ConvertScanScrollTypeV1(item.Source), item.Id);
 					}
 					context.SaveChanges();				
 				}

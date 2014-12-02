@@ -56,7 +56,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Thread.Sleep(1000);
 
 				// TODO do a Match word search on the _all field
-				var doc = context.GetDocument<MappingTypeAllTest>(1);
+				var doc = context.SearchById<MappingTypeAllTest>(1);
 				Assert.GreaterOrEqual(doc.Id, 1);
 			}
 		}
@@ -84,7 +84,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.SaveChanges();
 
 				Thread.Sleep(1000);
-				var doc = context.GetDocument<MappingTypeSourceTest>(1);
+
+				// TODO Need to refactor the search Result, _source is null, but not the hits...
+				var doc = context.SearchById<MappingTypeSourceTest>(1);
 				Assert.GreaterOrEqual(doc.Id, 1);
 			}
 		}

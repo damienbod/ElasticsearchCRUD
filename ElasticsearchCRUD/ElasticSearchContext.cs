@@ -16,6 +16,7 @@ using ElasticsearchCRUD.ContextCount;
 using ElasticsearchCRUD.ContextDeleteByQuery;
 using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
+using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
@@ -352,7 +353,7 @@ namespace ElasticsearchCRUD
 		/// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
 		/// <param name="scanAndScrollConfiguration">Required scroll configuration</param>
 		/// <returns>A collection of documents of type T</returns>
-		public ResultDetails<Collection<T>> Search<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration = null)
+		public ResultDetails<SearchResult<T>> Search<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration = null)
 		{
 			return _search.PostSearch<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
 		}
@@ -365,7 +366,7 @@ namespace ElasticsearchCRUD
 		/// /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
 		/// <param name="scanAndScrollConfiguration">Required scroll configuration</param>
 		/// <returns>A collection of documents of type T in a Task</returns>
-		public async Task<ResultDetails<Collection<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration= null)
+		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration = null)
 		{
 			return await _search.PostSearchAsync<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
 		}
@@ -400,7 +401,7 @@ namespace ElasticsearchCRUD
 		/// <param name="jsonContent">query which will be saved.</param>
 		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
-		public ResultDetails<string> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		public ResultDetails<SearchResult<T>> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			return _search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
 		}
@@ -413,7 +414,7 @@ namespace ElasticsearchCRUD
 		/// <param name="jsonContent">query which will be saved.</param>
 		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
-		public async Task<ResultDetails<string>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		public async Task<ResultDetails<SearchResult<T>>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			return await _search.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
 		}

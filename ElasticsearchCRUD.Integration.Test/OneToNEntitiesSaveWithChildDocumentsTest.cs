@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
@@ -171,7 +170,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(71, new RoutingDefinition { ParentId = parentId });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
-				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 71));
+				Assert.IsNotNull(childDocs.PayloadResult.Hits.HitsResult.First(t => t.Id == 71));
 				Assert.AreEqual(71, roundTripResult.Id);
 			}
 		}
@@ -234,9 +233,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				var childDocs3 =
 					context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
 
-				Assert.AreEqual(1, childDocs.TotalHits);
-				Assert.AreEqual(2, childDocs2.TotalHits);
-				Assert.AreEqual(4, childDocs3.TotalHits);
+				Assert.AreEqual(1, childDocs.PayloadResult.Hits.Total);
+				Assert.AreEqual(2, childDocs2.PayloadResult.Hits.Total);
+				Assert.AreEqual(4, childDocs3.PayloadResult.Hits.Total);
 			}
 		}
 
@@ -265,7 +264,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
-				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 46));
+				Assert.IsNotNull(childDocs.PayloadResult.Hits.HitsResult.First(t => t.Id == 46));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}
@@ -296,7 +295,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id, new RoutingDefinition { ParentId = parentId });
 
 				var childDocs = context.Search<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(parentId, "childdocumentlevelone"));
-				Assert.IsNotNull(childDocs.PayloadResult.First(t => t.Id == 47));
+				Assert.IsNotNull(childDocs.PayloadResult.Hits.HitsResult.First(t => t.Id == 47));
 				Assert.AreEqual(testObject.Id, roundTripResult.Id);
 			}
 		}

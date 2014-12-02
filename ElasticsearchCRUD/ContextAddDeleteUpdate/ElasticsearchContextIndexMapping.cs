@@ -273,7 +273,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 					var responseObject = JObject.Parse(responseString);
 
 					var source = (int)responseObject["_shards"]["successful"];
-					resultDetails.TotalHits = (long)responseObject["_shards"]["total"];
+
+					// TODO
+					//resultDetails.TotalHits = (long)responseObject["_shards"]["total"];
 
 					resultDetails.PayloadResult = source;
 				}

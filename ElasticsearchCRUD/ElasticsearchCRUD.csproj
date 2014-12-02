@@ -87,6 +87,10 @@
     <Compile Include="ContextCount\ElasticsearchContextCount.cs" />
     <Compile Include="ContextDeleteByQuery\ElasticsearchContextDeleteByQuery.cs" />
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
+    <Compile Include="ContextSearch\SearchModel\Hit.cs" />
+    <Compile Include="ContextSearch\SearchModel\Hits.cs" />
+    <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\Shards.cs" />
     <Compile Include="Model\TimeUnits.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchCrudReindex.cs" />

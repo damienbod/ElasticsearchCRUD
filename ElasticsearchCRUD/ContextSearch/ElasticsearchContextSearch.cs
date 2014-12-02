@@ -59,17 +59,16 @@ namespace ElasticsearchCRUD.ContextSearch
 			var search = new Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
 
 			var result = await search.PostSearchAsync<T>(BuildSearchById(entityId), null, null);
-			resultDetails.TotalHits = result.TotalHits;
 			resultDetails.RequestBody = result.RequestBody;
 			resultDetails.RequestUrl = result.RequestUrl;
 
-			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count > 0)
+			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Hits.Total > 0)
 			{
-				resultDetails.PayloadResult = result.PayloadResult.First();
+				resultDetails.PayloadResult = result.PayloadResult.Hits.HitsResult.First().Source;
 				return resultDetails;
 			}
 
-			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Count == 0)
+			if (result.Status == HttpStatusCode.OK && result.PayloadResult.Hits.Total == 0)
 			{
 				resultDetails.Status = HttpStatusCode.NotFound;
 				resultDetails.Description = string.Format("No document found id: {0}, index {1}, type {2}", entityId, index, type);
