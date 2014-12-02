@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Text;
+using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.Tracing;
@@ -55,9 +57,9 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				Thread.Sleep(1000);
 
-				// TODO do a Match word search on the _all field
-				var doc = context.SearchById<MappingTypeAllTest>(1);
-				Assert.GreaterOrEqual(doc.Id, 1);
+
+				var doc = context.Search<MappingTypeAllTest>(BuildSearchById(1));
+				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id, 1);
 			}
 		}
 
@@ -83,12 +85,28 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AddUpdateDocument(mappingTypeAll, mappingTypeAll.Id);
 				context.SaveChanges();
 
-				Thread.Sleep(1000);
+				Thread.Sleep(1500);
 
-				// TODO Need to refactor the search Result, _source is null, but not the hits...
-				var doc = context.SearchById<MappingTypeSourceTest>(1);
-				Assert.GreaterOrEqual(doc.Id, 1);
+				var doc = context.Search<MappingTypeSourceTest>(BuildSearchById(1));
+				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id, 1);
+				Assert.IsNull(doc.PayloadResult.Hits.HitsResult.First().Source);
 			}
+		}
+
+		private string BuildSearchById(object childId)
+		{
+			var buildJson = new StringBuilder();
+			buildJson.AppendLine("{");
+			buildJson.AppendLine("\"query\": {");
+			buildJson.AppendLine("\"filtered\": {");
+			buildJson.AppendLine("\"query\": {");
+			buildJson.AppendLine("\"term\": {\"_id\": " + childId + "}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+			buildJson.AppendLine("}");
+
+			return buildJson.ToString();
 		}
 	}
 
