@@ -55,7 +55,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.AddUpdateDocument(mappingTypeAll, mappingTypeAll.Id);
 				context.SaveChanges();
 
-				Thread.Sleep(1000);
+				Thread.Sleep(1500);
 
 
 				var doc = context.Search<MappingTypeAllTest>(BuildSearchById(1));
