@@ -1,6 +1,9 @@
 ﻿using System;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
+using ElasticsearchCRUD.ContextSearch.SearchModel;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -52,6 +55,32 @@ namespace ElasticsearchCRUD.Integration.Test
 					Console.WriteLine(obj + " : " + (attrs[0] as ElasticsearchCoreTypes).JsonString());
 				}
 			}
+		}
+
+		[Test]
+		public void JsonDeserializeObjectSearchResultNullArrayOfHits()
+		{
+
+			const string responseString = "{\"took\":3,\"timed_out\":false,\"_shards\":{\"total\":5,\"successful\":5,\"failed\":0},\"hits\":{\"total\":0,\"max_score\":null,\"hits\":[]}}";
+
+			var responseObject = JObject.Parse(responseString);
+
+			//JsonConvert.DeserializeObject(responseString, typeof(SearchResult<string>));
+			SearchResult<ParentDocument> result = responseObject.ToObject<SearchResult<ParentDocument>>();
+
+		}
+
+		[Test]
+		public void JsonDeserializeObjectSearchResultNullSource()
+		{
+
+			const string responseString = "{\"took\":4,\"timed_out\":false,\"_shards\":{\"total\":3,\"successful\":3,\"failed\":0},\"hits\":{\"total\":1,\"max_score\":1.0,\"hits\":[{\"_index\":\"mappingtypesourcetests\",\"_type\":\"mappingtypesourcetest\",\"_id\":\"1\",\"_score\":1.0}]}}";
+
+			var responseObject = JObject.Parse(responseString);
+
+			JsonConvert.DeserializeObject(responseString, typeof(SearchResult<string>));
+			SearchResult<ParentDocument> result = responseObject.ToObject<SearchResult<ParentDocument>>();
+
 		}
 	}
 

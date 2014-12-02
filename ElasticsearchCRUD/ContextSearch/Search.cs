@@ -11,6 +11,7 @@ using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch

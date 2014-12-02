@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel
@@ -16,18 +17,13 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 	// }
 	public class Hits<T>
 	{
-		public Hits()
-		{
-			HitsResult = new List<Hit<T>>();
-		}
-
 		[JsonProperty(PropertyName = "total")]
 		public int Total { get; set; }
 
-		[JsonProperty(PropertyName = "max_score")]
+		[JsonProperty(PropertyName = "max_score", NullValueHandling = NullValueHandling.Ignore)]
 		public double MaxScore { get; set; }
 
-		[JsonProperty(PropertyName = "hits", NullValueHandling= NullValueHandling.Include)]
-		public List<Hit<T>> HitsResult { get; set; }
+		[JsonProperty(PropertyName = "hits")]
+		public Hit<T>[] HitsResult { get; set; }
 	}
 }

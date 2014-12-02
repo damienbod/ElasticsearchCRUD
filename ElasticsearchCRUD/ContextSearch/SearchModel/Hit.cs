@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel
 {
@@ -19,7 +20,7 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 		[JsonProperty(PropertyName = "_id")]
 		public int Id { get; set; }
 
-		[JsonProperty(PropertyName = "_source")]
+		[JsonProperty(PropertyName = "_source", NullValueHandling= NullValueHandling.Ignore)]
 		public T Source { get; set; }
 	}
 }

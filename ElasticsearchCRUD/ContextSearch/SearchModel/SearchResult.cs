@@ -19,8 +19,6 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 	// }
 	public class SearchResult<T>
 	{
-
-
 		[JsonProperty(PropertyName = "_scroll_id")]
 		public string ScrollId { get; set; }
 
