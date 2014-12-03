@@ -166,7 +166,7 @@ namespace ElasticsearchCRUD
 		/// <param name="index">index to optimize</param>
 		/// <param name="optimizeParameters">all the possible parameters</param>
 		/// <returns>number of successfully optimized</returns>
-		public ResultDetails<int> IndexOptimize(string index = null, OptimizeParameters optimizeParameters = null)
+		public ResultDetails<OptimizeResult> IndexOptimize(string index = null, OptimizeParameters optimizeParameters = null)
 		{
 			return _elasticsearchContextIndexMapping.IndexOptimize(index, optimizeParameters);
 		}
@@ -179,7 +179,7 @@ namespace ElasticsearchCRUD
 		/// <param name="index">index to optimize</param>
 		/// <param name="optimizeParameters">all the possible parameters</param>
 		/// <returns>number of successfully optimized</returns>
-		public async Task<ResultDetails<int>> IndexOptimizeAsync(string index = null, OptimizeParameters optimizeParameters = null)
+		public async Task<ResultDetails<OptimizeResult>> IndexOptimizeAsync(string index = null, OptimizeParameters optimizeParameters = null)
 		{
 			return await _elasticsearchContextIndexMapping.IndexOptimizeAsync( index,  optimizeParameters);
 		}

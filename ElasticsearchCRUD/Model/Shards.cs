@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ElasticsearchCRUD.ContextSearch.SearchModel
+namespace ElasticsearchCRUD.Model
 {
 	/// <summary>
 	/// "_shards":{"total":5,"successful":5,"failed":0}

@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingTypeTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -144,7 +144,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.SaveChanges();
 
 				Thread.Sleep(1500);
-
 
 				var doc = context.Search<MappingTypeAnalyzerTest>(BuildSearchById(1));
 				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id, 1);

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ElasticsearchCRUD.Model;
+using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel
 {

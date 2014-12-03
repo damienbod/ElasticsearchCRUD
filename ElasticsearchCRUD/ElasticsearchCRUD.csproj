@@ -70,6 +70,7 @@
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextAddDeleteUpdate.cs" />
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextIndexMapping.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexMappings.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeResult.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexSettings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexUpdateSettings.cs" />
@@ -90,7 +91,8 @@
     <Compile Include="ContextSearch\SearchModel\Hit.cs" />
     <Compile Include="ContextSearch\SearchModel\Hits.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
-    <Compile Include="ContextSearch\SearchModel\Shards.cs" />
+    <Compile Include="Model\Shards.cs" />
+    <Compile Include="Model\ResultDetailsCount.cs" />
     <Compile Include="Model\TimeUnits.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchCrudReindex.cs" />

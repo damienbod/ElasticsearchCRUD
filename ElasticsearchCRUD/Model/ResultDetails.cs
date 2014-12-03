@@ -10,10 +10,4 @@ namespace ElasticsearchCRUD.Model
 		public string Description { get; set; }
 		public T PayloadResult{ get; set; }
 	}
-
-	public class ResultDetailsCount<T> : ResultDetails<T>
-	{
-		public long Count { get; set; }
-		
-	}
 }
