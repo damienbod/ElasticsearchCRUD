@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Security.Policy;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch
