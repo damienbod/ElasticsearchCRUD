@@ -26,7 +26,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 			}
 		}
 
-		public void WriteValue(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			if (_enabledSet)
 			{

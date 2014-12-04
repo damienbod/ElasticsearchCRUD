@@ -1,4 +1,5 @@
 ﻿using System;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
@@ -44,14 +45,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteValue("type", "string", elasticsearchCrudJsonWriter);
-			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
-			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
-			WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);
-			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
-			WriteValue("term_vector", _termVector.ToString(), elasticsearchCrudJsonWriter, _termVectorSet);
-			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
-			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
+			JsonHelper.WriteValue("type", "string", elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
+			JsonHelper.WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
+			JsonHelper.WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);
+			JsonHelper.WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
+			JsonHelper.WriteValue("term_vector", _termVector.ToString(), elasticsearchCrudJsonWriter, _termVectorSet);
+			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
 
 			//"norms" : {
 			//		"enabled" : false
@@ -60,19 +61,18 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			{
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("norms");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-				WriteValue("enabled", _normsEnabled, elasticsearchCrudJsonWriter, _normsEnabledSet);
-				WriteValue("loading", _normsLoading.ToString(), elasticsearchCrudJsonWriter, _normsLoadingSet);
+				JsonHelper.WriteValue("enabled", _normsEnabled, elasticsearchCrudJsonWriter, _normsEnabledSet);
+				JsonHelper.WriteValue("loading", _normsLoading.ToString(), elasticsearchCrudJsonWriter, _normsLoadingSet);
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 
-
-			WriteValue("index_options", _indexOptions.ToString(), elasticsearchCrudJsonWriter, _indexOptionsSet);
-			WriteValue("analyzer", _analyzer, elasticsearchCrudJsonWriter, _analyzerSet);
-			WriteValue("index_analyzer", _indexAnalyzer, elasticsearchCrudJsonWriter, _indexAnalyzerSet);
-			WriteValue("search_analyzer", _searchAnalyzer, elasticsearchCrudJsonWriter, _searchAnalyzerSet);
-			WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
-			WriteValue("ignore_above", _ignoreAbove, elasticsearchCrudJsonWriter, _ignoreAboveSet);
-			WriteValue("position_offset_gap", _positionOffsetGap, elasticsearchCrudJsonWriter, _positionOffsetGapSet);
+			JsonHelper.WriteValue("index_options", _indexOptions.ToString(), elasticsearchCrudJsonWriter, _indexOptionsSet);
+			JsonHelper.WriteValue("analyzer", _analyzer, elasticsearchCrudJsonWriter, _analyzerSet);
+			JsonHelper.WriteValue("index_analyzer", _indexAnalyzer, elasticsearchCrudJsonWriter, _indexAnalyzerSet);
+			JsonHelper.WriteValue("search_analyzer", _searchAnalyzer, elasticsearchCrudJsonWriter, _searchAnalyzerSet);
+			JsonHelper.WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
+			JsonHelper.WriteValue("ignore_above", _ignoreAbove, elasticsearchCrudJsonWriter, _ignoreAboveSet);
+			JsonHelper.WriteValue("position_offset_gap", _positionOffsetGap, elasticsearchCrudJsonWriter, _positionOffsetGapSet);
 
 			WriteBaseValues(elasticsearchCrudJsonWriter);
 

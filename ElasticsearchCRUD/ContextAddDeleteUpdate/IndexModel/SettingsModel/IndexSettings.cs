@@ -1,4 +1,6 @@
-﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
+﻿using ElasticsearchCRUD.Utils;
+
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
 	public class IndexSettings : IndexUpdateSettings
 	{
@@ -17,7 +19,7 @@
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			WriteValue("number_of_shards", _numberOfShards, elasticsearchCrudJsonWriter, _numberOfShardsSet);
+			JsonHelper.WriteValue("number_of_shards", _numberOfShards, elasticsearchCrudJsonWriter, _numberOfShardsSet);
 			base.WriteJson(elasticsearchCrudJsonWriter);
 
 		}

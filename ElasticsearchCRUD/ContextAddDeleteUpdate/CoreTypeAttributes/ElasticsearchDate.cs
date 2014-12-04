@@ -1,4 +1,5 @@
 ﻿using System;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
@@ -162,16 +163,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteValue("type", "date", elasticsearchCrudJsonWriter);
-			WriteValue("format", _format, elasticsearchCrudJsonWriter, _formatSet);
-			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
-			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
-			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
-			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
-			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
-			WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
-			WriteValue("precision_step", _precisionStep, elasticsearchCrudJsonWriter, _precisionStepSet);			
-			WriteValue("ignore_malformed", _ignoreMalformed, elasticsearchCrudJsonWriter, _ignoreMalformedSet);
+			JsonHelper.WriteValue("type", "date", elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("format", _format, elasticsearchCrudJsonWriter, _formatSet);
+			JsonHelper.WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
+			JsonHelper.WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
+			JsonHelper.WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
+			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
+			JsonHelper.WriteValue("include_in_all", _includeInAll, elasticsearchCrudJsonWriter, _includeInAllSet);
+			JsonHelper.WriteValue("precision_step", _precisionStep, elasticsearchCrudJsonWriter, _precisionStepSet);
+			JsonHelper.WriteValue("ignore_malformed", _ignoreMalformed, elasticsearchCrudJsonWriter, _ignoreMalformedSet);
 
 			WriteBaseValues(elasticsearchCrudJsonWriter);
 

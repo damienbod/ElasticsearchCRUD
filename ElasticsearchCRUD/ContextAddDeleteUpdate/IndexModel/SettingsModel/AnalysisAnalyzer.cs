@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
@@ -32,8 +33,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 		private string _tokenizer;
 		private bool _tokenizerSet;
 		private List<string> _filter;
-		private bool _filterSet
-			;
+		private bool _filterSet;
+		private string _pattern;
+		private bool _patternSet;
+		private List<string> _charFilter;
+		private bool _charFilterSet;
 
 		public void SetAnalyzer(string name, string type)
 		{
@@ -52,6 +56,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 			}
 		}
 
+		public string Pattern
+		{
+			get { return _pattern; }
+			set
+			{
+				_pattern = value;
+				_patternSet = true;
+			}
+		}
+
 		public List<string> Filter
 		{
 			get { return _filter; }
@@ -59,6 +73,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 			{
 				_filter = value;
 				_filterSet = true;
+			}
+		}
+
+		public List<string> CharFilter
+		{
+			get { return _charFilter; }
+			set
+			{
+				_charFilter = value;
+				_charFilterSet = true;
 			}
 		}
 
@@ -71,38 +95,17 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(_name);
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-				WriteValue("type", _type, elasticsearchCrudJsonWriter);
-				WriteValue("tokenizer", _tokenizer, elasticsearchCrudJsonWriter, _tokenizerSet);
-				WriteListValue("filter", _filter, elasticsearchCrudJsonWriter, _filterSet);
+				JsonHelper.WriteValue("type", _type, elasticsearchCrudJsonWriter);
+				JsonHelper.WriteValue("tokenizer", _tokenizer, elasticsearchCrudJsonWriter, _tokenizerSet);
+				JsonHelper.WriteListValue("filter", _filter, elasticsearchCrudJsonWriter, _filterSet);
+				JsonHelper.WriteValue("pattern", _pattern, elasticsearchCrudJsonWriter, _patternSet);
+				JsonHelper.WriteListValue("char_filter", _charFilter, elasticsearchCrudJsonWriter, _charFilterSet);
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 		}
 
-		private void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
-		{
-			if (writeValue)
-			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
-				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(valueObj);
-			}
-		}
-
-		private void WriteListValue(string key, List<string> valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
-		{
-			if (writeValue)
-			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
-				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
-
-				foreach (var obj in valueObj)
-				{
-					elasticsearchCrudJsonWriter.JsonWriter.WriteValue(obj);
-				}
-
-				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
-			}
-		}
+		
 	}
 }

@@ -107,6 +107,7 @@
     <Compile Include="Model\IndexMapping.cs" />
     <Compile Include="Model\IndexTypeDescription.cs" />
     <Compile Include="Model\IndexTypeMapping.cs" />
+    <Compile Include="Utils\JsonHelper.cs" />
     <Compile Include="Utils\MappingUtils.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />
     <Compile Include="ElasticsearchContext.cs" />

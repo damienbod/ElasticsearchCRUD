@@ -1,4 +1,5 @@
 ﻿using System;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
@@ -108,13 +109,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteValue("type", "boolean", elasticsearchCrudJsonWriter);
-			WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);
-			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
-			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
-			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
-			WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
-			WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
+			JsonHelper.WriteValue("type", "boolean", elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("index", _index.ToString(), elasticsearchCrudJsonWriter, _indexSet);
+			JsonHelper.WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
+			JsonHelper.WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
+			JsonHelper.WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
+			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue("null_value", _nullValue, elasticsearchCrudJsonWriter, _nullValueSet);
 
 			WriteBaseValues(elasticsearchCrudJsonWriter);
 

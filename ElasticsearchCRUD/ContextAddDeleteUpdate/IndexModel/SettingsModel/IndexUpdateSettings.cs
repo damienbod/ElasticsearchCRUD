@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
@@ -499,48 +500,40 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 
 		public virtual void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			WriteValue("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
-			WriteValue("refresh_interval", _refreshInterval, elasticsearchCrudJsonWriter, _refreshIntervalSet);
-			WriteValue("auto_expand_replicas", _autoExpandReplicas, elasticsearchCrudJsonWriter, _autoExpandReplicasSet);
-			WriteValue("blocks.read_only", _blocksReadOnly, elasticsearchCrudJsonWriter, _blocksReadOnlySet);
-			WriteValue("blocks.read", _blocksRead, elasticsearchCrudJsonWriter, _blocksReadSet);
-			WriteValue("blocks.write", _blocksWrite, elasticsearchCrudJsonWriter, _blocksWriteSet);
-			WriteValue("blocks.metadata", _blocksMetadata, elasticsearchCrudJsonWriter, _blocksMetadataSet);
-			WriteValue("index_concurrency", _indexConcurrency, elasticsearchCrudJsonWriter, _indexConcurrencySet);
-			WriteValue("codec.bloom.load", _codecBloomLoad, elasticsearchCrudJsonWriter, _codecBloomLoadSet);
-			WriteValue("fail_on_merge_failure", _failOnMergeFailure, elasticsearchCrudJsonWriter, _failOnMergeFailureSet);
-			WriteValue("translog.flush_threshold_ops", _translogFlushThresholdOps, elasticsearchCrudJsonWriter, _translogFlushThresholdOpsSet);
-			WriteValue("translog.flush_threshold_size", _translogFlushThresholdSize, elasticsearchCrudJsonWriter, _translogFlushThresholdSizeSet);
-			WriteValue("translog.flush_threshold_period", _translogflushThresholdPeriod, elasticsearchCrudJsonWriter, _translogflushThresholdPeriodSet);
-			WriteValue("translog.disable_flush", _translogDisableFlush, elasticsearchCrudJsonWriter, _translogDisableFlushSet);
-			WriteValue("cache.filter.max_size", _cacheFilterMaxSize, elasticsearchCrudJsonWriter, _cacheFilterMaxSizeSet);
-			WriteValue("cache.filter.expire", _cacheFilterExpire, elasticsearchCrudJsonWriter, _cacheFilterExpireSet);
-			WriteValue("gateway.snapshot_interval", _gatewaySnapshotInterval, elasticsearchCrudJsonWriter, _gatewaySnapshotIntervalSet);
+			JsonHelper.WriteValue("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
+			JsonHelper.WriteValue("refresh_interval", _refreshInterval, elasticsearchCrudJsonWriter, _refreshIntervalSet);
+			JsonHelper.WriteValue("auto_expand_replicas", _autoExpandReplicas, elasticsearchCrudJsonWriter, _autoExpandReplicasSet);
+			JsonHelper.WriteValue("blocks.read_only", _blocksReadOnly, elasticsearchCrudJsonWriter, _blocksReadOnlySet);
+			JsonHelper.WriteValue("blocks.read", _blocksRead, elasticsearchCrudJsonWriter, _blocksReadSet);
+			JsonHelper.WriteValue("blocks.write", _blocksWrite, elasticsearchCrudJsonWriter, _blocksWriteSet);
+			JsonHelper.WriteValue("blocks.metadata", _blocksMetadata, elasticsearchCrudJsonWriter, _blocksMetadataSet);
+			JsonHelper.WriteValue("index_concurrency", _indexConcurrency, elasticsearchCrudJsonWriter, _indexConcurrencySet);
+			JsonHelper.WriteValue("codec.bloom.load", _codecBloomLoad, elasticsearchCrudJsonWriter, _codecBloomLoadSet);
+			JsonHelper.WriteValue("fail_on_merge_failure", _failOnMergeFailure, elasticsearchCrudJsonWriter, _failOnMergeFailureSet);
+			JsonHelper.WriteValue("translog.flush_threshold_ops", _translogFlushThresholdOps, elasticsearchCrudJsonWriter, _translogFlushThresholdOpsSet);
+			JsonHelper.WriteValue("translog.flush_threshold_size", _translogFlushThresholdSize, elasticsearchCrudJsonWriter, _translogFlushThresholdSizeSet);
+			JsonHelper.WriteValue("translog.flush_threshold_period", _translogflushThresholdPeriod, elasticsearchCrudJsonWriter, _translogflushThresholdPeriodSet);
+			JsonHelper.WriteValue("translog.disable_flush", _translogDisableFlush, elasticsearchCrudJsonWriter, _translogDisableFlushSet);
+			JsonHelper.WriteValue("cache.filter.max_size", _cacheFilterMaxSize, elasticsearchCrudJsonWriter, _cacheFilterMaxSizeSet);
+			JsonHelper.WriteValue("cache.filter.expire", _cacheFilterExpire, elasticsearchCrudJsonWriter, _cacheFilterExpireSet);
+			JsonHelper.WriteValue("gateway.snapshot_interval", _gatewaySnapshotInterval, elasticsearchCrudJsonWriter, _gatewaySnapshotIntervalSet);
 
 			WriteListValue("routing.allocation.include.", _routingAllocationInclude, elasticsearchCrudJsonWriter, _routingAllocationIncludeSet);
 			WriteListValue("routing.allocation.exclude.", _routingAllocationExclude, elasticsearchCrudJsonWriter, _routingAllocationExcludeSet);
 			WriteListValue("routing.allocation.require.", _routingAllocationRequire, elasticsearchCrudJsonWriter, _routingAllocationRequireSet);
 
-			WriteValue("routing.allocation.enable", _routingAllocationEnable.ToString(), elasticsearchCrudJsonWriter, _routingAllocationEnableSet);
-			WriteValue("routing.allocation.total_shards_per_node", _routingAllocationTotalShardsPerNode, elasticsearchCrudJsonWriter, _routingAllocationTotalShardsPerNodeSet);
-			WriteValue("recovery.initial_shards", _recoveryInitialShards, elasticsearchCrudJsonWriter, _recoveryInitialShardsSet);
+			JsonHelper.WriteValue("routing.allocation.enable", _routingAllocationEnable.ToString(), elasticsearchCrudJsonWriter, _routingAllocationEnableSet);
+			JsonHelper.WriteValue("routing.allocation.total_shards_per_node", _routingAllocationTotalShardsPerNode, elasticsearchCrudJsonWriter, _routingAllocationTotalShardsPerNodeSet);
+			JsonHelper.WriteValue("recovery.initial_shards", _recoveryInitialShards, elasticsearchCrudJsonWriter, _recoveryInitialShardsSet);
 
-			WriteValue("index.gc_deletes", _gcDeletes, elasticsearchCrudJsonWriter, _gcDeletesSet);
-			WriteValue("ttl.disable_purge", _ttlDisablePurge, elasticsearchCrudJsonWriter, _ttlDisablePurgeSet);
-			WriteValue("translog.fs.type", _translogFsType.ToString(), elasticsearchCrudJsonWriter, _translogFsTypeSet);
-			WriteValue("compound_format", _compoundFormat, elasticsearchCrudJsonWriter, _compoundFormatSet);
-			WriteValue("compound_on_flush", _compoundOnFlush, elasticsearchCrudJsonWriter, _compoundOnFlushSet);
-			WriteValue("warmer.enabled", _warmerEnabled, elasticsearchCrudJsonWriter, _warmerEnabledSet);
+			JsonHelper.WriteValue("index.gc_deletes", _gcDeletes, elasticsearchCrudJsonWriter, _gcDeletesSet);
+			JsonHelper.WriteValue("ttl.disable_purge", _ttlDisablePurge, elasticsearchCrudJsonWriter, _ttlDisablePurgeSet);
+			JsonHelper.WriteValue("translog.fs.type", _translogFsType.ToString(), elasticsearchCrudJsonWriter, _translogFsTypeSet);
+			JsonHelper.WriteValue("compound_format", _compoundFormat, elasticsearchCrudJsonWriter, _compoundFormatSet);
+			JsonHelper.WriteValue("compound_on_flush", _compoundOnFlush, elasticsearchCrudJsonWriter, _compoundOnFlushSet);
+			JsonHelper.WriteValue("warmer.enabled", _warmerEnabled, elasticsearchCrudJsonWriter, _warmerEnabledSet);
 		}
 
-		protected void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
-		{
-			if (writeValue)
-			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
-				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(valueObj);
-			}
-		}
 
 		private void WriteListValue(string key, List<RoutingAllocation> valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
 		{

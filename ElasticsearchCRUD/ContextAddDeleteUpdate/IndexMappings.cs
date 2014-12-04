@@ -156,8 +156,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			mappingDefinition.Source.WriteJson(elasticsearchCrudJsonWriter);
-			mappingDefinition.All.WriteValue(elasticsearchCrudJsonWriter);
-			mappingDefinition.Analyzer.WriteValue(elasticsearchCrudJsonWriter);
+			mappingDefinition.All.WriteJson(elasticsearchCrudJsonWriter);
+			mappingDefinition.Analyzer.WriteJson(elasticsearchCrudJsonWriter);
 
 			if (entityInfo.RoutingDefinition.RoutingId != null && _elasticsearchSerializerConfiguration.UserDefinedRouting)
 			{
@@ -218,8 +218,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			mappingDefinition.Source.WriteJson(elasticsearchCrudJsonWriter);
-			mappingDefinition.All.WriteValue(elasticsearchCrudJsonWriter);
-			mappingDefinition.Analyzer.WriteValue(elasticsearchCrudJsonWriter);
+			mappingDefinition.All.WriteJson(elasticsearchCrudJsonWriter);
+			mappingDefinition.Analyzer.WriteJson(elasticsearchCrudJsonWriter);
 
 			CreateParentMappingForDocument(
 				elasticsearchCrudJsonWriter,

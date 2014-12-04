@@ -39,31 +39,9 @@
 
 		public virtual void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			//WriteValue("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
+			//WriteJson("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
 
 			AnalysisAnalyzer.WriteJson(elasticsearchCrudJsonWriter);
 		}
-
-		private void WriteValue(string key, object valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
-		{
-			if (writeValue)
-			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key);
-				elasticsearchCrudJsonWriter.JsonWriter.WriteValue(valueObj);
-			}
-		}
-
-		//private void WriteListValue(string key, List<Object> valueObj, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool writeValue = true)
-		//{
-		//	if (writeValue)
-		//	{
-		//		foreach (var obj in valueObj)
-		//		{
-		//			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(key + obj.Key);
-		//			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(obj.Value);
-		//		}
-
-		//	}
-		//}
 	}
 }

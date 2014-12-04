@@ -1,4 +1,5 @@
 ﻿using System;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
@@ -93,12 +94,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteValue("type", "binary", elasticsearchCrudJsonWriter);
-			WriteValue("compress_threshold", _compressThreshold, elasticsearchCrudJsonWriter, _compressThresholdSet);
-			WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
-			WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
-			WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
-			WriteValue("compress", _compress, elasticsearchCrudJsonWriter, _compressSet);
+			JsonHelper.WriteValue("type", "binary", elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("compress_threshold", _compressThreshold, elasticsearchCrudJsonWriter, _compressThresholdSet);
+			JsonHelper.WriteValue("index_name", _indexName, elasticsearchCrudJsonWriter, _indexNameSet);
+			JsonHelper.WriteValue("store", _store, elasticsearchCrudJsonWriter, _storeSet);
+			JsonHelper.WriteValue("doc_values", _docValues, elasticsearchCrudJsonWriter, _docValuesSet);
+			JsonHelper.WriteValue("compress", _compress, elasticsearchCrudJsonWriter, _compressSet);
 
 			WriteBaseValues(elasticsearchCrudJsonWriter);
 			
