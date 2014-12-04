@@ -306,6 +306,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 				_positionOffsetGapSet = true;
 			}
 		}
+
 	}
 
 	public enum StringIndex

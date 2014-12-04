@@ -4,6 +4,7 @@ using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
@@ -599,8 +600,11 @@ namespace ElasticsearchCRUD.Integration.Test
 
 	public class FieldDataDef
 	{
-		[ElasticsearchString(Index = StringIndex.not_analyzed)]
+		[ElasticsearchString(Index = StringIndex.not_analyzed, Analyzer = "english")]
 		public string Raw { get; set; }
+
+		[ElasticsearchString( Analyzer = LanguageAnalyzers.English)]
+		public string EnglishAnalzed { get; set; }
 	}
 
 	public class MappingTestsParentWithSimpleList
@@ -629,7 +633,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		public short[] MappingTestsItemShortArray { get; set; }
 
-		[ElasticsearchString(Index = StringIndex.not_analyzed)]
+		[ElasticsearchString(Index = StringIndex.analyzed, Analyzer = DefaultAnalyzers.Whitespace)]
 		public string Call2s { get; set; }
 	}
 }

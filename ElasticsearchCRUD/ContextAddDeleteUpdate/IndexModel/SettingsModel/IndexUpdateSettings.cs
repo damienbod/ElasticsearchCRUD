@@ -64,6 +64,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 		private bool _warmerEnabled;
 		private bool _warmerEnabledSet;
 
+		public IndexUpdateSettings()
+		{
+			Analysis = new Analysis();
+		}
+		public Analysis Analysis { get; set; }
+
 		/// <summary>
 		/// index.number_of_replicas
 		///	The number of replicas each shard has. 

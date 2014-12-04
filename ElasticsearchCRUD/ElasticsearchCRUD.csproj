@@ -71,6 +71,9 @@
     <Compile Include="ContextAddDeleteUpdate\ElasticsearchContextIndexMapping.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexMappings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeResult.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analysis.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisAnalyzer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexSettings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexUpdateSettings.cs" />
@@ -91,6 +94,8 @@
     <Compile Include="ContextSearch\SearchModel\Hit.cs" />
     <Compile Include="ContextSearch\SearchModel\Hits.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
+    <Compile Include="Model\DefaultAnalyzers.cs" />
+    <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />
     <Compile Include="Model\TimeUnits.cs" />
