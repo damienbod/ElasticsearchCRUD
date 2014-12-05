@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Toke
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.Asciifolding;
+			Type = DefaultTokenizers.Standard;
 		}
 		/// <summary>
 		/// The maximum token length. If a token is seen that exceeds this length then it is discarded. Defaults to 255.
@@ -35,7 +35,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Toke
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			//"preserve_original" : true
-			JsonHelper.WriteValue("type", DefaultTokenizers.Standard, elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("max_token_length", _maxTokenLength, elasticsearchCrudJsonWriter, _maxTokenLengthSet);
 		}
 	}

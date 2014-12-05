@@ -91,5 +91,27 @@ namespace ElasticsearchCRUD.Integration.Test
 			Assert.AreEqual(targetJson, result);
 		}
 
+		[Test]
+		public void SerializeAnalyzerWithEdgeNGramTokenizer()
+		{
+			const string targetJson =
+				"\"analysis\":{\"tokenizer\":{\"my_edgengram_tokenizer\":{\"type\":\"edgeNGram\",\"min_gram\":2,\"max_gram\":4,\"token_chars\":[\"digit\",\"letter\"]}},\"analyzer\":{\"default\":{\"type\":\"standard\",\"tokenizer\":\"my_edgengram_tokenizer\"}}}";
+		
+			var analysis = new Analysis();
+			analysis.Analyzer.SetAnalyzer("default", DefaultAnalyzers.Standard);
+			analysis.Analyzer.Tokenizer = "my_edgengram_tokenizer";
+			analysis.Tokenizers.CustomTokenizers = new List<AnalysisTokenizerBase>
+			{
+				new EdgeNGramTokenizer("my_edgengram_tokenizer") {MaxGram=4,MinGram=2,TokenChars= new List<TokenChar>{TokenChar.digit, TokenChar.letter}}
+			};
+
+			var jsonWriter = new ElasticsearchCrudJsonWriter();
+			analysis.WriteJson(jsonWriter);
+			var result = jsonWriter.GetJsonString();
+			Console.WriteLine(result);
+			Assert.AreEqual(targetJson, result);
+		}
+		
+
 	}
 }

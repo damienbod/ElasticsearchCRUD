@@ -4,6 +4,5 @@
 	{
 		public const string Standard = "standard";
 		public const string Asciifolding = "asciifolding";
-		
 	}
 }
