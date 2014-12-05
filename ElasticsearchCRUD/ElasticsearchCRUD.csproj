@@ -94,6 +94,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\EdgeNGramTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\KeywordTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\NGramTokenizer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\PathHierarchyTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\PatternTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\StandardTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\UaxUrlEmailTokenizer.cs" />

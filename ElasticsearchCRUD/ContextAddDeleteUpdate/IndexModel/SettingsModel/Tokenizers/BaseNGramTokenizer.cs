@@ -65,7 +65,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Toke
 
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			//"preserve_original" : true
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("min_gram", _minGram, elasticsearchCrudJsonWriter, _minGramSet);
 			JsonHelper.WriteValue("max_gram", _maxGram, elasticsearchCrudJsonWriter, _maxGramSet);
