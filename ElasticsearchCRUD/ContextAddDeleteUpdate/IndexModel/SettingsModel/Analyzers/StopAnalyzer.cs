@@ -4,16 +4,20 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
 {
-	public class StandardAnaylzer : AnalyzerBase
+	public class StopAnalyzer : AnalyzerBase
 	{
-		private int _maxTokenLength;
-		private bool _maxTokenLengthSet;
 		private string _stopwords;
 		private bool _stopwordsSet;
 		private List<string> _stopwordsList;
 		private bool _stopwordsListSet;
+		private string _stopwordsPath;
+		private bool _stopwordsPathSet;
 
-		public StandardAnaylzer(string name)
+		/// <summary>
+		/// An analyzer of type stop that is built using a Lower Case Tokenizer, with Stop Token Filter.
+		/// </summary>
+		/// <param name="name">name of the analyzer</param>
+		public StopAnalyzer(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
@@ -24,16 +28,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 		/// A list of stopwords to initialize the stop filter with. Defaults to the english stop words.
 		/// Use stopwords: _none_ to explicitly specify an empty stopword list.
 		/// </summary>
-		public List<string> StopwordsList
-		{
-			get { return _stopwordsList; }
-			set
-			{
-				_stopwordsList = value;
-				_stopwordsListSet = true;
-			}
-		}
-
 		public string Stopwords
 		{
 			get { return _stopwords; }
@@ -44,17 +38,27 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 			}
 		}
 
-		/// <summary>
-		/// max_token_length
-		/// The maximum token length. If a token is seen that exceeds this length then it is discarded. Defaults to 255.
-		/// </summary>
-		public int MaxTokenLength
+		public List<string> StopwordsList
 		{
-			get { return _maxTokenLength; }
+			get { return _stopwordsList; }
 			set
 			{
-				_maxTokenLength = value;
-				_maxTokenLengthSet = true;
+				_stopwordsList = value;
+				_stopwordsListSet = true;
+			}
+		}
+
+		/// <summary>
+		/// stopwords_path
+		/// A path (either relative to config location, or absolute) to a stopwords file configuration.
+		/// </summary>
+		public string StopwordsPath
+		{
+			get { return _stopwordsPath; }
+			set
+			{
+				_stopwordsPath = value;
+				_stopwordsPathSet = true;
 			}
 		}
 
@@ -66,7 +70,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("max_token_length", _maxTokenLength, elasticsearchCrudJsonWriter, _maxTokenLengthSet);
+			JsonHelper.WriteValue("stopwords_path", _stopwordsPath, elasticsearchCrudJsonWriter, _stopwordsPathSet);
 
 			if (_stopwordsListSet)
 			{
