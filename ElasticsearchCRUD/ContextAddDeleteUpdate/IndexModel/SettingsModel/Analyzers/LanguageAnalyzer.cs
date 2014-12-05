@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
@@ -6,9 +7,22 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 	{
 		private string _stopwordsPath;
 		private bool _stopwordsPathSet;
+		private List<string> _stemExclusion;
+		private bool _stemExclusionSet;
 
 		/// <summary>
-		/// An analyzer of type stop that is built using a Lower Case Tokenizer, with Stop Token Filter.
+		/// A set of analyzers aimed at analyzing specific language text. The following types are supported: 
+		/// arabic, armenian, basque, brazilian, bulgarian, catalan, chinese, cjk, czech, danish, dutch, english, finnish, french, galician, 
+		/// german, greek, hindi, hungarian, indonesian, irish, italian, latvian, norwegian, persian, portuguese, romanian, 
+		/// russian, sorani, spanish, swedish, turkish, thai.
+		/// 
+		/// Configuring language analyzersedit
+		/// Stopwordsedit
+		/// All analyzers support setting custom stopwords either internally in the config, or by using an external stopwords file by setting stopwords_path. 
+		///
+		/// The following analyzers support setting custom stem_exclusion list: 
+		/// arabic, armenian, basque, catalan, bulgarian, catalan, czech, finnish, dutch, english, finnish, french, galician, 
+		/// german, irish, hindi, hungarian, indonesian, italian, latvian, norwegian, portuguese, romanian, russian, sorani, spanish, swedish, turkish.
 		/// </summary>
 		/// <param name="name">name of the analyzer</param>
 		/// <param name="analyzer">required for language analyzers</param>
@@ -33,6 +47,22 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 			}
 		}
 
+		/// <summary>
+		/// Excluding words from stemmingedit
+		/// The stem_exclusion parameter allows you to specify an array of lowercase words that should not be stemmed. Internally, 
+		/// this functionality is implemented by adding the keyword_marker token filter with the keywords set to the value of the stem_exclusion parameter.
+		/// </summary>
+		public List<string> StemExclusion
+		{
+			get { return _stemExclusion; }
+			set
+			{
+				_stemExclusion = value;
+				_stemExclusionSet = true;
+			}
+		}
+		
+
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			base.WriteJsonBase(elasticsearchCrudJsonWriter, WriteValues);
@@ -43,6 +73,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 		{
 			WriteCommonValues(elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("stopwords_path", _stopwordsPath, elasticsearchCrudJsonWriter, _stopwordsPathSet);
+			JsonHelper.WriteListValue("stem_exclusion", _stemExclusion, elasticsearchCrudJsonWriter, _stemExclusionSet);
+			
 		}
 	}
 }
