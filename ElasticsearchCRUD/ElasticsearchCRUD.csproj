@@ -90,6 +90,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\AnalysisTokenizerBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\BaseNGramTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\BaseTokenizer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\ClassicTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\EdgeNGramTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\KeywordTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\NGramTokenizer.cs" />
