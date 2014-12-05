@@ -1,12 +1,25 @@
+﻿using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Utils;
 
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzer
 {
-	public abstract class BaseTokenizer : AnalysisTokenizerBase
+	public class StandardAnaylzer : AnalyzerBase
 	{
+		// TODO stopwords
 		private int _maxTokenLength;
 		private bool _maxTokenLengthSet;
-	
+
+		public StandardAnaylzer(string name)
+		{
+			AnalyzerSet = true;
+			Name = name.ToLower();
+			Type = DefaultAnalyzers.Standard;
+		}
+
+		/// <summary>
+		/// max_token_length
+		/// The maximum token length. If a token is seen that exceeds this length then it is discarded. Defaults to 255.
+		/// </summary>
 		public int MaxTokenLength
 		{
 			get { return _maxTokenLength; }

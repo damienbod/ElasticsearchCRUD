@@ -77,6 +77,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzer\CustomAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisTokenizer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzer\StandardAnaylzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AnalysisFilterBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AsciifoldingFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexDefinition.cs" />
