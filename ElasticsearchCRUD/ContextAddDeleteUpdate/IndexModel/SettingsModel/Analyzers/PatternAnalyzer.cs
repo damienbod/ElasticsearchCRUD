@@ -47,6 +47,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 
 		/// <summary>
 		/// flags The regular expression flags.
+		/// IMPORTANT: The regular expression should match the token separators, not the tokens themselves.
+		///
+		/// Flags should be pipe-separated, eg "CASE_INSENSITIVE|COMMENTS". Check Java Pattern API for more details about flags options.
 		/// </summary>
 		public string Flags
 		{

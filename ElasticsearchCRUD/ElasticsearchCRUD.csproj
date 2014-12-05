@@ -80,6 +80,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\LanguageAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\PatternAnalyzer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\SnowballAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\StandardAnaylzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\StopAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AnalysisFilterBase.cs" />
