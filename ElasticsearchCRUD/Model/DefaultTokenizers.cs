@@ -12,6 +12,6 @@
 		public const string UaxUrlEmail = "uax_url_email";
 		public const string Classic = "classic";
 		public const string Thai = "thai";
-
+		public const string Pattern = "pattern";
 	}
 }
