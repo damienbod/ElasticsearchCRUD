@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
@@ -39,10 +39,14 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 		{
 			if (_customFiltersSet)
 			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filter");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
 				foreach (var item in _customFilters)
 				{
 					item.WriteJson(elasticsearchCrudJsonWriter);
 				}
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 		}
 	}

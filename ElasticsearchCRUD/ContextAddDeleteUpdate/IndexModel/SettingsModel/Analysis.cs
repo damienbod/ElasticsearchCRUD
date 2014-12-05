@@ -32,15 +32,18 @@
 		{
 			AnalysisFilter = new AnalysisFilter();
 			AnalysisAnalyzer = new AnalysisAnalyzer();
+			AnalysisTokenizer = new AnalysisTokenizer();
 		}
 
+		public AnalysisTokenizer AnalysisTokenizer { get; set; }
 		public AnalysisFilter AnalysisFilter { get; set; }
 		public AnalysisAnalyzer AnalysisAnalyzer { get; set; }
 
 		public virtual void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			//WriteJson("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
-
+			AnalysisTokenizer.WriteJson(elasticsearchCrudJsonWriter);
+			AnalysisFilter.WriteJson(elasticsearchCrudJsonWriter);
 			AnalysisAnalyzer.WriteJson(elasticsearchCrudJsonWriter);
 		}
 	}
