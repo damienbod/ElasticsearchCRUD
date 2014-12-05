@@ -73,6 +73,8 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeResult.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analysis.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisAnalyzer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzer\AnalyzerBase.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzer\CustomAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AnalysisFilterBase.cs" />
@@ -143,9 +145,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzer\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
