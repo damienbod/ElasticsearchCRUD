@@ -42,9 +42,14 @@
 		public virtual void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			//WriteJson("number_of_replicas", _numberOfReplicas, elasticsearchCrudJsonWriter, _numberOfReplicasSet);
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("analysis");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
 			AnalysisTokenizer.WriteJson(elasticsearchCrudJsonWriter);
 			AnalysisFilter.WriteJson(elasticsearchCrudJsonWriter);
 			AnalysisAnalyzer.WriteJson(elasticsearchCrudJsonWriter);
+
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}
 }
