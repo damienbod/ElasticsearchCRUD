@@ -88,6 +88,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeParameters.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\RoutingDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\AnalysisTokenizerBase.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\StandardTokenizer.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />
     <Compile Include="ContextClearCache\ElasticsearchContextClearCache.cs" />
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
@@ -100,7 +101,7 @@
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
     <Compile Include="Model\DefaultAnalyzers.cs" />
     <Compile Include="Model\DefaultFilters.cs" />
-    <Compile Include="Model\DefaultTokenizer.cs" />
+    <Compile Include="Model\DefaultTokenizers.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />

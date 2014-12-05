@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model
 {
-	public static class DefaultTokenizer
+	public static class DefaultTokenizers
 	{
 		public const string Standard = "standard";
 	}

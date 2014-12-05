@@ -30,14 +30,14 @@
 	{
 		public Analysis()
 		{
-			AnalysisFilter = new AnalysisFilter();
-			AnalysisAnalyzer = new AnalysisAnalyzer();
-			AnalysisTokenizer = new AnalysisTokenizer();
+			Filters = new AnalysisFilter();
+			Analyzer = new AnalysisAnalyzer();
+			Tokenizers = new AnalysisTokenizer();
 		}
 
-		public AnalysisTokenizer AnalysisTokenizer { get; set; }
-		public AnalysisFilter AnalysisFilter { get; set; }
-		public AnalysisAnalyzer AnalysisAnalyzer { get; set; }
+		public AnalysisTokenizer Tokenizers { get; set; }
+		public AnalysisFilter Filters { get; set; }
+		public AnalysisAnalyzer Analyzer { get; set; }
 
 		public virtual void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -45,9 +45,9 @@
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("analysis");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			AnalysisTokenizer.WriteJson(elasticsearchCrudJsonWriter);
-			AnalysisFilter.WriteJson(elasticsearchCrudJsonWriter);
-			AnalysisAnalyzer.WriteJson(elasticsearchCrudJsonWriter);
+			Tokenizers.WriteJson(elasticsearchCrudJsonWriter);
+			Filters.WriteJson(elasticsearchCrudJsonWriter);
+			Analyzer.WriteJson(elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
