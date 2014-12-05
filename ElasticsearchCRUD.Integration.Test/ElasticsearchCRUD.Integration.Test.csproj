@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AliasElasticsearchCrudTests.cs" />
+    <Compile Include="AnalysisTests.cs" />
     <Compile Include="ComplexRelationsTests.cs" />
     <Compile Include="CoreTypeMappingTests.cs" />
     <Compile Include="CreateIndexTest.cs" />
