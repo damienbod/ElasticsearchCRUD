@@ -1,19 +1,34 @@
-﻿using ElasticsearchCRUD.Model;
+﻿using System.Collections.Generic;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Utils;
 
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzer
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
 {
 	public class StandardAnaylzer : AnalyzerBase
 	{
-		// TODO stopwords
 		private int _maxTokenLength;
 		private bool _maxTokenLengthSet;
+		private List<string> _stopwords;
+		private bool _stopwordsSet;
 
 		public StandardAnaylzer(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
 			Type = DefaultAnalyzers.Standard;
+		}
+
+		/// <summary>
+		/// A list of stopwords to initialize the stop filter with. Defaults to the english stop words.
+		/// </summary>
+		public List<string> Stopwords
+		{
+			get { return _stopwords; }
+			set
+			{
+				_stopwords = value;
+				_stopwordsSet = true;
+			}
 		}
 
 		/// <summary>
@@ -39,6 +54,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 		{
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("max_token_length", _maxTokenLength, elasticsearchCrudJsonWriter, _maxTokenLengthSet);
+			JsonHelper.WriteListValue("stopwords", _stopwords, elasticsearchCrudJsonWriter, _stopwordsSet);
 		}
 	}
 }

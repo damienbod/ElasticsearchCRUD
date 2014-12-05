@@ -2,7 +2,7 @@
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Utils;
 
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzer
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
 {
 	/// <summary>
 	/// The standard analyzer, which is the default analyzer used for full-text fields, is a good choice for most Western languages. It consists of the following:

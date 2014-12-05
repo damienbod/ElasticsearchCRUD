@@ -1,8 +1,7 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
-using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzer;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers;
 using ElasticsearchCRUD.Model;

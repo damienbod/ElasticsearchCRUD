@@ -1,6 +1,4 @@
-﻿using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzer;
-
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
+﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
 	// TODO "tokenizer": 
    // "analysis" : {

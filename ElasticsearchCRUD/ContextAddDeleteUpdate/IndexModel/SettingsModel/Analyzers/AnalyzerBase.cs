@@ -1,7 +1,7 @@
 using System;
 using ElasticsearchCRUD.Utils;
 
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzer
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
 {
 	public abstract class AnalyzerBase
 	{
