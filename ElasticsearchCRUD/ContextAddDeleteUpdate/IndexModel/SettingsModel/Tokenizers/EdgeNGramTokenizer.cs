@@ -4,26 +4,44 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers
 {
-	public class EdgeNGramTokenizer : AnalysisTokenizerBase
+	public class EdgeNGramTokenizer : BaseNGramTokenizer
 	{
-		private int _minGram;
-		private bool _minGramSet;
-		private int _maxGram;
-		private bool _maxGramSet;
-		private List<TokenChar> _tokenChars;
-		private bool _tokenCharsSet;
-
 		/// <summary>
+		/// A tokenizer of type edgeNGram.
 		/// This tokenizer is very similar to nGram but only keeps n-grams which start at the beginning of a token.
 		/// </summary>
-		/// <param name="name"></param>
+		/// <param name="name">name of the custom tokenizer (ToLower()</param>
 		public EdgeNGramTokenizer(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
 			Type = DefaultTokenizers.EdgeNGram;
 		}
-		
+	}
+
+	public class NGramTokenizer : BaseNGramTokenizer
+	{
+		/// <summary>
+		/// A tokenizer of type nGram.
+		/// </summary>
+		/// <param name="name">name of the custom tokenizer (ToLower()</param>
+		public NGramTokenizer(string name)
+		{
+			AnalyzerSet = true;
+			Name = name.ToLower();
+			Type = DefaultTokenizers.NGram;
+		}
+	}
+
+	public abstract class BaseNGramTokenizer : AnalysisTokenizerBase
+	{
+		protected int _minGram;
+		protected bool _minGramSet;
+		protected int _maxGram;
+		protected bool _maxGramSet;
+		protected List<TokenChar> _tokenChars;
+		protected bool _tokenCharsSet;
+
 		/// <summary>
 		/// min_gram Minimum size in codepoints of a single n-gram
 		/// </summary>

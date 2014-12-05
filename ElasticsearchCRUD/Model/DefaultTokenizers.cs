@@ -4,5 +4,6 @@
 	{
 		public const string Standard = "standard";
 		public const string EdgeNGram = "edgeNGram";
+		public const string NGram = "nGram";
 	}
 }
