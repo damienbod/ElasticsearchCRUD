@@ -1,4 +1,8 @@
-﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
+﻿using System;
+using System.Collections.Generic;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters;
+
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
 	//	"filter" : {
 	//		"blocks_filter" : {
@@ -18,5 +22,28 @@
 	//	},
 	public class AnalysisFilter
 	{
+		private List<AnalysisFilterBase> _customFilters;
+		private bool _customFiltersSet;
+
+		public List<AnalysisFilterBase> CustomFilters
+		{
+			get { return _customFilters; }
+			set
+			{
+				_customFilters = value;
+				_customFiltersSet = true;
+			}
+		}
+
+		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			if (_customFiltersSet)
+			{
+				foreach (var item in _customFilters)
+				{
+					item.WriteJson(elasticsearchCrudJsonWriter);
+				}
+			}
+		}
 	}
 }

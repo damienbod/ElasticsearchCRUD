@@ -74,6 +74,8 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analysis.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AnalysisFilterBase.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AsciifoldingFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexSettings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexUpdateSettings.cs" />
@@ -95,6 +97,8 @@
     <Compile Include="ContextSearch\SearchModel\Hits.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
     <Compile Include="Model\DefaultAnalyzers.cs" />
+    <Compile Include="Model\DefaultFilters.cs" />
+    <Compile Include="Model\DefaultTokenizer.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />

@@ -20,8 +20,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 	///			"tokenizer" : "whitespace",
 	///			"filter" : ["lowercase", "blocks_filter", "shingle"]
 	///
-	///          "pattern": "\\s+" TODO
-	///          "char_filter": ["html_strip"] TODO
+	///          "pattern": "\\s+" 
+	///          "char_filter": ["html_strip"] 
 	///		}
 	///	}
 	/// </summary>
