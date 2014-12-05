@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
 {
-	public class StopAnalyzer : BaseStopAnalyzer
+	public class LanguageAnalyzer : BaseStopAnalyzer
 	{
 		private string _stopwordsPath;
 		private bool _stopwordsPathSet;
@@ -13,12 +11,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 		/// An analyzer of type stop that is built using a Lower Case Tokenizer, with Stop Token Filter.
 		/// </summary>
 		/// <param name="name">name of the analyzer</param>
-		public StopAnalyzer(string name)
+		/// <param name="analyzer">required for language analyzers</param>
+		public LanguageAnalyzer(string name, string analyzer)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultAnalyzers.Stop;
-
+			Type =  analyzer;		
 		}
 
 		/// <summary>

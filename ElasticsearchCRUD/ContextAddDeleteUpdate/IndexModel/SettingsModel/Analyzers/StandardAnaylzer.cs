@@ -1,47 +1,18 @@
-﻿using System.Collections.Generic;
-using ElasticsearchCRUD.Model;
+﻿using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
 {
-	public class StandardAnaylzer : AnalyzerBase
+	public class StandardAnaylzer : BaseStopAnalyzer
 	{
 		private int _maxTokenLength;
 		private bool _maxTokenLengthSet;
-		private string _stopwords;
-		private bool _stopwordsSet;
-		private List<string> _stopwordsList;
-		private bool _stopwordsListSet;
 
 		public StandardAnaylzer(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
 			Type = DefaultAnalyzers.Standard;
-		}
-
-		/// <summary>
-		/// A list of stopwords to initialize the stop filter with. Defaults to the english stop words.
-		/// Use stopwords: _none_ to explicitly specify an empty stopword list.
-		/// </summary>
-		public List<string> StopwordsList
-		{
-			get { return _stopwordsList; }
-			set
-			{
-				_stopwordsList = value;
-				_stopwordsListSet = true;
-			}
-		}
-
-		public string Stopwords
-		{
-			get { return _stopwords; }
-			set
-			{
-				_stopwords = value;
-				_stopwordsSet = true;
-			}
 		}
 
 		/// <summary>
@@ -65,17 +36,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
+			WriteCommonValues(elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("max_token_length", _maxTokenLength, elasticsearchCrudJsonWriter, _maxTokenLengthSet);
 
-			if (_stopwordsListSet)
-			{
-				JsonHelper.WriteListValue("stopwords", _stopwordsList, elasticsearchCrudJsonWriter, _stopwordsListSet);
-			}
-			else
-			{
-				JsonHelper.WriteValue("stopwords", _stopwords, elasticsearchCrudJsonWriter, _stopwordsSet);
-			}
 		}
 	}
 }
