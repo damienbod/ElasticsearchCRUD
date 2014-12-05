@@ -88,7 +88,9 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeParameters.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\RoutingDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\AnalysisTokenizerBase.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\BaseNGramTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\EdgeNGramTokenizer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\NGramTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\StandardTokenizer.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />
     <Compile Include="ContextClearCache\ElasticsearchContextClearCache.cs" />
