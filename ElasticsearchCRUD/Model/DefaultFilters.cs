@@ -9,7 +9,8 @@
 		public const string Uppercase = "uppercase";
 		public const string NGram = "nGram";
 		public const string EdgeNGram = "edgeNGram";
-		
+		public const string PorterStem = "porter_stem";
+		public const string Shingle = "shingle";
 
 	}
 }
