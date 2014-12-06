@@ -3,7 +3,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters
 {
-	public class LowercaseFilter : AnalysisFilterBase
+	public class LowercaseTokenFilter : AnalysisFilterBase
 	{
 		private string _language;
 		private bool _languageSet;
@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		/// Lowercase token filter supports Greek, Irish, and Turkish lowercase token filters through the language parameter.
 		/// </summary>
 		/// <param name="name">name for the custom filter</param>
-		public LowercaseFilter(string name)
+		public LowercaseTokenFilter(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();

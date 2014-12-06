@@ -3,20 +3,18 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters
 {
-	public class EdgeNGramFilter : AnalysisFilterBase
+	public class NGramTokenFilter : AnalysisFilterBase
 	{
 		private int _minGram;
 		private bool _minGramSet;
 		private int _maxGram;
 		private bool _maxGramSet;
-		private Side _side;
-		private bool _sideSet;
 
-		public EdgeNGramFilter(string name)
+		public NGramTokenFilter(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.EdgeNGram;
+			Type = DefaultFilters.NGram;
 		}
 
 		/// <summary>
@@ -45,19 +43,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			}
 		}
 
-		/// <summary>
-		/// Either front or back. Defaults to front.
-		/// </summary>
-		public Side Side
-		{
-			get { return _side; }
-			set
-			{
-				_side = value;
-				_sideSet = true;
-			}
-		}
-
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			base.WriteJsonBase(elasticsearchCrudJsonWriter, WriteValues);
@@ -68,14 +53,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("min_gram", _minGram, elasticsearchCrudJsonWriter, _minGramSet);
 			JsonHelper.WriteValue("max_gram", _maxGram, elasticsearchCrudJsonWriter, _maxGramSet);
-			JsonHelper.WriteValue("side", _side.ToString(), elasticsearchCrudJsonWriter, _sideSet);
-			
 		}
-	}
-
-	public enum Side
-	{
-		front,
-		back
 	}
 }

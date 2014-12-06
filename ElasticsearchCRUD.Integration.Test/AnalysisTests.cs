@@ -82,7 +82,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				},
 				Filters =
 				{
-					CustomFilters = new List<AnalysisFilterBase> {new AsciifoldingFilter("my_ascii_folding") {PreserveOriginal = true}}
+					CustomFilters = new List<AnalysisFilterBase> {new AsciifoldingTokenFilter("my_ascii_folding") {PreserveOriginal = true}}
 				}
 			};
 

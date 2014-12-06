@@ -3,7 +3,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters
 {
-	public class LengthFilter : AnalysisFilterBase
+	public class LengthTokenFilter : AnalysisFilterBase
 	{
 		private int _min;
 		private bool _minSet;
@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		/// A token filter of type length that removes words that are too long or too short for the stream.
 		/// </summary>
 		/// <param name="name">name for the custom filter</param>
-		public LengthFilter(string name)
+		public LengthTokenFilter(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();

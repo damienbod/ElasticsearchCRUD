@@ -3,7 +3,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters
 {
-	public class AsciifoldingFilter : AnalysisFilterBase
+	public class AsciifoldingTokenFilter : AnalysisFilterBase
 	{
 		private bool _preserveOriginal;
 		private bool _preserveOriginalSet;
@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		/// A token filter of type asciifolding that converts alphabetic, numeric, and symbolic Unicode characters which are not in the first 127 ASCII characters 
 		/// (the "Basic Latin" Unicode block) into their ASCII equivalents, if one exists.
 		/// </summary>
-		public AsciifoldingFilter(string name)
+		public AsciifoldingTokenFilter(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
