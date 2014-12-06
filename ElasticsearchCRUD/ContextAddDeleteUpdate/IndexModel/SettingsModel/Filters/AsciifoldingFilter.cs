@@ -39,7 +39,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			//"preserve_original" : true
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("preserve_original", _preserveOriginal, elasticsearchCrudJsonWriter, _preserveOriginalSet);
 		}

@@ -85,6 +85,10 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\StopAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AnalysisFilterBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AsciifoldingFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\EdgeNGramFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\LengthFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\LowercaseFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\NGramFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexSettings.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexUpdateSettings.cs" />

@@ -1,6 +1,5 @@
 ﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
-	// TODO "tokenizer": 
    // "analysis" : {
    //	"filter" : {
    //		"blocks_filter" : {
