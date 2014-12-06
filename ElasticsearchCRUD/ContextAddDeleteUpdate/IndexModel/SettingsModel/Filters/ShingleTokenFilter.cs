@@ -30,7 +30,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.Lowercase;
+			Type = DefaultFilters.Shingle;
 		}
 
 		public int MaxShingleSize

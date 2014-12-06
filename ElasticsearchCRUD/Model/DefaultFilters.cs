@@ -11,6 +11,7 @@
 		public const string EdgeNGram = "edgeNGram";
 		public const string PorterStem = "porter_stem";
 		public const string Shingle = "shingle";
+		public const string Stop = "stop";
 
 	}
 }

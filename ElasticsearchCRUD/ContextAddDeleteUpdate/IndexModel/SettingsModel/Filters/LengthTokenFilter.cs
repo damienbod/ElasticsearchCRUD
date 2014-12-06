@@ -21,7 +21,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			Type = DefaultFilters.Length;
 		}
 
-	
 		public int Min
 		{
 			get { return _min; }
