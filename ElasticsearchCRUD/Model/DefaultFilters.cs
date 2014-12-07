@@ -16,6 +16,9 @@
 		public const string Stemmer = "stemmer";
 		public const string StemmerOverride = "stemmer_override";
 		public const string KeywordMarker = "keyword_marker";
+		public const string KeywordRepeat = "keyword_repeat";
+		public const string Kstem = "kstem";
+		public const string Snowball = "snowball";
 
 	}
 }
