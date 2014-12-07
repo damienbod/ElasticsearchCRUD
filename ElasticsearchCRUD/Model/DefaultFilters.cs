@@ -19,6 +19,7 @@
 		public const string KeywordRepeat = "keyword_repeat";
 		public const string Kstem = "kstem";
 		public const string Snowball = "snowball";
+		public const string Phonetic = "phonetic";
 
 	}
 }
