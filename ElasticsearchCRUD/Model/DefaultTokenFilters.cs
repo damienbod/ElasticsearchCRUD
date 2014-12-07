@@ -25,7 +25,7 @@
 		public const string Reverse = "reverse";
 		public const string Elision = "elision";
 		public const string Truncate = "truncate";
-		// Unique Token Filter
+		public const string Unique = "unique";
 		// Pattern Capture Token Filter
 		// Pattern Replace Token Filter
 		public const string Trim = "trim";
