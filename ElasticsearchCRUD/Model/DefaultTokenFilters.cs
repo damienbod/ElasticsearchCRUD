@@ -30,7 +30,7 @@
 		public const string PatternReplace = "pattern_replace";
 		public const string Trim = "trim";
 		public const string Limit = "limit";
-		// Hunspell Token Filter
+		public const string Hunspell = "hunspell";
 		// Common Grams Token Filter
 		// Normalization Token Filter
 		// CJK Width Token Filter
