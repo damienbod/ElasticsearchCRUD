@@ -32,12 +32,20 @@
 		public const string Limit = "limit";
 		public const string Hunspell = "hunspell";
 		public const string CommonGrams = "common_grams";
-		// Normalization Token Filter
+		public const string ArabicNormalization = "arabic_normalization";
+		public const string GermanNormalization = "german_normalization";
+		public const string HindiNormalization = "hindi_normalization";
+		public const string IndicNormalization = "indic_normalization";
+		public const string SoraniNormalization = "sorani_normalization";
+		public const string PersianNormalization = "persian_normalization";
+		public const string ScandinavianNormalization = "scandinavian_normalization";
+		public const string ScandinavianFolding = "scandinavian_folding";
 		// CJK Width Token Filter
 		// CJK Bigram Token Filter
 		// Delimited Payload Token Filter
 		// Keep Words Token Filter
 		// Keep Types Token Filter
+		public const string KeepTypes = "keep_types";
 		public const string Classic = "classic";
 		public const string Apostrophe = "apostrophe";
 		
