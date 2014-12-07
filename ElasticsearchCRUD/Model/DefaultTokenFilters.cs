@@ -21,11 +21,9 @@
 		public const string Snowball = "snowball";
 		public const string Phonetic = "phonetic";
 		public const string Synonym = "synonym";
-		
-		// TODO
 		// Compound Word Token Filter
 		public const string Reverse = "reverse";
-		// Elision Token Filter
+		public const string Elision = "elision";
 		// Truncate Token Filter
 		// Unique Token Filter
 		// Pattern Capture Token Filter
