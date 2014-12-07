@@ -8,13 +8,16 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		private Stemmer _stemmerName;
 		private bool _stemmerNameSet;
 
+		/// <summary>
+		/// A filter that provides access to (almost) all of the available stemming token filters through a single unified interface
+		/// </summary>
+		/// <param name="name"></param>
 		public StemmerTokenFilter(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
 			Type = DefaultFilters.Stemmer;
 		}
-
 
 		/// <summary>
 		/// Either front or back. Defaults to front.

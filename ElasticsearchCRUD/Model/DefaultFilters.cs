@@ -14,6 +14,8 @@
 		public const string Stop = "stop";
 		public const string WordDelimiter = "word_delimiter";
 		public const string Stemmer = "stemmer";
+		public const string StemmerOverride = "stemmer_override";
+		
 
 	}
 }
