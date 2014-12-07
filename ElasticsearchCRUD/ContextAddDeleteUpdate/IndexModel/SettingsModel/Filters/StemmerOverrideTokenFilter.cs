@@ -24,7 +24,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			Type = DefaultFilters.StemmerOverride;
 		}
 
-
 		/// <summary>
 		/// rules
 		/// A list of mapping rules to use.
