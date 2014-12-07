@@ -17,7 +17,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.Lowercase;
+			Type = DefaultTokenFilters.Lowercase;
 		}
 
 		public string Language

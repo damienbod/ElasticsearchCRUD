@@ -18,7 +18,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.Length;
+			Type = DefaultTokenFilters.Length;
 		}
 
 		public int Min

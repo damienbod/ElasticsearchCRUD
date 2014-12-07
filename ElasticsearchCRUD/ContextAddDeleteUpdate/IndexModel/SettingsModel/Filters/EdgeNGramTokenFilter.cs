@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.EdgeNGram;
+			Type = DefaultTokenFilters.EdgeNGram;
 		}
 
 		/// <summary>

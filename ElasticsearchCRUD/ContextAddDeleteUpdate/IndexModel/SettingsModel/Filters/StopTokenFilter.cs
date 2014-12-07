@@ -21,7 +21,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.Stop;
+			Type = DefaultTokenFilters.Stop;
 		}
 
 		/// <summary>

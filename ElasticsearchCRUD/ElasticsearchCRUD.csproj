@@ -130,7 +130,7 @@
     <Compile Include="ContextSearch\SearchModel\Hits.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
     <Compile Include="Model\DefaultAnalyzers.cs" />
-    <Compile Include="Model\DefaultFilters.cs" />
+    <Compile Include="Model\DefaultTokenFilters.cs" />
     <Compile Include="Model\DefaultTokenizers.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\Shards.cs" />

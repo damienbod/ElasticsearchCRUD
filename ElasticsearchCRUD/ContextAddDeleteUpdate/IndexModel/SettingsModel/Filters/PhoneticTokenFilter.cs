@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.Phonetic;
+			Type = DefaultTokenFilters.Phonetic;
 		}
 
 

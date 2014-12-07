@@ -21,7 +21,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.KeywordMarker;
+			Type = DefaultTokenFilters.KeywordMarker;
 		}
 
 		/// <summary>

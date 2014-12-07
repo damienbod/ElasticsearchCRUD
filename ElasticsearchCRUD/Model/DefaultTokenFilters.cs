@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model
 {
-	public static class DefaultFilters
+	public static class DefaultTokenFilters
 	{
 		public const string Standard = "standard";
 		public const string Asciifolding = "asciifolding";
@@ -22,8 +22,24 @@
 		public const string Phonetic = "phonetic";
 		public const string Synonym = "synonym";
 		
-
-
+		// TODO
+		// Compound Word Token Filter
+		public const string Reverse = "reverse";
+		// Elision Token Filter
+		// Truncate Token Filter
+		// Unique Token Filter
+		// Pattern Capture Token Filter
+		// Pattern Replace Token Filter
+		public const string Trim = "trim";
+		// Limit Token Count Token Filter
+		// Hunspell Token Filter
+		// Common Grams Token Filter
+		// Normalization Token Filter
+		// CJK Width Token Filter
+		// CJK Bigram Token Filter
+		// Delimited Payload Token Filter
+		// Keep Words Token Filter
+		// Keep Types Token Filter
 		public const string Classic = "classic";
 		public const string Apostrophe = "apostrophe";
 		

@@ -25,7 +25,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultFilters.Snowball;
+			Type = DefaultTokenFilters.Snowball;
 		}
 
 		public SnowballLanguage Language
