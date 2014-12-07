@@ -24,7 +24,7 @@
 		// Compound Word Token Filter
 		public const string Reverse = "reverse";
 		public const string Elision = "elision";
-		// Truncate Token Filter
+		public const string Truncate = "truncate";
 		// Unique Token Filter
 		// Pattern Capture Token Filter
 		// Pattern Replace Token Filter

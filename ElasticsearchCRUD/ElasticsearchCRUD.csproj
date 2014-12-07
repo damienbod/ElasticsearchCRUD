@@ -98,6 +98,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\StemmerTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\StopTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\SynonymTokenFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\TruncateTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\WordDelimiterTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexSettings.cs" />
