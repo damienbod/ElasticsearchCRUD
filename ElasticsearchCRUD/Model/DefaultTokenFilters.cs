@@ -40,11 +40,10 @@
 		public const string PersianNormalization = "persian_normalization";
 		public const string ScandinavianNormalization = "scandinavian_normalization";
 		public const string ScandinavianFolding = "scandinavian_folding";
-		// CJK Width Token Filter
-		// CJK Bigram Token Filter
+		public const string CjkWidth = "cjk_width";
+		public const string CjkBigram = "cjk_bigram";
 		// Delimited Payload Token Filter
 		// Keep Words Token Filter
-		// Keep Types Token Filter
 		public const string KeepTypes = "keep_types";
 		public const string Classic = "classic";
 		public const string Apostrophe = "apostrophe";
