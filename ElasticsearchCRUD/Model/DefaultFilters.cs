@@ -12,6 +12,7 @@
 		public const string PorterStem = "porter_stem";
 		public const string Shingle = "shingle";
 		public const string Stop = "stop";
+		public const string WordDelimiter = "word_delimiter";
 
 	}
 }
