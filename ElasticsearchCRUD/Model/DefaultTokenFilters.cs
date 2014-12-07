@@ -42,11 +42,10 @@
 		public const string ScandinavianFolding = "scandinavian_folding";
 		public const string CjkWidth = "cjk_width";
 		public const string CjkBigram = "cjk_bigram";
-		// Delimited Payload Token Filter
+		public const string DelimitedPayloadFilter = "delimited_payload_filter";
 		// Keep Words Token Filter
 		public const string KeepTypes = "keep_types";
 		public const string Classic = "classic";
-		public const string Apostrophe = "apostrophe";
-		
+		public const string Apostrophe = "apostrophe";	
 	}
 }
