@@ -92,6 +92,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\LowercaseTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\NGramTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\PatternCaptureTokenFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\PatternReplaceTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\PhoneticTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\ShingleTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\SnowballTokenFilter.cs" />

@@ -27,7 +27,7 @@
 		public const string Truncate = "truncate";
 		public const string Unique = "unique";
 		public const string PatternCapture = "pattern_capture";
-		// Pattern Replace Token Filter
+		public const string PatternReplace = "pattern_replace";
 		public const string Trim = "trim";
 		// Limit Token Count Token Filter
 		// Hunspell Token Filter
