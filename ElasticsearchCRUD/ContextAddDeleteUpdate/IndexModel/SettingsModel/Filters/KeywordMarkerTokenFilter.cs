@@ -77,8 +77,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			JsonHelper.WriteListValue("keywords", _keywords, elasticsearchCrudJsonWriter, _keywordsSet);
 			JsonHelper.WriteValue("keywords_path", _keywordsPath, elasticsearchCrudJsonWriter, _keywordsPathSet);
 			JsonHelper.WriteValue("ignore_case", _ignoreCase, elasticsearchCrudJsonWriter, _ignoreCaseSet);
-			
-
 		}
 	}
 }

@@ -20,6 +20,12 @@
 		public const string Kstem = "kstem";
 		public const string Snowball = "snowball";
 		public const string Phonetic = "phonetic";
+		public const string Synonym = "synonym";
+		
 
+
+		public const string Classic = "classic";
+		public const string Apostrophe = "apostrophe";
+		
 	}
 }
