@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 	/// </summary>
 	public class SnowballTokenFilter : AnalysisFilterBase
 	{
-		private string _language;
+		private SnowballLanguage _language;
 		private bool _languageSet;
 
 		/// <summary>
@@ -28,7 +28,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			Type = DefaultFilters.Snowball;
 		}
 
-		public string Language
+		public SnowballLanguage Language
 		{
 			get { return _language; }
 			set
@@ -46,7 +46,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("keywords_path", _language, elasticsearchCrudJsonWriter, _languageSet);
+			JsonHelper.WriteValue("language", _language.ToString(), elasticsearchCrudJsonWriter, _languageSet);
 		}
+	}
+
+	public enum SnowballLanguage
+	{
+		Armenian, Basque, Catalan, Danish, Dutch, English, Finnish, French, German, German2, Hungarian,
+		Italian, Kp, Lovins, Norwegian, Porter, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish
 	}
 }

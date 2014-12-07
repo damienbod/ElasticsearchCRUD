@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using ElasticsearchCRUD.Model;
+﻿using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers
