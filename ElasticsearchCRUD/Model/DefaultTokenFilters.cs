@@ -29,7 +29,7 @@
 		public const string PatternCapture = "pattern_capture";
 		public const string PatternReplace = "pattern_replace";
 		public const string Trim = "trim";
-		// Limit Token Count Token Filter
+		public const string Limit = "limit";
 		// Hunspell Token Filter
 		// Common Grams Token Filter
 		// Normalization Token Filter
