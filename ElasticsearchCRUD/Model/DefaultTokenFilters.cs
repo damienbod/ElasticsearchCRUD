@@ -21,7 +21,8 @@
 		public const string Snowball = "snowball";
 		public const string Phonetic = "phonetic";
 		public const string Synonym = "synonym";
-		// Compound Word Token Filter
+		public const string DictionaryDecompounder = "dictionary_decompounder";
+		public const string HyphenationDecompounder = "hyphenation_decompounder";
 		public const string Reverse = "reverse";
 		public const string Elision = "elision";
 		public const string Truncate = "truncate";

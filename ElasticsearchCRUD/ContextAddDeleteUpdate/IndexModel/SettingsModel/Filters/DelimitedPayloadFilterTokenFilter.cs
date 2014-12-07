@@ -59,7 +59,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		{
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("delimiter", _delimiter, elasticsearchCrudJsonWriter, _delimiterSet);
-			JsonHelper.WriteValue("encoding", _encoding, elasticsearchCrudJsonWriter, _encodingSet);
+			JsonHelper.WriteValue("encoding", _encoding.ToString(), elasticsearchCrudJsonWriter, _encodingSet);
 		}
 	}
 
