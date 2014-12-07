@@ -31,7 +31,7 @@
 		public const string Trim = "trim";
 		public const string Limit = "limit";
 		public const string Hunspell = "hunspell";
-		// Common Grams Token Filter
+		public const string CommonGrams = "common_grams";
 		// Normalization Token Filter
 		// CJK Width Token Filter
 		// CJK Bigram Token Filter
