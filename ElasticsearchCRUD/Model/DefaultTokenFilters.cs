@@ -43,7 +43,7 @@
 		public const string CjkWidth = "cjk_width";
 		public const string CjkBigram = "cjk_bigram";
 		public const string DelimitedPayloadFilter = "delimited_payload_filter";
-		// Keep Words Token Filter
+		public const string Keep = "keep";
 		public const string KeepTypes = "keep_types";
 		public const string Classic = "classic";
 		public const string Apostrophe = "apostrophe";	
