@@ -23,6 +23,18 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 	{
 		private bool _wordListSet;
 		private List<string> _wordList;
+		private string _hyphenationPatternsPath;
+		private string _wordListPath;
+		private bool _wordListPathSet;
+		private bool _hyphenationPatternsPathSet;
+		private bool _onlyLongestMatchSet;
+		private bool _onlyLongestMatch;
+		private bool _maxSubwordSizeSet;
+		private int _maxSubwordSize;
+		private bool _minSubwordSizeSet;
+		private int _minSubwordSize;
+		private bool _minWordSizeSet;
+		private int _minWordSize;
 
 		protected CompoundWordTokenFilter(string name, string type)
 		{
@@ -45,23 +57,90 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			}
 		}
 
-//word_list_path
-//A path (either relative to config location, or absolute) to a list of words.
+		/// <summary>
+		/// word_list_path
+		/// A path (either relative to config location, or absolute) to a list of words.
+		/// </summary>
+		public string WordListPath
+		{
+			get { return _wordListPath; }
+			set
+			{
+				_wordListPath = value;
+				_wordListPathSet = true;
+			}
+		}
 
-//hyphenation_patterns_path
-//A path (either relative to config location, or absolute) to a FOP XML hyphenation pattern file. (See http://offo.sourceforge.net/hyphenation/) Required for hyphenation_decompounder.
+		/// <summary>
+		/// hyphenation_patterns_path
+		/// A path (either relative to config location, or absolute) to a FOP XML hyphenation pattern file. 
+		/// (See http://offo.sourceforge.net/hyphenation/) Required for hyphenation_decompounder.
+		/// </summary>
+		public string HyphenationPatternsPath
+		{
+			get { return _hyphenationPatternsPath; }
+			set
+			{
+				_hyphenationPatternsPath = value;
+				_hyphenationPatternsPathSet = true;
+			}
+		}
 
-//min_word_size
-//Minimum word size(Integer). Defaults to 5.
+		/// <summary>
+		/// min_word_size
+		/// Minimum word size(Integer). Defaults to 5.
+		/// </summary>
+		public int MinWordSize
+		{
+			get { return _minWordSize; }
+			set
+			{
+				_minWordSize = value;
+				_minWordSizeSet = true;
+			}
+		}
 
-//min_subword_size
-//Minimum subword size(Integer). Defaults to 2.
+		/// <summary>
+		/// min_subword_size
+		/// Minimum subword size(Integer). Defaults to 2.
+		/// </summary>
+		public int MinSubwordSize
+		{
+			get { return _minSubwordSize; }
+			set
+			{
+				_minSubwordSize = value;
+				_minSubwordSizeSet = true;
+			}
+		}
 
-//max_subword_size
-//Maximum subword size(Integer). Defaults to 15.
+		/// <summary>
+		/// max_subword_size
+		/// Maximum subword size(Integer). Defaults to 15.
+		/// </summary>
+		public int MaxSubwordSize
+		{
+			get { return _maxSubwordSize; }
+			set
+			{
+				_maxSubwordSize = value;
+				_maxSubwordSizeSet = true;
+			}
+		}
 
-//only_longest_match
-//Only matching the longest(Boolean). Defaults to false
+		/// <summary>
+		/// only_longest_match
+		/// Only matching the longest(Boolean). Defaults to false
+		/// </summary>
+		public bool OnlyLongestMatch
+		{
+			get { return _onlyLongestMatch; }
+			set
+			{
+				_onlyLongestMatch = value;
+				_onlyLongestMatchSet = true;
+			}
+		}
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -71,8 +150,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("word_list", _wordList, elasticsearchCrudJsonWriter, _wordListSet);
-
+			JsonHelper.WriteListValue("word_list", _wordList, elasticsearchCrudJsonWriter, _wordListSet);
+			JsonHelper.WriteValue("word_list_path", _wordListPath, elasticsearchCrudJsonWriter, _wordListPathSet);
+			JsonHelper.WriteValue("hyphenation_patterns_path", _hyphenationPatternsPath, elasticsearchCrudJsonWriter, _hyphenationPatternsPathSet);
+			JsonHelper.WriteValue("min_word_size", _minWordSize, elasticsearchCrudJsonWriter, _minWordSizeSet);
+			JsonHelper.WriteValue("min_subword_size", _minSubwordSize, elasticsearchCrudJsonWriter, _minSubwordSizeSet);
+			JsonHelper.WriteValue("max_subword_size", _maxSubwordSize, elasticsearchCrudJsonWriter, _maxSubwordSizeSet);
+			JsonHelper.WriteValue("only_longest_match", _onlyLongestMatch, elasticsearchCrudJsonWriter, _onlyLongestMatchSet);
 		}
 	}
 }

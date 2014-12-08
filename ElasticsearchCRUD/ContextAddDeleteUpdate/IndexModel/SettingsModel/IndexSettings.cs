@@ -19,9 +19,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
+			Analysis.WriteJson(elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("number_of_shards", _numberOfShards, elasticsearchCrudJsonWriter, _numberOfShardsSet);
 			base.WriteJson(elasticsearchCrudJsonWriter);
-
+			
 		}
 	}
 }
