@@ -275,7 +275,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			TearDown();
 		}
 
-		//
 		//		"settings" : {
 		//   "analysis" : {
 		//	   "filter" : {
@@ -362,6 +361,55 @@ namespace ElasticsearchCRUD.Integration.Test
 			TearDown();
 		}
 
+		//		{
+		//	"settings": {
+		//		"analysis": {
+		//			"analyzer": {
+		//				"es_std": {
+		//					"type":      "standard",
+		//					"stopwords": "_spanish_"
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+		[Test]
+		public void CreateNewIndexDefinitionStandardAnalyzer()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Analysis = new Analysis
+					{
+						Analyzer =
+						{
+							Analyzers = new List<AnalyzerBase>
+							{
+								new StandardAnaylzer("es_std")
+								{
+									Stopwords = "_spanish_"
+								}
+							}
+						}
+					},
+					NumberOfShards = 2,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestSettingsIndex>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestSettingsIndex>());
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
 	}
 
 	public class TestSettingsIndex
