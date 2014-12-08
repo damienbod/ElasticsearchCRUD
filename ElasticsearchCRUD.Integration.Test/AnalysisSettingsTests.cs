@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class AnalysisSettingsTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		public void TearDown()
 		{
@@ -394,6 +394,59 @@ namespace ElasticsearchCRUD.Integration.Test
 						}
 					},
 					NumberOfShards = 2,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestSettingsIndex>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestSettingsIndex>());
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
+
+		[Test]
+		public void CreateNewIndexDefinitionForSynonymFilter()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Analysis = new Analysis
+					{
+						Analyzer =
+						{
+							Analyzers = new List<AnalyzerBase>
+							{
+								new CustomAnalyzer("my_analyzer")
+								{
+									Tokenizer= DefaultTokenizers.Standard,
+									Filter = new List<string>{ DefaultTokenFilters.Standard, DefaultTokenFilters.Lowercase, "my_synonym"}
+								}
+							}
+						},
+						Filters =
+						{
+							CustomFilters = new List<AnalysisFilterBase>
+							{
+								new SynonymTokenFilter("my_synonym")
+								{
+									Synonyms = new List<string>
+									{
+										"william  => bob",
+										"sean, johny => john"
+									}
+								}
+							}
+						}
+					},
+					NumberOfShards = 3,
 					NumberOfReplicas = 1
 				},
 			};
