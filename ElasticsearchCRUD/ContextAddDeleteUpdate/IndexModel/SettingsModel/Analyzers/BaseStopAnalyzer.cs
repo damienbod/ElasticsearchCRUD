@@ -36,7 +36,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 
 		protected void WriteCommonValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
+			//JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
 			if (_stopwordsListSet)
 			{
 				JsonHelper.WriteListValue("stopwords", _stopwordsList, elasticsearchCrudJsonWriter, _stopwordsListSet);
