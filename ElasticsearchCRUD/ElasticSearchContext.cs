@@ -633,6 +633,15 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
+		/// Clears the cache for the index. The index is defined using the Type
+		/// </summary>
+		/// <returns>returns true if cache has been cleared</returns>
+		public bool IndexClearCache(string index)
+		{
+			return _elasticsearchContextClearCache.ClearCacheForIndex(index);
+		}
+
+		/// <summary>
 		/// Async Clears the cache for the index. The index is defined using the Type
 		/// </summary>
 		/// <typeparam name="T">Type used to get the index name</typeparam>
@@ -752,6 +761,15 @@ namespace ElasticsearchCRUD
 			return _elasticsearchContextAddDeleteUpdate.DeleteIndexAsync<T>(AllowDeleteForIndex).Result.PayloadResult;
 		}
 
+		/// <summary>
+		/// Delete the whole index if it exists and Elasticsearch allows delete index.
+		/// Property AllowDeleteForIndex must also be set to true.
+		/// </summary>
+		/// <returns>Result details in a , true if ok</returns>
+		public bool DeleteIndex(string index)
+		{
+			return _elasticsearchContextAddDeleteUpdate.DeleteIndexAsync(AllowDeleteForIndex, index).Result.PayloadResult;
+		}
 		/// <summary>
 		/// Async Delete the whole index type if it exists and Elasticsearch allows delete index. This can be used for deleting child types in an existing index.
 		/// Property AllowDeleteForIndex must also be set to true.

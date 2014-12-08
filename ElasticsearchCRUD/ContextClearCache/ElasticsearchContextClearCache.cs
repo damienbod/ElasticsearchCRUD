@@ -27,6 +27,12 @@ namespace ElasticsearchCRUD.ContextClearCache
 			_connectionString = connectionString;
 		}
 
+		public bool ClearCacheForIndex(string index)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.Execute(() => ClearCacheForIndexAsync(index));	
+		}
+
 		public bool ClearCacheForIndex<T>()
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
@@ -55,6 +61,28 @@ namespace ElasticsearchCRUD.ContextClearCache
 
 			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextClearCache: Could nor clear cache for index {0}", elasticSearchMapping.GetIndexForType(typeof(T))));
 			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextClearCache: Could nor clear cache for index {0}", elasticSearchMapping.GetIndexForType(typeof(T))));
+		}
+
+		public async Task<ResultDetails<bool>> ClearCacheForIndexAsync(string index)
+		{
+			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextClearCache: Clearing Cache for index {0}", index));
+
+			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
+			var elasticsearchUrlForClearCache = string.Format("{0}/{1}/_cache/clear", _connectionString, index);
+			var uri = new Uri(elasticsearchUrlForClearCache);
+			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP POST uri: {0}", uri.AbsoluteUri, "ElasticsearchContextClearCache");
+
+			var request = new HttpRequestMessage(HttpMethod.Post, uri);
+			var response = await _client.SendAsync(request, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+			if (response.StatusCode == HttpStatusCode.OK)
+			{
+				resultDetails.PayloadResult = true;
+				return resultDetails;
+			}
+
+			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextClearCache: Could nor clear cache for index {0}", index));
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextClearCache: Could nor clear cache for index {0}", index));
 		}
 	}
 }

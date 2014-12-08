@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Utils;
 
@@ -69,6 +70,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Anal
 				JsonHelper.WriteListValue("filter", _filter, elasticsearchCrudJsonWriter, _filterSet);
 				JsonHelper.WriteListValue("char_filter", _charFilter, elasticsearchCrudJsonWriter, _charFilterSet);		
 			}
-		}	
+		}
+
+		public IEnumerator GetEnumerator()
+		{
+			throw new System.NotImplementedException();
+		}
 	}
 }
