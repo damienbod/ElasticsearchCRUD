@@ -47,6 +47,8 @@
 		public const string Keep = "keep";
 		public const string KeepTypes = "keep_types";
 		public const string Classic = "classic";
-		public const string Apostrophe = "apostrophe";	
+		public const string Apostrophe = "apostrophe";
+		public const string IcuFolding = "icu_folding";
+		public const string IcuCollation = "icu_collation";
 	}
 }
