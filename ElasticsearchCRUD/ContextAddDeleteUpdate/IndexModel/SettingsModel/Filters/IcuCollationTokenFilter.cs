@@ -11,6 +11,18 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 		private bool _strengthSet;
 		private IcuCollationDecomposition _decomposition;
 		private bool _decompositionSet;
+		private string _alternate;
+		private bool _alternateSet;
+		private bool _caseLevel;
+		private bool _caseLevelSet;
+		private IcuCollationCaseLevel _caseFirst;
+		private bool _caseFirstSet;
+		private bool _numeric;
+		private bool _numericSet;
+		private string _variableTop;
+		private bool _variableTopSet;
+		private bool _hiraganaQuaternaryMode;
+		private bool _hiraganaQuaternaryModeSet;
 
 		public IcuCollationTokenFilter(string name)
 		{
@@ -64,25 +76,92 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 				_decompositionSet = true;
 			}
 		}
-		
-//alternate
-//Possible values: shifted or non-ignorable. Sets the alternate handling for strength quaternary to be either shifted or non-ignorable. What boils down to ignoring punctuation and whitespace.
 
-//caseLevel
-//Possible values: true or false. Default is false. Whether case level sorting is required. When strength is set to primary this will ignore accent differences.
+		/// <summary>
+		/// alternate
+		/// Possible values: shifted or non-ignorable. Sets the alternate handling for strength quaternary to be either shifted or non-ignorable. 
+		/// What boils down to ignoring punctuation and whitespace.
+		/// </summary>
+		public string Alternate
+		{
+			get { return _alternate; }
+			set
+			{
+				_alternate = value;
+				_alternateSet = true;
+			}
+		}
 
-//caseFirst
-//Possible values: lower or upper. Useful to control which case is sorted first when case is not ignored for strength tertiary.
+		/// <summary>
+		/// caseLevel
+		/// Possible values: true or false. Default is false. Whether case level sorting is required. When strength is set to primary this will ignore accent differences.
+		/// </summary>
+		public bool CaseLevel
+		{
+			get { return _caseLevel; }
+			set
+			{
+				_caseLevel = value;
+				_caseLevelSet = true;
+			}
+		}
 
-//numeric
-//Possible values: true or false. Whether digits are sorted according to numeric representation. For example the value egg-9 is sorted before the value egg-21. Defaults to false.
+		/// <summary>
+		/// caseFirst
+		/// Possible values: lower or upper. Useful to control which case is sorted first when case is not ignored for strength tertiary.
+		/// </summary>
+		public IcuCollationCaseLevel CaseFirst
+		{
+			get { return _caseFirst; }
+			set
+			{
+				_caseFirst = value;
+				_caseFirstSet = true;
+			}
+		}
 
-//variableTop
-//Single character or contraction. Controls what is variable for alternate.
+		/// <summary>
+		/// numeric
+		/// Possible values: true or false. Whether digits are sorted according to numeric representation. 
+		/// For example the value egg-9 is sorted before the value egg-21. Defaults to false.
+		/// </summary>
+		public bool Numeric
+		{
+			get { return _numeric; }
+			set
+			{
+				_numeric = value;
+				_numericSet = true;
+			}
+		}
 
-//hiraganaQuaternaryMode
-//Possible values: true or false. Defaults to false. Distinguishing between Katakana and Hiragana characters in quaternary strength .
+		/// <summary>
+		/// variableTop
+		/// Single character or contraction. Controls what is variable for alternate.
+		/// </summary>
+		public string VariableTop
+		{
+			get { return _variableTop; }
+			set
+			{
+				_variableTop = value;
+				_variableTopSet = true;
+			}
+		}
 
+		/// <summary>
+		/// hiraganaQuaternaryMode
+		/// Possible values: true or false. Defaults to false. Distinguishing between Katakana and Hiragana characters in quaternary strength .
+		/// </summary>
+		public bool HiraganaQuaternaryMode
+		{
+			get { return _hiraganaQuaternaryMode; }
+			set
+			{
+				_hiraganaQuaternaryMode = value;
+				_hiraganaQuaternaryModeSet = true;
+			}
+		}
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -95,7 +174,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			JsonHelper.WriteValue("language", _language, elasticsearchCrudJsonWriter, _languageSet);
 			JsonHelper.WriteValue("strength", _strength.ToString(), elasticsearchCrudJsonWriter, _strengthSet);
 			JsonHelper.WriteValue("decomposition", _decomposition.ToString(), elasticsearchCrudJsonWriter, _decompositionSet);
-			
+			JsonHelper.WriteValue("alternate", _alternate, elasticsearchCrudJsonWriter, _alternateSet);
+			JsonHelper.WriteValue("caseLevel", _caseLevel, elasticsearchCrudJsonWriter, _caseLevelSet);
+			JsonHelper.WriteValue("caseFirst", _caseFirst.ToString(), elasticsearchCrudJsonWriter, _caseFirstSet);
+			JsonHelper.WriteValue("numeric", _numeric, elasticsearchCrudJsonWriter, _numericSet);
+			JsonHelper.WriteValue("variableTop", _variableTop, elasticsearchCrudJsonWriter, _variableTopSet);
+			JsonHelper.WriteValue("hiraganaQuaternaryMode", _hiraganaQuaternaryMode, elasticsearchCrudJsonWriter, _hiraganaQuaternaryModeSet);
 		}
 	}
 
@@ -113,4 +197,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 	//{
 	//	shifted, non-ignorable
 	//}
+
+	public enum IcuCollationCaseLevel
+	{
+		upper, lower
+	}
+	
 }
