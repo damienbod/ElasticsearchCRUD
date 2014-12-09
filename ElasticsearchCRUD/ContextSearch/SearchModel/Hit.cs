@@ -6,7 +6,8 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 	//    "hits":[{
 	//      "_index":"parentdocuments",
 	//      "_type":"childdocumentleveltwo",
-	//      "_id":"35","_score":1.0,
+	//      "_id":"35",
+	//      "_score":1.0,
 	//      "_source":{"id":35,"d3":"p8.p25.p35"}
 	//     }]
 	public class Hit<T>
@@ -20,6 +21,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 		[JsonProperty(PropertyName = "_id")]
 		public int Id { get; set; }
 
+		[JsonProperty(PropertyName = "_score")]
+		public double Score { get; set; }
+		
 		[JsonProperty(PropertyName = "_source", NullValueHandling= NullValueHandling.Ignore)]
 		public T Source { get; set; }
 	}
