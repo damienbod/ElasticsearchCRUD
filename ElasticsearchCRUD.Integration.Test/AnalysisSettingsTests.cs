@@ -599,6 +599,74 @@ namespace ElasticsearchCRUD.Integration.Test
 			Thread.Sleep(1500);
 			TearDown();
 		}
+
+		//		{
+		//	"index" : {
+		//		"analysis" : {
+		//			"analyzer" : {
+		//				"folding" : {
+		//					"tokenizer" : "standard",
+		//					"filter" : ["my_icu_folding", "lowercase"]
+		//				}
+		//			}
+		//			"filter" : {
+		//				"my_icu_folding" : {
+		//					"type" : "icu_folding"
+		//					"unicodeSetFilter" : "[^åäöÅÄÖ]"
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+		// THIS TEST WILL ONLY WORK IF YOU INSTALL THE PLUGIN
+		//[Test]
+		public void CreateNewIndexDefinitionForIcuFoldingTokenFilter()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Analysis = new Analysis
+					{
+						Analyzer =
+						{
+							Analyzers = new List<AnalyzerBase>
+							{
+								new CustomAnalyzer("folding")
+								{
+									Tokenizer= DefaultTokenizers.Standard,
+									Filter = new List<string>{ DefaultTokenFilters.Standard, DefaultTokenFilters.Lowercase, "my_icu_folding"}
+								}
+							}
+						},
+						Filters =
+						{
+							CustomFilters = new List<AnalysisFilterBase>
+							{
+								new IcuFoldingTokenFilter("my_icu_folding")
+								{
+									UnicodeSetFilter = "[^åäöÅÄÖ]"
+								}
+							}
+						}
+					},
+					NumberOfShards = 3,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestSettingsIndex>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestSettingsIndex>());
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
 	}
 
 	public class TestSettingsIndex

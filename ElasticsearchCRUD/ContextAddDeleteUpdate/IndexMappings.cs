@@ -33,6 +33,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				var content = new StringContent(command.Content + "\n");
 				traceProvider.Trace(TraceEventType.Verbose, "{1}: sending init mappings request: {0}", command, "InitMappings");
 				traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP PUT uri: {0}", command.Url, "InitMappings");
+				traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP PUT content: {0}", command.Content, "InitMappings");
+				
 				content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
 
 				HttpResponseMessage response;
