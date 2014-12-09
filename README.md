@@ -79,6 +79,16 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.21</strong><em> 2014.12.09</em>
+- support for index Token filters, custom filters
+- support for index Tokenizers, custom tokenizers
+- support for index Analyzers, custom analyzers
+- support for _all and _source mappings
+- support for support analysis mappings, settings
+- support update index analysis settings
+- support for mapping Analyzer
+- refactored the search results to conform with the search API hits/hit etc
+
 <strong>Version 1.0.20</strong><em> 2014.11.28</em>
 - support optimize index 
 - support close index
