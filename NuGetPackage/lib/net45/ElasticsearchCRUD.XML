@@ -294,21 +294,22 @@
             You can define all the Elasticsearch properties here
             </summary>
         </member>
-        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForEntityForParentDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,System.String)">
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForEntityForParentDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingDefinition)">
             <summary>
             Create a new index for the parent document
             </summary>
             <param name="entityInfo"></param>
             <param name="elasticsearchMapping"></param>
-            <param name="index"></param>
+            <param name="mappingDefinition">mapping definitions for the index type</param>
         </member>
-        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForChildDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.Model.EntityContextInfo)">
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForChildDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingDefinition)">
             <summary>
             Create a new mapping for the child type in the parent document index
             </summary>
             <param name="entityInfo"></param>
             <param name="elasticsearchMapping"></param>
             <param name="item"></param>
+            <param name="mappingDefinition">definition for the type mappings</param>
         </member>
         <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreateForceRoutingMappingForDocument(ElasticsearchCRUD.ElasticsearchCrudJsonWriter)">
             <summary>
@@ -318,18 +319,757 @@
             </summary>
             <param name="elasticsearchCrudJsonWriter"></param>
         </member>
-        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreateIndexSettings(ElasticsearchCRUD.ElasticsearchCrudJsonWriter,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexSettings)">
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreateIndexSettings(ElasticsearchCRUD.ElasticsearchCrudJsonWriter,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings)">
             "settings" : {
             "number_of_shards" : 1
             },
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.NumberOfReplicas">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.BaseStopAnalyzer.Stopwords">
+            <summary>
+            A list of stopwords to initialize the stop filter with. Defaults to the english stop words.
+            Use stopwords: _none_ to explicitly specify an empty stopword list.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.CustomAnalyzer">
+             <summary>
+             The standard analyzer, which is the default analyzer used for full-text fields, is a good choice for most Western languages. It consists of the following:
+            
+            	The standard tokenizer, which splits the input text on word boundaries
+            	The standard token filter, which is intended to tidy up the tokens emitted by the tokenizer (but currently does nothing)
+            	The lowercase token filter, which converts all tokens into lowercase
+            	The stop token filter, which removes stopwords—common words that have little impact on search relevance, such as a, the, and, is. 
+            
+             By default, the stopwords filter is disabled. You can enable it by creating a custom analyzer based on the standard analyzer and setting the stopwords parameter. 
+             Either provide a list of stopwords or tell it to use a predefined stopwords list from a particular language.
+            
+             "analyzer" : {
+            		"blocks_analyzer" : {
+            			"type" : "custom",
+            			"tokenizer" : "whitespace",
+            			"filter" : ["lowercase", "blocks_filter", "shingle"]
+            		}
+            	}
+             </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.LanguageAnalyzer.#ctor(System.String,System.String)">
+             <summary>
+             A set of analyzers aimed at analyzing specific language text. The following types are supported: 
+             arabic, armenian, basque, brazilian, bulgarian, catalan, chinese, cjk, czech, danish, dutch, english, finnish, french, galician, 
+             german, greek, hindi, hungarian, indonesian, irish, italian, latvian, norwegian, persian, portuguese, romanian, 
+             russian, sorani, spanish, swedish, turkish, thai.
+             
+             Configuring language analyzersedit
+             Stopwordsedit
+             All analyzers support setting custom stopwords either internally in the config, or by using an external stopwords file by setting stopwords_path. 
+            
+             The following analyzers support setting custom stem_exclusion list: 
+             arabic, armenian, basque, catalan, bulgarian, catalan, czech, finnish, dutch, english, finnish, french, galician, 
+             german, irish, hindi, hungarian, indonesian, italian, latvian, norwegian, portuguese, romanian, russian, sorani, spanish, swedish, turkish.
+             </summary>
+             <param name="name">name of the analyzer</param>
+             <param name="analyzer">required for language analyzers</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.LanguageAnalyzer.StopwordsPath">
+            <summary>
+            stopwords_path
+            A path (either relative to config location, or absolute) to a stopwords file configuration.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.LanguageAnalyzer.StemExclusion">
+            <summary>
+            Excluding words from stemmingedit
+            The stem_exclusion parameter allows you to specify an array of lowercase words that should not be stemmed. Internally, 
+            this functionality is implemented by adding the keyword_marker token filter with the keywords set to the value of the stem_exclusion parameter.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.PatternAnalyzer.Lowercase">
+            <summary>
+            lowercase  Should terms be lowercased or not. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.PatternAnalyzer.Pattern">
+            <summary>
+            pattern The regular expression pattern, defaults to \W+.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.PatternAnalyzer.Flags">
+             <summary>
+             flags The regular expression flags.
+             IMPORTANT: The regular expression should match the token separators, not the tokens themselves.
+            
+             Flags should be pipe-separated, eg "CASE_INSENSITIVE|COMMENTS". Check Java Pattern API for more details about flags options.
+             </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.SnowballAnalyzer.#ctor(System.String)">
+            <summary>
+            An analyzer of type snowball that uses the standard tokenizer, with standard filter, lowercase filter, stop filter, and snowball filter.
+            The Snowball Analyzer is a stemming analyzer from Lucene that is originally based on the snowball project from snowball.tartarus.org.
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.StandardAnaylzer.MaxTokenLength">
+            <summary>
+            max_token_length
+            The maximum token length. If a token is seen that exceeds this length then it is discarded. Defaults to 255.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.StopAnalyzer.#ctor(System.String)">
+            <summary>
+            An analyzer of type stop that is built using a Lower Case Tokenizer, with Stop Token Filter.
+            </summary>
+            <param name="name">name of the analyzer</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers.StopAnalyzer.StopwordsPath">
+            <summary>
+            stopwords_path
+            A path (either relative to config location, or absolute) to a stopwords file configuration.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.AsciifoldingTokenFilter.#ctor(System.String)">
+            <summary>
+            A token filter of type asciifolding that converts alphabetic, numeric, and symbolic Unicode characters which are not in the first 127 ASCII characters 
+            (the "Basic Latin" Unicode block) into their ASCII equivalents, if one exists.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.AsciifoldingTokenFilter.PreserveOriginal">
+            <summary>
+            Accepts preserve_original setting which defaults to false but if true will keep the original token as well as emit the folded token.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CjkBigramTokenFilter.#ctor(System.String)">
+            <summary>
+            The cjk_bigram token filter forms bigrams out of the CJK terms that are generated by the standard tokenizer or the icu_tokenizer (see ICU Analysis Plugin).
+            By default, when a CJK character has no adjacent characters to form a bigram, it is output in unigram form. If you always want to output both unigrams and bigrams, 
+            set the output_unigrams flag to true. This can be used for a combined unigram+bigram approach
+            Bigrams are generated for characters in han, hiragana, katakana and hangul, but bigrams can be disabled for particular scripts with the ignore_scripts parameter. 
+            All non-CJK input is passed through unmodified.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CjkBigramTokenFilter.IgnoreScripts">
+            <summary>
+            ignore_scripts
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CjkBigramTokenFilter.OutputUnigrams">
+            <summary>
+            output_unigrams
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CommonGramsFilter.#ctor(System.String)">
+            <summary>
+            Token filter that generates bigrams for frequently occuring terms. Single terms are still indexed. It can be used as an alternative to the
+            Stop Token Filter when we don’t want to completely ignore common terms.
+            For example, the text "the quick brown is a fox" will be tokenized as "the", "the_quick", "quick", "brown", "brown_is", "is_a", "a_fox", "fox". 
+            Assuming "the", "is" and "a" are common words.
+            
+            When query_mode is enabled, the token filter removes common words and single terms followed by a common word. 
+            This parameter should be enabled in the search analyzer.
+            For example, the query "the quick brown is a fox" will be tokenized as "the_quick", "quick", "brown_is", "is_a", "a_fox", "fox".
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CommonGramsFilter.CommonWords">
+            <summary>
+            common_words
+            A list of common words to use.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CommonGramsFilter.CommonWordsPath">
+            <summary>
+            common_words_path
+            A path (either relative to config location, or absolute) to a list of common words. Each word should be in its own "line" (separated by a line break). The file must be UTF-8 encoded.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CommonGramsFilter.IgnoreCase">
+            <summary>
+            ignore_case
+            If true, common words matching will be case insensitive (defaults to false).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CommonGramsFilter.QueryMode">
+            <summary>
+            query_mode
+            Generates bigrams then removes common words and single terms followed by a common word (defaults to false).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CompoundWordTokenFilter.WordList">
+            <summary>
+            word_list
+            A list of words to use.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CompoundWordTokenFilter.WordListPath">
+            <summary>
+            word_list_path
+            A path (either relative to config location, or absolute) to a list of words.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CompoundWordTokenFilter.HyphenationPatternsPath">
+            <summary>
+            hyphenation_patterns_path
+            A path (either relative to config location, or absolute) to a FOP XML hyphenation pattern file. 
+            (See http://offo.sourceforge.net/hyphenation/) Required for hyphenation_decompounder.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CompoundWordTokenFilter.MinWordSize">
+            <summary>
+            min_word_size
+            Minimum word size(Integer). Defaults to 5.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CompoundWordTokenFilter.MinSubwordSize">
+            <summary>
+            min_subword_size
+            Minimum subword size(Integer). Defaults to 2.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CompoundWordTokenFilter.MaxSubwordSize">
+            <summary>
+            max_subword_size
+            Maximum subword size(Integer). Defaults to 15.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.CompoundWordTokenFilter.OnlyLongestMatch">
+            <summary>
+            only_longest_match
+            Only matching the longest(Boolean). Defaults to false
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.DelimitedPayloadFilterTokenFilter.#ctor(System.String)">
+            <summary>
+            Named delimited_payload_filter. Splits tokens into tokens and payload whenever a delimiter character is found.
+            Example: "the|1 quick|2 fox|3" is split per default int to tokens fox, quick and the with payloads 1, 2 and 3 respectively.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.DelimitedPayloadFilterTokenFilter.Delimiter">
+            <summary>
+            delimiter
+            Character used for splitting the tokens. Default is |. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.DelimitedPayloadFilterTokenFilter.Encoding">
+            <summary>
+            encoding
+            The type of the payload. int for integer, float for float and identity for characters. Default is float. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.EdgeNGramTokenFilter.MinGram">
+            <summary>
+            min_gram Minimum size in codepoints of a single n-gram
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.EdgeNGramTokenFilter.MaxGram">
+            <summary>
+             max_gram Maximum size in codepoints of a single n-gram
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.EdgeNGramTokenFilter.Side">
+            <summary>
+            Either front or back. Defaults to front.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.ElisionTokenFilter.#ctor(System.String)">
+            <summary>
+            A token filter which removes elisions. For example, "l’avion" (the plane) will tokenized as "avion" (plane). 
+            Accepts articles setting which is a set of stop words articles. 
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.ElisionTokenFilter.Articles">
+            <summary>
+            articles
+            Accepts articles setting which is a set of stop words articles. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.HunspellTokenFilter.#ctor(System.String)">
+            <summary>
+            Basic support for hunspell stemming. Hunspell dictionaries will be picked up from a dedicated hunspell directory on the filesystem 
+            (defaults to path.conf/hunspell). Each dictionary is expected to have its own directory named after its associated locale (language).
+            This dictionary directory is expected to hold a single *.aff and one or more *.dic files (all of which will automatically be picked up). 
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.HunspellTokenFilter.Locale">
+            <summary>
+            locale
+            A locale for this filter. If this is unset, the lang or language are used instead - so one of these has to be set. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.HunspellTokenFilter.Dictionary">
+            <summary>
+            dictionary
+            The name of a dictionary. The path to your hunspell dictionaries should be configured via indices.analysis.hunspell.dictionary.location before.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.HunspellTokenFilter.Dedup">
+            <summary>
+            dedup
+            If only unique terms should be returned, this needs to be set to true. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.HunspellTokenFilter.LongestOnly">
+            <summary>
+            longest_only
+            If only the longest term should be returned, set this to true. Defaults to false: all possible stems are returned. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.Language">
+            <summary>
+            language
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.Strength">
+            <summary>
+            strength
+            The strength property determines the minimum level of difference considered significant during comparison. 
+            The default strength for the Collator is tertiary, unless specified otherwise by the locale used to create the Collator. 
+            Possible values: primary, secondary, tertiary, quaternary or identical. See ICU Collation documentation for a more detailed explanation for the specific values.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.Decomposition">
+            <summary>
+            decomposition
+            Possible values: no or canonical. Defaults to no. Setting this decomposition property with canonical allows the Collator to handle un-normalized text properly, 
+            producing the same results as if the text were normalized. If no is set, it is the user’s responsibility to insure that all text is already in the appropriate form 
+            before a comparison or before getting a CollationKey. Adjusting decomposition mode allows the user to select between faster and more complete collation behavior. 
+            Since a great many of the world’s languages do not require text normalization, most locales set no as the default decomposition mode.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.Alternate">
+            <summary>
+            alternate
+            Possible values: shifted or non-ignorable. Sets the alternate handling for strength quaternary to be either shifted or non-ignorable. 
+            What boils down to ignoring punctuation and whitespace.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.CaseLevel">
+            <summary>
+            caseLevel
+            Possible values: true or false. Default is false. Whether case level sorting is required. When strength is set to primary this will ignore accent differences.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.CaseFirst">
+            <summary>
+            caseFirst
+            Possible values: lower or upper. Useful to control which case is sorted first when case is not ignored for strength tertiary.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.Numeric">
+            <summary>
+            numeric
+            Possible values: true or false. Whether digits are sorted according to numeric representation. 
+            For example the value egg-9 is sorted before the value egg-21. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.VariableTop">
+            <summary>
+            variableTop
+            Single character or contraction. Controls what is variable for alternate.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuCollationTokenFilter.HiraganaQuaternaryMode">
+            <summary>
+            hiraganaQuaternaryMode
+            Possible values: true or false. Defaults to false. Distinguishing between Katakana and Hiragana characters in quaternary strength .
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.IcuFoldingTokenFilter.UnicodeSetFilter">
+            <summary>
+            unicodeSetFilter
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeepTokenFilter.#ctor(System.String)">
+            <summary>
+            A token filter of type keep that only keeps tokens with text contained in a predefined set of words. 
+            The set of words can be defined in the settings or loaded from a text file containing one word per line.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeepTokenFilter.KeepWords">
+            <summary>
+            keep_words
+            a list of words to keep
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeepTokenFilter.KeepWordsPath">
+            <summary>
+            keep_words_path
+            a path to a words file
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeepTokenFilter.KeepWordsCase">
+            <summary>
+            keep_words_case
+            a boolean indicating whether to lower case the words (defaults to false) 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeepTypesTokenFilter.#ctor(System.String)">
+            <summary>
+            A token filter of type keep_types that only keeps tokens with a token type contained in a predefined set.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeepTypesTokenFilter.Types">
+            <summary>
+            A list of types to keep 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeywordMarkerTokenFilter.#ctor(System.String)">
+            <summary>
+            Protects words from being modified by stemmers. Must be placed before any stemming filters.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeywordMarkerTokenFilter.Keywords">
+            <summary>
+            keywords
+            A list of mapping rules to use.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeywordMarkerTokenFilter.KeywordsPath">
+            <summary>
+            rules_path
+            A path (either relative to config location, or absolute) to a list of words.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.KeywordMarkerTokenFilter.IgnoreCase">
+            <summary>
+            ignore_case
+            Set to true to lower case all words first. Defaults to false.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.LengthTokenFilter.#ctor(System.String)">
+            <summary>
+            A token filter of type length that removes words that are too long or too short for the stream.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.LimitTokenFilter.#ctor(System.String)">
+            <summary>
+            Limits the number of tokens that are indexed per document and field.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.LimitTokenFilter.MaxTokenCount">
+            <summary>
+            max_token_count
+            The maximum number of tokens that should be indexed per document and field. The default is 1
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.LimitTokenFilter.ConsumeAllTokens">
+            <summary>
+            consume_all_tokens
+            If set to true the filter exhaust the stream even if max_token_count tokens have been consumed already. The default is false.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.LowercaseTokenFilter.#ctor(System.String)">
+            <summary>
+            A token filter of type lowercase that normalizes token text to lower case. 
+            Lowercase token filter supports Greek, Irish, and Turkish lowercase token filters through the language parameter.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.NGramTokenFilter.MinGram">
+            <summary>
+            min_gram Minimum size in codepoints of a single n-gram
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.NGramTokenFilter.MaxGram">
+            <summary>
+             max_gram Maximum size in codepoints of a single n-gram
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.PatternCaptureTokenFilter.#ctor(System.String)">
+            <summary>
+            The pattern_capture token filter, unlike the pattern tokenizer, emits a token for every capture group in the regular expression. 
+            Patterns are not anchored to the beginning and end of the string, so each pattern can match multiple times, and matches are allowed to overlap.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.PatternCaptureTokenFilter.PreserveOriginal">
+            <summary>
+            preserve_original
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.PatternReplaceTokenFilter.#ctor(System.String)">
+            <summary>
+            The pattern_replace token filter allows to easily handle string replacements based on a regular expression. 
+            The regular expression is defined using the pattern parameter, and the replacement string can be provided using the replacement parameter
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.PhoneticTokenFilter.#ctor(System.String)">
+             <summary>
+             https://github.com/elasticsearch/elasticsearch-analysis-phonetic
+             A phonetic token filter that can be configured with different encoder types: 
+             metaphone, doublemetaphone, soundex, refinedsoundex, caverphone1, caverphone2, cologne, nysiis, koelnerphonetik, haasephonetik, beidermorse
+            
+             The replace parameter (defaults to true) controls if the token processed should be replaced with the encoded one (set it to true), or added (set it to false).
+             </summary>
+             <param name="name"></param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.PhoneticTokenFilter.Encoder">
+            <summary>
+            A phonetic token filter that can be configured with different encoder types: 
+            metaphone, doublemetaphone, soundex, refinedsoundex, caverphone1, caverphone2, cologne, nysiis, koelnerphonetik, haasephonetik, beidermorse
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.PhoneticTokenFilter.Replace">
+            <summary>
+            The replace parameter (defaults to true) controls if the token processed should be replaced with the encoded one (set it to true), or added (set it to false).
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.ShingleTokenFilter.#ctor(System.String)">
+            <summary>
+            A token filter of type shingle that constructs shingles (token n-grams) from a token stream. 
+            In other words, it creates combinations of tokens as a single token. For example, the sentence "please divide this sentence 
+            into shingles" might be tokenized into shingles "please divide", "divide this", "this sentence", "sentence into", and "into shingles".
+            This filter handles position increments > 1 by inserting filler tokens (tokens with termtext "_"). 
+            It does not handle a position increment of 0.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.ShingleTokenFilter.OutputUnigrams">
+            <summary>
+            If true the output will contain the input tokens (unigrams) as well as the shingles. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.ShingleTokenFilter.OutputUnigramsIfNoShingles">
+            <summary>
+            If output_unigrams is false the output will contain the input tokens (unigrams) if no shingles are available. 
+            Note if output_unigrams is set to true this setting has no effect. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.ShingleTokenFilter.TokenSeparator">
+            <summary>
+            The string to use when joining adjacent tokens to form a shingle. Defaults to " ".
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.ShingleTokenFilter.FillerToken">
+            <summary>
+            The string to use as a replacement for each position at which there is no actual token in the stream. 
+            For instance this string is used if the position increment is greater than one 
+            when a stop filter is used together with the shingle filter. Defaults to "_"
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.SnowballTokenFilter">
+            <summary>
+            A filter that stems words using a Snowball-generated stemmer. 
+            The language parameter controls the stemmer with the following available values: 
+            Armenian, Basque, Catalan, Danish, Dutch, English, Finnish, French, German, German2, Hungarian, 
+            Italian, Kp, Lovins, Norwegian, Porter, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.SnowballTokenFilter.#ctor(System.String)">
+            <summary>
+            A filter that stems words using a Snowball-generated stemmer. 
+            The language parameter controls the stemmer with the following available values: 
+            Armenian, Basque, Catalan, Danish, Dutch, English, Finnish, French, German, German2, Hungarian, 
+            Italian, Kp, Lovins, Norwegian, Porter, Portuguese, Romanian, Russian, Spanish, Swedish, Turkish.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StemmerOverrideTokenFilter.#ctor(System.String)">
+             <summary>
+             Overrides stemming algorithms, by applying a custom mapping, then protecting these terms from being modified by stemmers. Must be placed before any stemming filters.
+            
+             Rules are separated by =>
+             </summary>
+             <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StemmerOverrideTokenFilter.Rules">
+            <summary>
+            rules
+            A list of mapping rules to use.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StemmerOverrideTokenFilter.RulesPath">
+            <summary>
+            rules_path
+            A path (either relative to config location, or absolute) to a list of mappings.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StemmerTokenFilter.#ctor(System.String)">
+            <summary>
+            A filter that provides access to (almost) all of the available stemming token filters through a single unified interface
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StemmerTokenFilter.StemmerName">
+            <summary>
+            Either front or back. Defaults to front.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StopTokenFilter.Stopwords">
+            <summary>
+            A list of stopwords to initialize the stop filter with. Defaults to the english stop words.
+            Use stopwords: _none_ to explicitly specify an empty stopword list.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StopTokenFilter.StopwordsPath">
+            <summary>
+            stopwords_path
+            A path (either relative to config location, or absolute) to a stopwords file configuration.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StopTokenFilter.IgnoreCase">
+            <summary>
+            ignore_case
+            Set to true to lower case all words first. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.StopTokenFilter.RemoveTrailing">
+            <summary>
+            remove_trailing
+            Set to false in order to not ignore the last term of a search if it is a stop word. 
+            This is very useful for the completion suggester as a query like green a can be 
+            extended to green apple even though you remove stop words in general. Defaults to true. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.SynonymTokenFilter.#ctor(System.String)">
+             <summary>
+             The synonym token filter allows to easily handle synonyms during the analysis process. Synonyms are configured using a configuration file. 
+             Additional settings are: ignore_case (defaults to false), and expand (defaults to true).
+            
+             The tokenizer parameter controls the tokenizers that will be used to tokenize the synonym, and defaults to the whitespace tokenizer.
+             </summary>
+             <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.SynonymTokenFilter.SynonymsPath">
+            <summary>
+            synonyms_path
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.SynonymTokenFilter.Synonyms">
+            <summary>
+            Two synonym formats are supported: Solr, WordNet.
+            These can be defined directly with this parameter.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.TruncateTokenFilter.#ctor(System.String)">
+            <summary>
+            The truncate token filter can be used to truncate tokens into a specific length. This can come in handy with keyword (single token) based mapped fields that are used for sorting in order to reduce memory usage.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.TruncateTokenFilter.Length">
+            <summary>
+            length
+            It accepts a length parameter which control the number of characters to truncate to, defaults to 10.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.UniqueTokenFilter.#ctor(System.String)">
+            <summary>
+            The unique token filter can be used to only index unique tokens during analysis. 
+            By default it is applied on all the token stream. If only_on_same_position is set to true, it will only remove duplicate tokens on the same position.
+            </summary>
+            <param name="name">name for the custom filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.UniqueTokenFilter.OnlyOnSamePosition">
+            <summary>
+            only_on_same_position
+            Accepts articles setting which is a set of stop words articles. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.#ctor(System.String)">
+             <summary>
+             Named word_delimiter, it Splits words into subwords and performs optional transformations on subword groups. Words are split into subwords with the following rules:
+            
+             split on intra-word delimiters (by default, all non alpha-numeric characters).
+               "Wi-Fi" → "Wi", "Fi"
+               split on case transitions: "PowerShot" → "Power", "Shot"
+               split on letter-number transitions: "SD500" → "SD", "500"
+               leading and trailing intra-word delimiters on each subword are ignored: "//hello---there, dude" → "hello", "there", "dude"
+               trailing "'s" are removed for each subword: "O’Neil’s" → "O", "Neil" 
+             </summary>
+             <param name="name">name for the filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.GenerateWordParts">
+            <summary>
+            generate_word_parts
+            If true causes parts of words to be generated: "PowerShot" ⇒ "Power" "Shot". Defaults to true. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.GenerateNumberParts">
+            <summary> 
+            generate_number_parts
+            If true causes number subwords to be generated: "500-42" ⇒ "500" "42". Defaults to true. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.CatenateWords">
+            <summary>
+            catenate_words
+            If true causes maximum runs of word parts to be catenated: "wi-fi" ⇒ "wifi". Defaults to false. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.CatenateNumbers">
+            <summary>
+            catenate_numbers
+            If true causes maximum runs of number parts to be catenated: "500-42" ⇒ "50042". Defaults to false. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.CatenateAll">
+            <summary>
+            catenate_all
+            If true causes all subword parts to be catenated: "wi-fi-4000" ⇒ "wifi4000". Defaults to false. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.SplitOnCaseChange">
+            <summary>
+            split_on_case_change
+            If true causes "PowerShot" to be two tokens; ("Power-Shot" remains two parts regards). Defaults to true. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.PreserveOriginal">
+            <summary>
+            preserve_original
+            If true includes original words in subwords: "500-42" ⇒ "500-42" "500" "42". Defaults to false. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.SplitOnNumerics">
+            <summary>
+            split_on_numerics
+            If true causes "j2se" to be three tokens; "j" "2" "se". Defaults to true. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.StemEnglishPossessive">
+            <summary>
+            stem_english_possessive
+            If true causes trailing "'s" to be removed for each subword: "O’Neil’s" ⇒ "O", "Neil". Defaults to true. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.ProtectedWords">
+            <summary>
+            protected_words
+            A list of protected words from being delimiter. Either an array, or also can set protected_words_path which resolved to a file configured 
+            with protected words (one on each line). Automatically resolves to config/ based location if exists. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.ProtectedWordsPath">
+            <summary>
+            protected_words_path see protected_words
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.WordDelimiterTokenFilter.TypeTable">
+            <summary>
+            type_table
+            A custom type mapping table, for example (when configured using type_table_path):
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexDefinition.Mapping">
+            <summary>
+            TODO change this to a list so n mappings can be defined
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.NumberOfReplicas">
             <summary>
             index.number_of_replicas
             The number of replicas each shard has. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RefreshInterval">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.RefreshInterval">
             <summary>
             index.refresh_interval
             The async refresh interval of a shard. 
@@ -345,111 +1085,116 @@
             curl -XPOST 'http://localhost:9200/test/_optimize?max_num_segments=5'
             </summary>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.AutoExpandReplicas" -->
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksReadOnly">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.AutoExpandReplicas">
+            <summary>
+            index.auto_expand_replicas (string)
+            Set to a dash delimited lower and upper bound (e.g. 0-5) or one may use all as the upper bound (e.g. 0-all), or false to disable it. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.BlocksReadOnly">
             <summary>
             index.blocks.read_only
             Set to true to have the index read only, false to allow writes and metadata changes. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksRead">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.BlocksRead">
             <summary>
             index.blocks.read
             Set to true to disable read operations against the index. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksWrite">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.BlocksWrite">
             <summary>
             index.blocks.write
             Set to true to disable write operations against the index. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.BlocksMetadata">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.BlocksMetadata">
             <summary>
             index.blocks.metadata
             Set to true to disable metadata operations against the index.
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.IndexConcurrency">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.IndexConcurrency">
             <summary>
             index.index_concurrency
             Defaults to 8. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CodecBloomLoad">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.CodecBloomLoad">
             <summary>
             index.codec.bloom.load
             Whether to load the bloom filter. Defaults to false. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.FailOnMergeFailure">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.FailOnMergeFailure">
             <summary>
             index.fail_on_merge_failure
             Default to true. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogFlushThresholdOps">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.TranslogFlushThresholdOps">
             <summary>
             index.translog.flush_threshold_ops
             When to flush based on operations. 
             http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/index-modules-translog.html
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogFlushThresholdSize">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.TranslogFlushThresholdSize">
             <summary>
             index.translog.flush_threshold_size
             When to flush based on translog (bytes) size. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogflushThresholdPeriod">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.TranslogflushThresholdPeriod">
             <summary>
             index.translog.flush_threshold_period
             When to flush based on a period of not flushing. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogDisableFlush">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.TranslogDisableFlush">
             <summary>
             index.translog.disable_flush
             Disables flushing. Note, should be set for a short interval and then enabled.
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CacheFilterMaxSize">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.CacheFilterMaxSize">
             <summary>
             index.cache.filter.max_size
             The maximum size of filter cache (per segment in shard). Set to -1 to disable. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CacheFilterExpire">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.CacheFilterExpire">
             <summary>
             index.cache.filter.expire
             The expire after access time for filter cache. Set to -1 to disable. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.GatewaySnapshotInterval">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.GatewaySnapshotInterval">
             <summary>
             index.gateway.snapshot_interval
             The gateway snapshot interval (only applies to shared gateways). Defaults to 10s. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationInclude">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.RoutingAllocationInclude">
             <summary>
             index.routing.allocation.include.*
             A node matching any rule will be allowed to host shards from the index. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationExclude">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.RoutingAllocationExclude">
             <summary>
             index.routing.allocation.exclude.*
             A node matching any rule will NOT be allowed to host shards from the index. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationRequire">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.RoutingAllocationRequire">
             <summary>
             index.routing.allocation.require.*
             Only nodes matching all rules will be allowed to host shards from the index. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationEnable">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.RoutingAllocationEnable">
             <summary>
             index.routing.allocation.enable
             Enables shard allocation for a specific index. It can be set to:
@@ -459,13 +1204,13 @@
             none - No shard allocation is allowed. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RoutingAllocationTotalShardsPerNode">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.RoutingAllocationTotalShardsPerNode">
             <summary>
             index.routing.allocation.total_shards_per_node
             Controls the total number of shards (replicas and primaries) allowed to be allocated on a single node. Defaults to unbounded (-1). 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.RecoveryInitialShards">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.RecoveryInitialShards">
              <summary>
              index.recovery.initial_shards
             	When using local gateway a particular shard is recovered only if there can be allocated quorum shards in the cluster. It can be set to:
@@ -477,40 +1222,96 @@
             		Number values are also supported, e.g. 1. 
              </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TtlDisablePurge">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.TtlDisablePurge">
             <summary>
             index.ttl.disable_purge
             Disables temporarily the purge of expired docs. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.GcDeletes">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.GcDeletes">
             <summary>
             index.gc_deletes
             Disables temporarily the purge of expired docs. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.TranslogFsType">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.TranslogFsType">
             <summary>
             index.translog.fs.type
             Either simple or buffered (default). 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CompoundFormat">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.CompoundFormat">
             <summary>
             index.compound_format
             See index.compound_format in the section called “Index Settingsedit”. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.CompoundOnFlush">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.CompoundOnFlush">
             <summary>
             index.compound_on_flush
             See `index.compound_on_flush in the section called “Index Settingsedit”. 
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings.WarmerEnabled">
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings.WarmerEnabled">
             <summary>
             index.warmer.enabled
             See Warmers. Defaults to true. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingAll">
+            <summary>
+            The idea of the _all field is that it includes the text of one or more other fields within the document indexed. 
+            It can come very handy especially for search requests, where we want to execute a search query against the content of a document, 
+            without knowing which fields to search on. This comes at the expense of CPU cycles and index size.
+            The _all fields can be completely disabled. Explicit field mappings and object mappings can be excluded / included in the _all field. 
+            By default, it is enabled and all fields are included in it for ease of use.
+            When disabling the _all field, it is a good practice to set index.query.default_field to a different value 
+            (for example, if you have a main "message" field in your data, set it to message).
+            One of the nice features of the _all field is that it takes into account specific fields boost levels. 
+            Meaning that if a title field is boosted more than content, the title (part) in the _all field will mean more than the content (part) in the _all field.
+            "_all" : {"enabled" : true}
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingAnalyzer">
+            <summary>
+            The _analyzer mapping allows to use a document field property as the name of the analyzer that will be used to index the document. 
+            The analyzer will be used for any field that does not explicitly defines an analyzer or index_analyzer when indexing.
+            {
+             "type1" : {
+            	"_analyzer" : {
+            		"path" : "my_field"
+            	}
+              }
+            }
+            
+            The above will use the value of the my_field to lookup an analyzer registered under it. For example, indexing the following doc:
+            {
+             	"my_field" : "whitespace"
+             }
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingSource.Enabled">
+            <summary>
+            The _source field is an automatically generated field that stores the actual JSON that was used as the indexed document. 
+            It is not indexed (searchable), just stored. When executing "fetch" requests, like get or search, the _source field is returned by default.
+            Though very handy to have around, the source field does incur storage overhead within the index. For this reason, it can be disabled.
+            {
+              "tweet" : {
+            	"_source" : {"enabled" : false}
+              }
+            }
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingSource.Includes">
+            <summary>
+            {
+               "my_type" : {
+                  "_source" : {
+            		"includes" : ["path1.*", "path2.*"],
+            		"excludes" : ["path3.*"]
+            	}
+             }
+            }
             </summary>
         </member>
         <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.GetOptimizeParameters">
@@ -519,7 +1320,12 @@
             </summary>
             <returns></returns>
         </member>
-        <!-- Badly formed XML comment ignored for member "P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.NumberOfShards" -->
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.NumberOfShards">
+            <summary>
+            max_num_segments
+            The number of segments to optimize to. To fully optimize the index, set it to 1. Defaults to simply checking if a merge needs to execute, and if so, executes it.
+            </summary>
+        </member>
         <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.OptimizeParameters.OnlyExpungeDeletesSet">
             <summary>
             only_expunge_deletes
@@ -539,6 +1345,153 @@
             <summary>
             wait_for_merge
             Should the request wait for the merge to end. Defaults to true. Note, a merge can potentially be a very heavy operation, so it might make sense to run it set to false. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.BaseNGramTokenizer.MinGram">
+            <summary>
+            min_gram Minimum size in codepoints of a single n-gram
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.BaseNGramTokenizer.MaxGram">
+            <summary>
+             max_gram Maximum size in codepoints of a single n-gram
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.BaseNGramTokenizer.TokenChars">
+            <summary>
+            token_chars Characters classes to keep in the tokens, Elasticsearch will split on characters that don’t belong to any of these classes.
+            [] (Keep all characters)
+            token_chars accepts the following character classes:
+              letter for example a, b, ï or 京
+              digit for example 3 or 7
+              whitespace for example " " or "\n"
+              punctuation for example ! or "
+              symbol for example $ or √ 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.ClassicTokenizer.#ctor(System.String)">
+            <summary>
+            A tokenizer of type classic providing grammar based tokenizer that is a good tokenizer for English language documents. 
+            This tokenizer has heuristics for special treatment of acronyms, company names, email addresses, and internet host names. 
+            However, these rules don’t always work, and the tokenizer doesn’t work well for most languages other than English.
+            </summary>
+            <param name="name">name of the custom tokenizer ToLower()</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.EdgeNGramTokenizer.#ctor(System.String)">
+            <summary>
+            A tokenizer of type edgeNGram.
+            This tokenizer is very similar to nGram but only keeps n-grams which start at the beginning of a token.
+            </summary>
+            <param name="name">name of the custom tokenizer (ToLower()</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.KeywordTokenizer.#ctor(System.String)">
+            <summary>
+            A tokenizer of type keyword that emits the entire input as a single output.
+            </summary>
+            <param name="name">Name for the custom tokenizer</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.KeywordTokenizer.BufferSize">
+            <summary>
+            The maximum token length. If a token is seen that exceeds this length then it is discarded. Defaults to 255.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.NGramTokenizer.#ctor(System.String)">
+            <summary>
+            A tokenizer of type nGram.
+            </summary>
+            <param name="name">name of the custom tokenizer (ToLower()</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PathHierarchyTokenizer.#ctor(System.String)">
+            <summary>
+            The path_hierarchy tokenizer takes something like this:
+            something/something/else
+            And produces tokens:
+            something
+            something/something
+            something/something/else
+            </summary>
+            <param name="name">custom name</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PathHierarchyTokenizer.Delimiter">
+            <summary>
+            delimiter 
+            The character delimiter to use, defaults to /.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PathHierarchyTokenizer.Replacement">
+            <summary>
+            replacement
+            An optional replacement character to use. Defaults to the delimiter.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PathHierarchyTokenizer.BufferSize">
+            <summary>
+            buffer_size
+            The buffer size to use, defaults to 1024.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PathHierarchyTokenizer.Reverse">
+            <summary>
+            reverse
+            Generates tokens in reverse order, defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PathHierarchyTokenizer.skip">
+            <summary>
+            skip
+            Controls initial tokens to skip, defaults to 0.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PatternTokenizer.#ctor(System.String)">
+            <summary>
+            A tokenizer of type pattern that can flexibly separate text into terms via a regular expression. 
+            </summary>
+            <param name="name">name of custom tokenizer  ToLower()</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PatternTokenizer.Pattern">
+             <summary>
+             pattern The regular expression pattern, defaults to \W+.
+             IMPORTANT: The regular expression should match the token separators, not the tokens themselves.
+             
+             Note that you may need to escape pattern string literal according to your client language rules. 
+             For example, in many programming languages a string literal for \W+ pattern is written as "\\W+". 
+             There is nothing special about pattern (you may have to escape other string literals as well); escaping pattern is common just 
+             because it often contains characters that should be escaped.
+             
+             group set to -1 (the default) is equivalent to "split". Using group >= 0 selects the matching group as the token. For example, if you have:
+            
+             pattern = '([^']+)'
+             group   = 0
+             input   = aaa 'bbb' 'ccc'
+            
+             the output will be two tokens: 'bbb' and 'ccc' (including the ' marks). With the same input but using group=1, the output would be: bbb and ccc (no ' marks).
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PatternTokenizer.Flags">
+            <summary>
+            flags The regular expression flags.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.PatternTokenizer.Group">
+            <summary>
+            group Which group to extract into tokens. Defaults to -1 (split).
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.StandardTokenizer.#ctor(System.String)">
+            <summary>
+            The maximum token length. If a token is seen that exceeds this length then it is discarded. Defaults to 255.
+            </summary>
+            <param name="name">name of the custom tokenizer ToLower()</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.UaxUrlEmailTokenizer.#ctor(System.String)">
+            <summary>
+            A tokenizer of type uax_url_email which works exactly like the standard tokenizer, but tokenizes emails and urls as single tokens.
+            </summary>
+            <param name="name">name of the custom tokenizer (ToLower()</param>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.Shards">
+            <summary>
+            "_shards":{"total":5,"successful":5,"failed":0}
             </summary>
         </member>
         <member name="F:ElasticsearchCRUD.ElasticsearchCrudReindex`2.ScanAndScrollConfiguration">
@@ -781,7 +1734,7 @@
             <param name="index">index to be opened</param>
             <returns>true ids successfuly</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexUpdateSettings(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings,System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexUpdateSettings(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings,System.String)">
             <summary>
             Change specific index level settings in real time
             Can change a single index or global changes
@@ -790,7 +1743,7 @@
             <param name="index">index to be updated, if null, updatesa all indices</param>
             <returns>string with details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexUpdateSettingsAsync(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexUpdateSettings,System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexUpdateSettingsAsync(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexUpdateSettings,System.String)">
             <summary>
             Async Change specific index level settings in real time
             Can change a single index or global changes
@@ -799,7 +1752,7 @@
             <param name="index">index to be updated, if null, updatesa all indices</param>
             <returns>string with details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexSettings)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings)">
             <summary>
             Creates a new index
             </summary>
@@ -807,7 +1760,7 @@
             <param name="indexSettings">settings for the new index</param>
             <returns>details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexSettings)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings)">
             <summary>
             Async Creates a new index
             </summary>
@@ -815,21 +1768,21 @@
             <param name="indexSettings">settings for the new index</param>
             <returns>details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexDefinition)">
             <summary>
             Creates a new index from a Type and also all the property mappings and index definitions
             </summary>
             <param name="indexDefinition">settings for the new index</param>
             <returns>details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.IndexDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexDefinition)">
             <summary>
             Async Creates a new index from a Type and also all the property mappings and index definitions
             </summary>
             <param name="indexDefinition">settings for the new index</param>
             <returns>details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateTypeMapping``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateTypeMapping``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingDefinition)">
             <summary>
             Creates propety mappings for an existing index
             </summary>
@@ -837,7 +1790,7 @@
             <param name="mappingDefinition">Routing index definitions</param>
             <returns>details of the request</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateTypeMappingAsync``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingDefinition)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateTypeMappingAsync``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingDefinition)">
             <summary>
             Async Creates propety mappings for an existing index
             </summary>
@@ -1064,6 +2017,12 @@
             <typeparam name="T">Type used to get the index name</typeparam>
             <returns>returns true if cache has been cleared</returns>
         </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexClearCache(System.String)">
+            <summary>
+            Clears the cache for the index. The index is defined using the Type
+            </summary>
+            <returns>returns true if cache has been cleared</returns>
+        </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexClearCacheAsync``1">
             <summary>
             Async Clears the cache for the index. The index is defined using the Type
@@ -1149,6 +2108,13 @@
             Property AllowDeleteForIndex must also be set to true.
             </summary>
             <typeparam name="T">Type used to get the index to delete.</typeparam>
+            <returns>Result details in a , true if ok</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndex(System.String)">
+            <summary>
+            Delete the whole index if it exists and Elasticsearch allows delete index.
+            Property AllowDeleteForIndex must also be set to true.
+            </summary>
             <returns>Result details in a , true if ok</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndexTypeAsync``1">
