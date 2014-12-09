@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class AnalysisSettingsTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		public void TearDown()
 		{
@@ -442,6 +442,142 @@ namespace ElasticsearchCRUD.Integration.Test
 										"william  => bob",
 										"sean, johny => john"
 									}
+								}
+							}
+						}
+					},
+					NumberOfShards = 3,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestSettingsIndex>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestSettingsIndex>());
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
+
+		//		{
+		//	"analysis" : {
+		//		"analyzer" : {
+		//			"en" : {
+		//				"tokenizer" : "standard",
+		//				"filter" : [ "lowercase", "en_US" ]
+		//			}
+		//		},
+		//		"filter" : {
+		//			"en_US" : {
+		//				"type" : "hunspell",
+		//				"locale" : "en_US",
+		//				"dedup" : true
+		//			}
+		//		}
+		//	}
+		//}
+		// THIS TEST WILL ONLY WORK IF YOU SETUP THE *.aff AND ONE OR MORE *.dic FILES
+		//[Test]
+		public void CreateNewIndexDefinitionForHunspellFilter()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Analysis = new Analysis
+					{
+						Analyzer =
+						{
+							Analyzers = new List<AnalyzerBase>
+							{
+								new CustomAnalyzer("en")
+								{
+									Tokenizer= DefaultTokenizers.Standard,
+									Filter = new List<string>{  DefaultTokenFilters.Lowercase, "en_US"}
+								}
+							}
+						},
+						Filters =
+						{
+							CustomFilters = new List<AnalysisFilterBase>
+							{
+								new HunspellTokenFilter("en_US")
+								{
+									Locale = "en_US",
+									Dedup = true
+								}
+							}
+						}
+					},
+					NumberOfShards = 3,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestSettingsIndex>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestSettingsIndex>());
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
+
+		//	"settings": {
+		//	"analysis": {
+		//		"analyzer": {
+		//			"autocomplete": {
+		//				"type": "custom",
+		//				"tokenizer": "standard",
+		//				"filter": ["standard", "lowercase", "kstem", "edgeNGram"]
+		//			}
+		//		},
+		//		"filter" : {
+		//			"ngram" : {
+		//			   "type": "edgeNGram",
+		//			   "min_gram": 2,
+		//			   "max_gram": 15
+		//			}
+		//		}
+		//	}
+		//},
+		[Test]
+		public void CreateNewIndexDefinitionForEdgeNGramFilter()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Analysis = new Analysis
+					{
+						Analyzer =
+						{
+							Analyzers = new List<AnalyzerBase>
+							{
+								new CustomAnalyzer("autocomplete")
+								{
+									Tokenizer= DefaultTokenizers.Standard,
+									Filter = new List<string>{ DefaultTokenFilters.Standard, DefaultTokenFilters.Lowercase, DefaultTokenFilters.Kstem, DefaultTokenFilters.EdgeNGram}
+								}
+							}
+						},
+						Filters =
+						{
+							CustomFilters = new List<AnalysisFilterBase>
+							{
+								new EdgeNGramTokenFilter("ngram")
+								{
+									MinGram = 2,
+									MaxGram = 15
 								}
 							}
 						}
