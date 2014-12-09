@@ -65,6 +65,24 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 			}
 		}
 		
+//alternate
+//Possible values: shifted or non-ignorable. Sets the alternate handling for strength quaternary to be either shifted or non-ignorable. What boils down to ignoring punctuation and whitespace.
+
+//caseLevel
+//Possible values: true or false. Default is false. Whether case level sorting is required. When strength is set to primary this will ignore accent differences.
+
+//caseFirst
+//Possible values: lower or upper. Useful to control which case is sorted first when case is not ignored for strength tertiary.
+
+//numeric
+//Possible values: true or false. Whether digits are sorted according to numeric representation. For example the value egg-9 is sorted before the value egg-21. Defaults to false.
+
+//variableTop
+//Single character or contraction. Controls what is variable for alternate.
+
+//hiraganaQuaternaryMode
+//Possible values: true or false. Defaults to false. Distinguishing between Katakana and Hiragana characters in quaternary strength .
+
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -90,4 +108,9 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filt
 	{
 		no, canonical
 	}
+
+	//public enum IcuCollationAlternate
+	//{
+	//	shifted, non-ignorable
+	//}
 }
