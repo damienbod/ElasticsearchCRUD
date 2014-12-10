@@ -33,6 +33,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 
 		/// <summary>
 		/// The date format. Defaults to dateOptionalTime.
+		/// The DateTimeFormats class can be used for this.
 		/// </summary>
 		public virtual string Format
 		{

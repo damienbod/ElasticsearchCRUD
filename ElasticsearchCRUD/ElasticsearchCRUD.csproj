@@ -144,6 +144,7 @@
     <Compile Include="ContextSearch\SearchModel\Hit.cs" />
     <Compile Include="ContextSearch\SearchModel\Hits.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
+    <Compile Include="Model\DateTimeFormats.cs" />
     <Compile Include="Model\DefaultAnalyzers.cs" />
     <Compile Include="Model\DefaultTokenFilters.cs" />
     <Compile Include="Model\DefaultTokenizers.cs" />
