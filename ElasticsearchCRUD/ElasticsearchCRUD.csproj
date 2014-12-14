@@ -130,6 +130,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Similarities.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\Bm25Similarity.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\DefaultSimilarity.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\DfrSimilarity.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\SimilarityBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\AnalysisTokenizerBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\BaseNGramTokenizer.cs" />
