@@ -69,7 +69,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 		{
 			Analysis = new Analysis();
 		}
+
 		public Analysis Analysis { get; set; }
+
+		public Similarities Similarities { get; set; }
 
 		/// <summary>
 		/// index.number_of_replicas
