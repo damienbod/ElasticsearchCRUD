@@ -31,6 +31,10 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="http://damienbod.wordpress.com/2014/11/23/elasticsearch-parent-child-grandchild-documents-and-routing/">Part 9: Elasticsearch Parent, Child, Grandchild Documents and Routing</a>
 
+<a href="http://damienbod.wordpress.com/2014/11/24/elasticsearch-type-mappings-with-elasticsearchcrud/">Part 10: Elasticsearch Type mappings with ElasticsearchCRUD</a>
+
+<a href="https://damienbod.wordpress.com/2014/12/12/elasticsearch-synonym-analyzer-using-elasticsearchcrud/">Part 11: Elasticsearch Synonym Analyzer using ElasticsearchCRUD</a>
+
 ========================
 
 <strong>Examples:</strong>
