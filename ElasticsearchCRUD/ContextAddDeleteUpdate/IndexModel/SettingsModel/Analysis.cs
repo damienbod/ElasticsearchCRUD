@@ -47,6 +47,7 @@
 
 			Tokenizers.WriteJson(elasticsearchCrudJsonWriter);
 			Filters.WriteJson(elasticsearchCrudJsonWriter);
+			CharFilters.WriteJson(elasticsearchCrudJsonWriter);
 			Analyzer.WriteJson(elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

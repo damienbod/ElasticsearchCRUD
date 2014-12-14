@@ -3,6 +3,7 @@ using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.CharFilters;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom;
 using ElasticsearchCRUD.Model;
@@ -769,6 +770,74 @@ namespace ElasticsearchCRUD.Integration.Test
 			TearDown();
 		}
 
+		//{
+		//"index" : {
+		//"analysis" : {
+		//	"char_filter" : {
+		//		"my_pattern":{
+		//			"type":"pattern_replace",
+		//			"pattern":"sample(.*)",
+		//			"replacement":"replacedSample $1"
+		//		}
+		//	},
+		//	"analyzer" : {
+		//		"custom_with_char_filter" : {
+		//			"tokenizer" : "standard",
+		//			"char_filter" : ["my_pattern"]
+		//		},
+		//	}
+		//}
+		//}
+		//}
+		[Test]
+		public void CreateNewIndexDefinitionWithPatternCharFilter()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Analysis = new Analysis
+					{
+						Analyzer =
+						{
+							Analyzers = new List<AnalyzerBase>
+							{
+								new CustomAnalyzer("custom_with_char_filter")
+								{
+									Tokenizer= DefaultTokenizers.Standard,
+									CharFilter = new List<string>{"my_pattern"}
+								}
+							}
+						},
+						CharFilters = new AnalysisCharFilter
+						{
+							CustomFilters = new List<AnalysisCharFilterBase>
+							{
+								new PatternReplaceCharFilter("my_pattern")
+								{
+									Pattern = "sample(.*)",
+									Replacement = "replacedSample $1"
+								}
+							}
+						}
+					},					
+					NumberOfShards = 3,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestSettingsIndex>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestSettingsIndex>());
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
 	}
 
 	public class TestBm25Similarity
