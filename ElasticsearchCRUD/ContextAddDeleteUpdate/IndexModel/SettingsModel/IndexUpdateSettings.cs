@@ -68,6 +68,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 		public IndexUpdateSettings()
 		{
 			Analysis = new Analysis();
+			Similarities = new Similarities();
 		}
 
 		public Analysis Analysis { get; set; }

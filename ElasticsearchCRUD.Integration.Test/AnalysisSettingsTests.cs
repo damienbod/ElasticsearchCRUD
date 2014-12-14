@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
@@ -19,11 +21,17 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
+				context.AllowDeleteForIndex = true;
 				if (context.IndexExists<TestSettingsIndex>())
-				{
-					context.AllowDeleteForIndex = true;
+				{				
 					context.DeleteIndex<TestSettingsIndex>();
 				}
+
+				if (context.IndexExists<TestDfrSimilarity>())
+				{
+					context.DeleteIndex<TestDfrSimilarity>();
+				}
+				
 			}
 		}
 		
@@ -667,8 +675,62 @@ namespace ElasticsearchCRUD.Integration.Test
 			Thread.Sleep(1500);
 			TearDown();
 		}
+
+		//"similarity" : {
+		//  "my_similarity" : {
+		//	"type" : "DFR",
+		//	"basic_model" : "g",
+		//	"after_effect" : "l",
+		//	"normalization" : "h2"
+		//  }
+		//}
+		[Test]
+		public void CreateNewIndexDefinitionForDfrSimilarity()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Similarities = new Similarities
+					{
+						CustomSimilarities = new List<SimilarityBase>
+						{
+							new DfrSimilarity("my_similarity")
+							{
+								BasicModel = DfrBasicModel.g,
+								AfterEffect = DfrAfterEffect.l,
+								Normalization= DfrIbNormalization.h2
+							}
+						}
+					},
+					NumberOfShards = 3,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestDfrSimilarity>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestDfrSimilarity>());
+
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
 	}
 
+	public class TestDfrSimilarity
+	{
+		public long Id { get; set; }
+
+		[ElasticsearchString(Similarity = "my_similarity")]
+		public string Name { get; set; }
+		public string Description { get; set; }
+	}
 	public class TestSettingsIndex
 	{
 		public long Id { get; set; }
