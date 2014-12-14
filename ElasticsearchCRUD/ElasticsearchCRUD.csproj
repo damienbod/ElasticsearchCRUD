@@ -128,6 +128,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeParameters.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\RoutingDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Similarities.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\Bm25Similarity.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\DefaultSimilarity.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\SimilarityBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\AnalysisTokenizerBase.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="Model\DateTimeFormats.cs" />
     <Compile Include="Model\DefaultAnalyzers.cs" />
     <Compile Include="Model\DefaultCharFilters.cs" />
+    <Compile Include="Model\DefaultSimilarities.cs" />
     <Compile Include="Model\DefaultTokenFilters.cs" />
     <Compile Include="Model\DefaultTokenizers.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />

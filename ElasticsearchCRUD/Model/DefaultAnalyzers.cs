@@ -10,6 +10,5 @@
 		public const string Pattern = "pattern";
 		public const string Snowball = "snowball";
 		public const string Custom = "custom";
-
 	}
 }

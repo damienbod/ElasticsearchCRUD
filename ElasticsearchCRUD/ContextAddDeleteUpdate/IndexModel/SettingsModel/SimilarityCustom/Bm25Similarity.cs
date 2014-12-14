@@ -3,24 +3,57 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom
 {
-	public class DefaultSimilarity : SimilarityBase
+	public class Bm25Similarity : SimilarityBase
 	{
 		private bool _discountOverlaps;
 		private bool _discountOverlapsSet;
+		private double _k1;
+		private bool _k1Set;
+		private double _b;
+		private bool _bSet;
 
 		/// <summary>
-		/// The default similarity that is based on the TF/IDF model. 
+		/// Another TF/IDF based similarity that has built-in tf normalization and is supposed to work better for short fields (like names). 
+		/// See Okapi_BM25 for more details. 
+		/// http://en.wikipedia.org/wiki/Okapi_BM25
 		/// </summary>
-		/// <param name="name"></param>
-		public DefaultSimilarity(string name)
+		/// <param name="name">name for the custom similarity</param>
+		public Bm25Similarity(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultSimilarities.Default;
+			Type = DefaultSimilarities.Bm25;
 		}
 
 		/// <summary>
-		/// discount_overlaps
+		/// k1
+		/// Controls non-linear term frequency normalization (saturation).
+		/// </summary>
+		public double K1
+		{
+			get { return _k1; }
+			set
+			{
+				_k1 = value;
+				_k1Set = true;
+			}
+		}
+
+		/// <summary>
+		/// b
+		/// Controls to what degree document length normalizes tf values.
+		/// </summary>
+		public double B
+		{
+			get { return _b; }
+			set
+			{
+				_b = value;
+				_bSet = true;
+			}
+		}
+		
+		/// <summary>
 		/// Determines whether overlap tokens (Tokens with 0 position increment) are ignored when computing norm. By default this is true, 
 		/// meaning overlap tokens do not count when computing norms. 
 		/// </summary>
@@ -42,6 +75,8 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Simi
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("k1", _k1, elasticsearchCrudJsonWriter, _k1Set);
+			JsonHelper.WriteValue("b", _b, elasticsearchCrudJsonWriter, _bSet);
 			JsonHelper.WriteValue("discount_overlaps", _discountOverlaps, elasticsearchCrudJsonWriter, _discountOverlapsSet);
 		}
 	}
