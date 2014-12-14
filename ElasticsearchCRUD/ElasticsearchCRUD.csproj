@@ -73,6 +73,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeResult.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analysis.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisAnalyzer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\AnalysisCharFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\AnalyzerBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\BaseStopAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\CustomAnalyzer.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\SnowballAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\StandardAnaylzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\StopAnalyzer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\CharFilters\AnalysisCharFilterBase.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\CharFilters\MappingCharFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AnalysisFilterBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AsciifoldingTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\CjkBigramTokenFilter.cs" />
@@ -146,6 +149,7 @@
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
     <Compile Include="Model\DateTimeFormats.cs" />
     <Compile Include="Model\DefaultAnalyzers.cs" />
+    <Compile Include="Model\DefaultCharFilters.cs" />
     <Compile Include="Model\DefaultTokenFilters.cs" />
     <Compile Include="Model\DefaultTokenizers.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
