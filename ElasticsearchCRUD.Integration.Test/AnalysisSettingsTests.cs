@@ -838,6 +838,77 @@ namespace ElasticsearchCRUD.Integration.Test
 			Thread.Sleep(1500);
 			TearDown();
 		}
+
+		//{
+		//	"index" : {
+		//		"analysis" : {
+		//			"char_filter" : {
+		//				"my_mapping" : {
+		//					"type" : "mapping",
+		//					"mappings" : ["ph=>f", "qu=>k"]
+		//				}
+		//			},
+		//			"analyzer" : {
+		//				"custom_with_char_filter" : {
+		//					"tokenizer" : "standard",
+		//					"char_filter" : ["my_mapping"]
+		//				}
+		//			}
+		//		}
+		//	}
+		//}
+		[Test]
+		public void CreateNewIndexDefinitionWithMappingCharFilter()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Analysis = new Analysis
+					{
+						Analyzer =
+						{
+							Analyzers = new List<AnalyzerBase>
+							{
+								new CustomAnalyzer("custom_with_char_filter")
+								{
+									Tokenizer= DefaultTokenizers.Standard,
+									CharFilter = new List<string>{"my_mapping"}
+								}
+							}
+						},
+						CharFilters = new AnalysisCharFilter
+						{
+							CustomFilters = new List<AnalysisCharFilterBase>
+							{
+								new MappingCharFilter("my_mapping")
+								{
+									Mappings = new List<string>
+									{
+										"ph=>f", 
+										"qu=>k"
+									}
+								}
+							}
+						}
+					},
+					NumberOfShards = 3,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestSettingsIndex>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestSettingsIndex>());
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
 	}
 
 	public class TestBm25Similarity
