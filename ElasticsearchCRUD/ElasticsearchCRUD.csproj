@@ -128,7 +128,8 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\OptimizeParameters.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\RoutingDefinition.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Similarities.cs" />
-    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Similarity.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\DefaultSimilarity.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\SimilarityCustom\SimilarityBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\AnalysisTokenizerBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\BaseNGramTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\BaseTokenizer.cs" />

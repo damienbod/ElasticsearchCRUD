@@ -1,13 +1,14 @@
 using System.Collections.Generic;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
 	public class Similarities
 	{
-		private List<Similarity> _customSimilarities;
+		private List<SimilarityBase> _customSimilarities;
 		private bool _customSimilaritiesSet;
 
-		public List<Similarity> CustomSimilarities
+		public List<SimilarityBase> CustomSimilarities
 		{
 			get { return _customSimilarities; }
 			set

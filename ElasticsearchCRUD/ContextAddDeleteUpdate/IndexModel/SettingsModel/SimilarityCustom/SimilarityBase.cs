@@ -1,22 +1,8 @@
 ﻿using System;
 
-namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom
 {
-	//		"blocks_filter" : {
-	//			"type" : "word_delimiter",
-	//			"preserve_original": "true"
-	//		},
-	//	   "shingle":{
-	//		   "type":"shingle",
-	//		   "max_shingle_size":5,
-	//		   "min_shingle_size":2,
-	//		   "output_unigrams":"true"
-	//		},
-	//		"filter_stop":{
-	//		   "type":"stop",
-	//		   "enable_position_increments":"false"
-	//		}
-	public abstract class AnalysisFilterBase
+	public abstract class SimilarityBase 
 	{
 		protected bool AnalyzerSet;
 		protected string Name;
