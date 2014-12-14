@@ -86,6 +86,7 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Analyzers\StopAnalyzer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\CharFilters\AnalysisCharFilterBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\CharFilters\MappingCharFilter.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\CharFilters\PatternReplaceCharFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AnalysisFilterBase.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\AsciifoldingTokenFilter.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Filters\CjkBigramTokenFilter.cs" />

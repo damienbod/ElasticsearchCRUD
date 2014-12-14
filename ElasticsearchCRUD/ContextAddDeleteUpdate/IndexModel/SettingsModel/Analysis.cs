@@ -32,8 +32,10 @@
 			Filters = new AnalysisFilter();
 			Analyzer = new AnalysisAnalyzer();
 			Tokenizers = new AnalysisTokenizer();
+			CharFilters = new AnalysisCharFilter();
 		}
 
+		public AnalysisCharFilter CharFilters { get; set; }
 		public AnalysisTokenizer Tokenizers { get; set; }
 		public AnalysisFilter Filters { get; set; }
 		public AnalysisAnalyzer Analyzer { get; set; }

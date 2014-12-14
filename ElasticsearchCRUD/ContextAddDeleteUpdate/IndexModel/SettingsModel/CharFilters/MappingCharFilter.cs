@@ -13,6 +13,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Char
 
 		/// <summary>
 		/// A char filter of type mapping replacing characters of an analyzed text with given mapping.
+		/// "char_filter" : {
+		///	  "my_mapping" : {
+		///		"type" : "mapping",
+		///		"mappings" : ["ph=>f", "qu=>k"]
+		///	  }
+		/// },
 		/// </summary>
 		/// <param name="name">name for the custom mapping char filter</param>
 		public MappingCharFilter(string name)
