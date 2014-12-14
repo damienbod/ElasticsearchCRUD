@@ -31,6 +31,11 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					context.DeleteIndex<TestDfrSimilarity>();
 				}
+
+				if (context.IndexExists<TestBm25Similarity>())
+				{
+					context.DeleteIndex<TestBm25Similarity>();
+				}
 				
 			}
 		}
@@ -721,6 +726,60 @@ namespace ElasticsearchCRUD.Integration.Test
 			Thread.Sleep(1500);
 			TearDown();
 		}
+
+		// "similarity": {
+	    //   "my_bm25": { 
+		//   "type": "BM25",
+		//   "b":    0 
+		//   }
+		// }
+		[Test]
+		public void CreateNewIndexDefinitionForBm25Similarity()
+		{
+			var testSettingsIndexDefinition = new IndexDefinition
+			{
+				IndexSettings =
+				{
+					Similarities = new Similarities
+					{
+						CustomSimilarities = new List<SimilarityBase>
+						{
+							new Bm25Similarity("my_bm25")
+							{
+								B = 0
+							}
+						}
+					},
+					NumberOfShards = 3,
+					NumberOfReplicas = 1
+				},
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<TestBm25Similarity>(testSettingsIndexDefinition);
+
+				Thread.Sleep(1500);
+				Assert.IsTrue(context.IndexExists<TestBm25Similarity>());
+
+			}
+
+			Thread.Sleep(1500);
+			TearDown();
+		}
+
+	}
+
+	public class TestBm25Similarity
+	{
+		public long Id { get; set; }
+
+		[ElasticsearchString(Similarity = "my_bm25")]
+		public string Name { get; set; }
+
+		[ElasticsearchString(Similarity = DefaultSimilarities.Bm25)]
+		public string Description { get; set; }
 	}
 
 	public class TestDfrSimilarity
@@ -731,6 +790,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public string Name { get; set; }
 		public string Description { get; set; }
 	}
+
 	public class TestSettingsIndex
 	{
 		public long Id { get; set; }
