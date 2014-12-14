@@ -3,52 +3,53 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom
 {
-	public class DfrSimilarity : SimilarityBase
+	public class IbSimilarity : SimilarityBase
 	{
-		private DfrBasicModel _basicModel;
-		private bool _basicModelSet;
-		private DfrAfterEffect _afterEffect;
-		private bool _afterEffectSet;
+
 		private DfrIbNormalization _normalization;
 		private bool _normalizationSet;
+		private IbLambda _lambda;
+		private bool _lambdaSet;
+		private IbDistribution _distribution;
+		private bool _distributionSet;
 
 		/// <summary>
-		/// Similarity that implements the divergence from randomness framework.
-		/// http://lucene.apache.org/core/4_1_0/core/org/apache/lucene/search/similarities/DFRSimilarity.html
+		/// nformation based model
+		/// http://lucene.apache.org/core/4_1_0/core/org/apache/lucene/search/similarities/IBSimilarity.html
 		/// </summary>
 		/// <param name="name"></param>
-		public DfrSimilarity(string name)
+		public IbSimilarity(string name)
 		{
 			AnalyzerSet = true;
 			Name = name.ToLower();
-			Type = DefaultSimilarities.Dfr;
+			Type = DefaultSimilarities.Ib;
 		}
 
 		/// <summary>
-		/// basic_model
-		/// Possible values: be, d, g, if, in, ine and p
+		/// distribution
+		/// Possible values: ll and spl.
 		/// </summary>
-		public DfrBasicModel BasicModel
+		public IbDistribution Distribution
 		{
-			get { return _basicModel; }
+			get { return _distribution; }
 			set
 			{
-				_basicModel = value;
-				_basicModelSet = true;
+				_distribution = value;
+				_distributionSet = true;
 			}
 		}
 
 		/// <summary>
-		/// after_effect
-		/// Possible values: no, b and l.
+		/// lambda
+		/// Possible values: df and ttf. 
 		/// </summary>
-		public DfrAfterEffect AfterEffect
+		public IbLambda Lambda
 		{
-			get { return _afterEffect; }
+			get { return _lambda; }
 			set
 			{
-				_afterEffect = value;
-				_afterEffectSet = true;
+				_lambda = value;
+				_lambdaSet = true;
 			}
 		}
 
@@ -74,36 +75,21 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Simi
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("type", Type, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("basic_model", _basicModel.ToString(), elasticsearchCrudJsonWriter, _basicModelSet);
-			JsonHelper.WriteValue("after_effect", _afterEffect.ToString(), elasticsearchCrudJsonWriter, _afterEffectSet);
+			JsonHelper.WriteValue("distribution", _distribution.ToString(), elasticsearchCrudJsonWriter, _distributionSet);
+			JsonHelper.WriteValue("lambda", _lambda.ToString(), elasticsearchCrudJsonWriter, _lambdaSet);
 			JsonHelper.WriteValue("normalization", _normalization.ToString(), elasticsearchCrudJsonWriter, _normalizationSet);
 		}
 	}
 
-	public enum DfrBasicModel
+	public enum IbLambda
 	{
-		be, 
-		d, 
-		g, 
-		@if, 
-		@in, 
-		ine,
-		p
+		df,
+		ttf
 	}
 
-	public enum DfrAfterEffect
+	public enum IbDistribution
 	{
-		no, 
-		b,
-		l
-	}
-
-	public enum DfrIbNormalization
-	{
-		no, 
-		h1, 
-		h2, 
-		h3,
-		z
+		ll,
+		spl		
 	}
 }
