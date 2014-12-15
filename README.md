@@ -83,6 +83,12 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+
+<strong>Version 1.0.22</strong><em> 2014.12.15</em>
+- support for custom char_filters 
+- support for custom similarity 
+- added all DateTime format options
+
 <strong>Version 1.0.21</strong><em> 2014.12.09</em>
 - support for index Token filters, custom filters
 - support for index Tokenizers, custom tokenizers
