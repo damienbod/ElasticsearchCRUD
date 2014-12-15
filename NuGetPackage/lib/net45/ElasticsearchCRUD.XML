@@ -143,6 +143,7 @@
         <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.Format">
             <summary>
             The date format. Defaults to dateOptionalTime.
+            The DateTimeFormats class can be used for this.
             </summary>
         </member>
         <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchDate.IndexName">
@@ -423,6 +424,53 @@
             <summary>
             stopwords_path
             A path (either relative to config location, or absolute) to a stopwords file configuration.
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.CharFilters.MappingCharFilter.#ctor(System.String)">
+            <summary>
+            A char filter of type mapping replacing characters of an analyzed text with given mapping.
+            "char_filter" : {
+              "my_mapping" : {
+            	"type" : "mapping",
+            	"mappings" : ["ph=>f", "qu=>k"]
+              }
+            },
+            </summary>
+            <param name="name">name for the custom mapping char filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.CharFilters.MappingCharFilter.Mappings">
+            <summary>
+            mappings
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.CharFilters.MappingCharFilter.MappingsPath">
+            <summary>
+            mappings_path
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.CharFilters.PatternReplaceCharFilter.#ctor(System.String)">
+            <summary>
+            The pattern_replace char filter allows the use of a regex to manipulate the characters in a string before analysis. 
+            The regular expression is defined using the pattern parameter, and the replacement string can be provided using the replacement parameter 
+            (supporting referencing the original text, as explained here).
+            "char_filter" : {
+              "my_pattern":{
+                "type":"pattern_replace",
+                "pattern":"sample(.*)",
+             	"replacement":"replacedSample $1"
+              }
+            },
+            </summary>
+            <param name="name">name for the custom pattern replace char filter</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.CharFilters.PatternReplaceCharFilter.Pattern">
+            <summary>
+            pattern
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.CharFilters.PatternReplaceCharFilter.Replacement">
+            <summary>
+            replacement
             </summary>
         </member>
         <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters.AsciifoldingTokenFilter.#ctor(System.String)">
@@ -1347,6 +1395,127 @@
             Should the request wait for the merge to end. Defaults to true. Note, a merge can potentially be a very heavy operation, so it might make sense to run it set to false. 
             </summary>
         </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.Bm25Similarity.#ctor(System.String)">
+            <summary>
+            Another TF/IDF based similarity that has built-in tf normalization and is supposed to work better for short fields (like names). 
+            See Okapi_BM25 for more details. 
+            http://en.wikipedia.org/wiki/Okapi_BM25
+            
+            The most interesting competitor to TF/IDF and the vector space model is called Okapi BM25, which is considered to be a state-of-the-art ranking function. 
+            BM25 originates from the probabilistic relevance model, rather than the vector space model, yet the algorithm has a lot in common with Lucene’s practical scoring function.
+            Both use of term frequency, inverse document frequency, and field-length normalization, but the definition of each of these factors is a little different. 
+            Rather than explaining the BM25 formula in detail, we will focus on the practical advantages that BM25 offers.
+            
+            http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/pluggable-similarites.html
+            https://www.found.no/foundation/similarity/
+            </summary>
+            <param name="name">name for the custom similarity</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.Bm25Similarity.K1">
+            <summary>
+            k1
+            Controls non-linear term frequency normalization (saturation).
+            This parameter controls how quickly an increase in term frequency results in term-frequency saturation.
+            The default value is 1.2. Lower values result in quicker saturation, and higher values in slower saturation. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.Bm25Similarity.B">
+            <summary>
+            b
+            Controls to what degree document length normalizes tf values.
+            This parameter controls how much effect field-length normalization should have. 
+            A value of 0.0 disables normalization completely, and a value of 1.0 normalizes fully. The default is 0.75. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.Bm25Similarity.DiscountOverlaps">
+            <summary>
+            Determines whether overlap tokens (Tokens with 0 position increment) are ignored when computing norm. By default this is true, 
+            meaning overlap tokens do not count when computing norms. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.DefaultSimilarity.#ctor(System.String)">
+            <summary>
+            The default similarity that is based on the TF/IDF model. 
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.DefaultSimilarity.DiscountOverlaps">
+            <summary>
+            discount_overlaps
+            Determines whether overlap tokens (Tokens with 0 position increment) are ignored when computing norm. By default this is true, 
+            meaning overlap tokens do not count when computing norms. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.DfrSimilarity.#ctor(System.String)">
+            <summary>
+            Similarity that implements the divergence from randomness framework.
+            http://lucene.apache.org/core/4_1_0/core/org/apache/lucene/search/similarities/DFRSimilarity.html
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.DfrSimilarity.BasicModel">
+            <summary>
+            basic_model
+            Possible values: be, d, g, if, in, ine and p
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.DfrSimilarity.AfterEffect">
+            <summary>
+            after_effect
+            Possible values: no, b and l.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.DfrSimilarity.Normalization">
+            <summary>
+            normalization
+            Possible values: no, h1, h2, h3 and z. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.IbSimilarity.#ctor(System.String)">
+            <summary>
+            nformation based model
+            http://lucene.apache.org/core/4_1_0/core/org/apache/lucene/search/similarities/IBSimilarity.html
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.IbSimilarity.Distribution">
+            <summary>
+            distribution
+            Possible values: ll and spl.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.IbSimilarity.Lambda">
+            <summary>
+            lambda
+            Possible values: df and ttf. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.IbSimilarity.Normalization">
+            <summary>
+            normalization
+            Possible values: no, h1, h2, h3 and z. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.LmDirichletSimilarity.#ctor(System.String)">
+            <summary>
+            LM Jelinek Mercer similarity
+            http://lucene.apache.org/core/4_7_1/core/org/apache/lucene/search/similarities/LMJelinekMercerSimilarity.html
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.LmJelinekMercerSimilarity.#ctor(System.String)">
+            <summary>
+            LM Jelinek Mercer similarity
+            http://lucene.apache.org/core/4_7_1/core/org/apache/lucene/search/similarities/LMJelinekMercerSimilarity.html
+            </summary>
+            <param name="name"></param>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.SimilarityCustom.LmJelinekMercerSimilarity.Lambda">
+            <summary>
+            The optimal value depends on both the collection and the query. 
+            The optimal value is around 0.1 for title queries and 0.7 for long queries. Default to 0.1. 
+            </summary>
+        </member>
         <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers.BaseNGramTokenizer.MinGram">
             <summary>
             min_gram Minimum size in codepoints of a single n-gram
@@ -1488,6 +1657,221 @@
             A tokenizer of type uax_url_email which works exactly like the standard tokenizer, but tokenizes emails and urls as single tokens.
             </summary>
             <param name="name">name of the custom tokenizer (ToLower()</param>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicDate">
+            <summary>
+            A basic formatter for a full date as four digit year, two digit month of year, and two digit day of month (yyyyMMdd).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicDateTime">
+            <summary>
+            A basic formatter that combines a basic date and time, separated by a T (yyyyMMdd’T'HHmmss.SSSZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicDateTimeNoMillis">
+            <summary>
+            A basic formatter that combines a basic date and time without millis, separated by a T (yyyyMMdd’T'HHmmssZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicOrdinalDate">
+            <summary>
+            A formatter for a full ordinal date, using a four digit year and three digit dayOfYear (yyyyDDD).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicOrdinalDateTime">
+            <summary>
+            A formatter for a full ordinal date and time, using a four digit year and three digit dayOfYear (yyyyDDD’T'HHmmss.SSSZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicOrdinalDateTimeNoMillis">
+            <summary>
+            A formatter for a full ordinal date and time without millis, using a four digit year and three digit dayOfYear (yyyyDDD’T'HHmmssZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicTime">
+            <summary>
+            A basic formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, three digit millis, and time zone offset (HHmmss.SSSZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicTimeNoMillis">
+            <summary>
+            A basic formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, and time zone offset (HHmmssZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicTTime">
+            <summary>
+            A basic formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, three digit millis, and time zone off set prefixed by T ('T’HHmmss.SSSZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicTTimeNoMillis">
+            <summary>
+            A basic formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, and time zone offset prefixed by T ('T’HHmmssZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicWeekDate">
+            <summary>
+            A basic formatter for a full date as four digit weekyear, two digit week of weekyear, and one digit day of week (xxxx’W'wwe).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicWeekDateTime">
+            <summary>
+            A basic formatter that combines a basic weekyear date and time, separated by a T (xxxx’W'wwe’T'HHmmss.SSSZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicWeekDateTimeNoMillis">
+            <summary>
+            A basic formatter that combines a basic weekyear date and time without millis, separated by a T (xxxx’W'wwe’T'HHmmssZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.Date">
+            <summary>
+            A formatter for a full date as four digit year, two digit month of year, and two digit day of month (yyyy-MM-dd).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.DateHour">
+            <summary>
+            A formatter that combines a full date and two digit hour of day.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.DateHourMinute">
+            <summary>
+            A formatter that combines a full date, two digit hour of day, and two digit minute of hour.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.DateHourMinuteSecond">
+            <summary>
+            A formatter that combines a full date, two digit hour of day, two digit minute of hour, and two digit second of minute.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.DateHourMinuteSecondFraction">
+            <summary>
+            A formatter that combines a full date, two digit hour of day, two digit minute of hour, two digit second of minute, and three digit fraction of second (yyyy-MM-dd’T'HH:mm:ss.SSS).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.DateHourMinuteSecondMillis">
+            <summary>
+            A formatter that combines a full date, two digit hour of day, two digit minute of hour, two digit second of minute, and three digit fraction of second (yyyy-MM-dd’T'HH:mm:ss.SSS).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.DateOptionalTime">
+            <summary>
+            a generic ISO datetime parser where the date is mandatory and the time is optional.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.Date_Time">
+            <summary>
+            A formatter that combines a full date and time, separated by a T (yyyy-MM-dd’T'HH:mm:ss.SSSZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.DateTimeNoMillis">
+            <summary>
+            A formatter that combines a full date and time without millis, separated by a T (yyyy-MM-dd’T'HH:mm:ssZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.Hour">
+            <summary>
+            A formatter for a two digit hour of day.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.HourMinute">
+            <summary>
+            A formatter for a two digit hour of day and two digit minute of hour.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.HourMinuteSecond">
+            <summary>
+            A formatter for a two digit hour of day, two digit minute of hour, and two digit second of minute.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.HourMinuteSecondFraction">
+            <summary>
+            A formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, and three digit fraction of second (HH:mm:ss.SSS).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.HourMinuteSecondMillis">
+            <summary>
+            A formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, and three digit fraction of second (HH:mm:ss.SSS).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.OrdinalDate">
+            <summary>
+            A formatter for a full ordinal date, using a four digit year and three digit dayOfYear (yyyy-DDD).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.OrdinalDateTime">
+            <summary>
+            A formatter for a full ordinal date and time, using a four digit year and three digit dayOfYear (yyyy-DDD’T'HH:mm:ss.SSSZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.OrdinalDateTimeNoMillis">
+            <summary>
+            A formatter for a full ordinal date and time without millis, using a four digit year and three digit dayOfYear (yyyy-DDD’T'HH:mm:ssZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.Time">
+            <summary>
+            A formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, three digit fraction of second, and time zone offset (HH:mm:ss.SSSZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.TimeNoMillis">
+            <summary>
+            A formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, and time zone offset (HH:mm:ssZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.TTime">
+            <summary>
+            A formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, three digit fraction of second, and time zone offset prefixed by T ('T’HH:mm:ss.SSSZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.TTimeNoMillis">
+            <summary>
+            A formatter for a two digit hour of day, two digit minute of hour, two digit second of minute, and time zone offset prefixed by T ('T’HH:mm:ssZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.WeekDate">
+            <summary>
+            A formatter for a full date as four digit weekyear, two digit week of weekyear, and one digit day of week (xxxx-'W’ww-e).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.WeekDateTime">
+            <summary>
+            A formatter that combines a full weekyear date and time, separated by a T (xxxx-'W’ww-e’T'HH:mm:ss.SSSZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.WeekDateTimeNoMillis">
+            <summary>
+            A formatter that combines a full weekyear date and time without millis, separated by a T (xxxx-'W’ww-e’T'HH:mm:ssZZ).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.WeekYear">
+            <summary>
+            A formatter for a four digit weekyear.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.WeekyearWeek">
+            <summary>
+            A formatter for a four digit weekyear and two digit week of weekyear.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.WeekyearWeekDay">
+            <summary>
+            A formatter for a four digit weekyear, two digit week of weekyear, and one digit day of week.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.Year">
+            <summary>
+            A formatter for a four digit year.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.YearMonth">
+            <summary>
+            A formatter for a four digit year and two digit month of year.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.YearMonthDay">
+            <summary>
+            A formatter for a four digit year, two digit month of year, and two digit day of month.
+            </summary>
         </member>
         <member name="T:ElasticsearchCRUD.Model.Shards">
             <summary>
