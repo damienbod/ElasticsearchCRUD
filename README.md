@@ -35,6 +35,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="https://damienbod.wordpress.com/2014/12/12/elasticsearch-synonym-analyzer-using-elasticsearchcrud/">Part 11: Elasticsearch Synonym Analyzer using ElasticsearchCRUD</a>
 
+<a href="https://damienbod.wordpress.com/2014/12/20/using-elasticsearch-german-analyzer/">Part 12: Using Elasticsearch German Analyzer</a>
+
 ========================
 
 <strong>Examples:</strong>
