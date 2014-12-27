@@ -216,7 +216,7 @@ namespace ElasticsearchCRUD
 			var propertyInfo = entity.GetType().GetProperties();
 			foreach (var property in propertyInfo)
 			{
-				if (Attribute.IsDefined(property, typeof (KeyAttribute)))
+				if (Attribute.IsDefined(property, typeof(KeyAttribute)) || Attribute.IsDefined(property, typeof(ElasticsearchIdAttribute)))
 				{
 					var obj = property.GetValue(entity);
 
