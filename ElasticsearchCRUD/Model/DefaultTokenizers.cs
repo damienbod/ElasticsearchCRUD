@@ -13,6 +13,7 @@
 		public const string Classic = "classic";
 		public const string Thai = "thai";
 		public const string Pattern = "pattern";
-		public const string PathHierarchy = "path_hierarchy";	
+		public const string PathHierarchy = "path_hierarchy";
+		public const string IcuTokenizer = "icu_tokenizer";
 	}
 }
