@@ -10,6 +10,7 @@ using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.ContextAlias;
+using ElasticsearchCRUD.ContextAlias.AliasModel;
 using ElasticsearchCRUD.ContextClearCache;
 using ElasticsearchCRUD.ContextCount;
 using ElasticsearchCRUD.ContextDeleteByQuery;
@@ -658,7 +659,15 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was created </returns>
 		public bool AliasCreateForIndex(string alias, string index)
 		{
-			return _elasticsearchContextAlias.SendAliasCommand(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasAddParameters(alias, index)
+				}
+			};
+
+			return _elasticsearchContextAlias.SendAliasCommand(aliasParameters.ToString());
 		}
 
 		/// <summary>
@@ -669,7 +678,14 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was created </returns>
 		public async Task<ResultDetails<bool>> AliasCreateForIndexAsync(string alias, string index)
 		{
-			return await _elasticsearchContextAlias.SendAliasCommandAsync(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.add,alias, index));
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasAddParameters(alias, index)
+				}
+			};
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(aliasParameters.ToString());
 		}
 
 		/// <summary>
@@ -700,7 +716,14 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was removed </returns>
 		public bool AliasRemoveForIndex(string alias, string index)
 		{
-			return _elasticsearchContextAlias.SendAliasCommand(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasRemoveParameters(alias, index)
+				}
+			};
+			return _elasticsearchContextAlias.SendAliasCommand(aliasParameters.ToString());
 		}
 
 		/// <summary>
@@ -711,7 +734,14 @@ namespace ElasticsearchCRUD
 		/// <returns>true if the alias was removed </returns>
 		public async Task<ResultDetails<bool>> AliasRemoveForIndexAsync(string alias, string index)
 		{
-			return await _elasticsearchContextAlias.SendAliasCommandAsync(_elasticsearchContextAlias.BuildCreateOrRemoveAlias(AliasAction.remove, alias, index));
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasRemoveParameters(alias, index)
+				}
+			};
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(aliasParameters.ToString());
 		}
 
 		/// <summary>
@@ -723,7 +753,15 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns true if the index was replaced</returns>
 		public bool AliasReplaceIndex(string alias, string indexOld, string indexNew)
 		{
-			return _elasticsearchContextAlias.SendAliasCommand(_elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasRemoveParameters(alias, indexOld),
+					new AliasAddParameters(alias, indexNew)
+				}
+			};
+			return _elasticsearchContextAlias.SendAliasCommand(aliasParameters.ToString());
 		}
 
 		/// <summary>
@@ -735,7 +773,15 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns true if the index was replaced</returns>
 		public async Task<ResultDetails<bool>> AliasReplaceIndexAsync(string alias, string indexOld, string indexNew)
 		{
-			return await _elasticsearchContextAlias.SendAliasCommandAsync(_elasticsearchContextAlias.BuildAliasChangeIndex(alias, indexOld, indexNew));
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasRemoveParameters(alias, indexOld),
+					new AliasAddParameters(alias, indexNew)
+				}
+			};
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(aliasParameters.ToString());
 		}
 
 		/// <summary>

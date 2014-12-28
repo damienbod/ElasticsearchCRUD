@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.Model;
@@ -55,70 +54,5 @@ namespace ElasticsearchCRUD.ContextAlias
 			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextAlias: Cound Not Execute Alias {0}", contentJson));
 			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextAlias: Cound Not Execute Alias  {0}", contentJson));
 		}
-
-
-		public void ValidateIndexOrAlias(string index)
-		{
-			MappingUtils.GuardAgainstBadIndexName(index);
-		}
-
-		//{
-		//	"actions" : [
-		//		{ "remove" : { "index" : "test1", "alias" : "alias1" } },
-		//		{ "add" : { "index" : "test1", "alias" : "alias2" } }
-		//	]
-		//}'
-		public string BuildCreateOrRemoveAlias(AliasAction action, string alias, string index)
-		{
-			ValidateIndexOrAlias(alias);
-			ValidateIndexOrAlias(index);
-
-			var sb = new StringBuilder();
-			BuildAliasBegin(sb);
-			BuildAction(sb, action, alias, index);
-			BuildAliasEnd(sb);
-			return sb.ToString();
-		}
-
-		public string BuildAliasChangeIndex(string alias, string indexOld, string indexNew)
-		{
-			ValidateIndexOrAlias(alias);
-			ValidateIndexOrAlias(indexOld);
-			ValidateIndexOrAlias(indexNew);
-
-			var sb = new StringBuilder();
-			BuildAliasBegin(sb);
-			BuildAction(sb, AliasAction.remove, alias, indexOld);
-			sb.Append(",");
-			BuildAction(sb, AliasAction.add, alias, indexNew);
-			BuildAliasEnd(sb);
-			return sb.ToString();
-		}
-
-		private void BuildAliasBegin(StringBuilder sb)
-		{
-			sb.AppendLine("{");
-			sb.AppendLine("\"actions\" : [");
-		}
-
-		private void BuildAliasEnd(StringBuilder sb)
-		{
-			sb.AppendLine("]");
-			sb.AppendLine("}");
-		}
-
-		private void BuildAction(StringBuilder sb, AliasAction action, string alias, string index)
-		{
-			sb.AppendLine("{ \"" + action + "\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + alias + "\" } }");
-		}
-
-		
 	}
-
-	enum AliasAction
-	{
-		remove,
-		add,
-	}
-
 }

@@ -42,30 +42,10 @@ namespace ElasticsearchCRUD.ContextSearch
 				elasticsearchUrlForEntityGet = string.Format("{0}/{1}{2}", _connectionString ,scanAndScrollConfiguration.GetScrollScanUrlForRunning(),scrollId);
 			}
 
-			var content = new StringContent(jsonContent);
 			var uri = new Uri(elasticsearchUrlForEntityGet);
 
 			var result = await PostInteranlSearchAsync<T>(jsonContent, uri);
 			return result;
-
-
-			//if (!string.IsNullOrEmpty(scrollId))
-			//{
-			//	resultDetails.ScrollId = responseObject["_scroll_id"].ToString();
-			//}
-			//var source = responseObject["hits"]["hits"];
-			//resultDetails.TotalHits = (long)responseObject["hits"]["total"];
-			//if (source != null)
-			//{
-			//	var hitResults = new Collection<T>();
-			//	foreach (var item in source)
-			//	{
-			//		var payload = item["_source"];
-			//		hitResults.Add((T)_elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T)).ParseEntity(payload, typeof(T)));
-			//	}
-
-			//	resultDetails.PayloadResult = hitResults;
-			//}
 		}
 
 		public ResultDetails<SearchResult<T>> PostSearch<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
