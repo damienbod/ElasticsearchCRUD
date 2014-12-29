@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
+using ElasticsearchCRUD.ContextAlias.AliasModel;
+using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -79,6 +83,87 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+
+		[Test]
+		public void CreateAliasForIndex2()
+		{
+			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasAddParameters("test2", "indexaliasdtotests"),
+					new AliasAddParameters("test3", "indexaliasdtotests")
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+				context.SaveChanges();
+
+				var result = context.Alias(aliasParameters.ToString());
+				Assert.IsTrue(result);
+
+				Assert.IsTrue(context.AliasExists("test2"));
+				Assert.IsTrue(context.AliasExists("test3"));
+				
+			}
+		}
+
+		[Test]
+		public void CreateAliasForIndex3()
+		{
+			var indexAliasDtoTest3 = new IndexAliasDtoTest { Id = 3, Description = "Test3 index for aliases" };
+			var indexAliasDtoTest4 = new IndexAliasDtoTest { Id = 4, Description = "Test4 index for aliases" };
+			var indexAliasDtoTest5 = new IndexAliasDtoTest { Id = 5, Description = "Test5 index for aliases" };
+
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasAddParameters("test4", "indexaliasdtotests")
+					{
+						Routing="newroute"
+					}
+				}
+			};
+
+			const bool userDefinedRouting = true;
+			var elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver,
+				true, false, userDefinedRouting);
+
+			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchSerializerConfiguration))
+			{
+				context.AddUpdateDocument(indexAliasDtoTest3, indexAliasDtoTest3.Id, new RoutingDefinition { RoutingId = "newroute" });
+				context.AddUpdateDocument(indexAliasDtoTest4, indexAliasDtoTest4.Id, new RoutingDefinition { RoutingId = "newroute" });
+				context.AddUpdateDocument(indexAliasDtoTest5, indexAliasDtoTest5.Id, new RoutingDefinition { RoutingId = "newroute" });
+				context.SaveChanges();
+
+				var result = context.Alias(aliasParameters.ToString());
+				Assert.IsTrue(result);
+
+				Assert.IsTrue(context.AliasExists("test4"));
+
+				// using the index
+				var xx = context.GetDocument<IndexAliasDtoTest>(4, new RoutingDefinition {RoutingId = "newroute"});
+
+			}
+
+			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+
+			elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(
+				typeof(IndexAliasDtoTest), 
+				MappingUtils.GetElasticsearchMapping<IndexAliasDtoTest>("test4", "indexaliasdtotest")
+			);
+
+			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolver))
+			{
+				// using the alias
+				var xx = context.GetDocument<IndexAliasDtoTest>(4);
+			}
+		}
 		[Test]
 		public void RemoveAliasForIndex()
 		{
