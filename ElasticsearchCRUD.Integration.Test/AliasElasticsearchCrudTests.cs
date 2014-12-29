@@ -15,7 +15,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		private void WaitForDataOrFail()
 		{
@@ -113,7 +113,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
-		[ExpectedException(ExpectedException=typeof(ElasticsearchCrudException),ExpectedMessage="ElasticSearchContextGet: HttpStatusCode.NotFound")]
+		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
 		public void CreateAliasForIndex3()
 		{
 			var indexAliasDtoTest3 = new IndexAliasDtoTest { Id = 3, Description = "no" };
@@ -170,7 +170,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.IsTrue(xx.Id == 4);
 
 				// should not be found due to filter
-				var notfound = context.GetDocument<IndexAliasDtoTest>(3);
+				var result = context.SearchById<IndexAliasDtoTest>(3);
+				Assert.IsNull(result);
 			}
 		}
 
