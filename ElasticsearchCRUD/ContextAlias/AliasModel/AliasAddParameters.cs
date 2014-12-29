@@ -2,6 +2,12 @@
 
 namespace ElasticsearchCRUD.ContextAlias.AliasModel
 {
+	/// <summary>
+	/// APIs in elasticsearch accept an index name when working against a specific index, and several indices when applicable. 
+	/// The index aliases API allow to alias an index with a name, with all APIs automatically converting the alias name to the actual index name. 
+	/// An alias can also be mapped to more than one index, and when specifying it, the alias will automatically expand to the aliases indices. 
+	/// An alias can also be associated with a filter that will automatically be applied when searching, and routing values.
+	/// </summary>
 	public class AliasAddParameters : AliasBaseParameters
 	{
 		private string _routing;
@@ -13,6 +19,9 @@ namespace ElasticsearchCRUD.ContextAlias.AliasModel
 		{
 		}
 
+		/// <summary>
+		/// It is possible to associate routing values with aliases. This feature can be used together with filtering aliases in order to avoid unnecessary shard operations.
+		/// </summary>
 		public string Routing
 		{
 			get { return _routing; }
@@ -23,6 +32,10 @@ namespace ElasticsearchCRUD.ContextAlias.AliasModel
 			}
 		}
 
+		/// <summary>
+		/// An optional filter that can be associated with an alias.
+		/// TODO replace this raw json string with a filter object once the filter class has been created.
+		/// </summary>
 		public string Filter
 		{
 			get { return _filter; }
@@ -32,8 +45,6 @@ namespace ElasticsearchCRUD.ContextAlias.AliasModel
 				_filterSet = true;
 			}
 		}
-
-		
 
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
