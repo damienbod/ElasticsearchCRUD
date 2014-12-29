@@ -691,21 +691,52 @@ namespace ElasticsearchCRUD
 		/// <summary>
 		/// Creates any alias command depending on the json content
 		/// </summary>
-		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
-		/// <returns>returns true if the alias commnad was completed successfully</returns>
+		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documentation</param>
+		/// <returns>returns true if the alias command was completed successfully</returns>
 		public bool Alias(string jsonContent)
 		{
 			return _elasticsearchContextAlias.SendAliasCommand(jsonContent);
 		}
 
 		/// <summary>
+		/// Creates any alias command depending on the json content
+		/// var aliasParameters = new AliasParameters
+		///	{
+#pragma warning disable 1570
+		///		Actions = new List<AliasBaseParameters>
+#pragma warning restore 1570
+		///		{
+		///			new AliasAddParameters("test2", "indexaliasdtotests"),
+		///			new AliasAddParameters("test3", "indexaliasdtotests")
+		///		}
+		///	};
+		///
+		/// </summary>
+		/// <param name="aliasParameters">content for the _aliases, see Elasticsearch documentation</param>
+		/// <returns>returns true if the alias command was completed successfully</returns>
+		public bool Alias(AliasParameters aliasParameters)
+		{
+			return _elasticsearchContextAlias.SendAliasCommand(aliasParameters.ToString());
+		}
+
+		/// <summary>
 		/// Async Creates any alias command depending on the json content
 		/// </summary>
-		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
-		/// <returns>returns true if the alias commnad was completed successfully</returns>
+		/// <param name="jsonContent">content for the _aliases, see Elasticsearch documentation</param>
+		/// <returns>returns true if the alias command was completed successfully</returns>
 		public async Task<ResultDetails<bool>> AliasAsync(string jsonContent)
 		{
 			return await _elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
+		}
+
+		/// <summary>
+		/// Async Creates any alias command depending on the json content
+		/// </summary>
+		/// <param name="aliasParameters">content for the _aliases, see Elasticsearch documentation</param>
+		/// <returns>returns true if the alias command was completed successfully</returns>
+		public async Task<ResultDetails<bool>> AliasAsync(AliasParameters aliasParameters)
+		{
+			return await _elasticsearchContextAlias.SendAliasCommandAsync(aliasParameters.ToString());
 		}
 
 		/// <summary>

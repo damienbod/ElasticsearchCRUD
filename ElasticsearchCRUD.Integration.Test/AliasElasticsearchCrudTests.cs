@@ -194,6 +194,32 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		public void RemoveAliasForIndex2()
+		{
+			var aliasParameters = new AliasParameters
+			{
+				Actions = new List<AliasBaseParameters>
+				{
+					new AliasRemoveParameters("test", "indexaliasdtotests")
+				}
+			};
+
+			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+				context.SaveChanges();
+
+				var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
+				Assert.IsTrue(resultCreate);
+
+				var resultRemove = context.Alias(aliasParameters);
+				Assert.IsTrue(resultRemove);
+			}
+		}
+
+		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
 		public void RemoveAliasthatDoesNotExistForIndex()
 		{
