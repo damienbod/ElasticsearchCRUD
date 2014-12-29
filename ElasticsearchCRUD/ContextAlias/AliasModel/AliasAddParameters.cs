@@ -38,7 +38,11 @@ namespace ElasticsearchCRUD.ContextAlias.AliasModel
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("routing", _routing, elasticsearchCrudJsonWriter, _routingSet);
-			JsonHelper.WriteValue("filter", _filter, elasticsearchCrudJsonWriter, _filterSet);
+			if (_filterSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filter");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue(_filter);
+			}
 		}
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)

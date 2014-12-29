@@ -15,7 +15,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		private void WaitForDataOrFail()
 		{
@@ -113,11 +113,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		}
 
 		[Test]
+		[ExpectedException(ExpectedException=typeof(ElasticsearchCrudException),ExpectedMessage="ElasticSearchContextGet: HttpStatusCode.NotFound")]
 		public void CreateAliasForIndex3()
 		{
-			var indexAliasDtoTest3 = new IndexAliasDtoTest { Id = 3, Description = "Test3 index for aliases" };
-			var indexAliasDtoTest4 = new IndexAliasDtoTest { Id = 4, Description = "Test4 index for aliases" };
-			var indexAliasDtoTest5 = new IndexAliasDtoTest { Id = 5, Description = "Test5 index for aliases" };
+			var indexAliasDtoTest3 = new IndexAliasDtoTest { Id = 3, Description = "no" };
+			var indexAliasDtoTest4 = new IndexAliasDtoTest { Id = 4, Description = "boo" };
+			var indexAliasDtoTest5 = new IndexAliasDtoTest { Id = 5, Description = "boo" };
 
 			var aliasParameters = new AliasParameters
 			{
@@ -125,7 +126,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					new AliasAddParameters("test4", "indexaliasdtotests")
 					{
-						Routing="newroute"
+						Routing="newroute",
+						Filter= "{ \"term\" : { \"description\" : \"boo\" } }"
 					}
 				}
 			};
@@ -147,7 +149,10 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.IsTrue(context.AliasExists("test4"));
 
 				// using the index
-				var xx = context.GetDocument<IndexAliasDtoTest>(4, new RoutingDefinition {RoutingId = "newroute"});
+				var doc3 = context.GetDocument<IndexAliasDtoTest>(3, new RoutingDefinition {RoutingId = "newroute"});
+				Assert.IsTrue(doc3.Id == 3);
+				var doc4 = context.GetDocument<IndexAliasDtoTest>(4, new RoutingDefinition { RoutingId = "newroute" });
+				Assert.IsTrue(doc4.Id == 4);
 
 			}
 
@@ -162,8 +167,13 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				// using the alias
 				var xx = context.GetDocument<IndexAliasDtoTest>(4);
+				Assert.IsTrue(xx.Id == 4);
+
+				// should not be found due to filter
+				var notfound = context.GetDocument<IndexAliasDtoTest>(3);
 			}
 		}
+
 		[Test]
 		public void RemoveAliasForIndex()
 		{
