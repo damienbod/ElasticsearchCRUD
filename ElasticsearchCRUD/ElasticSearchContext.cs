@@ -346,29 +346,69 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
-		/// Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+		/// Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
-		/// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
-		/// <param name="scanAndScrollConfiguration">Required scroll configuration</param>
 		/// <returns>A collection of documents of type T</returns>
-		public ResultDetails<SearchResult<T>> Search<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration = null)
+		public ResultDetails<SearchResult<T>> Search<T>(string searchJsonParameters)
 		{
-			return _search.PostSearch<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
+			return _search.PostSearch<T>(searchJsonParameters, null, null);
 		}
 
 		/// <summary>
-		/// async Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+		/// async Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
-		/// /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
+		/// <returns>A collection of documents of type T in a Task</returns>
+		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters)
+		{
+			return await _search.PostSearchAsync<T>(searchJsonParameters, null, null);
+		}
+
+		/// <summary>
+		/// Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+		/// </summary>
+		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+		/// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
+		/// <param name="scanAndScrollConfiguration">Required scroll configuration</param>
+		/// <returns>A collection of documents of type T</returns>
+		public ResultDetails<SearchResult<T>> SearchScanAndScroll<T>(string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			if (string.IsNullOrEmpty(scrollId))
+			{
+				throw new ElasticsearchCrudException("scrollId must have a value");
+			}
+
+			if (scanAndScrollConfiguration == null)
+			{
+				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
+			}
+			
+			return _search.PostSearch<T>("", scrollId, scanAndScrollConfiguration);
+		}
+
+		/// <summary>
+		/// async Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+		/// </summary>
+		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+		/// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
 		/// <param name="scanAndScrollConfiguration">Required scroll configuration</param>
 		/// <returns>A collection of documents of type T in a Task</returns>
-		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters, string scrollId = null, ScanAndScrollConfiguration scanAndScrollConfiguration = null)
+		public async Task<ResultDetails<SearchResult<T>>> SearchScanAndScrollAsync<T>(string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
-			return await _search.PostSearchAsync<T>(searchJsonParameters, scrollId, scanAndScrollConfiguration);
+			if (string.IsNullOrEmpty(scrollId))
+			{
+				throw new ElasticsearchCrudException("scrollId must have a value");
+			}
+
+			if (scanAndScrollConfiguration == null)
+			{
+				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
+			}
+
+			return await _search.PostSearchAsync<T>("", scrollId, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -702,9 +742,7 @@ namespace ElasticsearchCRUD
 		/// Creates any alias command depending on the json content
 		/// var aliasParameters = new AliasParameters
 		///	{
-#pragma warning disable 1570
-		///		Actions = new List<AliasBaseParameters>
-#pragma warning restore 1570
+		///		Actions = new List AliasBaseParameters
 		///		{
 		///			new AliasAddParameters("test2", "indexaliasdtotests"),
 		///			new AliasAddParameters("test3", "indexaliasdtotests")

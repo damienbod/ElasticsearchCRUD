@@ -109,7 +109,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				int processedResults = 0;
 				while (result.PayloadResult.Hits.Total > processedResults)
 				{
-					var resultCollection = context.Search<ScanScrollTypeV1>("", scrollId, scanScrollConfig);
+					var resultCollection = context.SearchScanAndScroll<ScanScrollTypeV1>(scrollId, scanScrollConfig);
 					scrollId = resultCollection.PayloadResult.ScrollId;
 
 					foreach (var item in resultCollection.PayloadResult.Hits.HitsResult)

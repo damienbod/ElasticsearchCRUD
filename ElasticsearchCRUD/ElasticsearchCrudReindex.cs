@@ -82,7 +82,7 @@ namespace ElasticsearchCRUD
 			{
 				TraceProvider.Trace(TraceEventType.Information, "ElasticsearchCrudReindex: Reindex: creating new documents, indexProccessed: {0} SearchResult: {1}", indexProccessed, result.PayloadResult.Hits.Total);
 
-				var resultCollection = _context.Search<TOld>("",scrollId, ScanAndScrollConfiguration);
+				var resultCollection = _context.SearchScanAndScroll<TOld>(scrollId, ScanAndScrollConfiguration);
 				scrollId = resultCollection.PayloadResult.ScrollId;
 
 				foreach (var item in resultCollection.PayloadResult.Hits.HitsResult)
