@@ -436,7 +436,7 @@ namespace ElasticsearchCRUD
 		public bool SearchExists<T>(string searchJsonParameters, string routing = null)
 		{
 			SearchUrlParameters searchUrlParameters = null;
-			if (string.IsNullOrEmpty(routing))
+			if (!string.IsNullOrEmpty(routing))
 			{
 				searchUrlParameters = new SearchUrlParameters
 				{
@@ -456,7 +456,7 @@ namespace ElasticsearchCRUD
 		public async Task<ResultDetails<bool>> SearchExistsAsync<T>(string searchJsonParameters, string routing = null)
 		{
 			SearchUrlParameters searchUrlParameters = null;
-			if (string.IsNullOrEmpty(routing))
+			if (!string.IsNullOrEmpty(routing))
 			{
 				searchUrlParameters = new SearchUrlParameters
 				{
