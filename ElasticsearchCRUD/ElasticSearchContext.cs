@@ -339,10 +339,23 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
 		/// <param name="documentId"></param>
+		/// <param name="searchUrlParameters">add routing or pretty parameters if required</param>
 		/// <returns>Returns the document of type T</returns>
-		public T SearchById<T>(object documentId)
+		public T SearchById<T>(object documentId, SearchUrlParameters searchUrlParameters = null)
 		{
-			return _elasticsearchContextSearch.SearchById<T>(documentId);
+			return _elasticsearchContextSearch.SearchById<T>(documentId, searchUrlParameters);
+		}
+
+		/// <summary>
+		/// async Uses Elasticsearch search API to get the document per id
+		/// </summary>
+		/// <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
+		/// <param name="documentId"></param>
+		/// <param name="searchUrlParameters">add routing or pretty parameters if required</param>
+		/// <returns>Returns the document of type T in a Task with result details</returns>
+		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object documentId, SearchUrlParameters searchUrlParameters = null)
+		{
+			return await _elasticsearchContextSearch.SearchByIdAsync<T>(documentId, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -350,10 +363,11 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// <param name="searchUrlParameters">add routing or pretty parameters if required</param>
 		/// <returns>A collection of documents of type T</returns>
-		public ResultDetails<SearchResult<T>> Search<T>(string searchJsonParameters)
+		public ResultDetails<SearchResult<T>> Search<T>(string searchJsonParameters, SearchUrlParameters searchUrlParameters = null)
 		{
-			return _search.PostSearch<T>(searchJsonParameters, null, null);
+			return _search.PostSearch<T>(searchJsonParameters, null, null, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -361,10 +375,11 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
 		/// <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+		/// <param name="searchUrlParameters">add routing or pretty parameters if required</param>
 		/// <returns>A collection of documents of type T in a Task</returns>
-		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters)
+		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters, SearchUrlParameters searchUrlParameters = null)
 		{
-			return await _search.PostSearchAsync<T>(searchJsonParameters, null, null);
+			return await _search.PostSearchAsync<T>(searchJsonParameters, null, null, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -385,8 +400,8 @@ namespace ElasticsearchCRUD
 			{
 				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
 			}
-			
-			return _search.PostSearch<T>("", scrollId, scanAndScrollConfiguration);
+
+			return _search.PostSearch<T>("", scrollId, scanAndScrollConfiguration, null);
 		}
 
 		/// <summary>
@@ -408,7 +423,7 @@ namespace ElasticsearchCRUD
 				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
 			}
 
-			return await _search.PostSearchAsync<T>("", scrollId, scanAndScrollConfiguration);
+			return await _search.PostSearchAsync<T>("", scrollId, scanAndScrollConfiguration, null);
 		}
 
 		/// <summary>
@@ -416,10 +431,19 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
 		/// <param name="searchJsonParameters">json query for elasticsearch</param>
+		/// <param name="routing">routing used for the search</param>
 		/// <returns>true if one document exists for the search query</returns>
-		public bool SearchExists<T>(string searchJsonParameters)
+		public bool SearchExists<T>(string searchJsonParameters, string routing = null)
 		{
-			return _search.PostSearchExists<T>(searchJsonParameters);
+			SearchUrlParameters searchUrlParameters = null;
+			if (string.IsNullOrEmpty(routing))
+			{
+				searchUrlParameters = new SearchUrlParameters
+				{
+					Routing = routing
+				};
+			}
+			return _search.PostSearchExists<T>(searchJsonParameters, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -427,10 +451,19 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
 		/// <param name="searchJsonParameters">json query for elasticsearch</param>
+		/// <param name="routing">routing used for the search</param>
 		/// <returns>true if one document exists for the search query</returns>
-		public async Task<ResultDetails<bool>> SearchExistsAsync<T>(string searchJsonParameters)
+		public async Task<ResultDetails<bool>> SearchExistsAsync<T>(string searchJsonParameters, string routing = null)
 		{
-			return await _search.PostSearchExistsAsync<T>(searchJsonParameters);
+			SearchUrlParameters searchUrlParameters = null;
+			if (string.IsNullOrEmpty(routing))
+			{
+				searchUrlParameters = new SearchUrlParameters
+				{
+					Routing = routing
+				};
+			}
+			return await _search.PostSearchExistsAsync<T>(searchJsonParameters, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -479,17 +512,6 @@ namespace ElasticsearchCRUD
 		public async Task<ResultDetails<long>> CountAsync<T>(string jsonContent = "")
 		{
 			return await _elasticsearchContextCount.PostCountAsync<T>(jsonContent);
-		}
-
-		/// <summary>
-		/// async Uses Elasticsearch search API to get the document per id
-		/// </summary>
-		/// <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
-		/// <param name="documentId"></param>
-		/// <returns>Returns the document of type T in a Task with result details</returns>
-		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object documentId)
-		{
-			return await _elasticsearchContextSearch.SearchByIdAsync<T>(documentId);
 		}
 
 		/// <summary>

@@ -30,12 +30,17 @@ namespace ElasticsearchCRUD.ContextSearch
 			_connectionString = connectionString;
 		}
 
-		public async Task<ResultDetails<SearchResult<T>>> PostSearchAsync<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		public async Task<ResultDetails<SearchResult<T>>> PostSearchAsync<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration, SearchUrlParameters searchUrlParameters)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search: {0}, content: {1}", typeof(T), jsonContent, "Search");
 
+			var urlParams = "";
+			if (searchUrlParameters != null)
+			{
+				urlParams = searchUrlParameters.GetUrlParameters();
+			}
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
-			var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+			var elasticsearchUrlForEntityGet = string.Format("{0}/{1}/{2}/_search{3}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)), urlParams);
 
 			if (!string.IsNullOrEmpty(scrollId))
 			{
@@ -48,10 +53,10 @@ namespace ElasticsearchCRUD.ContextSearch
 			return result;
 		}
 
-		public ResultDetails<SearchResult<T>> PostSearch<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		public ResultDetails<SearchResult<T>> PostSearch<T>(string jsonContent, string scrollId, ScanAndScrollConfiguration scanAndScrollConfiguration, SearchUrlParameters searchUrlParameters)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => PostSearchAsync<T>(jsonContent, scrollId, scanAndScrollConfiguration));
+			return syncExecutor.ExecuteResultDetails(() => PostSearchAsync<T>(jsonContent, scrollId, scanAndScrollConfiguration, searchUrlParameters));
 		}
 
 		public async Task<ResultDetails<SearchResult<T>>> PostSearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
@@ -75,7 +80,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			return syncExecutor.ExecuteResultDetails(() => PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration));
 		}
 
-		public async Task<ResultDetails<bool>> PostSearchExistsAsync<T>(string jsonContent)
+		public async Task<ResultDetails<bool>> PostSearchExistsAsync<T>(string jsonContent, SearchUrlParameters searchUrlParameters)
 		{
 			_traceProvider.Trace(TraceEventType.Verbose, "{2}: Request for search exists: {0}, content: {1}", typeof(T), jsonContent, "Search");
 			var resultDetails = new ResultDetails<bool>
@@ -84,10 +89,16 @@ namespace ElasticsearchCRUD.ContextSearch
 				RequestBody = jsonContent
 			};
 
+			var urlParams = "";
+			if (searchUrlParameters != null)
+			{
+				urlParams = searchUrlParameters.GetUrlParameters();
+			}
+
 			try
 			{
 				var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
-				var elasticsearchUrlForSearchExists = string.Format("{0}/{1}/{2}/_search/exists", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)));
+				var elasticsearchUrlForSearchExists = string.Format("{0}/{1}/{2}/_search/exists{3}", _connectionString, elasticSearchMapping.GetIndexForType(typeof(T)), elasticSearchMapping.GetDocumentType(typeof(T)), urlParams);
 
 				var content = new StringContent(jsonContent);
 				var uri = new Uri(elasticsearchUrlForSearchExists);
@@ -133,10 +144,10 @@ namespace ElasticsearchCRUD.ContextSearch
 			}
 		}
 
-		public bool PostSearchExists<T>(string jsonContent)
+		public bool PostSearchExists<T>(string jsonContent, SearchUrlParameters searchUrlParameters)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => PostSearchExistsAsync<T>(jsonContent)).PayloadResult;
+			return syncExecutor.ExecuteResultDetails(() => PostSearchExistsAsync<T>(jsonContent, searchUrlParameters)).PayloadResult;
 		}
 
 		private async Task<ResultDetails<SearchResult<T>>> PostInteranlSearchAsync<T>(string jsonContent, Uri uri)

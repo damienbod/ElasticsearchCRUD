@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
@@ -28,10 +29,10 @@ namespace ElasticsearchCRUD.ContextSearch
 			_connectionString = connectionString;
 		}
 
-		public T SearchById<T>(object entityId)
+		public T SearchById<T>(object entityId, SearchUrlParameters searchUrlParameters)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			var result = syncExecutor.ExecuteResultDetails(() => SearchByIdAsync<T>(entityId));
+			var result = syncExecutor.ExecuteResultDetails(() => SearchByIdAsync<T>(entityId, searchUrlParameters));
 
 			if (result.Status == HttpStatusCode.NotFound)
 			{
@@ -47,7 +48,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			return result.PayloadResult;
 		}
 
-		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object entityId)
+		public async Task<ResultDetails<T>> SearchByIdAsync<T>(object entityId, SearchUrlParameters searchUrlParameters)
 		{
 			var elasticSearchMapping = _elasticsearchSerializerConfiguration.ElasticsearchMappingResolver.GetElasticSearchMapping(typeof(T));
 			var index = elasticSearchMapping.GetIndexForType(typeof(T));
@@ -58,7 +59,7 @@ namespace ElasticsearchCRUD.ContextSearch
 			
 			var search = new Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
 
-			var result = await search.PostSearchAsync<T>(BuildSearchById(entityId), null, null);
+			var result = await search.PostSearchAsync<T>(BuildSearchById(entityId), null, null, searchUrlParameters);
 			resultDetails.RequestBody = result.RequestBody;
 			resultDetails.RequestUrl = result.RequestUrl;
 
