@@ -96,6 +96,10 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			{
 				indexSettings = new IndexSettings{NumberOfShards=5,NumberOfReplicas=1};
 			}
+			if (indexAliases == null)
+			{
+				indexAliases = new IndexAliases();
+			}
 
 			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndexAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };

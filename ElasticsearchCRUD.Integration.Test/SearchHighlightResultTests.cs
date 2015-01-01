@@ -28,7 +28,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void SearchForDataWithHightlightResult()
 		{
 			AddSearchHightlightResultData();
-			Thread.Sleep(1000);
+			Thread.Sleep(1500);
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				var hits = context.Search<FastestAnimal>(SearchQuery("mph"), new SearchUrlParameters{Pretty=true});
