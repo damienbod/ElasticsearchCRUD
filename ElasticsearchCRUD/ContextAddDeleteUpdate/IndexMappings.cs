@@ -94,6 +94,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			CreateIndexSettings(elasticsearchCrudJsonWriter, indexSettings);
+			indexAliases.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			CreateIndexCommand(elasticsearchCrudJsonWriter.GetJsonString(), index);
