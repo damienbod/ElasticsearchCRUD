@@ -1106,6 +1106,22 @@
             A custom type mapping table, for example (when configured using type_table_path):
             </summary>
         </member>
+        <member name="T:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAlias">
+            <summary>
+            This model is only used when creating an index. If it is required that an index is added later, use the alias api.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAlias.Routing">
+            <summary>
+            It is possible to associate routing values with aliases. This feature can be used together with filtering aliases in order to avoid unnecessary shard operations.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAlias.Filter">
+            <summary>
+            An optional filter that can be associated with an alias.
+            TODO replace this raw json string with a filter object once the filter class has been created.
+            </summary>
+        </member>
         <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexDefinition.Mapping">
             <summary>
             TODO change this to a list so n mappings can be defined
@@ -1658,6 +1674,30 @@
             </summary>
             <param name="name">name of the custom tokenizer (ToLower()</param>
         </member>
+        <member name="T:ElasticsearchCRUD.ContextAlias.AliasModel.AliasAddParameters">
+            <summary>
+            APIs in elasticsearch accept an index name when working against a specific index, and several indices when applicable. 
+            The index aliases API allow to alias an index with a name, with all APIs automatically converting the alias name to the actual index name. 
+            An alias can also be mapped to more than one index, and when specifying it, the alias will automatically expand to the aliases indices. 
+            An alias can also be associated with a filter that will automatically be applied when searching, and routing values.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAlias.AliasModel.AliasAddParameters.Routing">
+            <summary>
+            It is possible to associate routing values with aliases. This feature can be used together with filtering aliases in order to avoid unnecessary shard operations.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAlias.AliasModel.AliasAddParameters.Filter">
+            <summary>
+            An optional filter that can be associated with an alias.
+            TODO replace this raw json string with a filter object once the filter class has been created.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters">
+            <summary>
+            This class is used to set routing or pretty search for the url parameters. All other options can be sent in the body
+            </summary>
+        </member>
         <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicDate">
             <summary>
             A basic formatter for a full date as four digit year, two digit month of year, and two digit day of month (yyyyMMdd).
@@ -2136,20 +2176,22 @@
             <param name="index">index to be updated, if null, updatesa all indices</param>
             <returns>string with details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAliases)">
             <summary>
             Creates a new index
             </summary>
             <param name="index">index name to lower string!</param>
             <param name="indexSettings">settings for the new index</param>
+            <param name="indexAliases">Define aliases for the index at creation time</param>
             <returns>details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAliases)">
             <summary>
             Async Creates a new index
             </summary>
             <param name="index">index name to lower string!</param>
             <param name="indexSettings">settings for the new index</param>
+            <param name="indexAliases">Define aliases for the index at creation time</param>
             <returns>details</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexDefinition)">
@@ -2192,48 +2234,76 @@
             saved to the same shard.) If the child is a child document and no parent id is set, no docuemnt will be found.</param>
             <returns>Document type T</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchById``1(System.Object)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchById``1(System.Object,ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters)">
             <summary>
             Uses Elasticsearch search API to get the document per id
             </summary>
             <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
             <param name="documentId"></param>
+            <param name="searchUrlParameters">add routing or pretty parameters if required</param>
             <returns>Returns the document of type T</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Search``1(System.String,System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchByIdAsync``1(System.Object,ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters)">
             <summary>
-            Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+            async Uses Elasticsearch search API to get the document per id
+            </summary>
+            <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
+            <param name="documentId"></param>
+            <param name="searchUrlParameters">add routing or pretty parameters if required</param>
+            <returns>Returns the document of type T in a Task with result details</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Search``1(System.String,ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters)">
+            <summary>
+            Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
             </summary>
             <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
             <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+            <param name="searchUrlParameters">add routing or pretty parameters if required</param>
+            <returns>A collection of documents of type T</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchAsync``1(System.String,ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters)">
+            <summary>
+            async Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+            </summary>
+            <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+            <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
+            <param name="searchUrlParameters">add routing or pretty parameters if required</param>
+            <returns>A collection of documents of type T in a Task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchScanAndScroll``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
+            <summary>
+            Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+            </summary>
+            <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
             <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
             <param name="scanAndScrollConfiguration">Required scroll configuration</param>
             <returns>A collection of documents of type T</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchAsync``1(System.String,System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchScanAndScrollAsync``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
             <summary>
-            async Search API method to search for anything. any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+            async Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
             </summary>
             <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
-            <param name="searchJsonParameters">JSON string which matches the Elasticsearch Search API</param>
-            /// <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
+            <param name="scrollId">If this search is part of a scan and scroll, you can add the scrollId to open the context</param>
             <param name="scanAndScrollConfiguration">Required scroll configuration</param>
             <returns>A collection of documents of type T in a Task</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExists``1(System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExists``1(System.String,System.String)">
             <summary>
             executes a post request to checks if at least one document exists for the search query.
             </summary>
             <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
             <param name="searchJsonParameters">json query for elasticsearch</param>
+            <param name="routing">routing used for the search</param>
             <returns>true if one document exists for the search query</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExistsAsync``1(System.String)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExistsAsync``1(System.String,System.String)">
             <summary>
             async executes a post request to checks if at least one document exists for the search query.
             </summary>
             <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
             <param name="searchJsonParameters">json query for elasticsearch</param>
+            <param name="routing">routing used for the search</param>
             <returns>true if one document exists for the search query</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScroll``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
@@ -2271,14 +2341,6 @@
             <typeparam name="T">Type to find</typeparam>
             <param name="jsonContent">json query data, returns all in emtpy</param>
             <returns>Result amount of document found in a result details task</returns>
-        </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchByIdAsync``1(System.Object)">
-            <summary>
-            async Uses Elasticsearch search API to get the document per id
-            </summary>
-            <typeparam name="T">type T used to get index anf the type of the document.</typeparam>
-            <param name="documentId"></param>
-            <returns>Returns the document of type T in a Task with result details</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteByQueryAsync``1(System.String)">
             <summary>
@@ -2434,15 +2496,38 @@
             <summary>
             Creates any alias command depending on the json content
             </summary>
-            <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
-            <returns>returns true if the alias commnad was completed successfully</returns>
+            <param name="jsonContent">content for the _aliases, see Elasticsearch documentation</param>
+            <returns>returns true if the alias command was completed successfully</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Alias(ElasticsearchCRUD.ContextAlias.AliasModel.AliasParameters)">
+             <summary>
+             Creates any alias command depending on the json content
+             var aliasParameters = new AliasParameters
+            	{
+            		Actions = new List AliasBaseParameters
+            		{
+            			new AliasAddParameters("test2", "indexaliasdtotests"),
+            			new AliasAddParameters("test3", "indexaliasdtotests")
+            		}
+            	};
+            
+             </summary>
+             <param name="aliasParameters">content for the _aliases, see Elasticsearch documentation</param>
+             <returns>returns true if the alias command was completed successfully</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasAsync(System.String)">
             <summary>
             Async Creates any alias command depending on the json content
             </summary>
-            <param name="jsonContent">content for the _aliases, see Elasticsearch documnetation</param>
-            <returns>returns true if the alias commnad was completed successfully</returns>
+            <param name="jsonContent">content for the _aliases, see Elasticsearch documentation</param>
+            <returns>returns true if the alias command was completed successfully</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasAsync(ElasticsearchCRUD.ContextAlias.AliasModel.AliasParameters)">
+            <summary>
+            Async Creates any alias command depending on the json content
+            </summary>
+            <param name="aliasParameters">content for the _aliases, see Elasticsearch documentation</param>
+            <returns>returns true if the alias command was completed successfully</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasRemoveForIndex(System.String,System.String)">
             <summary>
