@@ -25,8 +25,26 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void SearchForDataWithHightlightResult()
 		{
 			//AddSearchHightlightResultData();
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				var hits = context.Search<FastestAnimal>(SearchQuery("mph"));
+			}
 		}
 
+		//{
+		//	"query" :  { "match" : {   "_all" : "cool"  }},
+		//	"highlight": {
+		//		"fields" : {
+		//			"name" : {},
+		//			"description" : {}
+		//		}
+		//	}
+		//}
+		private string SearchQuery(string text)
+		{
+			return "{\"query\" :  { \"match\" : {   \"_all\" : \""+ text +"\"  }},\"highlight\": { \"fields\" : { \"data\" : {}, \"speed\" : {}, \"speedmph\" : {}, \"speedkmh\" : {}}}}";
+		}
 		private void AddSearchHightlightResultData()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
