@@ -8,9 +8,9 @@ namespace DataTransferSQLToEl
 		static void Main(string[] args)
 		{
 			Repo repo = new Repo();
-			//repo.SaveToElasticsearchPerson();
+			repo.SaveToElasticsearchPerson();
 			
-			//repo.SaveToElasticsearchStateProvince();
+			repo.SaveToElasticsearchStateProvince();
 			//var addressX = repo.GetAddressFromElasticsearch("22");
 			//Console.WriteLine(addressX);
 

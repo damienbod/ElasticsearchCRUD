@@ -50,7 +50,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				{
 					Created = DateTime.UtcNow,
 					Updated = DateTime.UtcNow,
-					Description = "A test entity description",
+					Description = "A test entity cool description",
 					Id = i,
 					Name = "cool"
 				};
