@@ -262,10 +262,11 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <param name="index">index name to lower string!</param>
 		/// <param name="indexSettings">settings for the new index</param>
+		/// <param name="indexAliases">Define aliases for the index at creation time</param>
 		/// <returns>details</returns>
-		public ResultDetails<string> IndexCreate(string index, IndexSettings indexSettings = null)
+		public ResultDetails<string> IndexCreate(string index, IndexSettings indexSettings = null, IndexAliases indexAliases = null)
 		{
-			return _elasticsearchContextIndexMapping.CreateIndex(index, indexSettings);
+			return _elasticsearchContextIndexMapping.CreateIndex(index, indexSettings, indexAliases);
 		}
 
 		/// <summary>
@@ -273,10 +274,11 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		/// <param name="index">index name to lower string!</param>
 		/// <param name="indexSettings">settings for the new index</param>
+		/// <param name="indexAliases">Define aliases for the index at creation time</param>
 		/// <returns>details</returns>
-		public async Task<ResultDetails<string>> IndexCreateAsync(string index, IndexSettings indexSettings = null)
+		public async Task<ResultDetails<string>> IndexCreateAsync(string index, IndexSettings indexSettings = null, IndexAliases indexAliases = null)
 		{
-			return await _elasticsearchContextIndexMapping.CreateIndexAsync(index, indexSettings);
+			return await _elasticsearchContextIndexMapping.CreateIndexAsync(index, indexSettings, indexAliases);
 		}
 
 		/// <summary>

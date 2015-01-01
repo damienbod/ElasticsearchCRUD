@@ -46,7 +46,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 
 				if (_saveChangesAndInitMappingsForChildDocuments)
 				{
-					_indexMappings.CreateIndexSettingsForDocument(index, new IndexSettings{NumberOfShards=5,NumberOfReplicas=1} );
+					_indexMappings.CreateIndexSettingsForDocument(index, new IndexSettings{NumberOfShards=5,NumberOfReplicas=1}, new IndexAliases() );
 					_indexMappings.CreatePropertyMappingForTopDocument(entity, new MappingDefinition{Index=index});
 				}
 

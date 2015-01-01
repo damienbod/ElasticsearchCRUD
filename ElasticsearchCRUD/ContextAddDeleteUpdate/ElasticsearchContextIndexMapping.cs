@@ -64,7 +64,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				MappingUtils.GuardAgainstBadIndexName(index);
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
-				indexMappings.CreateIndexSettingsForDocument(index, indexDefinition.IndexSettings);
+				indexMappings.CreateIndexSettingsForDocument(index, indexDefinition.IndexSettings, indexDefinition.IndexAliases);
 				indexDefinition.Mapping.Index = index;
 				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, indexDefinition.Mapping);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
@@ -80,13 +80,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings)
+		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings, IndexAliases indexAliases)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => CreateIndexAsync(index, indexSettings));
+			return syncExecutor.ExecuteResultDetails(() => CreateIndexAsync(index, indexSettings, indexAliases));
 		}
 
-		public async Task<ResultDetails<string>> CreateIndexAsync(string index, IndexSettings indexSettings)
+		public async Task<ResultDetails<string>> CreateIndexAsync(string index, IndexSettings indexSettings, IndexAliases indexAliases)
 		{
 			if (string.IsNullOrEmpty(index))
 			{
@@ -105,7 +105,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				MappingUtils.GuardAgainstBadIndexName(index);
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
-				indexMappings.CreateIndexSettingsForDocument(index, indexSettings);
+				indexMappings.CreateIndexSettingsForDocument(index, indexSettings, indexAliases);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
 				return resultDetails;

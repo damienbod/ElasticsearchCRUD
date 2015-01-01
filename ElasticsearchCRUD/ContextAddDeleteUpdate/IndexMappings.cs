@@ -84,7 +84,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_traceProvider = traceProvider;
 		}
 
-		public void CreateIndexSettingsForDocument(string index, IndexSettings indexSettings)
+		public void CreateIndexSettingsForDocument(string index, IndexSettings indexSettings, IndexAliases indexAliases)
 		{
 			if (_processedItems.Contains("_index" + index))
 			{
