@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using ElasticsearchCRUD.ContextSearch.SearchModel;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
@@ -7,28 +10,32 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class SearchHighlightResultTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TearDown]
 		public void TearDown()
 		{
-			//using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			//{
-			//	context.AllowDeleteForIndex = true;
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
 
-			//	var entityResult = context.DeleteIndexAsync<FastestAnimal>();
-			//	entityResult.Wait();
-			//}
+				var entityResult = context.DeleteIndexAsync<FastestAnimal>();
+				entityResult.Wait();
+			}
 		}
 
 		[Test]
 		public void SearchForDataWithHightlightResult()
 		{
-			//AddSearchHightlightResultData();
-
+			AddSearchHightlightResultData();
+			Thread.Sleep(1000);
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				var hits = context.Search<FastestAnimal>(SearchQuery("mph"));
+				var hits = context.Search<FastestAnimal>(SearchQuery("mph"), new SearchUrlParameters{Pretty=true});
+
+				//"speedmph" : [ "60.0 <em>mph</em>"
+				string value = hits.PayloadResult.Hits.HitsResult.FirstOrDefault().Highlights["speedmph"].FirstOrDefault();				
+				Assert.AreEqual("60.0 <em>mph</em>", value);
 			}
 		}
 

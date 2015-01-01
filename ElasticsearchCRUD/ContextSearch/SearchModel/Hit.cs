@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel
@@ -26,5 +27,8 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 		
 		[JsonProperty(PropertyName = "_source", NullValueHandling= NullValueHandling.Ignore)]
 		public T Source { get; set; }
+
+		[JsonProperty(PropertyName = "highlight", NullValueHandling = NullValueHandling.Ignore)]
+		public Dictionary<string, IEnumerable<string>> Highlights { get; set; }
 	}
 }
