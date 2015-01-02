@@ -13,9 +13,4 @@ namespace ElasticsearchCRUD.Model.GeoModel
 			Coordinate.WriteJson(elasticsearchCrudJsonWriter);
 		}
 	}
-
-	public abstract class GeoType
-	{
-		public abstract void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
-	}
 }
