@@ -52,5 +52,13 @@
 				throw new ElasticsearchCrudException("longitude outside possible range:" + longitude);
 			}
 		}
+
+		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
+			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(_longitude);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteValue(_latitude);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
+		}
 	}
 }

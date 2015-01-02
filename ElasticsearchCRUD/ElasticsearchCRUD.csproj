@@ -174,6 +174,7 @@
     <Compile Include="Model\GeoModel\Coordinate.cs" />
     <Compile Include="Model\GeoModel\DefaultGeoShapes.cs" />
     <Compile Include="Model\GeoModel\GeoPoint.cs" />
+    <Compile Include="Model\GeoModel\GeoShapePoint.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />
