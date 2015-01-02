@@ -85,6 +85,12 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.23</strong><em> 2015.01.02</em>
+- Added search highlighting and refactored the hits results
+- Support for alias in create index
+- Added a missing const icu_tokenizer 
+- Support for alias routing and filter parameters 
+- Added _id attribute which can be used instead of the Key Data Annotations attribute 
 
 <strong>Version 1.0.22</strong><em> 2014.12.15</em>
 - support for custom char_filters 
