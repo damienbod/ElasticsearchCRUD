@@ -5,8 +5,8 @@ namespace ElasticsearchCRUD.Model.GeoModel
 {
 	public class GeoShapePolygon : GeoType
 	{
-		// TODO validate that first and teh last items are the same
-		public List<GeoPoint> Coordinates { get; set; }
+		// TODO validate that first and the last items in each polygon are the same
+		public List<List<GeoPoint>> Coordinates { get; set; }
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -14,9 +14,14 @@ namespace ElasticsearchCRUD.Model.GeoModel
 			JsonHelper.WriteValue("type", DefaultGeoShapes.Polygon, elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("coordinates");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
-			foreach (var item in Coordinates)
+			foreach (var items in Coordinates)
 			{
-				item.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
+				foreach (var item in items)
+				{
+					item.WriteJson(elasticsearchCrudJsonWriter);
+				}
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
 			}
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
