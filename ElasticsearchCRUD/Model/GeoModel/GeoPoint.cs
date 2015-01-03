@@ -6,8 +6,6 @@ namespace ElasticsearchCRUD.Model.GeoModel
 	{
 		public GeoPoint()
 		{
-			base.Add(_longitude);
-			base.Add(_latitude);
 		}
 
 		public GeoPoint(double longitude, double latitude)

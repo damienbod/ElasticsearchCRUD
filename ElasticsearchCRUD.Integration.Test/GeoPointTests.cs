@@ -52,6 +52,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.SaveChanges();
 				Thread.Sleep(1500);
 				Assert.AreEqual(1, context.Count<GeoPointDto>());
+				var result = context.SearchById<GeoPointDto>(1);
+				Assert.AreEqual(geoPointDto.CityCoordinates.Count, result.CityCoordinates.Count);
 			}
 		}
 
@@ -62,7 +64,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				ShapeCityCoordinates = new GeoShapePoint
 				{
-					Coordinate =  new GeoPoint(45, 45)
+					Coordinates =  new GeoPoint(45, 45)
 				},
 				Id = "1",
 				Name = "test",
@@ -80,6 +82,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.SaveChanges();
 				Thread.Sleep(1500);
 				Assert.AreEqual(1, context.Count<GeoShapePointDto>());
+				var result = context.SearchById<GeoShapePointDto>(1);
+				Assert.AreEqual(geoShapePointDto.ShapeCityCoordinates.Coordinates.Count, result.ShapeCityCoordinates.Coordinates.Count);
 			}
 		}
 
@@ -112,6 +116,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.SaveChanges();
 				Thread.Sleep(1500);
 				Assert.AreEqual(1, context.Count<GeoShapeLineStringDto>());
+				var result = context.SearchById<GeoShapeLineStringDto>(1);
+				Assert.AreEqual(geoShapeLineStringDto.ShapeLineCoordinates.Coordinates.Count, result.ShapeLineCoordinates.Coordinates.Count);
 			}
 		}
 
@@ -160,6 +166,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				context.SaveChanges();
 				Thread.Sleep(1500);
 				Assert.AreEqual(1,context.Count<GeoShapePolygonDto>());
+				var result = context.SearchById<GeoShapePolygonDto>(1);
+				Assert.AreEqual(geoShapePolygonDto.Coordinates.Coordinates.Count, result.Coordinates.Coordinates.Count);
 			}
 		}
 	}
