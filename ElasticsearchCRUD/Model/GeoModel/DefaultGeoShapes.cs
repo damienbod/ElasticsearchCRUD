@@ -20,22 +20,22 @@
 		/// <summary>
 		/// An array of unconnected, but likely related points.
 		/// </summary>
-		public const string Multipoint = "multipoint";
+		public const string MultiPoint = "multipoint";
 
 		/// <summary>
 		/// An array of separate linestrings.
 		/// </summary>
-		public const string Multilinestring = "multilinestring";
+		public const string MultiLineString = "multilinestring";
 
 		/// <summary>
 		/// An array of separate polygons.
 		/// </summary>
-		public const string Multipolygon = "multipolygon";
+		public const string MultiPolygon = "multipolygon";
 
 		/// <summary>
 		/// A GeoJSON shape similar to the multi* shapes except that multiple types can coexist (e.g., a Point and a LineString).
 		/// </summary>
-		public const string Geometrycollection = "geometrycollection";
+		public const string GeometryCollection = "geometrycollection";
 
 		/// <summary>
 		/// A bounding rectangle, or envelope, specified by specifying only the top left and bottom right points.

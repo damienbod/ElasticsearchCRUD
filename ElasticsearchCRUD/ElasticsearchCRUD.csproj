@@ -177,6 +177,8 @@
     <Compile Include="Model\GeoModel\DefaultGeoShapes.cs" />
     <Compile Include="Model\GeoModel\GeoPoint.cs" />
     <Compile Include="Model\GeoModel\GeoShapeLineString.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeMultiLineString.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeMultiPoint.cs" />
     <Compile Include="Model\GeoModel\GeoShapePoint.cs" />
     <Compile Include="Model\GeoModel\GeoShapePolygon.cs" />
     <Compile Include="Model\GeoModel\GeoType.cs" />
