@@ -176,6 +176,8 @@
     <Compile Include="Model\DefaultTokenizers.cs" />
     <Compile Include="Model\GeoModel\DefaultGeoShapes.cs" />
     <Compile Include="Model\GeoModel\GeoPoint.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeEnvelope.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeGeometryCollection.cs" />
     <Compile Include="Model\GeoModel\GeoShapeLineString.cs" />
     <Compile Include="Model\GeoModel\GeoShapeMultiLineString.cs" />
     <Compile Include="Model\GeoModel\GeoShapeMultiPoint.cs" />
