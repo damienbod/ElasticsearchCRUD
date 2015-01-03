@@ -171,7 +171,6 @@
     <Compile Include="Model\DefaultSimilarities.cs" />
     <Compile Include="Model\DefaultTokenFilters.cs" />
     <Compile Include="Model\DefaultTokenizers.cs" />
-    <Compile Include="Model\GeoModel\Coordinate.cs" />
     <Compile Include="Model\GeoModel\DefaultGeoShapes.cs" />
     <Compile Include="Model\GeoModel\GeoPoint.cs" />
     <Compile Include="Model\GeoModel\GeoShapeLineString.cs" />

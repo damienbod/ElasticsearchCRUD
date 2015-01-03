@@ -6,7 +6,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 	public class GeoShapeLineString : GeoType
 	{
 		// TODO validate that at least two items exist
-		public List<Coordinate> Coordinates { get; set; }
+		public List<GeoPoint> Coordinates { get; set; }
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{

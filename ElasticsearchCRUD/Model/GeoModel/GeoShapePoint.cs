@@ -4,7 +4,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 {
 	public class GeoShapePoint : GeoType
 	{
-		public Coordinate Coordinate { get; set; }
+		public GeoPoint Coordinate { get; set; }
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
