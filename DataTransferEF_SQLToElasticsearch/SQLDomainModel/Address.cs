@@ -31,7 +31,7 @@ namespace DataTransferSQLToEl.SQLDomainModel
         [StringLength(15)]
         public string PostalCode { get; set; }
 
-		// TODO add this to the ignore list
+	    // TODO add this to the ignore list
 		[JsonIgnore]
         public DbGeography SpatialLocation { get; set; }
 

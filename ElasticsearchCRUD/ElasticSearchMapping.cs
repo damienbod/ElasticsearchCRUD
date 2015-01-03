@@ -9,6 +9,7 @@ using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -48,7 +49,29 @@ namespace ElasticsearchCRUD
 				{
 					if (!Attribute.IsDefined(prop, typeof (JsonIgnoreAttribute)))
 					{
-						if (IsPropertyACollection(prop))
+						if (Attribute.IsDefined(prop, typeof (ElasticsearchGeoTypeAttribute))) 
+						{
+							var obj = prop.Name.ToLower();
+							// process GeoTypes
+							if (createPropertyMappings)
+							{
+								object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
+
+								if ((attrs[0] as ElasticsearchCoreTypes) != null)
+								{
+									elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+									elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
+								}
+							}
+							else
+							{
+								var data = prop.GetValue(entityInfo.Document) as GeoType;
+								elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);							
+								data.WriteJson(elasticsearchCrudJsonWriter);
+								// Write data
+							}
+						}
+						else if (IsPropertyACollection(prop))
 						{
 							ProcessArrayOrCollection(entityInfo, elasticsearchCrudJsonWriter, prop, createPropertyMappings);
 						}
@@ -132,7 +155,6 @@ namespace ElasticsearchCRUD
 			}
 			if (prop.GetValue(entityInfo.Document) != null  && SaveChildObjectsAsWellAsParent)
 			{
-				// TODO wrong type by grandchildren...
 				var child = GetDocumentType(prop.GetValue(entityInfo.Document).GetType());
 				var parent = GetDocumentType(entityInfo.EntityType);
 				if (!SerializedTypes.Contains(child + parent))

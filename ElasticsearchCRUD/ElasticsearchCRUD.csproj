@@ -61,6 +61,9 @@
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchDate.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchDouble.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchFloat.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchGeoPoint.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchGeoShape.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchGeoTypeAttribute.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchIdAttribute.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchInteger.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchLong.cs" />
@@ -171,6 +174,16 @@
     <Compile Include="Model\DefaultSimilarities.cs" />
     <Compile Include="Model\DefaultTokenFilters.cs" />
     <Compile Include="Model\DefaultTokenizers.cs" />
+    <Compile Include="Model\GeoModel\DefaultGeoShapes.cs" />
+    <Compile Include="Model\GeoModel\GeoPoint.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeEnvelope.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeGeometryCollection.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeLineString.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeMultiLineString.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeMultiPoint.cs" />
+    <Compile Include="Model\GeoModel\GeoShapePoint.cs" />
+    <Compile Include="Model\GeoModel\GeoShapePolygon.cs" />
+    <Compile Include="Model\GeoModel\GeoType.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />

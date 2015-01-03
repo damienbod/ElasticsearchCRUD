@@ -1,4 +1,5 @@
 ﻿using System;
+using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
