@@ -28,6 +28,12 @@ namespace ElasticsearchCRUD.Integration.Test
 		[Test]
 		public void CreateGeoPointMapping()
 		{
+			var geoPointDto = new GeoPointDto
+			{
+				CityCoordinates = new GeoPoint(45, 45),
+				Id = "1",
+				Name="test"
+			};
 			using ( var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
@@ -35,12 +41,25 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				Thread.Sleep(1500);
 				Assert.IsNotNull(context.IndexExists<GeoPointDto>());
+
+				context.AddUpdateDocument(geoPointDto, geoPointDto.Id);
+				context.SaveChanges();
 			}
 		}
 
 		[Test]
 		public void CreateGeoShapePointMapping()
 		{
+			var geoShapePointDto = new GeoShapePointDto
+			{
+				ShapeCityCoordinates = new GeoShapePoint
+				{
+					Coordinate =  new GeoPoint(45, 45)
+				},
+				Id = "1",
+				Name = "test",
+			};
+
 			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
@@ -48,6 +67,9 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				Thread.Sleep(1500);
 				Assert.IsNotNull(context.IndexExists<GeoShapePointDto>());
+
+				context.AddUpdateDocument(geoShapePointDto, geoShapePointDto.Id);
+				context.SaveChanges();
 			}
 		}
 	}

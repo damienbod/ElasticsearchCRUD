@@ -2,7 +2,7 @@
 
 namespace ElasticsearchCRUD.Model.GeoModel
 {
-	public class GeoPoint : List<double>
+	public class GeoPoint : List<double>, GeoType
 	{
 		public GeoPoint()
 		{

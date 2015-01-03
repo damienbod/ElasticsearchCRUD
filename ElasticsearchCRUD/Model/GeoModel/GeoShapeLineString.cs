@@ -8,7 +8,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 		// TODO validate that at least two items exist
 		public List<GeoPoint> Coordinates { get; set; }
 
-		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("type", DefaultGeoShapes.LineString, elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("coordinates");

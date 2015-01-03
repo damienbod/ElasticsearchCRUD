@@ -9,6 +9,7 @@ using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -50,11 +51,10 @@ namespace ElasticsearchCRUD
 					{
 						if (Attribute.IsDefined(prop, typeof (ElasticsearchGeoTypeAttribute))) 
 						{
+							var obj = prop.Name.ToLower();
 							// process GeoTypes
 							if (createPropertyMappings)
 							{
-								var obj = prop.Name.ToLower();
-
 								object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
 
 								if ((attrs[0] as ElasticsearchCoreTypes) != null)
@@ -65,6 +65,9 @@ namespace ElasticsearchCRUD
 							}
 							else
 							{
+								var data = prop.GetValue(entityInfo.Document) as GeoType;
+								elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);							
+								data.WriteJson(elasticsearchCrudJsonWriter);
 								// Write data
 							}
 						}

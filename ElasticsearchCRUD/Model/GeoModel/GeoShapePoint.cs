@@ -6,11 +6,13 @@ namespace ElasticsearchCRUD.Model.GeoModel
 	{
 		public GeoPoint Coordinate { get; set; }
 
-		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			JsonHelper.WriteValue("type", DefaultGeoShapes.Point, elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("coordinates");
 			Coordinate.WriteJson(elasticsearchCrudJsonWriter);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}
 }
