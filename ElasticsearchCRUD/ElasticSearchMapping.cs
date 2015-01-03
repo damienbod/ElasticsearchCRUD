@@ -48,7 +48,27 @@ namespace ElasticsearchCRUD
 				{
 					if (!Attribute.IsDefined(prop, typeof (JsonIgnoreAttribute)))
 					{
-						if (IsPropertyACollection(prop))
+						if (Attribute.IsDefined(prop, typeof (ElasticsearchGeoTypeAttribute))) 
+						{
+							// process GeoTypes
+							if (createPropertyMappings)
+							{
+								var obj = prop.Name.ToLower();
+
+								object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
+
+								if ((attrs[0] as ElasticsearchCoreTypes) != null)
+								{
+									elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+									elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
+								}
+							}
+							else
+							{
+								// Write data
+							}
+						}
+						else if (IsPropertyACollection(prop))
 						{
 							ProcessArrayOrCollection(entityInfo, elasticsearchCrudJsonWriter, prop, createPropertyMappings);
 						}

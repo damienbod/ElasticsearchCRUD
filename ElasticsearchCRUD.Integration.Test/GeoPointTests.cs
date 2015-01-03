@@ -19,7 +19,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				context.AllowDeleteForIndex = true;
 				var entityResult = context.DeleteIndexAsync<GeoPointDto>();
-				var entityResult1 = context.DeleteIndexAsync<GeoShapePoint>();
+				var entityResult1 = context.DeleteIndexAsync<GeoShapePointDto>();
 				entityResult.Wait();
 				entityResult1.Wait();	
 			}
@@ -44,10 +44,10 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.IndexCreate<GeoShapePoint>();
+				context.IndexCreate<GeoShapePointDto>();
 
 				Thread.Sleep(1500);
-				Assert.IsNotNull(context.IndexExists<GeoShapePoint>());
+				Assert.IsNotNull(context.IndexExists<GeoShapePointDto>());
 			}
 		}
 	}
@@ -68,7 +68,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		public string Name { get; set; }
 
-		[ElasticsearchGeoShapePoint]
+		[ElasticsearchGeoShape]
 		public GeoShapePoint ShapeCityCoordinates { get; set; }
 	}
 }

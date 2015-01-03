@@ -4,7 +4,7 @@ using ElasticsearchCRUD.Utils;
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 {
 	[AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
-	public class ElasticsearchGeoPoint : ElasticsearchCoreTypes
+	public class ElasticsearchGeoPoint : ElasticsearchGeoTypeAttribute
 	{
 		public override string JsonString()
 		{
