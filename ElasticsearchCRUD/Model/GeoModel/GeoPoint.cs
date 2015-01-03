@@ -6,8 +6,16 @@ namespace ElasticsearchCRUD.Model.GeoModel
 	{
 		public GeoPoint()
 		{
-			Add(_longitude);
-			Add(_latitude);
+			base.Add(_longitude);
+			base.Add(_latitude);
+		}
+
+		public GeoPoint(double longitude, double latitude)
+		{
+			_longitude = longitude;
+			_latitude = latitude;
+			base.Add(_longitude);
+			base.Add(_latitude);
 		}
 
 		private double _latitude;
@@ -23,6 +31,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 			{
 				GuardLatitude(value);
 				_latitude = value;
+				this[1] = _latitude;
 			}
 		}
 
@@ -36,6 +45,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 			{
 				GuardLongitude(value);
 				_longitude = value;
+				this[0] = _latitude;
 			}
 		}
 
