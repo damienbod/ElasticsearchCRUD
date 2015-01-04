@@ -194,6 +194,118 @@
             Ignored a malformed number. Defaults to false.
             </summary>
         </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.LatLon">
+            <summary>
+            lat_lon
+            Set to true to also index the .lat and .lon as fields. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.Geohash">
+            <summary>
+            geohash
+            Set to true to also index the .geohash as a field. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.GeohashPrecision">
+            <summary>
+            geohash_precision
+            Sets the geohash precision. It can be set to an absolute geohash length or a distance value (eg 1km, 1m, 1ml) 
+            defining the size of the smallest cell. Defaults to an absolute length of 12.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.GeohashPrefix">
+            <summary>
+            geohash_prefix
+            If this option is set to true, not only the geohash but also all its parent cells (true prefixes) will be indexed as well. 
+            The number of terms that will be indexed depends on the geohash_precision. Defaults to false. Note: This option implicitly enables geohash.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.Validate">
+            <summary>
+            validate
+            Set to true to reject geo points with invalid latitude or longitude (default is false). 
+            Note: Validation only works when normalization has been disabled.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.ValidateLat">
+            <summary>
+            validate_lat
+            Set to true to reject geo points with an invalid latitude.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.ValidateLon">
+            <summary>
+            validate_lon
+            Set to true to reject geo points with an invalid longitude.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.Normalize">
+            <summary>
+            normalize
+            Set to true to normalize latitude and longitude (default is true).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.NormalizeLat">
+            <summary>
+            normalize_lat
+            Set to true to normalize latitude.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.NormalizeLon">
+            <summary>
+            normalize_lon
+            Set to true to normalize longitude.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoPoint.PrecisionStep">
+            <summary>
+            precision_step
+            The precision step (influences the number of terms generated for each number value) for .lat and .lon fields if lat_lon is set to true. Defaults to 16.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoShape.Tree">
+            <summary>
+            tree
+            Name of the PrefixTree implementation to be used: geohash for GeohashPrefixTree and quadtree for QuadPrefixTree. Defaults to geohash.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoShape.Precision">
+            <summary>
+            precision
+            This parameter may be used instead of tree_levels to set an appropriate value for the tree_levels parameter. 
+            The value specifies the desired precision and Elasticsearch will calculate the best tree_levels value to honor this precision. 
+            The value should be a number followed by an optional distance unit. Valid distance units include: 
+            in, inch, yd, yard, mi, miles, km, kilometers, m,meters (default), cm,centimeters, mm, millimeters.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoShape.TreeLevels">
+            <summary>
+            tree_levels
+            Maximum number of layers to be used by the PrefixTree. 
+            This can be used to control the precision of shape representations and therefore how many terms are indexed. 
+            Defaults to the default value of the chosen PrefixTree implementation. 
+            Since this parameter requires a certain level of understanding of the underlying implementation, users may use the precision parameter instead. 
+            However, Elasticsearch only uses the tree_levels parameter internally and this is what is returned via the mapping API even if you use the precision parameter.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoShape.DistanceErrorPct">
+            <summary>
+            distance_error_pct
+            Used as a hint to the PrefixTree about how precise it should be. Defaults to 0.025 (2.5%) with 0.5 as the maximum supported value.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchGeoShape.Orientation">
+            <summary>
+            orientation
+            Optionally define how to interpret vertex order for polygons / multipolygons. 
+            This parameter defines one of two coordinate system rules (Right-hand or Left-hand) each of which can be specified in three different ways. 
+            1. Right-hand rule (default): right, ccw, counterclockwise, 
+            2. Left-hand rule: left, cw, clockwise. 
+            The default orientation (counterclockwise) complies with the OGC standard which defines outer ring vertices in counterclockwise order with inner ring(s) 
+            vertices (holes) in clockwise order. Setting this parameter in the geo_shape mapping explicitly sets vertex order for the coordinate list of a geo_shape field 
+            but can be overridden in each individual GeoJSON document.
+            </summary>
+        </member>
         <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.IndexName">
             <summary>
             index_name
@@ -1912,6 +2024,127 @@
             <summary>
             A formatter for a four digit year, two digit month of year, and two digit day of month.
             </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.Point">
+            <summary>
+            A single geographic coordinate.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.LineString">
+            <summary>
+            An arbitrary line given two or more points.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.Polygon">
+            <summary>
+            A closed polygon whose first and last point must match, thus requiring n + 1 vertices to create an n-sided polygon and a minimum of 4 vertices.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.MultiPoint">
+            <summary>
+            An array of unconnected, but likely related points.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.MultiLineString">
+            <summary>
+            An array of separate linestrings.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.MultiPolygon">
+            <summary>
+            An array of separate polygons.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.GeometryCollection">
+            <summary>
+            A GeoJSON shape similar to the multi* shapes except that multiple types can coexist (e.g., a Point and a LineString).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.Envelope">
+            <summary>
+            A bounding rectangle, or envelope, specified by specifying only the top left and bottom right points.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.GeoModel.DefaultGeoShapes.Circle">
+            <summary>
+            A circle specified by a center point and radius with units, which default to METERS.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.GeoModel.GeoPoint">
+             <summary>
+             Indexed Fields
+            
+             The geo_point mapping will index a single field with the format of lat,lon. 
+             The lat_lon option can be set to also index the .lat and .lon as numeric fields, and geohash can be set to true to also index .geohash value.
+            
+             A good practice is to enable indexing lat_lon as well, since both the geo distance and bounding box filters can either be executed using in memory checks, 
+             or using the indexed lat lon values, and it really depends on the data set which one performs better. Note though,
+              that indexed lat lon only make sense when there is a single geo point value for the field, and not multi values.
+             
+             Geohashes
+            
+             Geohashes are a form of lat/lon encoding which divides the earth up into a grid. Each cell in this grid is represented by a geohash string. 
+             Each cell in turn can be further subdivided into smaller cells which are represented by a longer string. So the longer the geohash, the smaller (and thus more accurate) the cell is.
+            
+             Because geohashes are just strings, they can be stored in an inverted index like any other string, which makes querying them very efficient.
+            
+             If you enable the geohash option, a geohash “sub-field” will be indexed as, eg pin.geohash. The length of the geohash is controlled by the geohash_precision parameter, 
+             which can either be set to an absolute length (eg 12, the default) or to a distance (eg 1km).
+            
+             More usefully, set the geohash_prefix option to true to not only index the geohash value, but all the enclosing cells as well. 
+             For instance, a geohash of u30 will be indexed as [u,u3,u30]. This option can be used by the Geohash Cell Filter to find geopoints within a particular cell very efficiently.
+             </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.GeoModel.GeoPoint.GuardLatitude(System.Double)">
+            <summary>
+            -90 to +90 for Latitude
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.GeoModel.GeoPoint.GuardLongitude(System.Double)">
+            <summary>
+            -180 to +180 for Longitude
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.GeoModel.GeoPoint.Add(System.Double)">
+            <summary>
+            This method cannot be used. Set the Longitude or the Latitude properties
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.GeoModel.GeoPoint.Latitude">
+            <summary>
+            -90 to +90 for Latitude
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.GeoModel.GeoPoint.Longitude">
+            <summary>
+            -180 to +180 for Longitude
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.GeoModel.GeoShapeCircle.Radius">
+            <summary>
+            The inner radius field is required. If not specified, then the units of the radius will default to METERS.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.GeoModel.GeoShapePolygon">
+             <summary>
+             A polygon is defined by a list of a list of points. The first and last points in each (outer) list must be the same (the polygon must be closed).
+             The first array represents the outer boundary of the polygon, the other arrays represent the interior shapes ("holes"):
+             
+             IMPORTANT NOTE: GeoJSON does not mandate a specific order for vertices thus ambiguous polygons around the dateline and poles are possible. 
+             To alleviate ambiguity the Open Geospatial Consortium (OGC) Simple Feature Access specification defines the following vertex ordering:
+            
+            	Outer Ring - Counterclockwise
+            	Inner Ring(s) / Holes - Clockwise 
+            
+             For polygons that do not cross the dateline, vertex order will not matter in Elasticsearch. 
+             For polygons that do cross the dateline, Elasticsearch requires vertex ordering to comply with the OGC specification. 
+             Otherwise, an unintended polygon may be created and unexpected query/filter results will be returned.
+            
+             Elasticsearch will apply OGC standards to eliminate ambiguity resulting in a polygon that crosses the dateline.
+             
+             An orientation parameter can be defined when setting the geo_shape mapping (see the section called “Mapping Optionsedit”). 
+             This will define vertex order for the coordinate list on the mapped geo_shape field. It can also be overridden on each document. 
+             </summary>
         </member>
         <member name="T:ElasticsearchCRUD.Model.Shards">
             <summary>
