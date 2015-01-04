@@ -23,11 +23,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult1 = context.DeleteIndexAsync<GeoShapePointDto>();
 				var entityResult2 = context.DeleteIndexAsync<GeoShapeLineStringDto>();
 				var entityResult3 = context.DeleteIndexAsync<GeoShapePolygonDto>();
+				var entityResult4 = context.DeleteIndexAsync<GeoShapeMultiPointDto>();
 		
 				entityResult.Wait();
 				entityResult1.Wait();
 				entityResult2.Wait();
 				entityResult3.Wait();
+				entityResult4.Wait();
 			}
 		}
 
@@ -170,6 +172,41 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(geoShapePolygonDto.Coordinates.Coordinates.Count, result.Coordinates.Coordinates.Count);
 			}
 		}
+
+		[Test]
+		public void CreateGeoShapeMultiPointMapping()
+		{
+			var geoShapeLineStringDto = new GeoShapeMultiPointDto
+			{
+				Coordinates = new GeoShapeMultiPoint
+				{
+					Coordinates = new List<GeoPoint>
+					{
+						new GeoPoint(45, 45),
+						new GeoPoint(46, 45)
+					}
+				},
+				Id = "1",
+				Name = "test",
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<GeoShapeMultiPointDto>();
+
+				Thread.Sleep(1500);
+				Assert.IsNotNull(context.IndexExists<GeoShapeMultiPointDto>());
+
+				context.AddUpdateDocument(geoShapeLineStringDto, geoShapeLineStringDto.Id);
+				context.SaveChanges();
+				Thread.Sleep(1500);
+				Assert.AreEqual(1, context.Count<GeoShapeMultiPointDto>());
+				var result = context.SearchById<GeoShapeMultiPointDto>(1);
+				Assert.AreEqual(geoShapeLineStringDto.Coordinates.Coordinates.Count, result.Coordinates.Coordinates.Count);
+			}
+		}
+
 	}
 
 	public class GeoPointDto
@@ -210,5 +247,15 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		[ElasticsearchGeoShape(Precision = "100m")]
 		public GeoShapePolygon Coordinates { get; set; }
+	}
+
+	public class GeoShapeMultiPointDto
+	{
+		public string Id { get; set; }
+
+		public string Name { get; set; }
+
+		[ElasticsearchGeoShape(Tree= GeoShapeTree.quadtree)]
+		public GeoShapeMultiPoint Coordinates { get; set; }
 	}
 }
