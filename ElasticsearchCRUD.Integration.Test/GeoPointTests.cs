@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class GeoPointTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TearDown]
 		public void TestTearDown()
@@ -26,7 +26,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult4 = context.DeleteIndexAsync<GeoShapeMultiPointDto>();
 				var entityResult5 = context.DeleteIndexAsync<GeoShapeMultiLineStringDto>();
 				var entityResult6 = context.DeleteIndexAsync<GeoShapeMultiPolygonDto>();
-				
+				var entityResult7 = context.DeleteIndexAsync<GeoShapeGeometryCollectionDto>();
+				var entityResult8 = context.DeleteIndexAsync<GeoShapeEnvelopeDto>();
+				var entityResult9 = context.DeleteIndexAsync<GeoShapeCircleDto>();
 
 				entityResult.Wait();
 				entityResult1.Wait();
@@ -35,6 +37,9 @@ namespace ElasticsearchCRUD.Integration.Test
 				entityResult4.Wait();
 				entityResult5.Wait();
 				entityResult6.Wait();
+				entityResult7.Wait();
+				entityResult8.Wait();
+				entityResult9.Wait();
 			}
 		}
 
@@ -306,6 +311,142 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual(geoShapeMultiPolygonDto.Coordinates.Coordinates.Count, result.Coordinates.Coordinates.Count);
 			}
 		}
+
+		[Test]
+		public void CreateGeoShapeGeometryCollectionMapping()
+		{
+			var geoShapeGeometryCollectionDto = new GeoShapeGeometryCollectionDto
+			{
+				Coordinates = new GeoShapeGeometryCollection
+				{
+					Geometries = new List<GeoType>
+					{
+						new GeoShapeMultiLineString
+						{
+							Coordinates =  new List<List<GeoPoint>>
+							{
+								// [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]
+								new List<GeoPoint>
+								{
+									new GeoPoint(100, 0),
+									new GeoPoint(101, 0),
+									new GeoPoint(101, 1),
+									new GeoPoint(100, 1),
+									new GeoPoint(100, 0)
+								},
+								//  [ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]
+								new List<GeoPoint>
+								{
+									new GeoPoint(100.2, 0.2),
+									new GeoPoint(100.8, 0.2),
+									new GeoPoint(100.8, 0.8),
+									new GeoPoint(100.2, 0.8),
+									new GeoPoint(100.2, 0.2)
+								}
+							}	
+						},
+						new GeoShapePoint
+						{
+							Coordinates =  new GeoPoint(45, 45)
+						},
+						new GeoShapeLineString
+						{
+							Coordinates = new List<GeoPoint>
+							{
+								new GeoPoint(45, 45),
+								new GeoPoint(46, 45)
+							}
+						}
+					}
+				},
+				Id = "1",
+				Name = "test",
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<GeoShapeGeometryCollectionDto>();
+
+				Thread.Sleep(1500);
+				Assert.IsNotNull(context.IndexExists<GeoShapeGeometryCollectionDto>());
+
+				context.AddUpdateDocument(geoShapeGeometryCollectionDto, geoShapeGeometryCollectionDto.Id);
+				context.SaveChanges();
+				Thread.Sleep(1500);
+				Assert.AreEqual(1, context.Count<GeoShapeGeometryCollectionDto>());
+				var result = context.SearchById<GeoShapeGeometryCollectionDto>(1);
+				Assert.AreEqual(geoShapeGeometryCollectionDto.Coordinates.Geometries.Count, result.Coordinates.Geometries.Count);
+			}
+		}
+
+		[Test]
+		public void CreateGeoShapeEnvelopeMapping()
+		{
+			var geoShapeEnvelopeDto = new GeoShapeEnvelopeDto
+			{
+				Coordinates = new GeoShapeEnvelope
+				{
+					Coordinates = new List<GeoPoint>
+					{
+						// [ [-45.0, 45.0], [45.0, -45.0] ]
+
+						new GeoPoint(-45, 45),
+						new GeoPoint(45, -45)
+					}
+				},
+				Id = "1",
+				Name = "test",
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<GeoShapeEnvelopeDto>();
+
+				Thread.Sleep(1500);
+				Assert.IsNotNull(context.IndexExists<GeoShapeEnvelopeDto>());
+
+				context.AddUpdateDocument(geoShapeEnvelopeDto, geoShapeEnvelopeDto.Id);
+				context.SaveChanges();
+				Thread.Sleep(1500);
+				Assert.AreEqual(1, context.Count<GeoShapeEnvelopeDto>());
+				var result = context.SearchById<GeoShapeEnvelopeDto>(1);
+				Assert.AreEqual(geoShapeEnvelopeDto.Coordinates.Coordinates.Count, result.Coordinates.Coordinates.Count);
+			}
+		}
+
+		[Test]
+		public void CreateGeoShapeCircleMapping()
+		{
+			var geoShapeCircleDto = new GeoShapeCircleDto
+			{
+				CircleTest = new GeoShapeCircle
+				{
+					Coordinates = new GeoPoint(45, 45),
+					Radius="100m"
+				},
+				Id = "1",
+				Name = "test",
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<GeoShapeCircleDto>();
+
+				Thread.Sleep(1500);
+				Assert.IsNotNull(context.IndexExists<GeoShapeCircleDto>());
+
+				context.AddUpdateDocument(geoShapeCircleDto, geoShapeCircleDto.Id);
+				context.SaveChanges();
+				Thread.Sleep(1500);
+				Assert.AreEqual(1, context.Count<GeoShapeCircleDto>());
+				var result = context.SearchById<GeoShapeCircleDto>(1);
+				Assert.AreEqual(geoShapeCircleDto.CircleTest.Coordinates.Count, result.CircleTest.Coordinates.Count);
+			}
+		}
+
 	}
 
 	public class GeoPointDto
@@ -377,4 +518,35 @@ namespace ElasticsearchCRUD.Integration.Test
 		[ElasticsearchGeoShape(Precision = "100m")]
 		public GeoShapeMultiPolygon Coordinates { get; set; }
 	}
+
+	public class GeoShapeGeometryCollectionDto
+	{
+		public string Id { get; set; }
+
+		public string Name { get; set; }
+
+		[ElasticsearchGeoShape(Precision = "100m")]
+		public GeoShapeGeometryCollection Coordinates { get; set; }
+	}
+
+	public class GeoShapeEnvelopeDto
+	{
+		public string Id { get; set; }
+
+		public string Name { get; set; }
+
+		[ElasticsearchGeoShape]
+		public GeoShapeEnvelope Coordinates { get; set; }
+	}
+
+	public class GeoShapeCircleDto
+	{
+		public string Id { get; set; }
+
+		public string Name { get; set; }
+
+		[ElasticsearchGeoShape]
+		public GeoShapeCircle CircleTest { get; set; }
+	}
+
 }

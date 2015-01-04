@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			JsonHelper.WriteValue("type", DefaultGeoShapes.Envelope, elasticsearchCrudJsonWriter);
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("envelope");
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("coordinates");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
 			foreach (var item in Coordinates)
 			{
