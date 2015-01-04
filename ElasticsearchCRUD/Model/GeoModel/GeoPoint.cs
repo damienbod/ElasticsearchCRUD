@@ -25,7 +25,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 	/// More usefully, set the geohash_prefix option to true to not only index the geohash value, but all the enclosing cells as well. 
 	/// For instance, a geohash of u30 will be indexed as [u,u3,u30]. This option can be used by the Geohash Cell Filter to find geopoints within a particular cell very efficiently.
 	/// </summary>
-	public class GeoPoint : List<double>, GeoType
+	public class GeoPoint : List<double>, IGeoType
 	{
 		public GeoPoint()
 		{

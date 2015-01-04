@@ -3,7 +3,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.GeoModel
 {
-	public class GeoShapeMultiLineString : GeoType
+	public class GeoShapeMultiLineString : IGeoType
 	{
 		public List<List<GeoPoint>> Coordinates { get; set; }
 

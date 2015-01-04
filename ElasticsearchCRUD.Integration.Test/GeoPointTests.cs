@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Model.GeoModel;
@@ -11,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class GeoPointTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TearDown]
 		public void TestTearDown()
@@ -319,7 +320,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			{
 				Coordinates = new GeoShapeGeometryCollection
 				{
-					Geometries = new List<GeoType>
+					Geometries = new List<Object>
 					{
 						new GeoShapeMultiLineString
 						{

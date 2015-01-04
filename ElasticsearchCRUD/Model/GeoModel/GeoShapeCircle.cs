@@ -2,7 +2,7 @@
 
 namespace ElasticsearchCRUD.Model.GeoModel
 {
-	public class GeoShapeCircle : GeoType
+	public class GeoShapeCircle : IGeoType
 	{
 		public GeoPoint Coordinates { get; set; }
 

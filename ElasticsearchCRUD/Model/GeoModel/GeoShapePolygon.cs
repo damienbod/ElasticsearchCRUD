@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 	/// An orientation parameter can be defined when setting the geo_shape mapping (see the section called “Mapping Optionsedit”). 
 	/// This will define vertex order for the coordinate list on the mapped geo_shape field. It can also be overridden on each document. 
 	/// </summary>
-	public class GeoShapePolygon : GeoType
+	public class GeoShapePolygon : IGeoType
 	{
 		// TODO validate that first and the last items in each polygon are the same
 		public List<List<GeoPoint>> Coordinates { get; set; }

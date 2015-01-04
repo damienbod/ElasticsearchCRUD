@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.GeoModel
 {
-	public class GeoShapeGeometryCollection : GeoType
+	public class GeoShapeGeometryCollection : IGeoType
 	{
-		public List<GeoType> Geometries { get; set; }
+		public List<Object> Geometries { get; set; }
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -15,7 +16,7 @@ namespace ElasticsearchCRUD.Model.GeoModel
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
 			foreach (var item in Geometries)
 			{
-				item.WriteJson(elasticsearchCrudJsonWriter);
+				(item as IGeoType).WriteJson(elasticsearchCrudJsonWriter);
 			}
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

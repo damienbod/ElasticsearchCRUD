@@ -65,7 +65,7 @@ namespace ElasticsearchCRUD
 							}
 							else
 							{
-								var data = prop.GetValue(entityInfo.Document) as GeoType;
+								var data = prop.GetValue(entityInfo.Document) as IGeoType;
 								elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);							
 								data.WriteJson(elasticsearchCrudJsonWriter);
 								// Write data

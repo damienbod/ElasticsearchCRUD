@@ -3,7 +3,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.GeoModel
 {
-	public class GeoShapeEnvelope : GeoType
+	public class GeoShapeEnvelope : IGeoType
 	{
 		// TODO validate that at least two items exist
 		public List<GeoPoint> Coordinates { get; set; }

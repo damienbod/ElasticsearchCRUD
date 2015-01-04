@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model.GeoModel
 {
-	public interface GeoType
+	public interface IGeoType
 	{
 		void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
 	}
