@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Model.GeoModel;
@@ -9,7 +8,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test
 {
 	[TestFixture]
-	public class GeoPointTests
+	public class GeoPointAndGeoShapeTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";

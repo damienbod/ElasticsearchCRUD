@@ -58,7 +58,7 @@
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
     <Compile Include="DocumentsWithChildDocumentsTestNotAllowed.cs" />
     <Compile Include="ExistsTests.cs" />
-    <Compile Include="GeoPointTests.cs" />
+    <Compile Include="GeoPointAndGeoShapeTests.cs" />
     <Compile Include="MappingChildParentRoutingTests.cs" />
     <Compile Include="MappingTests.cs" />
     <Compile Include="MappingTypeTests.cs" />
