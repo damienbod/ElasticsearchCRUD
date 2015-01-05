@@ -456,7 +456,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		public string Name { get; set; }
 
-		[ElasticsearchGeoPoint]
+		[ElasticsearchGeoPoint(FieldDataPrecision="1cm")]
 		public GeoPoint CityCoordinates { get; set; }
 	}
 
