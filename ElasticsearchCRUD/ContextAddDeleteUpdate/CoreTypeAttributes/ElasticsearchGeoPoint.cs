@@ -194,8 +194,12 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
         ///            "format" : "compressed",
         ///            "precision" : "1cm"
         ///  }
-		/// By default, geo points use the array format which loads geo points into two parallel double arrays, making sure there is no precision loss. However, this can require a non-negligible amount of memory (16 bytes per document) which is why Elasticsearch also provides a field data implementation with lossy compression called compressed:
-		/// This field data format comes with a precision option which allows to configure how much precision can be traded for memory. The default value is 1cm. The following table presents values of the memory savings given various precisions:
+        /// 
+		/// By default, geo points use the array format which loads geo points into two parallel double arrays, making sure there is no precision loss. 
+		/// However, this can require a non-negligible amount of memory (16 bytes per document) which is why Elasticsearch also provides a field data implementation 
+		/// with lossy compression called compressed.
+		/// This field data format comes with a precision option which allows to configure how much precision can be traded for memory. 
+		/// The default value is 1cm. The following table presents values of the memory savings given various precisions:
 		///
 		/// Precision
 		/// Bytes per point
