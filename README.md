@@ -85,6 +85,12 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.24</strong><em> 2015.01.05</em>
+- Support for geo_point index and mapping
+- Support for geo_shape index and mapping
+- Spporting the following Geo Shape Types:
+point, linestring, polygon, multipoint, multilinestring, multipolygon, envelope, circle 
+
 <strong>Version 1.0.23</strong><em> 2015.01.02</em>
 - Added search highlighting and refactored the hits results
 - Support for alias in create index
