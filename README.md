@@ -37,6 +37,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="https://damienbod.wordpress.com/2014/12/20/using-elasticsearch-german-analyzer/">Part 12: Using Elasticsearch German Analyzer</a>
 
+<a href="https://damienbod.wordpress.com/2015/01/07/mvc-google-maps-search-using-elasticsearch/">Part 13: MVC google maps search using Elasticsearch</a>
+
 ========================
 
 <strong>Examples:</strong>
