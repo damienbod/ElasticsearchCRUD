@@ -1,13 +1,28 @@
-﻿namespace ElasticsearchCRUD.Model.SearchModel
+﻿using ElasticsearchCRUD.Utils;
+
+namespace ElasticsearchCRUD.Model.SearchModel
 {
 	public class Query : IQueryHolder
 	{
 		private readonly IQuery _query;
+		private string _name;
+		private bool _nameSet;
 
 		public Query(IQuery query)
 		{
 			_query = query;
 		}
+
+		public string Name
+		{
+			get { return _name; }
+			set
+			{
+				_name = value;
+				_nameSet = true;
+			}
+		}
+
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -15,7 +30,7 @@
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			_query.WriteJson(elasticsearchCrudJsonWriter);
-
+			JsonHelper.WriteValue("_name", _name, elasticsearchCrudJsonWriter, _nameSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 

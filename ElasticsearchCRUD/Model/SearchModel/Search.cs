@@ -2,6 +2,9 @@
 
 namespace ElasticsearchCRUD.Model.SearchModel
 {
+	/// <summary>
+	/// The search request can be executed with a search DSL, which includes the Query DSL, within its body.
+	/// </summary>
 	public class Search
 	{
 		private IQueryHolder _query;
