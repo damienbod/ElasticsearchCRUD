@@ -13,7 +13,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch
 {
-	public class Search
+	public class SearchRequest
 	{
 		private readonly ITraceProvider _traceProvider;
 		private readonly CancellationTokenSource _cancellationTokenSource;
@@ -21,7 +21,7 @@ namespace ElasticsearchCRUD.ContextSearch
 		private readonly HttpClient _client;
 		private readonly string _connectionString;
 
-		public Search(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
+		public SearchRequest(ITraceProvider traceProvider, CancellationTokenSource cancellationTokenSource, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, HttpClient client, string connectionString)
 		{
 			_traceProvider = traceProvider;
 			_cancellationTokenSource = cancellationTokenSource;

@@ -38,7 +38,7 @@ namespace ElasticsearchCRUD
 		private ElasticsearchContextAddDeleteUpdate _elasticsearchContextAddDeleteUpdate;
 		private ElasticsearchContextGet _elasticsearchContextGet;
 		private ElasticsearchContextSearch _elasticsearchContextSearch;
-		private Search _search;
+		private SearchRequest _searchRequest;
 		private ElasticsearchContextCount _elasticsearchContextCount;
 		private ElasticsearchContextDeleteByQuery _elasticsearchContextDeleteByQuery;
 		private ElasticsearchContextClearCache _elasticsearchContextClearCache;
@@ -369,7 +369,7 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T</returns>
 		public ResultDetails<SearchResult<T>> Search<T>(string searchJsonParameters, SearchUrlParameters searchUrlParameters = null)
 		{
-			return _search.PostSearch<T>(searchJsonParameters, null, null, searchUrlParameters);
+			return _searchRequest.PostSearch<T>(searchJsonParameters, null, null, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -381,7 +381,7 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T in a Task</returns>
 		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters, SearchUrlParameters searchUrlParameters = null)
 		{
-			return await _search.PostSearchAsync<T>(searchJsonParameters, null, null, searchUrlParameters);
+			return await _searchRequest.PostSearchAsync<T>(searchJsonParameters, null, null, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -403,7 +403,7 @@ namespace ElasticsearchCRUD
 				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
 			}
 
-			return _search.PostSearch<T>("", scrollId, scanAndScrollConfiguration, null);
+			return _searchRequest.PostSearch<T>("", scrollId, scanAndScrollConfiguration, null);
 		}
 
 		/// <summary>
@@ -425,7 +425,7 @@ namespace ElasticsearchCRUD
 				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
 			}
 
-			return await _search.PostSearchAsync<T>("", scrollId, scanAndScrollConfiguration, null);
+			return await _searchRequest.PostSearchAsync<T>("", scrollId, scanAndScrollConfiguration, null);
 		}
 
 		/// <summary>
@@ -445,7 +445,7 @@ namespace ElasticsearchCRUD
 					Routing = routing
 				};
 			}
-			return _search.PostSearchExists<T>(searchJsonParameters, searchUrlParameters);
+			return _searchRequest.PostSearchExists<T>(searchJsonParameters, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -465,7 +465,7 @@ namespace ElasticsearchCRUD
 					Routing = routing
 				};
 			}
-			return await _search.PostSearchExistsAsync<T>(searchJsonParameters, searchUrlParameters);
+			return await _searchRequest.PostSearchExistsAsync<T>(searchJsonParameters, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -478,7 +478,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public ResultDetails<SearchResult<T>> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
-			return _search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
+			return _searchRequest.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -491,7 +491,7 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public async Task<ResultDetails<SearchResult<T>>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
-			return await _search.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
+			return await _searchRequest.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -965,7 +965,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			_search = new Search(
+			_searchRequest = new SearchRequest(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,

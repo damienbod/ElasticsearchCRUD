@@ -57,7 +57,7 @@ namespace ElasticsearchCRUD.ContextSearch
 
 			var resultDetails = new ResultDetails<T> {Status = HttpStatusCode.InternalServerError};
 			
-			var search = new Search(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
+			var search = new SearchRequest(_traceProvider, _cancellationTokenSource, _elasticsearchSerializerConfiguration, _client, _connectionString);
 
 			var result = await search.PostSearchAsync<T>(BuildSearchById(entityId), null, null, searchUrlParameters);
 			resultDetails.RequestBody = result.RequestBody;

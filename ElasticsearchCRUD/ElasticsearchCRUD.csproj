@@ -187,6 +187,13 @@
     <Compile Include="Model\GeoModel\GeoShapePolygon.cs" />
     <Compile Include="Model\GeoModel\GeoType.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
+    <Compile Include="Model\SearchModel\Filter.cs" />
+    <Compile Include="Model\SearchModel\IFilter.cs" />
+    <Compile Include="Model\SearchModel\IFilterContainer.cs" />
+    <Compile Include="Model\SearchModel\IQuery.cs" />
+    <Compile Include="Model\SearchModel\IQueryContainer.cs" />
+    <Compile Include="Model\SearchModel\Query.cs" />
+    <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />
     <Compile Include="Model\TimeUnits.cs" />
@@ -194,7 +201,7 @@
     <Compile Include="ElasticsearchCrudReindex.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\ElasticSerializationResult.cs" />
-    <Compile Include="ContextSearch\Search.cs" />
+    <Compile Include="ContextSearch\SearchRequest.cs" />
     <Compile Include="Model\IndexMapping.cs" />
     <Compile Include="Model\IndexTypeDescription.cs" />
     <Compile Include="Model\IndexTypeMapping.cs" />
