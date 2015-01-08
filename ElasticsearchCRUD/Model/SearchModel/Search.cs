@@ -4,12 +4,12 @@ namespace ElasticsearchCRUD.Model.SearchModel
 {
 	public class Search
 	{
-		private IQueryContainer _query;
+		private IQueryHolder _query;
 		private bool _querySet;
-		private IFilterContainer _filter;
+		private IFilterHolder _filter;
 		private bool _filterSet;
 
-		public IQueryContainer Query
+		public IQueryHolder Query
 		{
 			get { return _query; }
 			set
@@ -19,7 +19,7 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			}
 		}
 
-		public IFilterContainer Filter
+		public IFilterHolder Filter
 		{
 			get { return _filter; }
 			set

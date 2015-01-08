@@ -189,9 +189,9 @@
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\SearchModel\Filter.cs" />
     <Compile Include="Model\SearchModel\IFilter.cs" />
-    <Compile Include="Model\SearchModel\IFilterContainer.cs" />
+    <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
-    <Compile Include="Model\SearchModel\IQueryContainer.cs" />
+    <Compile Include="Model\SearchModel\IQueryHolder.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />

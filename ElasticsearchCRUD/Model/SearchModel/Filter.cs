@@ -1,6 +1,6 @@
 namespace ElasticsearchCRUD.Model.SearchModel
 {
-	public class Filter : IFilterContainer
+	public class Filter : IFilterHolder
 	{
 		private readonly IFilter _filter;
 

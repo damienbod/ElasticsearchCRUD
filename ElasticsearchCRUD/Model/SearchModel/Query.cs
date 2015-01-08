@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel
 {
-	public class Query : IQueryContainer
+	public class Query : IQueryHolder
 	{
 		private readonly IQuery _query;
 

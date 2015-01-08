@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel
 {
-	public interface IQueryContainer
+	public interface IQueryHolder
 	{
 		void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
 	}

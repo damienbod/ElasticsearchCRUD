@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel
 {
-	public interface IFilterContainer
+	public interface IFilterHolder
 	{
 		void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
 	}
