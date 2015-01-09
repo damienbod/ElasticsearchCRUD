@@ -4,6 +4,7 @@ using DataTransferSQLToEl.SQLDomainModel;
 using ElasticsearchCRUD;
 using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.Units;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 
@@ -18,7 +19,7 @@ namespace DataTransferSQLToEl.ExampleReindexChildDocuments
 				new IndexTypeDescription("stateprovinces_v2", "stateprovince"),
 				"http://localhost:9200");
 
-			reindex.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(5, TimeUnits.Second, 1000);
+			reindex.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(5, ScanTimeUnits.Second, 1000);
 			reindex.TraceProvider = new ConsoleTraceProvider(TraceEventType.Information);
 
 			reindex.Reindex(
@@ -34,7 +35,7 @@ namespace DataTransferSQLToEl.ExampleReindexChildDocuments
 				new IndexTypeDescription("stateprovinces_v2", "address"),
 				"http://localhost:9200");
 
-			reindexAddress.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(5, TimeUnits.Second, 1000);
+			reindexAddress.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(5, ScanTimeUnits.Second, 1000);
 			reindexAddress.TraceProvider = new ConsoleTraceProvider(TraceEventType.Information);
 
 			reindexAddress.Reindex(

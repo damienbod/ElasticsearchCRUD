@@ -8,13 +8,16 @@ namespace ElasticsearchCRUD.Utils
 	{
 		private readonly Dictionary<string, string> _parms = new Dictionary<string, string>();
 
-		public void Add(string key, string val)
+		public void Add(string key, string val, bool isSet = true)
 		{
-			if (_parms.ContainsKey(key))
+			if (isSet)
 			{
-				throw new InvalidOperationException(string.Format("The key {0} already exists.", key));
+				if (_parms.ContainsKey(key))
+				{
+					throw new InvalidOperationException(string.Format("The key {0} already exists.", key));
+				}
+				_parms.Add(key, val);
 			}
-			_parms.Add(key, val);
 		}
 
 		public override string ToString()

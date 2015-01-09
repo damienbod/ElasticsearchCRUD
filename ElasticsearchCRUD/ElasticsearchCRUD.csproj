@@ -166,6 +166,7 @@
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
     <Compile Include="ContextSearch\SearchModel\Hit.cs" />
     <Compile Include="ContextSearch\SearchModel\Hits.cs" />
+    <Compile Include="ContextSearch\SearchModel\SeachType.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchUrlParameters.cs" />
     <Compile Include="Model\DateTimeFormats.cs" />
@@ -197,7 +198,7 @@
     <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />
-    <Compile Include="Model\TimeUnits.cs" />
+    <Compile Include="Model\Units\ScanTimeUnits.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchCrudReindex.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />
@@ -206,6 +207,9 @@
     <Compile Include="Model\IndexMapping.cs" />
     <Compile Include="Model\IndexTypeDescription.cs" />
     <Compile Include="Model\IndexTypeMapping.cs" />
+    <Compile Include="Model\Units\TimeUnit.cs" />
+    <Compile Include="Model\Units\TimeUnitMonth.cs" />
+    <Compile Include="Model\Units\TimeUnitYear.cs" />
     <Compile Include="Utils\JsonHelper.cs" />
     <Compile Include="Utils\MappingUtils.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />

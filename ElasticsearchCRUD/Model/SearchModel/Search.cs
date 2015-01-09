@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.Utils;
+﻿using ElasticsearchCRUD.Model.Units;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel
 {
@@ -11,6 +12,72 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		private bool _querySet;
 		private IFilterHolder _filter;
 		private bool _filterSet;
+		private TimeUnit _timeout;
+		private bool _timeoutSet;
+		private int _from;
+		private bool _fromSet;
+		private int _size;
+		private bool _sizeSet;
+		private int _terminateAfter;
+		private bool _terminateAfterSet;
+
+		/// <summary>
+		/// timeout
+		/// A search timeout, bounding the search request to be executed within the specified time value and bail with the hits accumulated up to that point when expired. 
+		/// Defaults to no timeout. See the section called “Time unitsedit”. 
+		/// </summary>
+		public TimeUnit Timeout
+		{
+			get { return _timeout; }
+			set
+			{
+				_timeout = value;
+				_timeoutSet = true;
+			}
+		}
+
+		/// <summary>
+		/// from
+		/// The starting from index of the hits to return. Defaults to 0. 
+		/// </summary>
+		public int From
+		{
+			get { return _from; }
+			set
+			{
+				_from = value;
+				_fromSet = true;
+			}
+		}
+
+		/// <summary>
+		/// size
+		/// The number of hits to return. Defaults to 10. 
+		/// </summary>
+		public int Size
+		{
+			get { return _size; }
+			set
+			{
+				_size = value;
+				_sizeSet = true;
+			}
+		}
+
+		/// <summary>
+		/// terminate_after
+		/// [1.4.0.Beta1] Added in 1.4.0.Beta1. The maximum number of documents to collect for each shard, upon reaching which the query execution will terminate early. 
+		/// If set, the response will have a boolean field terminated_early to indicate whether the query execution has actually terminated_early. Defaults to no terminate_after. 
+		/// </summary>
+		public int TerminateAfter
+		{
+			get { return _terminateAfter; }
+			set
+			{
+				_terminateAfter = value;
+				_terminateAfterSet = true;
+			}
+		}
 
 		public IQueryHolder Query
 		{
@@ -36,7 +103,11 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			// TODO add properties 
+			JsonHelper.WriteValue("timeout", _timeout.GetTimeUnit(), elasticsearchCrudJsonWriter, _timeoutSet);
+			JsonHelper.WriteValue("from", _from, elasticsearchCrudJsonWriter, _fromSet);
+			JsonHelper.WriteValue("size", _size, elasticsearchCrudJsonWriter, _sizeSet);
+			JsonHelper.WriteValue("terminate_after", _terminateAfter, elasticsearchCrudJsonWriter, _terminateAfterSet);
+		
 			JsonHelper.WriteValue("query", _query, elasticsearchCrudJsonWriter, _querySet);
 			JsonHelper.WriteValue("filter", _filter, elasticsearchCrudJsonWriter, _filterSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

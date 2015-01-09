@@ -1,6 +1,6 @@
-﻿namespace ElasticsearchCRUD.Model
+﻿namespace ElasticsearchCRUD.Model.Units
 {
-	public enum TimeUnits
+	public enum ScanTimeUnits
 	{
 		Year, // y
 		Month, // M

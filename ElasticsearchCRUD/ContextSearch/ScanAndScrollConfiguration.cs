@@ -1,24 +1,24 @@
 ﻿using System.Collections.Generic;
-using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.Units;
 
 namespace ElasticsearchCRUD.ContextSearch
 {
 	public class ScanAndScrollConfiguration
 	{
-		private readonly Dictionary<TimeUnits, string> _timeUnits = new Dictionary<TimeUnits, string>();
+		private readonly Dictionary<ScanTimeUnits, string> _timeUnits = new Dictionary<ScanTimeUnits, string>();
 		private readonly int _scroll = 1;
-		private readonly TimeUnits _timeUnitsForScroll = TimeUnits.Minute;
+		private readonly ScanTimeUnits _timeUnitsForScroll = ScanTimeUnits.Minute;
 		private readonly int _size = 50;
 
-		public ScanAndScrollConfiguration(int scroll, TimeUnits scrollTimeUnits, int size)
+		public ScanAndScrollConfiguration(int scroll, ScanTimeUnits scrollTimeUnits, int size)
 		{
-			_timeUnits.Add(TimeUnits.Year, "d");
-			_timeUnits.Add(TimeUnits.Month, "M");
-			_timeUnits.Add(TimeUnits.Week, "w");
-			_timeUnits.Add(TimeUnits.Day, "d");
-			_timeUnits.Add(TimeUnits.Hour, "h");
-			_timeUnits.Add(TimeUnits.Minute, "m");
-			_timeUnits.Add(TimeUnits.Second, "s");
+			_timeUnits.Add(ScanTimeUnits.Year, "d");
+			_timeUnits.Add(ScanTimeUnits.Month, "M");
+			_timeUnits.Add(ScanTimeUnits.Week, "w");
+			_timeUnits.Add(ScanTimeUnits.Day, "d");
+			_timeUnits.Add(ScanTimeUnits.Hour, "h");
+			_timeUnits.Add(ScanTimeUnits.Minute, "m");
+			_timeUnits.Add(ScanTimeUnits.Second, "s");
 
 			_scroll = scroll;
 			_timeUnitsForScroll = scrollTimeUnits;
