@@ -208,7 +208,12 @@
     <Compile Include="Model\IndexTypeDescription.cs" />
     <Compile Include="Model\IndexTypeMapping.cs" />
     <Compile Include="Model\Units\TimeUnit.cs" />
+    <Compile Include="Model\Units\TimeUnitDay.cs" />
+    <Compile Include="Model\Units\TimeUnitHour.cs" />
+    <Compile Include="Model\Units\TimeUnitMinute.cs" />
     <Compile Include="Model\Units\TimeUnitMonth.cs" />
+    <Compile Include="Model\Units\TimeUnitSecond.cs" />
+    <Compile Include="Model\Units\TimeUnitWeek.cs" />
     <Compile Include="Model\Units\TimeUnitYear.cs" />
     <Compile Include="Utils\JsonHelper.cs" />
     <Compile Include="Utils\MappingUtils.cs" />

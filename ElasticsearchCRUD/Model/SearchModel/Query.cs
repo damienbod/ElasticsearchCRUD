@@ -2,6 +2,12 @@
 
 namespace ElasticsearchCRUD.Model.SearchModel
 {
+	/// <summary>
+	/// As a general rule, queries should be used instead of filters:
+	/// 
+    /// - for full text search
+    /// - where the result depends on a relevance score 
+	/// </summary>
 	public class Query : IQueryHolder
 	{
 		private readonly IQuery _query;
