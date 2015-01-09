@@ -194,6 +194,7 @@
     <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
+    <Compile Include="Model\SearchModel\Queries\Match.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />
@@ -238,7 +239,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Model\SearchModel\Filters\" />
-    <Folder Include="Model\SearchModel\Queries\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
