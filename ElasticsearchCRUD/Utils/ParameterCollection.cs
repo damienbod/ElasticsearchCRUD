@@ -28,7 +28,10 @@ namespace ElasticsearchCRUD.Utils
 					Uri.EscapeDataString(kvp.Key),
 					Uri.EscapeDataString(kvp.Value));
 			}
-			return sb.ToString();
+			var result = sb.ToString();
+			if (result.Equals("?")) return String.Empty;
+
+			return result;
 		}
 	}
 }
