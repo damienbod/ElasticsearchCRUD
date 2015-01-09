@@ -1,4 +1,6 @@
-﻿namespace ElasticsearchCRUD.ContextSearch.SearchModel
+﻿using ElasticsearchCRUD.Utils;
+
+namespace ElasticsearchCRUD.ContextSearch.SearchModel
 {
 	/// <summary>
 	/// This class is used to set routing or pretty search for the url parameters. All other options can be sent in the body
@@ -32,20 +34,17 @@
 
 		public string GetUrlParameters()
 		{
-			if (_routingSet && _prettySet)
-			{
-				return "?routing=" + _routing + "&pretty=true";
-			}
+			var parameters = new ParameterCollection();
 			if (_routingSet )
 			{
-				return "?routing=" + _routing;
+				parameters.Add("routing", _routing);
 			}
 			if (_prettySet)
 			{
-				return "?pretty=true";
+				parameters.Add("pretty", "true");
 			}
 
-			return "";
+			return parameters.ToString();
 		}
 	}
 }
