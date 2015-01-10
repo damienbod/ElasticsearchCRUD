@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.GeoModel;
@@ -121,6 +122,19 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryMultiMatchAllTest()
+		{
+			var search = new Search { Query = new Query(new MultiMatch("document"){MultiMatchType= MultiMatchType.most_fields, TieBreaker = 0.5, Fields = new List<string>{"name", "details"}}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
 		[TestFixtureTearDown]
 		public void TearDown()
 		{
@@ -137,7 +151,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var doc1 = new SearchTest
 			{
 				Id = 1,
-				Details = "These a the details",
+				Details = "These a the details of the document",
 				Name = "document one",
 				CircleTest = new GeoShapeCircle() { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
 			};

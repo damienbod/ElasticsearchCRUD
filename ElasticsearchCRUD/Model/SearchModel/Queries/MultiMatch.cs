@@ -28,6 +28,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
+		/// <summary>
+		/// type 
+		/// see MultiMatchType for possible values
+		/// </summary>
 		public MultiMatchType MultiMatchType
 		{
 			get { return _multiMatchType; }
@@ -61,9 +65,17 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("multi_match");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
 			JsonHelper.WriteValue("query", _text, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteListValue("fields", _fields, elasticsearchCrudJsonWriter, _fieldsSet);
+			JsonHelper.WriteValue("type", _multiMatchType.ToString(), elasticsearchCrudJsonWriter, _multiMatchTypeSet);
 			JsonHelper.WriteValue("tie_breaker", _tieBreaker, elasticsearchCrudJsonWriter, _tieBreakerSet);
+
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+
+			
 		}
 	}
 
