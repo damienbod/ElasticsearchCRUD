@@ -12,9 +12,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private int _maxExpansions;
 		private bool _maxExpansionsSet;
 
+		private readonly string _field;
 		public MatchPhasePrefixQuery(string field, string text)
-			: base(field, text)
+			: base(text)
 		{
+			_field = field;
 		}
 
 		/// <summary>
@@ -73,7 +75,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("match_phrase_prefix");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(Field);
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(_field);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			WriteBasePropertiesJson(elasticsearchCrudJsonWriter);

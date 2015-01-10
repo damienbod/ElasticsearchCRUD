@@ -6,6 +6,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 	{
 		private double _boost;
 		private bool _boostSet;
+		private string _minimumShouldMatch;
+		private bool _minimumShouldMatchSet;
 
 		public double Boost
 		{
@@ -16,6 +18,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 				_boostSet = true;
 			}
 		}
+
 		//{
 		// "query" : {
 		//	  "match_all" : { }
@@ -27,6 +30,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue("minimum_should_match", _minimumShouldMatch, elasticsearchCrudJsonWriter, _minimumShouldMatchSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

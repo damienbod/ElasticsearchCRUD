@@ -10,10 +10,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private int _slop;
 		private bool _slopSet;
 
+		private readonly string _field;
 		public MatchPhaseQuery(string field, string text)
-			: base(field, text)
+			: base(text)
 		{
+			_field = field;
 		}
+
 
 		/// <summary>
 		/// slop
@@ -57,7 +60,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("match_phrase");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(Field);
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(_field);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			WriteBasePropertiesJson(elasticsearchCrudJsonWriter);

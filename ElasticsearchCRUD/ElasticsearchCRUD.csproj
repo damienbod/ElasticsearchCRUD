@@ -199,6 +199,7 @@
     <Compile Include="Model\SearchModel\Queries\MatchBase.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhaseQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhasePrefixQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\MultiMatch.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchAllQuery.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />

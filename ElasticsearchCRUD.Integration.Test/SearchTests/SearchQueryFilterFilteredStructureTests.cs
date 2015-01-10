@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
+﻿using System.Threading;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
@@ -17,12 +18,13 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryMatchAllTest()
 		{
-			var search = new Search { Query = new Query(new MatchAllQuery(){ Boost = 1.1 }) };
+			var search = new Search { Query = new Query(new MatchAllQuery(){ Boost = 1.1}) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -35,6 +37,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -47,6 +50,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -59,18 +63,20 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
 		[Test]
 		public void SearchQueryMatchPhasePrefixTest()
 		{
-			var search = new Search { Query = new Query(new MatchPhasePrefixQuery("name", "document one") { MaxExpansions = 500, Boost = 1.1 }) };
+			var search = new Search { Query = new Query(new MatchPhasePrefixQuery("name", "document one") { MaxExpansions = 500, Boost = 1.1, MinimumShouldMatch = "50%" }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -92,6 +98,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -101,7 +108,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var search = new Search
 			{
 				Query = new Query(
-					new Filtered( new Filter( new MatchAllFilter { Boost = 1.1 } )) { Query = new Query(new MatchAllQuery())}		
+					new Filtered( 
+						new Filter( new MatchAllFilter { Boost = 1.1 } )) { Query = new Query(new MatchAllQuery())}		
 				)
 			};
 
@@ -109,36 +117,39 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
-		//[TestFixtureTearDown]
-		//public void TearDown()
-		//{
-		//	using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-		//	{
-		//		context.AllowDeleteForIndex = true;
-		//		var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
-		//	}
-		//}
+		[TestFixtureTearDown]
+		public void TearDown()
+		{
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.AllowDeleteForIndex = true;
+				var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
+			}
+		}
 
-		//[TestFixtureSetUp]
-		//public void Setup()
-		//{
-		//	var doc1 = new SearchTest
-		//	{
-		//		Id = 1,
-		//		Details = "These a the details",
-		//		Name = "document one",
-		//		CircleTest = new GeoShapeCircle() { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
-		//	};
-		//	using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-		//	{
-		//		context.IndexCreate<SearchTest>();
-		//		context.AddUpdateDocument(doc1, doc1.Id);
-		//		context.SaveChanges();
-		//	}
-		//}
+		[TestFixtureSetUp]
+		public void Setup()
+		{
+			var doc1 = new SearchTest
+			{
+				Id = 1,
+				Details = "These a the details",
+				Name = "document one",
+				CircleTest = new GeoShapeCircle() { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
+			};
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.IndexCreate<SearchTest>();
+				Thread.Sleep(1000);
+				context.AddUpdateDocument(doc1, doc1.Id);
+				context.SaveChanges();
+				Thread.Sleep(1000);
+			}
+		}
 	}
 
 	public class SearchTest

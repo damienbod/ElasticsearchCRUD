@@ -5,8 +5,10 @@
 	/// </summary>
 	public class MatchQuery : MatchBase, IQuery
 	{
-		public MatchQuery(string field, string text) : base(field, text)
+		private readonly string _field;
+		public MatchQuery(string field, string text) : base(text)
 		{
+			_field = field;
 		}
 
 		//{
@@ -23,7 +25,7 @@
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("match");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(Field);
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(_field);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			WriteBasePropertiesJson(elasticsearchCrudJsonWriter);
