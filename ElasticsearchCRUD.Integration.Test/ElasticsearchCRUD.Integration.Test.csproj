@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchCreateScanAndScrollTests.cs" />
     <Compile Include="SearchHighlightResultTests.cs" />
+    <Compile Include="SearchTests\SearchQueryFilterFilteredStructureTests.cs" />
     <Compile Include="SkillParentCollection.cs" />
     <Compile Include="SkillTestEntityElasticSearchMapping.cs" />
     <Compile Include="SpecialMappingElasticsearchCRUDTests.cs" />

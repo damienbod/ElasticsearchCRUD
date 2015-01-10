@@ -103,13 +103,23 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			JsonHelper.WriteValue("timeout", _timeout.GetTimeUnit(), elasticsearchCrudJsonWriter, _timeoutSet);
+			if (_timeout != null)
+			{
+				JsonHelper.WriteValue("timeout", _timeout.GetTimeUnit(), elasticsearchCrudJsonWriter, _timeoutSet);
+			}			
 			JsonHelper.WriteValue("from", _from, elasticsearchCrudJsonWriter, _fromSet);
 			JsonHelper.WriteValue("size", _size, elasticsearchCrudJsonWriter, _sizeSet);
 			JsonHelper.WriteValue("terminate_after", _terminateAfter, elasticsearchCrudJsonWriter, _terminateAfterSet);
-		
-			JsonHelper.WriteValue("query", _query, elasticsearchCrudJsonWriter, _querySet);
-			JsonHelper.WriteValue("filter", _filter, elasticsearchCrudJsonWriter, _filterSet);
+
+			if (_querySet)
+			{
+				_query.WriteJson(elasticsearchCrudJsonWriter);
+			}
+
+			if (_filterSet)
+			{
+				_filter.WriteJson(elasticsearchCrudJsonWriter);
+			}
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 

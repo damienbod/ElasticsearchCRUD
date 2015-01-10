@@ -18,6 +18,7 @@ using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 
@@ -372,6 +373,11 @@ namespace ElasticsearchCRUD
 			return _searchRequest.PostSearch<T>(searchJsonParameters, null, null, searchUrlParameters);
 		}
 
+		public ResultDetails<SearchResult<T>> Search<T>(Search search, SearchUrlParameters searchUrlParameters = null)
+		{
+			return _searchRequest.PostSearch<T>(search.ToString(), null, null, searchUrlParameters);
+		}
+
 		/// <summary>
 		/// async Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
 		/// </summary>
@@ -382,6 +388,11 @@ namespace ElasticsearchCRUD
 		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters, SearchUrlParameters searchUrlParameters = null)
 		{
 			return await _searchRequest.PostSearchAsync<T>(searchJsonParameters, null, null, searchUrlParameters);
+		}
+
+		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(Search search, SearchUrlParameters searchUrlParameters = null)
+		{
+			return await _searchRequest.PostSearchAsync<T>(search.ToString(), null, null, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -448,6 +459,19 @@ namespace ElasticsearchCRUD
 			return _searchRequest.PostSearchExists<T>(searchJsonParameters, searchUrlParameters);
 		}
 
+		public bool SearchExists<T>(Search search, string routing = null)
+		{
+			SearchUrlParameters searchUrlParameters = null;
+			if (!string.IsNullOrEmpty(routing))
+			{
+				searchUrlParameters = new SearchUrlParameters
+				{
+					Routing = routing
+				};
+			}
+			return _searchRequest.PostSearchExists<T>(search.ToString(), searchUrlParameters);
+		}
+
 		/// <summary>
 		/// async executes a post request to checks if at least one document exists for the search query.
 		/// </summary>
@@ -468,6 +492,19 @@ namespace ElasticsearchCRUD
 			return await _searchRequest.PostSearchExistsAsync<T>(searchJsonParameters, searchUrlParameters);
 		}
 
+		public async Task<ResultDetails<bool>> SearchExistsAsync<T>(Search search, string routing = null)
+		{
+			SearchUrlParameters searchUrlParameters = null;
+			if (!string.IsNullOrEmpty(routing))
+			{
+				searchUrlParameters = new SearchUrlParameters
+				{
+					Routing = routing
+				};
+			}
+			return await _searchRequest.PostSearchExistsAsync<T>(search.ToString(), searchUrlParameters);
+		}
+
 		/// <summary>
 		/// Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
 		/// If your doing a live reindexing, you should use a timestamp in the json content query.
@@ -479,6 +516,10 @@ namespace ElasticsearchCRUD
 		public ResultDetails<SearchResult<T>> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
 			return _searchRequest.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
+		}
+		public ResultDetails<SearchResult<T>> SearchCreateScanAndScroll<T>(Search search, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			return _searchRequest.PostSearchCreateScanAndScroll<T>(search.ToString(), scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -493,6 +534,10 @@ namespace ElasticsearchCRUD
 		{
 			return await _searchRequest.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
 		}
+		public async Task<ResultDetails<SearchResult<T>>> SearchCreateScanAndScrollAsync<T>(Search search, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			return await _searchRequest.PostSearchCreateScanAndScrollAsync<T>(search.ToString(), scanAndScrollConfiguration);
+		}
 
 		/// <summary>
 		/// ElasticsearchContextCount to amount of hits for a index, type and query.
@@ -504,6 +549,10 @@ namespace ElasticsearchCRUD
 		{
 			return _elasticsearchContextCount.PostCount<T>(jsonContent).PayloadResult;
 		}
+		public long Count<T>(Search search)
+		{
+			return _elasticsearchContextCount.PostCount<T>(search.ToString()).PayloadResult;
+		}
 
 		/// <summary>
 		/// ElasticsearchContextCount to amount of hits for a index, type and query.
@@ -514,6 +563,10 @@ namespace ElasticsearchCRUD
 		public async Task<ResultDetails<long>> CountAsync<T>(string jsonContent = "")
 		{
 			return await _elasticsearchContextCount.PostCountAsync<T>(jsonContent);
+		}
+		public async Task<ResultDetails<long>> CountAsync<T>(Search search)
+		{
+			return await _elasticsearchContextCount.PostCountAsync<T>(search.ToString());
 		}
 
 		/// <summary>
@@ -546,6 +599,16 @@ namespace ElasticsearchCRUD
 			}
 
 			return _elasticsearchContextDeleteByQuery.SendDeleteByQuery<T>(jsonContent);
+		}
+
+		public ResultDetails<bool> DeleteByQuery<T>(Search search)
+		{
+			if (search == null)
+			{
+				throw new ElasticsearchCrudException("Context: you must supply a json query for DeleteByQueryAsync");
+			}
+
+			return _elasticsearchContextDeleteByQuery.SendDeleteByQuery<T>(search.ToString());
 		}
 
 		/// <summary>
