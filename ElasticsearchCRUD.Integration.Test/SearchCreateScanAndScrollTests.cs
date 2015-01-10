@@ -102,7 +102,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var scanScrollConfig = new ScanAndScrollConfiguration(1, ScanTimeUnits.Second, 100);
+				var scanScrollConfig = new ScanAndScrollConfiguration(new TimeUnitSecond(1), 100);
 				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 
 				var scrollId = result.PayloadResult.ScrollId;

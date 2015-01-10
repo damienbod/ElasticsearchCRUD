@@ -19,7 +19,7 @@ namespace DataTransferSQLToEl.ExampleReindexChildDocuments
 				new IndexTypeDescription("stateprovinces_v2", "stateprovince"),
 				"http://localhost:9200");
 
-			reindex.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(5, ScanTimeUnits.Second, 1000);
+			reindex.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(new TimeUnitSecond(5), 1000);
 			reindex.TraceProvider = new ConsoleTraceProvider(TraceEventType.Information);
 
 			reindex.Reindex(
@@ -35,7 +35,7 @@ namespace DataTransferSQLToEl.ExampleReindexChildDocuments
 				new IndexTypeDescription("stateprovinces_v2", "address"),
 				"http://localhost:9200");
 
-			reindexAddress.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(5, ScanTimeUnits.Second, 1000);
+			reindexAddress.ScanAndScrollConfiguration = new ScanAndScrollConfiguration(new TimeUnitSecond(5), 1000);
 			reindexAddress.TraceProvider = new ConsoleTraceProvider(TraceEventType.Information);
 
 			reindexAddress.Reindex(

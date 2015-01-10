@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD
 		/// Scan ans scroll settings for the reindex. You should keep this small, otherwise the response request will be too larger.
 		/// Default is 5 seconds with a size of 500 documents pro shard.
 		/// </summary>
-		public ScanAndScrollConfiguration ScanAndScrollConfiguration = new ScanAndScrollConfiguration(5, ScanTimeUnits.Second, 500);
+		public ScanAndScrollConfiguration ScanAndScrollConfiguration = new ScanAndScrollConfiguration(new TimeUnitSecond(5), 500);
 
 		private ITraceProvider _traceProvider = new NullTraceProvider();
 
