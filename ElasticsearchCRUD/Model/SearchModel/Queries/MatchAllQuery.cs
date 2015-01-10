@@ -1,8 +1,8 @@
 ﻿using ElasticsearchCRUD.Utils;
 
-namespace ElasticsearchCRUD.Model.SearchModel.QueryAndFilter
+namespace ElasticsearchCRUD.Model.SearchModel.Queries
 {
-	public class MatchAll : IQuery, IFilter
+	public class MatchAllQuery : IQuery
 	{
 		private double _boost;
 		private bool _boostSet;

@@ -5,12 +5,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 	/// <summary>
 	/// The match_phrase query analyzes the text and creates a phrase query out of the analyzed text.
 	/// </summary>
-	public class MatchPhase : MatchBase, IQuery
+	public class MatchPhaseQuery : MatchBase, IQuery
 	{
 		private int _slop;
 		private bool _slopSet;
 
-		public MatchPhase(string field, string text)
+		public MatchPhaseQuery(string field, string text)
 			: base(field, text)
 		{
 		}

@@ -5,14 +5,14 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 	/// <summary>
 	/// The match_phrase_prefix is the same as match_phrase, except that it allows for prefix matches on the last term in the text
 	/// </summary>
-	public class MatchPhasePrefix : MatchBase, IQuery
+	public class MatchPhasePrefixQuery : MatchBase, IQuery
 	{
 		private int _slop;
 		private bool _slopSet;
 		private int _maxExpansions;
 		private bool _maxExpansionsSet;
 
-		public MatchPhasePrefix(string field, string text)
+		public MatchPhasePrefixQuery(string field, string text)
 			: base(field, text)
 		{
 		}

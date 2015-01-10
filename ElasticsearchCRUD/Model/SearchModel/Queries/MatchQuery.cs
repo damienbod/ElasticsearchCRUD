@@ -3,9 +3,9 @@
 	/// <summary>
 	/// A family of match queries that accept text/numerics/dates, analyzes it, and constructs a query out of it. For example:
 	/// </summary>
-	public class Match : MatchBase, IQuery
+	public class MatchQuery : MatchBase, IQuery
 	{
-		public Match(string field, string text) : base(field, text)
+		public MatchQuery(string field, string text) : base(field, text)
 		{
 		}
 

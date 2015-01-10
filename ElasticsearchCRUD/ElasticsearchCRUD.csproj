@@ -190,16 +190,17 @@
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\SearchModel\Filter.cs" />
     <Compile Include="Model\SearchModel\Filtered.cs" />
+    <Compile Include="Model\SearchModel\Filters\MatchAllFilter.cs" />
     <Compile Include="Model\SearchModel\IFilter.cs" />
     <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
-    <Compile Include="Model\SearchModel\Queries\Match.cs" />
+    <Compile Include="Model\SearchModel\Queries\MatchQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchBase.cs" />
-    <Compile Include="Model\SearchModel\Queries\MatchPhase.cs" />
-    <Compile Include="Model\SearchModel\Queries\MatchPhasePrefix.cs" />
+    <Compile Include="Model\SearchModel\Queries\MatchPhaseQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\MatchPhasePrefixQuery.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
-    <Compile Include="Model\SearchModel\QueryAndFilter\MatchAll.cs" />
+    <Compile Include="Model\SearchModel\Queries\MatchAllQuery.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />
@@ -241,9 +242,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\SearchModel\Filters\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
