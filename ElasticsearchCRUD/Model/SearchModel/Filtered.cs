@@ -69,7 +69,11 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filtered");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			JsonHelper.WriteValue("query", _query,elasticsearchCrudJsonWriter,_querySet);			
+			if (_querySet)
+			{
+				_query.WriteJson(elasticsearchCrudJsonWriter);
+			}
+
 			_filter.WriteJson(elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("strategy", _strategy, elasticsearchCrudJsonWriter, _strategySet);
 

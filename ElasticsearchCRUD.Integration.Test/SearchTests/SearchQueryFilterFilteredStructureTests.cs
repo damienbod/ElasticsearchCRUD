@@ -3,6 +3,7 @@ using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
+using ElasticsearchCRUD.Model.SearchModel.QueryAndFilter;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
@@ -14,9 +15,33 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[Test]
+		public void SearchQueryMatchAllTest()
+		{
+			var search = new Search { Query = new Query(new MatchAll{ Boost = 1.1 }) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+			}
+		}
+
+		[Test]
+		public void SearchFilterMatchAllTest()
+		{
+			var search = new Search { Filter = new Filter(new MatchAll { Boost = 1.1 }) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+			}
+		}
+
+		[Test]
 		public void SearchQueryMatchTest()
 		{
-			var search = new Search { Query = new Query(new Match("name", "document one")) };
+			var search = new Search { Query = new Query(new Match("name", "document one"){Boost=1.1}) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
@@ -28,7 +53,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryMatchPhaseTest()
 		{
-			var search = new Search { Query = new Query(new MatchPhase("name", "document one"){Analyzer=LanguageAnalyzers.German, Slop=1, Operator= Operator.and, CutoffFrequency = 0.2, ZeroTermsQuery= ZeroTermsQuery.none}) };
+			var search = new Search { Query = new Query(new MatchPhase("name", "document one") { Analyzer = LanguageAnalyzers.German, Slop = 1, Operator = Operator.and, CutoffFrequency = 0.2, ZeroTermsQuery = ZeroTermsQuery.none, Boost = 1.1 }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
@@ -36,12 +61,11 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				var items = context.Search<SearchTest>(search);
 			}
 		}
-
 
 		[Test]
 		public void SearchQueryMatchPhasePrefixTest()
 		{
-			var search = new Search { Query = new Query(new MatchPhasePrefix("name", "document one"){MaxExpansions= 500}) };
+			var search = new Search { Query = new Query(new MatchPhasePrefix("name", "document one") { MaxExpansions = 500, Boost = 1.1 }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
@@ -50,6 +74,43 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchFilteredQueryFilterMatchAll()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new Filtered(
+						new Filter(
+							new MatchAll { Boost = 1.1 }
+						)
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+			}
+		}
+
+		[Test]
+		public void SearchFilteredQueryFilterMatchAllQueryMatchAll()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new Filtered( new Filter( new MatchAll { Boost = 1.1 } )) { Query = new Query(new MatchAll())}		
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+			}
+		}
 
 		//[TestFixtureTearDown]
 		//public void TearDown()

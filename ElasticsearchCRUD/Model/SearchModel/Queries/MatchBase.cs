@@ -14,6 +14,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _cutoffFrequencySet;
 		private string _analyzer;
 		private bool _analyzerSet;
+		private double _boost;
+		private bool _boostSet;
 
 		protected MatchBase(string field, string text)
 		{
@@ -86,6 +88,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
+		public double Boost
+		{
+			get { return _boost; }
+			set
+			{
+				_boost = value;
+				_boostSet = true;
+			}
+		}
+
 		protected void WriteBasePropertiesJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("query", _text, elasticsearchCrudJsonWriter);
@@ -93,6 +105,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			JsonHelper.WriteValue("zero_terms_query", _zeroTermsQuery.ToString(), elasticsearchCrudJsonWriter, _zeroTermsQuerySet);
 			JsonHelper.WriteValue("cutoff_frequency", _cutoffFrequency, elasticsearchCrudJsonWriter, _cutoffFrequencySet);
 			JsonHelper.WriteValue("analyzer", _analyzer, elasticsearchCrudJsonWriter, _analyzerSet);
+			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 		}
 	}
 

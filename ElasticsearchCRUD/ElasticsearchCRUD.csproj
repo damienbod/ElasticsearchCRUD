@@ -199,6 +199,7 @@
     <Compile Include="Model\SearchModel\Queries\MatchPhase.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhasePrefix.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
+    <Compile Include="Model\SearchModel\QueryAndFilter\MatchAll.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />
