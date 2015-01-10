@@ -195,6 +195,9 @@
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
     <Compile Include="Model\SearchModel\Queries\Match.cs" />
+    <Compile Include="Model\SearchModel\Queries\MatchBase.cs" />
+    <Compile Include="Model\SearchModel\Queries\MatchPhase.cs" />
+    <Compile Include="Model\SearchModel\Queries\MatchPhasePrefix.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />
