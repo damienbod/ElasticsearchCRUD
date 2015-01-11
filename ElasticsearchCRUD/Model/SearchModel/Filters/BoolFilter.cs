@@ -48,6 +48,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private bool _mustNotSet;
 		private List<IFilter> _should;
 		private bool _shouldSet;
+		private bool _cache;
+		private bool _cacheSet;
 
 		public BoolFilter(){}
 
@@ -100,6 +102,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 		}
 
+		public bool Cache
+		{
+			get { return _cache; }
+			set
+			{
+				_cache = value;
+				_cacheSet = true;
+			}
+		}
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("bool");
@@ -110,6 +122,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			WriteShouldQueryList(elasticsearchCrudJsonWriter);
 
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
