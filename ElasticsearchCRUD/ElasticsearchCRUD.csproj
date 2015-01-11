@@ -194,6 +194,7 @@
     <Compile Include="Model\SearchModel\Filters\MatchAllFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\RangeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\TermFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\TermsFilter.cs" />
     <Compile Include="Model\SearchModel\IFilter.cs" />
     <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
@@ -206,6 +207,7 @@
     <Compile Include="Model\SearchModel\Queries\MultiMatch.cs" />
     <Compile Include="Model\SearchModel\Queries\RangeQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\TermQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\TermsQuery.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchAllQuery.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
