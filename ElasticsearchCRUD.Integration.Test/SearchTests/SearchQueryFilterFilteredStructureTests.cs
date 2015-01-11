@@ -58,7 +58,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryMatchPhaseTest()
 		{
-			var search = new Search { Query = new Query(new MatchPhaseQuery("name", "document one") { Analyzer = LanguageAnalyzers.German, Slop = 1, Operator = Operator.and, CutoffFrequency = 0.2, ZeroTermsQuery = ZeroTermsQuery.none, Boost = 1.1 }) };
+			var search = new Search { Query = new Query(new MatchPhaseQuery("name", "one") { Analyzer = LanguageAnalyzers.German, Slop = 1, Operator = Operator.and, CutoffFrequency = 0.2, ZeroTermsQuery = ZeroTermsQuery.none, Boost = 1.1 }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
@@ -71,7 +71,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryMatchPhasePrefixTest()
 		{
-			var search = new Search { Query = new Query(new MatchPhasePrefixQuery("name", "document one") { MaxExpansions = 500, Boost = 1.1, MinimumShouldMatch = "50%" }) };
+			var search = new Search { Query = new Query(new MatchPhasePrefixQuery("name", "one") { MaxExpansions = 500, Boost = 1.1, MinimumShouldMatch = "50%" }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
@@ -135,6 +135,46 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryTermQuery()
+		{
+			var search = new Search { Query = new Query(new TermQuery("name", "one"){Boost=2.0}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchQueryTermsQuery()
+		{
+			var search = new Search { Query = new Query(new TermsQuery("name", new List<string>{"one"}){ Boost = 2.0 }) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchQueryTermsQueryTwoResults()
+		{
+			var search = new Search { Query = new Query(new TermsQuery("name", new List<string> { "one", "two" }) { Boost = 2.0, MinimumShouldMatch="1" }) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[1].Source.Id);
+			}
+		}
+
 		[TestFixtureTearDown]
 		public void TearDown()
 		{
@@ -152,7 +192,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Id = 1,
 				Details = "This is the details of the document, very interesting",
-				Name = "document one",
+				Name = "one",
 				CircleTest = new GeoShapeCircle() { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
 			};
 
@@ -160,14 +200,14 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Id = 2,
 				Details = "Details of the document two, leave it alone",
-				Name = "document two",
+				Name = "two",
 				CircleTest = new GeoShapeCircle() { Radius = "50m", Coordinates = new GeoPoint(46, 45) }
 			};
 			var doc3 = new SearchTest
 			{
 				Id = 3,
 				Details = "This data is different",
-				Name = "document three",
+				Name = "three",
 				CircleTest = new GeoShapeCircle() { Radius = "80m", Coordinates = new GeoPoint(37, 42) }
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))

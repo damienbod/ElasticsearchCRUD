@@ -46,7 +46,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("term");
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("terms");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			JsonHelper.WriteListValue(_term, _termValues, elasticsearchCrudJsonWriter);
