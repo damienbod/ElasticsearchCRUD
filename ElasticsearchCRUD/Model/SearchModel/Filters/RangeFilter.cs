@@ -15,22 +15,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private bool _lessThanSet;
 		private string _timeZone;
 		private bool _timeZoneSet;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public RangeFilter(string field)
 		{
 			_field = field;
-		}
-
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
 		}
 
 		/// <summary>
@@ -120,7 +108,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			JsonHelper.WriteValue("lte", _lessThanOrEqualTo, elasticsearchCrudJsonWriter, _lessThanOrEqualToSet);
 			JsonHelper.WriteValue("lt", _lessThan, elasticsearchCrudJsonWriter, _lessThanSet);
 			JsonHelper.WriteValue("time_zone", _timeZone, elasticsearchCrudJsonWriter, _timeZoneSet);
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

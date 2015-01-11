@@ -15,7 +15,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterFilteredStructureTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[Test]
 		public void SearchQueryMatchAllTest()
@@ -232,7 +232,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryRangeFilter()
 		{
-			var search = new Search { Filter = new Filter(new RangeFilter("id") { GreaterThanOrEqualTo = "2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1", Cache = false}) };
+			var search = new Search { Filter = new Filter(new RangeFilter("id") { GreaterThanOrEqualTo = "2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1"}) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
