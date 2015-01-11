@@ -49,6 +49,18 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private List<IFilter> _should;
 		private bool _shouldSet;
 
+		public BoolFilter(){}
+
+		public BoolFilter(IFilter must, IFilter mustNot = null)
+		{
+			Must = new List<IFilter> {must};
+
+			if (mustNot != null)
+			{
+				MustNot = new List<IFilter> {mustNot};
+			}
+		}
+
 		public List<IFilter> Must
 		{
 			get { return _must; }

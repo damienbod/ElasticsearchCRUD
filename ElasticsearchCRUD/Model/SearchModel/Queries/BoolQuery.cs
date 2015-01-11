@@ -53,6 +53,18 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private List<IQuery> _should;
 		private bool _shouldSet;
 
+		public BoolQuery(){}
+
+		public BoolQuery(IQuery must, IQuery mustNot = null)
+		{
+			Must = new List<IQuery> {must};
+
+			if (mustNot != null)
+			{
+				MustNot = new List<IQuery> {mustNot};
+			}
+		}
+
 		public List<IQuery> Must
 		{
 			get { return _must; }
