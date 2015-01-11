@@ -2,12 +2,12 @@
 {
 	public class TimeUnitWeek : TimeUnit
 	{
-		public TimeUnitWeek(int weeks)
+		public TimeUnitWeek(uint weeks)
 		{
 			Weeks = weeks;
 		}
 
-		public int Weeks { get; set; }
+		public uint Weeks { get; set; }
 
 		public override string GetTimeUnit()
 		{

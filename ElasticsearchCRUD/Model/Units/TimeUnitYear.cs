@@ -2,12 +2,12 @@
 {
 	public class TimeUnitYear : TimeUnit
 	{
-		public TimeUnitYear(int years)
+		public TimeUnitYear(uint years)
 		{
 			Years = years;
 		}
 
-		public int Years { get; set; }
+		public uint Years { get; set; }
 
 		public override string GetTimeUnit()
 		{

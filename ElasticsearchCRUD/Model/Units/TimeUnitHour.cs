@@ -2,12 +2,12 @@
 {
 	public class TimeUnitHour : TimeUnit
 	{
-		public TimeUnitHour(int hours)
+		public TimeUnitHour(uint hours)
 		{
 			Hours = hours;
 		}
 
-		public int Hours { get; set; }
+		public uint Hours { get; set; }
 
 		public override string GetTimeUnit()
 		{

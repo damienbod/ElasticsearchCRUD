@@ -209,7 +209,16 @@
     <Compile Include="Model\SearchModel\Search.cs" />
     <Compile Include="Model\Shards.cs" />
     <Compile Include="Model\ResultDetailsCount.cs" />
-    <Compile Include="Model\Units\ScanTimeUnits.cs" />
+    <Compile Include="Model\Units\DistanceUnit.cs" />
+    <Compile Include="Model\Units\DistanceUnitCentimeter.cs" />
+    <Compile Include="Model\Units\DistanceUnitFeet.cs" />
+    <Compile Include="Model\Units\DistanceUnitInch.cs" />
+    <Compile Include="Model\Units\DistanceUnitKilometer.cs" />
+    <Compile Include="Model\Units\DistanceUnitMeter.cs" />
+    <Compile Include="Model\Units\DistanceUnitMiles.cs" />
+    <Compile Include="Model\Units\DistanceUnitMillimeter.cs" />
+    <Compile Include="Model\Units\DistanceUnitNauticalMile.cs" />
+    <Compile Include="Model\Units\DistanceUnitYard.cs" />
     <Compile Include="ElasticsearchCrudJsonWriter.cs" />
     <Compile Include="ElasticsearchCrudReindex.cs" />
     <Compile Include="ElasticsearchSerializerConfiguration.cs" />

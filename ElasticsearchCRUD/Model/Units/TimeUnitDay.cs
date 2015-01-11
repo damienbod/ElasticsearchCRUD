@@ -2,12 +2,12 @@
 {
 	public class TimeUnitDay : TimeUnit
 	{
-		public TimeUnitDay(int days)
+		public TimeUnitDay(uint days)
 		{
 			Days = days;
 		}
 
-		public int Days { get; set; }
+		public uint Days { get; set; }
 
 		public override string GetTimeUnit()
 		{
