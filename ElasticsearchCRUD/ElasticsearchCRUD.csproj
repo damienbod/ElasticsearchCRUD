@@ -192,7 +192,7 @@
     <Compile Include="Model\SearchModel\Filtered.cs" />
     <Compile Include="Model\SearchModel\Filters\BoolFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\MatchAllFilter.cs" />
-    <Compile Include="Model\SearchModel\FilterAndQueries\MatchAllFilterQuery.cs" />
+    <Compile Include="Model\SearchModel\Filters\TermFilter.cs" />
     <Compile Include="Model\SearchModel\IFilter.cs" />
     <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
@@ -203,6 +203,7 @@
     <Compile Include="Model\SearchModel\Queries\MatchPhaseQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhasePrefixQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MultiMatch.cs" />
+    <Compile Include="Model\SearchModel\Queries\TermQuery.cs" />
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchAllQuery.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />

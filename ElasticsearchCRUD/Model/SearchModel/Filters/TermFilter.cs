@@ -2,21 +2,17 @@
 
 namespace ElasticsearchCRUD.Model.SearchModel.Filters
 {
-	public class MatchAllFilter : IFilter
+	public class TermFilter : IFilter
 	{
-		private double _boost;
-		private bool _boostSet;
+		private readonly string _term;
+		private readonly string _termValue;
 		private bool _cache;
 		private bool _cacheSet;
 
-		public double Boost
+		public TermFilter(string term, string termValue)
 		{
-			get { return _boost; }
-			set
-			{
-				_boost = value;
-				_boostSet = true;
-			}
+			_term = term;
+			_termValue = termValue;
 		}
 
 		public bool Cache
@@ -29,22 +25,15 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 		}
 
-		//{
-		// "query" : {
-		//	  "match_all" : { }
-		//  }
-		//}
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("match_all");
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("term");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue(_term, _termValue, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}
-
-
 }
