@@ -23,7 +23,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		/// 
 		/// The slop parameter tells the match_phrase query how far apart terms are allowed to be while still considering the document a match. 
 		/// By how far apart we mean how many times do you need to move a term in order to make the query and document match?
-		
+		/// 		
 		/// Phrase and proximity queries are more expensive than simple match queries. Whereas a match query just has to look up terms in the inverted index, 
 		/// a match_phrase query has to calculate and compare the positions of multiple possibly repeated terms.
 		/// The Lucene nightly benchmarks show that a simple term query is about 10 times as fast as a phrase query, 

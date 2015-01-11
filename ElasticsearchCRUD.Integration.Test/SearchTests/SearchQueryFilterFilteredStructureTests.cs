@@ -141,7 +141,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
+				//var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
 			}
 		}
 
@@ -151,15 +151,32 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var doc1 = new SearchTest
 			{
 				Id = 1,
-				Details = "These a the details of the document",
+				Details = "This is the details of the document, very interesting",
 				Name = "document one",
 				CircleTest = new GeoShapeCircle() { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
 			};
+
+			var doc2 = new SearchTest
+			{
+				Id = 2,
+				Details = "Details of the document two, leave it alone",
+				Name = "document two",
+				CircleTest = new GeoShapeCircle() { Radius = "50m", Coordinates = new GeoPoint(46, 45) }
+			};
+			var doc3 = new SearchTest
+			{
+				Id = 3,
+				Details = "This data is different",
+				Name = "document three",
+				CircleTest = new GeoShapeCircle() { Radius = "80m", Coordinates = new GeoPoint(37, 42) }
+			};
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				context.IndexCreate<SearchTest>();
+				//context.IndexCreate<SearchTest>();
 				Thread.Sleep(1000);
 				context.AddUpdateDocument(doc1, doc1.Id);
+				context.AddUpdateDocument(doc2, doc2.Id);
+				context.AddUpdateDocument(doc3, doc3.Id);
 				context.SaveChanges();
 				Thread.Sleep(1000);
 			}

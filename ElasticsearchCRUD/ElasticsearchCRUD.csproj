@@ -190,11 +190,14 @@
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\SearchModel\Filter.cs" />
     <Compile Include="Model\SearchModel\Filtered.cs" />
+    <Compile Include="Model\SearchModel\Filters\BoolFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\MatchAllFilter.cs" />
+    <Compile Include="Model\SearchModel\FilterAndQueries\MatchAllFilterQuery.cs" />
     <Compile Include="Model\SearchModel\IFilter.cs" />
     <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
+    <Compile Include="Model\SearchModel\Queries\BoolQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchBase.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhaseQuery.cs" />

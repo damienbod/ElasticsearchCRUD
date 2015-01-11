@@ -1,34 +1,8 @@
-﻿using ElasticsearchCRUD.Utils;
+﻿using ElasticsearchCRUD.Model.SearchModel.FilterAndQueries;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Filters
 {
-	public class MatchAllFilter : IFilter
+	public class MatchAllFilter : MatchAllFilterQuery
 	{
-		private double _boost;
-		private bool _boostSet;
-
-		public double Boost
-		{
-			get { return _boost; }
-			set
-			{
-				_boost = value;
-				_boostSet = true;
-			}
-		}
-		//{
-		// "query" : {
-		//	  "match_all" : { }
-		//  }
-		//}
-		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
-		{
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("match_all");
-			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-
-			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
-
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-		}
 	}
 }
