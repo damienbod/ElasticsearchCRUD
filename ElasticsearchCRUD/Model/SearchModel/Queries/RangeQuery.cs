@@ -121,9 +121,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 			JsonHelper.WriteValue("gte", _greaterThanOrEqualTo, elasticsearchCrudJsonWriter, _greaterThanOrEqualToSet);
 			JsonHelper.WriteValue("gt", _greaterThan, elasticsearchCrudJsonWriter, _greaterThanSet);
-			JsonHelper.WriteValue("lte", _lessThanOrEqualTo, elasticsearchCrudJsonWriter, _boostSet);
-			JsonHelper.WriteValue("lt", _lessThan, elasticsearchCrudJsonWriter, _lessThanOrEqualToSet);
-			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _lessThanSet);
+			JsonHelper.WriteValue("lte", _lessThanOrEqualTo, elasticsearchCrudJsonWriter, _lessThanOrEqualToSet);
+			JsonHelper.WriteValue("lt", _lessThan, elasticsearchCrudJsonWriter, _lessThanSet);
+			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			JsonHelper.WriteValue("time_zone", _timeZone, elasticsearchCrudJsonWriter, _timeZoneSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

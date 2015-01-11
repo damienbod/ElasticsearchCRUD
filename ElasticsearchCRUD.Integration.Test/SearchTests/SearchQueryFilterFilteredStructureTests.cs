@@ -6,6 +6,7 @@ using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
+using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
@@ -174,6 +175,74 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[1].Source.Id);
 			}
 		}
+
+		[Test]
+		public void SearchQueryRangeQuery()
+		{
+			var search = new Search { Query = new Query(new RangeQuery("id"){GreaterThanOrEqualTo="2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1",Boost=2.0}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchQueryTermFilter()
+		{
+			var search = new Search { Filter = new Filter(new TermFilter("name", "three"){Cache=false})};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchQueryTermsFilter()
+		{
+			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<string>{"one", "three"}) { Cache = false, Execution=ExecutionMode.@bool }) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[1].Source.Id);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchQueryTermsFilterExecutionModeAnd()
+		{
+			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<string> { "one", "three" }) { Cache = false, Execution = ExecutionMode.and }) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(0, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryRangeFilter()
+		{
+			var search = new Search { Filter = new Filter(new RangeFilter("id") { GreaterThanOrEqualTo = "2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1", Cache = false}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.TraceProvider= new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
 
 		[TestFixtureTearDown]
 		public void TearDown()

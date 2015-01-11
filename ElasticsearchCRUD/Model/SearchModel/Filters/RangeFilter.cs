@@ -5,8 +5,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	public class RangeFilter : IFilter
 	{
 		private readonly string _field;
-		private double _boost;
-		private bool _boostSet;
 		private string _greaterThanOrEqualTo;
 		private bool _greaterThanOrEqualToSet;
 		private string _greaterThan;
@@ -19,8 +17,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private bool _timeZoneSet;
 		private bool _cache;
 		private bool _cacheSet;
-		private ExecutionOption _execution;
-		private bool _executionSet;
 
 		public RangeFilter(string field)
 		{
@@ -34,16 +30,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			{
 				_cache = value;
 				_cacheSet = true;
-			}
-		}
-
-		public double Boost
-		{
-			get { return _boost; }
-			set
-			{
-				_boost = value;
-				_boostSet = true;
 			}
 		}
 
@@ -121,26 +107,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 		}
 
-		/// <summary>
-		/// execution
-		/// The execution option controls how the range filter internally executes. The execution option accepts the index and fielddata values.
-		/// 
-		/// In general for small ranges the index execution is faster and for longer ranges the fielddata execution is faster.
-		/// 
-		/// The fielddata execution, as the name suggests, uses field data and therefore requires more memory, 
-		/// so make sure you have sufficient memory on your nodes in order to use this execution mode. It usually makes sense to use it on fields you’re already aggregating or sorting by.
-		/// </summary>
-		public ExecutionOption Execution
-		{
-			get { return _execution; }
-			set
-			{
-				_execution = value;
-				_executionSet = true;
-			}
-		}
-		
-
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("range");
@@ -151,28 +117,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 			JsonHelper.WriteValue("gte", _greaterThanOrEqualTo, elasticsearchCrudJsonWriter, _greaterThanOrEqualToSet);
 			JsonHelper.WriteValue("gt", _greaterThan, elasticsearchCrudJsonWriter, _greaterThanSet);
-			JsonHelper.WriteValue("lte", _lessThanOrEqualTo, elasticsearchCrudJsonWriter, _boostSet);
-			JsonHelper.WriteValue("lt", _lessThan, elasticsearchCrudJsonWriter, _lessThanOrEqualToSet);
-			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _lessThanSet);
+			JsonHelper.WriteValue("lte", _lessThanOrEqualTo, elasticsearchCrudJsonWriter, _lessThanOrEqualToSet);
+			JsonHelper.WriteValue("lt", _lessThan, elasticsearchCrudJsonWriter, _lessThanSet);
 			JsonHelper.WriteValue("time_zone", _timeZone, elasticsearchCrudJsonWriter, _timeZoneSet);
 			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
-			JsonHelper.WriteValue("execution", _execution.ToString(), elasticsearchCrudJsonWriter, _executionSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
-	}
-
-	public enum ExecutionOption
-	{
-		/// <summary>
-		/// Uses the field’s inverted index in order to determine whether documents fall within the specified range.
-		/// </summary>
-		index,
-		
-		/// <summary>
-		/// Uses fielddata in order to determine whether documents fall within the specified range. 
-		/// </summary>
-		fielddata
 	}
 }
