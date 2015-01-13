@@ -18,6 +18,7 @@ using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 
@@ -38,7 +39,7 @@ namespace ElasticsearchCRUD
 		private ElasticsearchContextAddDeleteUpdate _elasticsearchContextAddDeleteUpdate;
 		private ElasticsearchContextGet _elasticsearchContextGet;
 		private ElasticsearchContextSearch _elasticsearchContextSearch;
-		private Search _search;
+		private SearchRequest _searchRequest;
 		private ElasticsearchContextCount _elasticsearchContextCount;
 		private ElasticsearchContextDeleteByQuery _elasticsearchContextDeleteByQuery;
 		private ElasticsearchContextClearCache _elasticsearchContextClearCache;
@@ -369,7 +370,19 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T</returns>
 		public ResultDetails<SearchResult<T>> Search<T>(string searchJsonParameters, SearchUrlParameters searchUrlParameters = null)
 		{
-			return _search.PostSearch<T>(searchJsonParameters, null, null, searchUrlParameters);
+			return _searchRequest.PostSearch<T>(searchJsonParameters, null, null, searchUrlParameters);
+		}
+
+		/// <summary>
+		/// Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+		/// </summary>
+		/// <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <param name="searchUrlParameters">add routing or pretty parameters if required</param>
+		/// <returns>A collection of documents of type T</returns>
+		public ResultDetails<SearchResult<T>> Search<T>(Search search, SearchUrlParameters searchUrlParameters = null)
+		{
+			return _searchRequest.PostSearch<T>(search.ToString(), null, null, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -381,7 +394,12 @@ namespace ElasticsearchCRUD
 		/// <returns>A collection of documents of type T in a Task</returns>
 		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(string searchJsonParameters, SearchUrlParameters searchUrlParameters = null)
 		{
-			return await _search.PostSearchAsync<T>(searchJsonParameters, null, null, searchUrlParameters);
+			return await _searchRequest.PostSearchAsync<T>(searchJsonParameters, null, null, searchUrlParameters);
+		}
+
+		public async Task<ResultDetails<SearchResult<T>>> SearchAsync<T>(Search search, SearchUrlParameters searchUrlParameters = null)
+		{
+			return await _searchRequest.PostSearchAsync<T>(search.ToString(), null, null, searchUrlParameters);
 		}
 
 		/// <summary>
@@ -403,7 +421,7 @@ namespace ElasticsearchCRUD
 				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
 			}
 
-			return _search.PostSearch<T>("", scrollId, scanAndScrollConfiguration, null);
+			return _searchRequest.PostSearch<T>("", scrollId, scanAndScrollConfiguration, null);
 		}
 
 		/// <summary>
@@ -425,7 +443,7 @@ namespace ElasticsearchCRUD
 				throw new ElasticsearchCrudException("scanAndScrollConfiguration not defined");
 			}
 
-			return await _search.PostSearchAsync<T>("", scrollId, scanAndScrollConfiguration, null);
+			return await _searchRequest.PostSearchAsync<T>("", scrollId, scanAndScrollConfiguration, null);
 		}
 
 		/// <summary>
@@ -445,7 +463,27 @@ namespace ElasticsearchCRUD
 					Routing = routing
 				};
 			}
-			return _search.PostSearchExists<T>(searchJsonParameters, searchUrlParameters);
+			return _searchRequest.PostSearchExists<T>(searchJsonParameters, searchUrlParameters);
+		}
+		
+		/// <summary>
+		/// executes a post request to checks if at least one document exists for the search query.
+		/// </summary>
+		/// <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <param name="routing">routing used for the search</param>
+		/// <returns>true if one document exists for the search query</returns>
+		public bool SearchExists<T>(Search search, string routing = null)
+		{
+			SearchUrlParameters searchUrlParameters = null;
+			if (!string.IsNullOrEmpty(routing))
+			{
+				searchUrlParameters = new SearchUrlParameters
+				{
+					Routing = routing
+				};
+			}
+			return _searchRequest.PostSearchExists<T>(search.ToString(), searchUrlParameters);
 		}
 
 		/// <summary>
@@ -465,7 +503,28 @@ namespace ElasticsearchCRUD
 					Routing = routing
 				};
 			}
-			return await _search.PostSearchExistsAsync<T>(searchJsonParameters, searchUrlParameters);
+			return await _searchRequest.PostSearchExistsAsync<T>(searchJsonParameters, searchUrlParameters);
+		}
+
+		
+		/// <summary>
+		/// async executes a post request to checks if at least one document exists for the search query.
+		/// </summary>
+		/// <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <param name="routing">routing used for the search</param>
+		/// <returns>true if one document exists for the search query</returns>
+		public async Task<ResultDetails<bool>> SearchExistsAsync<T>(Search search, string routing = null)
+		{
+			SearchUrlParameters searchUrlParameters = null;
+			if (!string.IsNullOrEmpty(routing))
+			{
+				searchUrlParameters = new SearchUrlParameters
+				{
+					Routing = routing
+				};
+			}
+			return await _searchRequest.PostSearchExistsAsync<T>(search.ToString(), searchUrlParameters);
 		}
 
 		/// <summary>
@@ -478,7 +537,20 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public ResultDetails<SearchResult<T>> SearchCreateScanAndScroll<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
-			return _search.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
+			return _searchRequest.PostSearchCreateScanAndScroll<T>(jsonContent, scanAndScrollConfiguration);
+		}
+		
+		/// <summary>
+		/// Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+		/// If your doing a live reindexing, you should use a timestamp in the json content query.
+		/// </summary>
+		/// <typeparam name="T">index and type formt search scan and scroll</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
+		public ResultDetails<SearchResult<T>> SearchCreateScanAndScroll<T>(Search search, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			return _searchRequest.PostSearchCreateScanAndScroll<T>(search.ToString(), scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -491,7 +563,20 @@ namespace ElasticsearchCRUD
 		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
 		public async Task<ResultDetails<SearchResult<T>>> SearchCreateScanAndScrollAsync<T>(string jsonContent, ScanAndScrollConfiguration scanAndScrollConfiguration)
 		{
-			return await _search.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
+			return await _searchRequest.PostSearchCreateScanAndScrollAsync<T>(jsonContent, scanAndScrollConfiguration);
+		}
+
+		/// <summary>
+		/// Async Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+		/// If your doing a live reindexing, you should use a timestamp in the json content query.
+		/// </summary>
+		/// <typeparam name="T">index and type formt search scan and scroll</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+		/// <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
+		public async Task<ResultDetails<SearchResult<T>>> SearchCreateScanAndScrollAsync<T>(Search search, ScanAndScrollConfiguration scanAndScrollConfiguration)
+		{
+			return await _searchRequest.PostSearchCreateScanAndScrollAsync<T>(search.ToString(), scanAndScrollConfiguration);
 		}
 
 		/// <summary>
@@ -504,6 +589,17 @@ namespace ElasticsearchCRUD
 		{
 			return _elasticsearchContextCount.PostCount<T>(jsonContent).PayloadResult;
 		}
+		
+		/// <summary>
+		/// ElasticsearchContextCount to amount of hits for a index, type and query.
+		/// </summary>
+		/// <typeparam name="T">Type to find</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <returns>Result amount of document found</returns>
+		public long Count<T>(Search search)
+		{
+			return _elasticsearchContextCount.PostCount<T>(search.ToString()).PayloadResult;
+		}
 
 		/// <summary>
 		/// ElasticsearchContextCount to amount of hits for a index, type and query.
@@ -514,6 +610,17 @@ namespace ElasticsearchCRUD
 		public async Task<ResultDetails<long>> CountAsync<T>(string jsonContent = "")
 		{
 			return await _elasticsearchContextCount.PostCountAsync<T>(jsonContent);
+		}
+
+		/// <summary>
+		/// ElasticsearchContextCount to amount of hits for a index, type and query.
+		/// </summary>
+		/// <typeparam name="T">Type to find</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <returns>Result amount of document found in a result details task</returns>
+		public async Task<ResultDetails<long>> CountAsync<T>(Search search)
+		{
+			return await _elasticsearchContextCount.PostCountAsync<T>(search.ToString());
 		}
 
 		/// <summary>
@@ -546,6 +653,22 @@ namespace ElasticsearchCRUD
 			}
 
 			return _elasticsearchContextDeleteByQuery.SendDeleteByQuery<T>(jsonContent);
+		}
+		
+		/// <summary>
+		/// Deletes all documents found using the query in the body.
+		/// </summary>
+		/// <typeparam name="T">Type used to define the index and the type in Elasticsearch</typeparam>
+		/// <param name="search">search body for Elasticsearch Search API</param>
+		/// <returns>Returns true if ok</returns>
+		public ResultDetails<bool> DeleteByQuery<T>(Search search)
+		{
+			if (search == null)
+			{
+				throw new ElasticsearchCrudException("Context: you must supply a json query for DeleteByQueryAsync");
+			}
+
+			return _elasticsearchContextDeleteByQuery.SendDeleteByQuery<T>(search.ToString());
 		}
 
 		/// <summary>
@@ -965,7 +1088,7 @@ namespace ElasticsearchCRUD
 				_connectionString
 				);
 
-			_search = new Search(
+			_searchRequest = new SearchRequest(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,

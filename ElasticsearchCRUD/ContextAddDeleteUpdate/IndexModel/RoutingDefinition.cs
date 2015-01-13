@@ -1,4 +1,6 @@
-﻿namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
+﻿using ElasticsearchCRUD.Utils;
+
+namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel
 {
 	public class RoutingDefinition
 	{
@@ -7,22 +9,18 @@
 
 		public static string GetRoutingUrl(RoutingDefinition routingDefinition)
 		{
-			string routingUrl = "";
+			var parameters = new ParameterCollection();
 
-			if (routingDefinition != null && routingDefinition.ParentId != null && routingDefinition.RoutingId != null)
+			if (routingDefinition != null && routingDefinition.ParentId != null)
 			{
-				routingUrl = "?parent=" + routingDefinition.ParentId + "&routing=" + routingDefinition.RoutingId; ;
+				parameters.Add("parent", routingDefinition.ParentId.ToString());
 			}
-			else if (routingDefinition != null && routingDefinition.ParentId != null)
+			if (routingDefinition != null && routingDefinition.RoutingId != null)
 			{
-				routingUrl = "?parent=" + routingDefinition.ParentId;
-			}
-			else if (routingDefinition != null && routingDefinition.RoutingId != null)
-			{
-				routingUrl = "?routing=" + routingDefinition.RoutingId;
+				parameters.Add("routing", routingDefinition.RoutingId.ToString());
 			}
 
-			return routingUrl;
+			return parameters.ToString();
 		}
 	}
 }

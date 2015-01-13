@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.Units;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
@@ -101,7 +102,7 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				var scanScrollConfig = new ScanAndScrollConfiguration(1, TimeUnits.Second, 100);
+				var scanScrollConfig = new ScanAndScrollConfiguration(new TimeUnitSecond(1), 100);
 				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 
 				var scrollId = result.PayloadResult.ScrollId;
