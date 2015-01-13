@@ -12,12 +12,12 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryQueryTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[Test]
 		public void SearchQueryMatchAllTest()
 		{
-			var search = new Search { Query = new Query(new MatchAllQuery() { Boost = 1.1 }) };
+			var search = new Search { Query = new Query(new MatchAllQuery { Boost = 1.1 }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
@@ -132,6 +132,20 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryBoostingQuery()
+		{
+			var search = new Search { Query = new Query(new BoostingQuery(new MatchAllQuery(), new TermQuery("name", "two"), 3.0 )) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+
 		[TestFixtureTearDown]
 		public void TearDown()
 		{
@@ -150,7 +164,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Id = 1,
 				Details = "This is the details of the document, very interesting",
 				Name = "one",
-				CircleTest = new GeoShapeCircle() { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
+				CircleTest = new GeoShapeCircle { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
 			};
 
 			var doc2 = new SearchTest
@@ -158,14 +172,14 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Id = 2,
 				Details = "Details of the document two, leave it alone",
 				Name = "two",
-				CircleTest = new GeoShapeCircle() { Radius = "50m", Coordinates = new GeoPoint(46, 45) }
+				CircleTest = new GeoShapeCircle { Radius = "50m", Coordinates = new GeoPoint(46, 45) }
 			};
 			var doc3 = new SearchTest
 			{
 				Id = 3,
 				Details = "This data is different",
 				Name = "three",
-				CircleTest = new GeoShapeCircle() { Radius = "80m", Coordinates = new GeoPoint(37, 42) }
+				CircleTest = new GeoShapeCircle { Radius = "80m", Coordinates = new GeoPoint(37, 42) }
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{

@@ -73,7 +73,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Id = 1,
 				Details = "This is the details of the document, very interesting",
 				Name = "one",
-				CircleTest = new GeoShapeCircle() { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
+				CircleTest = new GeoShapeCircle { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
 			};
 
 			var doc2 = new SearchTest
@@ -81,14 +81,14 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Id = 2,
 				Details = "Details of the document two, leave it alone",
 				Name = "two",
-				CircleTest = new GeoShapeCircle() { Radius = "50m", Coordinates = new GeoPoint(46, 45) }
+				CircleTest = new GeoShapeCircle { Radius = "50m", Coordinates = new GeoPoint(46, 45) }
 			};
 			var doc3 = new SearchTest
 			{
 				Id = 3,
 				Details = "This data is different",
 				Name = "three",
-				CircleTest = new GeoShapeCircle() { Radius = "80m", Coordinates = new GeoPoint(37, 42) }
+				CircleTest = new GeoShapeCircle { Radius = "80m", Coordinates = new GeoPoint(37, 42) }
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{

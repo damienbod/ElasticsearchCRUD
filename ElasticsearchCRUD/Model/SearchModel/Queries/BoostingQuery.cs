@@ -35,8 +35,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 		public BoostingQuery(IQuery positive, IQuery negative, double negativeBoost)
 		{
-			_positive = positive;
-			_negative = negative;
+			Positive = positive;
+			Negative = negative;
 			NegativeBoost = negativeBoost;
 		}
 		/// <summary>
@@ -77,17 +77,25 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("match_all");
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("boosting");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			if (_positiveSet)
 			{
+
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("positive");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 				_positive.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 
 			if (_negativeSet)
 			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("negative");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 				_negative.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+				
 			}
 
 			JsonHelper.WriteValue("negative_boost", _negativeBoost, elasticsearchCrudJsonWriter, _negativeBoostSet);
