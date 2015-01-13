@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 
 		[Test]
@@ -153,7 +153,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		public void SearchQueryAndFilter()
 		{
 			var search = new Search { Filter = new Filter(
-					new AndFilter()
+					new AndFilter
 					{
 						And = new List<IFilter>
 						{
@@ -180,7 +180,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var search = new Search
 			{
 				Filter = new Filter(
-					new OrFilter()
+					new OrFilter
 					{
 						Or = new List<IFilter>
 						{
@@ -189,7 +189,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 						},
 						Cache = false
 					}
-					)
+				)
 			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
