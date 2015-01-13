@@ -37,6 +37,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="https://damienbod.wordpress.com/2014/12/20/using-elasticsearch-german-analyzer/">Part 12: Using Elasticsearch German Analyzer</a>
 
+<a href="https://damienbod.wordpress.com/2015/01/07/mvc-google-maps-search-using-elasticsearch/">Part 13: MVC google maps search using Elasticsearch</a>
+
 ========================
 
 <strong>Examples:</strong>
@@ -84,6 +86,12 @@ Example showing mapping configuration.
 
 ========================
 <strong>History</strong>
+
+<strong>Version 1.0.24</strong><em> 2015.01.05</em>
+- Support for geo_point index and mapping
+- Support for geo_shape index and mapping
+- Spporting the following Geo Shape Types:
+point, linestring, polygon, multipoint, multilinestring, multipolygon, envelope, circle 
 
 <strong>Version 1.0.23</strong><em> 2015.01.02</em>
 - Added search highlighting and refactored the hits results
