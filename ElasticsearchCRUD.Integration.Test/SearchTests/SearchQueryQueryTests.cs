@@ -4,6 +4,7 @@ using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
+using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
@@ -133,6 +134,42 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
+		public void SearchQueryBoolQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new BoolQuery
+					{
+						Must = new List<IQuery>
+						{
+							new RangeQuery("id") { GreaterThanOrEqualTo = "2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1" }
+						},
+						MustNot = new List<IQuery>
+						{
+							new RangeQuery("id") {GreaterThan="34"}
+						},
+						Should = new List<IQuery>
+						{
+							new TermQuery("name", "two")
+						},
+						Boost=2.0,
+						DisableCoord= false,
+						MinimumShouldMatch= "2"
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
 		public void SearchQueryBoostingQuery()
 		{
 			var search = new Search { Query = new Query(new BoostingQuery(new MatchAllQuery(), new TermQuery("name", "two"), 3.0 )) };
@@ -145,6 +182,49 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryDisMaxQueryQuery()
+		{
+			var search = new Search { Query = new Query(
+					new DisMaxQuery()
+					{
+						Boost=2,
+						TieBreaker=0.5, 
+						Queries = new List<IQuery>
+						{
+							new TermQuery("name", "one"),
+							new RangeQuery("id")
+							{
+								GreaterThanOrEqualTo = "1",
+								Boost = 2
+							}
+
+						}
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+		
+		[Test]
+		public void SearchQueryConstantScoreQueryWithQuery()
+		{
+			var search = new Search { Query = new Query(new ConstantScoreQuery(new TermQuery("name", "two")){Boost = 2.0}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+		
 
 		[TestFixtureTearDown]
 		public void TearDown()

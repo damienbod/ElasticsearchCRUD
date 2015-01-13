@@ -54,6 +54,18 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryConstantScoreQueryWithFilter()
+		{
+			var search = new Search { Query = new Query(new ConstantScoreQuery(new RangeFilter("id"){GreaterThan = "1"}) { Boost = 2.0 }) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
 
 		[TestFixtureTearDown]
 		public void TearDown()

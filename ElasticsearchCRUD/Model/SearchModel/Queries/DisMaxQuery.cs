@@ -106,7 +106,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 				foreach (var shouldItem in _queries)
 				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();	
 					shouldItem.WriteJson(elasticsearchCrudJsonWriter);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
