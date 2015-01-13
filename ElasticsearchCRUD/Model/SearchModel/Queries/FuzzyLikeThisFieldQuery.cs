@@ -24,7 +24,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private int _prefixLength;
 		private bool _prefixLengthSet;
 
-		public FuzzyLikeThisFieldQuery(string likeThis, string fieldName)
+		public FuzzyLikeThisFieldQuery(string fieldName, string likeThis)
 		{
 			_likeThis = likeThis;
 			_fieldName = fieldName;

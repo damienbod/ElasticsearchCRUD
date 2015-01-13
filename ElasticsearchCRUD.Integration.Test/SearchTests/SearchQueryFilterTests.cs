@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 
 		[Test]
