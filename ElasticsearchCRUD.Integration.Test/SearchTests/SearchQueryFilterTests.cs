@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 
 		[Test]
@@ -135,6 +135,44 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryExistsFilter()
+		{
+			var search = new Search { Filter = new Filter(new ExistsFilter("name")) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryAndFilter()
+		{
+			var search = new Search { Filter = new Filter(
+					new AndFilter()
+					{
+						And = new List<IFilter>
+						{
+							new ExistsFilter("name"),
+							new TermFilter("name", "one")
+						},
+						Cache = false
+					}
+				) 
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
 
 		[TestFixtureTearDown]
 		public void TearDown()
