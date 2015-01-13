@@ -4,22 +4,22 @@ using ElasticsearchCRUD.Utils;
 namespace ElasticsearchCRUD.Model.SearchModel.Filters
 {
 	/// <summary>
-	/// A filter that matches documents using the AND boolean operator on other filters. Can be placed within queries that accept a filter.
+	/// A filter that matches documents using the OR boolean operator on other filters. Can be placed within queries that accept a filter.
 	/// </summary>
-	public class AndFilter : IFilter
+	public class OrFilter : IFilter
 	{
-		private List<IFilter> _and;
-		private bool _andSet;
+		private List<IFilter> _or;
+		private bool _orSet;
 		private bool _cache;
 		private bool _cacheSet;
 
-		public List<IFilter> And
+		public List<IFilter> Or
 		{
-			get { return _and; }
+			get { return _or; }
 			set
 			{
-				_and = value;
-				_andSet = true;
+				_or = value;
+				_orSet = true;
 			}
 		}
 
@@ -35,27 +35,27 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("and");
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("or");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			WriteAndFilterList(elasticsearchCrudJsonWriter);
+			WriteOrFilterList(elasticsearchCrudJsonWriter);
 
 			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 
-		private void WriteAndFilterList(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		private void WriteOrFilterList(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			if (_andSet)
+			if (_orSet)
 			{
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filters");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
 
-				foreach (var and in _and)
+				foreach (var or in _or)
 				{
 					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-					and.WriteJson(elasticsearchCrudJsonWriter);
+					or.WriteJson(elasticsearchCrudJsonWriter);
 					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 

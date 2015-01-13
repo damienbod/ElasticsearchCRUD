@@ -174,6 +174,55 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryOrFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(
+					new OrFilter()
+					{
+						Or = new List<IFilter>
+						{
+							new TermFilter("name", "one"),
+							new TermFilter("name", "two")
+						},
+						Cache = false
+					}
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryNotFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(
+					new NotFilter(new TermFilter("name", "one"))
+					{
+						Cache = false
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
+
 		[TestFixtureTearDown]
 		public void TearDown()
 		{

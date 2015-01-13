@@ -194,6 +194,8 @@
     <Compile Include="Model\SearchModel\Filters\BoolFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\ExistsFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\MatchAllFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\NotFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\OrFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\RangeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\TermFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\TermsFilter.cs" />
