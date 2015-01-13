@@ -203,6 +203,7 @@
     <Compile Include="Model\SearchModel\Queries\BoostingQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\ConstantScoreQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\DisMaxQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\FuzzyLikeThisQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchBase.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhaseQuery.cs" />
