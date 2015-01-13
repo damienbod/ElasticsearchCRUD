@@ -17,6 +17,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _boostSet;
 		private string _minimumShouldMatch;
 		private bool _minimumShouldMatchSet;
+		private double _fuzziness;
+		private bool _fuzzinessSet;
 
 		protected MatchBase(string text)
 		{
@@ -99,6 +101,20 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		}
 
 		/// <summary>
+		/// fuzziness
+		/// The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
+		/// </summary>
+		public double Fuzziness
+		{
+			get { return _fuzziness; }
+			set
+			{
+				_fuzziness = value;
+				_fuzzinessSet = true;
+			}
+		}
+
+		/// <summary>
 		/// minimum_should_match
 		/// The minimum_should_match parameter possible values:
 		/// 
@@ -142,6 +158,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			JsonHelper.WriteValue("cutoff_frequency", _cutoffFrequency, elasticsearchCrudJsonWriter, _cutoffFrequencySet);
 			JsonHelper.WriteValue("analyzer", _analyzer, elasticsearchCrudJsonWriter, _analyzerSet);
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue("fuzziness", _fuzziness, elasticsearchCrudJsonWriter, _fuzzinessSet);
 			JsonHelper.WriteValue("minimum_should_match", _minimumShouldMatch, elasticsearchCrudJsonWriter, _minimumShouldMatchSet);
 		}
 	}

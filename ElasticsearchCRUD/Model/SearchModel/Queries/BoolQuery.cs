@@ -180,7 +180,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 				foreach (var shouldItem in _should)
 				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 					shouldItem.WriteJson(elasticsearchCrudJsonWriter);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
@@ -196,7 +198,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 				foreach (var mustNotItem in _mustNot)
 				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 					mustNotItem.WriteJson(elasticsearchCrudJsonWriter);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
@@ -212,7 +216,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 				foreach (var mustItem in _must)
 				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 					mustItem.WriteJson(elasticsearchCrudJsonWriter);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();

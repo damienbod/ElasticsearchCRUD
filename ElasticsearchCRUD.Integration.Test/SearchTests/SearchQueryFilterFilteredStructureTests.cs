@@ -1,12 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
-using ElasticsearchCRUD.Model;
+﻿using System.Threading;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
-using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
@@ -16,71 +12,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
-
-		[Test]
-		public void SearchQueryMatchAllTest()
-		{
-			var search = new Search { Query = new Query(new MatchAllQuery(){ Boost = 1.1}) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchFilterMatchAllTest()
-		{
-			var search = new Search { Filter = new Filter(new MatchAllFilter{ Boost = 1.1 }) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryMatchTest()
-		{
-			var search = new Search { Query = new Query(new MatchQuery("name", "document one"){Boost=1.1}) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryMatchPhaseTest()
-		{
-			var search = new Search { Query = new Query(new MatchPhaseQuery("name", "one") { Analyzer = LanguageAnalyzers.German, Slop = 1, Operator = Operator.and, CutoffFrequency = 0.2, ZeroTermsQuery = ZeroTermsQuery.none, Boost = 1.1 }) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryMatchPhasePrefixTest()
-		{
-			var search = new Search { Query = new Query(new MatchPhasePrefixQuery("name", "one") { MaxExpansions = 500, Boost = 1.1, MinimumShouldMatch = "50%" }) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
 
 		[Test]
 		public void SearchFilteredQueryFilterMatchAll()
@@ -120,126 +51,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
 				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryMultiMatchAllTest()
-		{
-			var search = new Search { Query = new Query(new MultiMatch("document"){MultiMatchType= MultiMatchType.most_fields, TieBreaker = 0.5, Fields = new List<string>{"name", "details"}}) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryTermQuery()
-		{
-			var search = new Search { Query = new Query(new TermQuery("name", "one"){Boost=2.0}) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryTermsQuery()
-		{
-			var search = new Search { Query = new Query(new TermsQuery("name", new List<string>{"one"}){ Boost = 2.0 }) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryTermsQueryTwoResults()
-		{
-			var search = new Search { Query = new Query(new TermsQuery("name", new List<string> { "one", "two" }) { Boost = 2.0, MinimumShouldMatch="1" }) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[1].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryRangeQuery()
-		{
-			var search = new Search { Query = new Query(new RangeQuery("id"){GreaterThanOrEqualTo="2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1",Boost=2.0}) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryTermFilter()
-		{
-			var search = new Search { Filter = new Filter(new TermFilter("name", "three"){Cache=false})};
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryTermsFilter()
-		{
-			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<string>{"one", "three"}) { Cache = false, Execution=ExecutionMode.@bool }) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[1].Source.Id);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
-
-		[Test]
-		public void SearchQueryTermsFilterExecutionModeAnd()
-		{
-			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<string> { "one", "three" }) { Cache = false, Execution = ExecutionMode.and }) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(0, items.PayloadResult.Hits.Total);
-			}
-		}
-
-		[Test]
-		public void SearchQueryRangeFilter()
-		{
-			var search = new Search { Filter = new Filter(new RangeFilter("id") { GreaterThanOrEqualTo = "2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1"}) };
-
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.TraceProvider= new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -290,18 +101,5 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Thread.Sleep(1000);
 			}
 		}
-	}
-
-	public class SearchTest
-	{
-		public long Id { get; set; }
-
-		public string Name { get; set; }
-
-		[ElasticsearchString(Analyzer = LanguageAnalyzers.German)]
-		public string Details { get; set; }
-
-		[ElasticsearchGeoShape]
-		public GeoShapeCircle CircleTest { get; set; }
 	}
 }

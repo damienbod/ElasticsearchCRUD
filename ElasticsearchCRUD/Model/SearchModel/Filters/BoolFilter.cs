@@ -31,17 +31,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	///				{
 	///					"term" : { "details" : "alone" }
 	///				}
-	///			],
-	///			"minimum_should_match" : 1,
-	///			"boost" : 3.0
+	///			]
 	///		}
 	///	}
 	///}
 	/// </summary>
 	public class BoolFilter: IFilter
 	{
-		private double _boost;
-		private bool _boostSet;
 		private List<IFilter> _must;
 		private bool _mustSet;
 		private List<IFilter> _mustNot;
@@ -92,15 +88,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 				_shouldSet = true;
 			}
 		}
-		public double Boost
-		{
-			get { return _boost; }
-			set
-			{
-				_boost = value;
-				_boostSet = true;
-			}
-		}
 
 		public bool Cache
 		{
@@ -121,7 +108,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			WriteMustNotQueryList(elasticsearchCrudJsonWriter);
 			WriteShouldQueryList(elasticsearchCrudJsonWriter);
 
-			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
@@ -136,7 +122,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 				foreach (var shouldItem in _should)
 				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 					shouldItem.WriteJson(elasticsearchCrudJsonWriter);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
@@ -152,7 +140,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 				foreach (var mustNotItem in _mustNot)
 				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 					mustNotItem.WriteJson(elasticsearchCrudJsonWriter);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
@@ -168,7 +158,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 				foreach (var mustItem in _must)
 				{
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 					mustItem.WriteJson(elasticsearchCrudJsonWriter);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
