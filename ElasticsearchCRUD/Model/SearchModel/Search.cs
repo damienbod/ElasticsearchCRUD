@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.Model.Units;
+﻿using ElasticsearchCRUD.Model.SearchModel.Sorting;
+using ElasticsearchCRUD.Model.Units;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel
@@ -20,6 +21,8 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		private bool _sizeSet;
 		private int _terminateAfter;
 		private bool _terminateAfterSet;
+		private bool _sortSet;
+		private ISortHolder _sortHolder;
 
 		/// <summary>
 		/// timeout
@@ -99,6 +102,16 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			}
 		}
 
+		public ISortHolder Sort
+		{
+			get { return _sortHolder; }
+			set
+			{
+				_sortHolder = value;
+				_sortSet = true;
+			}
+		}
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
@@ -119,6 +132,11 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			if (_filterSet)
 			{
 				_filter.WriteJson(elasticsearchCrudJsonWriter);
+			}
+
+			if (_sortSet)
+			{
+				_sortHolder.WriteJson(elasticsearchCrudJsonWriter);
 			}
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

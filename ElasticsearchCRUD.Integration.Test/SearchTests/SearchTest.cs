@@ -15,5 +15,10 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 		[ElasticsearchGeoShape]
 		public GeoShapeCircle CircleTest { get; set; }
+
+		[ElasticsearchGeoPoint]
+		public GeoPoint Location { get; set; }
+
+		public double Lift { get; set; }
 	}
 }
