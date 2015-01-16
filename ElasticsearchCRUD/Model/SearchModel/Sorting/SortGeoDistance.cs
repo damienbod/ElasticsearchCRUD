@@ -73,15 +73,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 				_geoPoint.WriteJson(elasticsearchCrudJsonWriter);
 			}
 			else if (_geoPointsSet)
-			{
+			{		
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(_field);
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
 
 				foreach (var item in _geoPoints)
 				{
-					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(_field);
 					item.WriteJson(elasticsearchCrudJsonWriter);
-					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 				}
 
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();

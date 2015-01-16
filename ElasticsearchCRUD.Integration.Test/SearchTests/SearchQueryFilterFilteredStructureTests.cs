@@ -96,7 +96,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
-		public void SearchQueryMatchAllGeoSortFieldIdDesc()
+		public void SearchQueryMatchAllGeoSortFieldAsc()
 		{
 			var search = new Search
 			{
@@ -107,6 +107,36 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 						new SortGeoDistance("location", DistanceUnitEnum.km)
 						{
 							GeoPoint = new GeoPoint(46, 46),
+							Order=OrderEnum.asc, Mode = SortModeGeo.max				
+						}
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchQueryMatchAllGeoSortMultipleFieldsAsc()
+		{
+			var search = new Search
+			{
+				Query = new Query(new MatchAllQuery()),
+				Sort = new SortHolder(
+					new List<ISort>
+					{
+						new SortGeoDistance("location", DistanceUnitEnum.km)
+						{
+							GeoPoints = new List<GeoPoint>
+							{
+								new GeoPoint(46, 46),
+								new GeoPoint(49, 46),
+							},
 							Order=OrderEnum.asc, Mode = SortModeGeo.max				
 						}
 					}
