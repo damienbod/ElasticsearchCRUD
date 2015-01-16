@@ -3,6 +3,10 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries
 {
+	/// <summary>
+	/// Query search which can do loads; see the documentation:
+	/// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
+	/// </summary>
 	public class QueryStringQuery : IQuery
 	{
 		private readonly string _queryString;

@@ -1,7 +1,5 @@
 using System.Collections.Generic;
-using System.Threading;
 using ElasticsearchCRUD.Model;
-using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
