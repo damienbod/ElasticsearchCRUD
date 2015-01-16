@@ -1,8 +1,11 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
+using ElasticsearchCRUD.Model.SearchModel.Sorting;
+using ElasticsearchCRUD.Model.Units;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
@@ -11,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterFilteredStructureTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[Test]
 		public void SearchFilteredQueryFilterMatchAll()
@@ -67,6 +70,57 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryMatchAllSortFieldIdDesc()
+		{
+			var search = new Search
+			{
+				Query = new Query(new MatchAllQuery()),
+				Sort = new SortHolder(
+					new List<ISort>
+					{
+						new SortStandard("id")
+						{
+							Order=OrderEnum.desc, Mode=SortMode.avg, Missing = SortMissing._last, UnmappedType="int"					
+						}
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchQueryMatchAllGeoSortFieldIdDesc()
+		{
+			var search = new Search
+			{
+				Query = new Query(new MatchAllQuery()),
+				Sort = new SortHolder(
+					new List<ISort>
+					{
+						new SortGeoDistance("location", DistanceUnitEnum.km)
+						{
+							GeoPoint = new GeoPoint(46, 46),
+							Order=OrderEnum.asc, Mode = SortModeGeo.max				
+						}
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
 		[TestFixtureTearDown]
 		public void TearDown()
 		{
@@ -85,7 +139,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Id = 1,
 				Details = "This is the details of the document, very interesting",
 				Name = "one",
-				CircleTest = new GeoShapeCircle { Radius = "100m", Coordinates = new GeoPoint(45, 45) }
+				CircleTest = new GeoShapeCircle { Radius = "100m", Coordinates = new GeoPoint(45, 45) },
+				Location = new GeoPoint(45, 45)
 			};
 
 			var doc2 = new SearchTest
@@ -93,14 +148,16 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Id = 2,
 				Details = "Details of the document two, leave it alone",
 				Name = "two",
-				CircleTest = new GeoShapeCircle { Radius = "50m", Coordinates = new GeoPoint(46, 45) }
+				CircleTest = new GeoShapeCircle { Radius = "50m", Coordinates = new GeoPoint(46, 45) },
+				Location = new GeoPoint(46, 45)
 			};
 			var doc3 = new SearchTest
 			{
 				Id = 3,
 				Details = "This data is different",
 				Name = "three",
-				CircleTest = new GeoShapeCircle { Radius = "80m", Coordinates = new GeoPoint(37, 42) }
+				CircleTest = new GeoShapeCircle { Radius = "80m", Coordinates = new GeoPoint(37, 42) },
+				Location = new GeoPoint(37, 42)
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{

@@ -203,7 +203,7 @@
     <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
-    <Compile Include="Model\SearchModel\Sorting\GeoDistanceSort.cs" />
+    <Compile Include="Model\SearchModel\Sorting\SortGeoDistance.cs" />
     <Compile Include="Model\SearchModel\Sorting\ISort.cs" />
     <Compile Include="Model\SearchModel\Queries\BoolQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\BoostingQuery.cs" />
@@ -223,7 +223,7 @@
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchAllQuery.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
-    <Compile Include="Model\SearchModel\Sorting\DefaultSort.cs" />
+    <Compile Include="Model\SearchModel\Sorting\SortStandard.cs" />
     <Compile Include="Model\SearchModel\Sorting\OrderEnum.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortHolder.cs" />
     <Compile Include="Model\Shards.cs" />

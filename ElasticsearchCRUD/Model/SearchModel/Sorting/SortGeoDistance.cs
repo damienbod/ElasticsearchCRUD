@@ -5,21 +5,17 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 {
-	public class GeoDistanceSort : ISort
+	public class SortGeoDistance : ISort
 	{
 		private readonly string _field;
-		private GeoSortMode _mode;
+		private SortModeGeo _mode;
 		private bool _modeSet;
-		private SortMissing _missing;
-		private bool _missingSet;
-		private string _unmappedType;
-		private bool _unmappedTypeSet;
 		private GeoPoint _geoPoint;
 		private bool _geoPointSet;
 		private List<GeoPoint> _geoPoints;
 		private bool _geoPointsSet;
 
-		public GeoDistanceSort(string field, DistanceUnit distanceUnit)
+		public SortGeoDistance(string field, DistanceUnitEnum distanceUnit)
 		{
 			_field = field;
 			Order = OrderEnum.asc;
@@ -32,47 +28,15 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 		/// mode
 		/// Elasticsearch supports sorting by array or multi-valued fields. 
 		/// The mode option controls what array value is picked for sorting the document it belongs to. The mode option can have the following values:
-		/// SortMode enum: min, max, sum, avg
+		/// SortMode enum: min, max, avg
 		/// </summary>
-		public GeoSortMode Mode
+		public SortModeGeo Mode
 		{
 			get { return _mode; }
 			set
 			{
 				_mode = value;
 				_modeSet = true;
-			}
-		}
-
-		/// <summary>
-		/// The missing parameter specifies how docs which are missing the field should be treated: 
-		/// The missing value can be set to _last, _first, or a custom value (that will be used for missing docs as the sort value).
-		/// </summary>
-		public SortMissing Missing
-		{
-			get { return _missing; }
-			set
-			{
-				_missing = value;
-				_missingSet = true;
-			}
-		}
-
-		/// <summary>
-		/// unmapped_type
-		/// By default, the search request will fail if there is no mapping associated with a field. The unmapped_type option allows to ignore fields that have no mapping and not sort by them. 
-		/// The value of this parameter is used to determine what sort values to emit.
-		/// 
-		/// If any of the indices that are queried doesn’t have a mapping for price then Elasticsearch will handle it as if there was a mapping of type long, 
-		/// with all documents in this index having no value for this field.
-		/// </summary>
-		public string UnmappedType
-		{
-			get { return _unmappedType; }
-			set
-			{
-				_unmappedType = value;
-				_unmappedTypeSet = true;
 			}
 		}
 
@@ -96,7 +60,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 			}
 		}
 
-		public DistanceUnit Unit { get; set; }
+		public DistanceUnitEnum Unit { get; set; }
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{		
@@ -124,15 +88,18 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 			}
 			JsonHelper.WriteValue("order", Order.ToString(), elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("mode", _mode.ToString(), elasticsearchCrudJsonWriter, _modeSet);
-			JsonHelper.WriteValue("missing", _missing.ToString(), elasticsearchCrudJsonWriter, _missingSet);
-			JsonHelper.WriteValue("unmapped_type", _unmappedType, elasticsearchCrudJsonWriter, _unmappedTypeSet);
-			JsonHelper.WriteValue("unit", Unit.GetDistanceUnit(), elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("unit", Unit.ToString(), elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}
 
-	public enum GeoSortMode
+	public enum DistanceUnitEnum
+	{
+		 miles, yards, feet, inch, km, m, cm, mm, nmi
+	}
+
+	public enum SortModeGeo
 	{
 		/// <summary>
 		/// Pick the lowest value.

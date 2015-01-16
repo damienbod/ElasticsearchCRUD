@@ -2,7 +2,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 {
-	public class DefaultSort : ISort
+	public class SortStandard : ISort
 	{
 		private readonly string _field;
 		private SortMode _mode;
@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 		private string _unmappedType;
 		private bool _unmappedTypeSet;
 
-		public DefaultSort(string field)
+		public SortStandard(string field)
 		{
 			_field = field;
 			Order = OrderEnum.asc;
