@@ -31,6 +31,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _fuzzyMaxExpansionsSet;
 		private string _minimumShouldMatch;
 		private bool _minimumShouldMatchSet;
+		private int _fuzzyPrefixLength;
+		private bool _fuzzyPrefixLengthSet;
+		private int _phraseSlop;
+		private bool _phraseSlopSet;
 
 		public double Boost
 		{
@@ -193,11 +197,33 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
-//fuzzy_prefix_length
-//Set the prefix length for fuzzy queries. Default is 0.
+		/// <summary>
+		/// fuzzy_prefix_length
+		/// Set the prefix length for fuzzy queries. Default is 0.
+		/// </summary>
+		public int FuzzyPrefixLength
+		{
+			get { return _fuzzyPrefixLength; }
+			set
+			{
+				_fuzzyPrefixLength = value;
+				_fuzzyPrefixLengthSet = true;
+			}
+		}
 
-//phrase_slop
-//Sets the default slop for phrases. If zero, then exact phrase matches are required. Default value is 0.
+		/// <summary>
+		/// phrase_slop
+		/// Sets the default slop for phrases. If zero, then exact phrase matches are required. Default value is 0.
+		/// </summary>
+		public int PhraseSlop
+		{
+			get { return _phraseSlop; }
+			set
+			{
+				_phraseSlop = value;
+				_phraseSlopSet = true;
+			}
+		}
 
 //analyze_wildcard
 //By default, wildcards terms in a query string are not analyzed. By setting this value to true, a best effort will be made to analyze those as well.
@@ -225,6 +251,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			JsonHelper.WriteValue("enable_position_increments", _enablePositionIncrements, elasticsearchCrudJsonWriter, _enablePositionIncrementsSet);
 			JsonHelper.WriteValue("fuzzy_max_expansions", _fuzzyMaxExpansions, elasticsearchCrudJsonWriter, _fuzzyMaxExpansionsSet);
 			JsonHelper.WriteValue("fuzziness", _fuzziness, elasticsearchCrudJsonWriter, _fuzzinessSet);
+			JsonHelper.WriteValue("fuzzy_prefix_length", _fuzzyPrefixLength, elasticsearchCrudJsonWriter, _fuzzyPrefixLengthSet);
+			JsonHelper.WriteValue("phrase_slop", _phraseSlop, elasticsearchCrudJsonWriter, _phraseSlopSet);
+			
 
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			JsonHelper.WriteValue("minimum_should_match", _minimumShouldMatch, elasticsearchCrudJsonWriter, _minimumShouldMatchSet);
