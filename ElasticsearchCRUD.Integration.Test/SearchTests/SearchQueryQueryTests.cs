@@ -313,7 +313,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
-		public void SearchQueryQueryStringQueryallProperties()
+		public void SearchQueryQueryStringQueryAllProperties()
 		{
 			var search = new Search { Query = new Query(new QueryStringQuery("one document")
 			{
@@ -331,6 +331,27 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Lenient=false,
 				Locale="ROOT"
 			}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryQueryStringQueryMultipleFields()
+		{
+			var search = new Search
+			{
+				Query = new Query(new QueryStringQuery("one document")
+				{
+					Fields = new List<string> { "name", "details"},
+					TieBreaker= 1,
+					UseDisMax= true
+				})
+			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{

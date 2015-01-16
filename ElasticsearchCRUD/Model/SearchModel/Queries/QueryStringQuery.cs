@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.Utils;
+﻿using System.Collections.Generic;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries
 {
@@ -43,6 +44,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _lenientSet;
 		private string _locale;
 		private bool _localeSet;
+		private List<string> _fields;
+		private bool _fieldsSet;
+		private bool _useDisMax;
+		private bool _useDisMaxSet;
+		private int _tieBreaker;
+		private bool _tieBreakerSet;
 
 		public double Boost
 		{
@@ -57,6 +64,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		/// <summary>
 		/// default_field
 		/// The default field for query terms if no prefix field is specified. Defaults to the index.query.default_field index settings, which in turn defaults to _all.
+		/// 
+		/// When not explicitly specifying the field to search on in the query string syntax, the index.query.
+		/// default_field will be used to derive which field to search on. It defaults to _all field.
+		/// 
+		/// So, if _all field is disabled, it might make sense to change it to set a different default fie
 		/// </summary>
 		public string DefaultField
 		{
@@ -289,6 +301,44 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
+		public List<string> Fields
+		{
+			get { return _fields; }
+			set
+			{
+				_fields = value;
+				_fieldsSet = true;
+			}
+		}
+		
+		/// <summary>
+		/// use_dis_max
+		/// Should the queries be combined using dis_max (set it to true), or a bool query (set it to false). Defaults to true.
+		/// </summary>
+		public bool UseDisMax
+		{
+			get { return _useDisMax; }
+			set
+			{
+				_useDisMax = value;
+				_useDisMaxSet = true;
+			}
+		}
+		
+		/// <summary>
+		/// tie_breaker
+		/// When using dis_max, the disjunction max tie breaker. Defaults to 0
+		/// </summary>
+		public int TieBreaker
+		{
+			get { return _tieBreaker; }
+			set
+			{
+				_tieBreaker = value;
+				_tieBreakerSet = true;
+			}
+		}
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("query_string");
@@ -311,6 +361,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			JsonHelper.WriteValue("auto_generate_phrase_queries", _autoGeneratePhraseQueries, elasticsearchCrudJsonWriter, _autoGeneratePhraseQueriesSet);
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			JsonHelper.WriteValue("minimum_should_match", _minimumShouldMatch, elasticsearchCrudJsonWriter, _minimumShouldMatchSet);
+
+			JsonHelper.WriteListValue("fields", _fields, elasticsearchCrudJsonWriter, _fieldsSet);
+			JsonHelper.WriteValue("use_dis_max", _useDisMax, elasticsearchCrudJsonWriter, _useDisMaxSet);
+			JsonHelper.WriteValue("tie_breaker", _tieBreaker, elasticsearchCrudJsonWriter, _tieBreakerSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
