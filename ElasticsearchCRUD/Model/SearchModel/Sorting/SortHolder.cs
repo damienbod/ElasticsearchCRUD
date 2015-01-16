@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 {
@@ -13,6 +14,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 	public class SortHolder : ISortHolder
 	{
 		private readonly List<ISort> _sortItems;
+		private bool _trackScores;
+		private bool _trackScoresSet;
 
 		public SortHolder(List<ISort> sortItems)
 		{
@@ -23,8 +26,24 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 			_sortItems = sortItems;
 		}
 
+		/// <summary>
+		/// track_scores
+		/// When sorting on a field, scores are not computed. By setting track_scores to true, scores will still be computed and tracked.
+		/// </summary>
+		public bool TrackScores
+		{
+			get { return _trackScores; }
+			set
+			{
+				_trackScores = value;
+				_trackScoresSet = true;
+			}
+		}
+
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
+			JsonHelper.WriteValue("track_scores", _trackScores, elasticsearchCrudJsonWriter, _trackScoresSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("sort");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
 

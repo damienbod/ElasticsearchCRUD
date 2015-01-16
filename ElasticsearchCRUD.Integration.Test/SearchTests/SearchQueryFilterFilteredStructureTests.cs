@@ -84,7 +84,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 							Order=OrderEnum.desc, Mode=SortMode.avg, Missing = SortMissing._last, UnmappedType="int"					
 						}
 					}
-				)
+				) { TrackScores = true }
 			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -110,7 +110,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 							Order=OrderEnum.asc, Mode = SortModeGeo.max				
 						}
 					}
-				)
+				) { TrackScores = true }
 			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
