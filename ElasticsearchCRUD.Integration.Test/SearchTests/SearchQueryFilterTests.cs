@@ -3,6 +3,7 @@ using System.Threading;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
+using ElasticsearchCRUD.Model.Units;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
@@ -216,6 +217,39 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
 				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryGeoDistanceFilter()
+		{
+			var search = new Search { Filter = new Filter(new GeoDistanceFilter("location", new GeoPoint(43,43), new DistanceUnitKilometer(1000) )) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryGeoDistanceFilterSmallRange()
+		{
+			var search = new Search { Filter = new Filter(new GeoDistanceFilter("location", new GeoPoint(43, 43), new DistanceUnitKilometer(1))
+			{
+				Cache= false,
+				DistanceType= DistanceType.plane,
+				OptimizeBbox = OptimizeBbox.none
+			}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(0, items.PayloadResult.Hits.Total);
 			}
 		}
 	}

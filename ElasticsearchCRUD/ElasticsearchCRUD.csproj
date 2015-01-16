@@ -193,6 +193,7 @@
     <Compile Include="Model\SearchModel\Filters\AndFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\BoolFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\ExistsFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\GeoDistanceFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\MatchAllFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\NotFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\OrFilter.cs" />
