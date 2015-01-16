@@ -223,6 +223,7 @@
     <Compile Include="Model\SearchModel\Query.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchAllQuery.cs" />
     <Compile Include="Model\SearchModel\Search.cs" />
+    <Compile Include="Model\SearchModel\Sorting\SortScript.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortStandard.cs" />
     <Compile Include="Model\SearchModel\Sorting\OrderEnum.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortHolder.cs" />

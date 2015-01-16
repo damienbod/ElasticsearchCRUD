@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		private int _terminateAfter;
 		private bool _terminateAfterSet;
 		private bool _sortSet;
-		private SortHolder _sortHolder;
+		private ISortHolder _sortHolder;
 
 		/// <summary>
 		/// timeout
@@ -102,7 +102,7 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			}
 		}
 
-		public SortHolder Sort
+		public ISortHolder Sort
 		{
 			get { return _sortHolder; }
 			set

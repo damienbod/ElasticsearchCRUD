@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 	/// For string based types, the field sorted on should not be analyzed / tokenized. For numeric types, if possible, 
 	/// it is recommended to explicitly set the type to six_hun types (like short, integer and float).
 	/// </summary>
-	public class SortHolder
+	public class SortHolder : ISortHolder
 	{
 		private readonly List<ISort> _sortItems;
 
@@ -37,5 +37,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
 		}
+	}
+
+	public interface ISortHolder
+	{
+		void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
 	}
 }
