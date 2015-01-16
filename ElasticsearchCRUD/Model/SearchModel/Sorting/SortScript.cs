@@ -62,7 +62,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("script");
-			elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue(_script);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("\"" + _script + "\"");
 			JsonHelper.WriteValue("order", Order.ToString(), elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("type", _scriptType, elasticsearchCrudJsonWriter, _scriptTypeSet);
 			if (_paramsSet)
@@ -85,7 +85,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 
 	public class ScriptParameter
 	{
+		public ScriptParameter(string fieldName, object fieldValue)
+		{
+			FieldName = fieldName;
+			FieldValue = fieldValue;
+		}
+
 		public string FieldName { get; set; }
-		public string FieldValue { get; set; }
+		public object FieldValue { get; set; }
 	}
 }

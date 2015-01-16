@@ -18,5 +18,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 		[ElasticsearchGeoPoint]
 		public GeoPoint Location { get; set; }
+
+		public double Lift { get; set; }
 	}
 }

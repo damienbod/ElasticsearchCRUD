@@ -151,6 +151,31 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryMatchAllSortScript()
+		{
+			var search = new Search
+			{
+				Query = new Query(new MatchAllQuery()),
+				Sort = new SortScript("doc['lift'].value * factor")
+				{
+					Order = OrderEnum.asc,
+					ScriptType= "number",
+					Params = new List<ScriptParameter>
+					{
+						new ScriptParameter("factor", 1.5)
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
 		[TestFixtureTearDown]
 		public void TearDown()
 		{
@@ -170,7 +195,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Details = "This is the details of the document, very interesting",
 				Name = "one",
 				CircleTest = new GeoShapeCircle { Radius = "100m", Coordinates = new GeoPoint(45, 45) },
-				Location = new GeoPoint(45, 45)
+				Location = new GeoPoint(45, 45),
+				Lift = 2.9
 			};
 
 			var doc2 = new SearchTest
@@ -179,7 +205,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Details = "Details of the document two, leave it alone",
 				Name = "two",
 				CircleTest = new GeoShapeCircle { Radius = "50m", Coordinates = new GeoPoint(46, 45) },
-				Location = new GeoPoint(46, 45)
+				Location = new GeoPoint(46, 45),
+				Lift = 2.5
 			};
 			var doc3 = new SearchTest
 			{
@@ -187,7 +214,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Details = "This data is different",
 				Name = "three",
 				CircleTest = new GeoShapeCircle { Radius = "80m", Coordinates = new GeoPoint(37, 42) },
-				Location = new GeoPoint(37, 42)
+				Location = new GeoPoint(37, 42),
+				Lift = 2.1
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
