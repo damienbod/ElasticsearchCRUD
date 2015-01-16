@@ -5,7 +5,6 @@ using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Model.SearchModel.Sorting;
-using ElasticsearchCRUD.Model.Units;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
@@ -14,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterFilteredStructureTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[Test]
 		public void SearchFilteredQueryFilterMatchAll()
@@ -182,7 +181,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				//var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
+				var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
 			}
 		}
 
@@ -219,7 +218,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				//context.IndexCreate<SearchTest>();
+				context.IndexCreate<SearchTest>();
 				Thread.Sleep(1000);
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
