@@ -312,5 +312,32 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryQueryStringQueryallProperties()
+		{
+			var search = new Search { Query = new Query(new QueryStringQuery("one document")
+			{
+				AllowLeadingWildcard= true,
+				Analyzer=LanguageAnalyzers.German,
+				AnalyzeWildcard=false,
+				AutoGeneratePhraseQueries= false,
+				Boost=2.1,
+				DefaultField="_all",
+				DefaultOperator= QueryDefaultOperator.OR,
+				EnablePositionIncrements= true,
+				Fuzziness=0.5,
+				FuzzyMaxExpansions= 49,
+				FuzzyPrefixLength=0,
+				Lenient=false,
+				Locale="ROOT"
+			}) };
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }

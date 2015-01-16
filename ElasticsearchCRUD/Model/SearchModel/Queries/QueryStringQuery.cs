@@ -27,7 +27,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _lowercaseExpandedTermsSet;
 		private bool _enablePositionIncrements;
 		private bool _enablePositionIncrementsSet;
-		private bool _fuzzyMaxExpansions;
+		private int _fuzzyMaxExpansions;
 		private bool _fuzzyMaxExpansionsSet;
 		private string _minimumShouldMatch;
 		private bool _minimumShouldMatchSet;
@@ -35,6 +35,14 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _fuzzyPrefixLengthSet;
 		private int _phraseSlop;
 		private bool _phraseSlopSet;
+		private bool _analyzeWildcard;
+		private bool _analyzeWildcardSet;
+		private bool _autoGeneratePhraseQueries;
+		private bool _autoGeneratePhraseQueriesSet;
+		private bool _lenient;
+		private bool _lenientSet;
+		private string _locale;
+		private bool _localeSet;
 
 		public double Boost
 		{
@@ -137,7 +145,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		/// fuzzy_max_expansions
 		/// Controls the number of terms fuzzy queries will expand to. Defaults to 50
 		/// </summary>
-		public bool FuzzyMaxExpansions
+		public int FuzzyMaxExpansions
 		{
 			get { return _fuzzyMaxExpansions; }
 			set
@@ -225,17 +233,61 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
-//analyze_wildcard
-//By default, wildcards terms in a query string are not analyzed. By setting this value to true, a best effort will be made to analyze those as well.
+		/// <summary>
+		/// analyze_wildcard
+		/// By default, wildcards terms in a query string are not analyzed. By setting this value to true, a best effort will be made to analyze those as well.
+		/// </summary>
+		public bool AnalyzeWildcard
+		{
+			get { return _analyzeWildcard; }
+			set
+			{
+				_analyzeWildcard = value;
+				_analyzeWildcardSet = true;
+			}
+		}
 
-//auto_generate_phrase_queries
-//Default to false.
+		/// <summary>
+		/// auto_generate_phrase_queries
+		/// Default to false
+		/// </summary>
+		public bool AutoGeneratePhraseQueries
+		{
+			get { return _autoGeneratePhraseQueries; }
+			set
+			{
+				_autoGeneratePhraseQueries = value;
+				_autoGeneratePhraseQueriesSet = true;
+			}
+		}
 
-//lenient
-//If set to true will cause format based failures (like providing text to a numeric field) to be ignored.
+		/// <summary>
+		/// lenient
+		/// If set to true will cause format based failures (like providing text to a numeric field) to be ignored.
+		/// </summary>
+		public bool Lenient
+		{
+			get { return _lenient; }
+			set
+			{
+				_lenient = value;
+				_lenientSet = true;
+			}
+		}
 
-//locale
-//Locale that should be used for string conversions. Defaults to ROOT.
+		/// <summary>
+		/// _locale
+		/// Locale that should be used for string conversions. Defaults to ROOT.
+		/// </summary>
+		public string Locale
+		{
+			get { return _locale; }
+			set
+			{
+				_locale = value;
+				_localeSet = true;
+			}
+		}
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -253,8 +305,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			JsonHelper.WriteValue("fuzziness", _fuzziness, elasticsearchCrudJsonWriter, _fuzzinessSet);
 			JsonHelper.WriteValue("fuzzy_prefix_length", _fuzzyPrefixLength, elasticsearchCrudJsonWriter, _fuzzyPrefixLengthSet);
 			JsonHelper.WriteValue("phrase_slop", _phraseSlop, elasticsearchCrudJsonWriter, _phraseSlopSet);
-			
-
+			JsonHelper.WriteValue("analyze_wildcard", _analyzeWildcard, elasticsearchCrudJsonWriter, _analyzeWildcardSet);
+			JsonHelper.WriteValue("lenient", _lenient, elasticsearchCrudJsonWriter, _lenientSet);
+			JsonHelper.WriteValue("locale", _locale, elasticsearchCrudJsonWriter, _localeSet);
+			JsonHelper.WriteValue("auto_generate_phrase_queries", _autoGeneratePhraseQueries, elasticsearchCrudJsonWriter, _autoGeneratePhraseQueriesSet);
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
 			JsonHelper.WriteValue("minimum_should_match", _minimumShouldMatch, elasticsearchCrudJsonWriter, _minimumShouldMatchSet);
 
