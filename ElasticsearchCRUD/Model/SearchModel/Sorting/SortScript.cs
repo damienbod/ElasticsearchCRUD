@@ -82,16 +82,4 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}
-
-	public class ScriptParameter
-	{
-		public ScriptParameter(string fieldName, object fieldValue)
-		{
-			FieldName = fieldName;
-			FieldValue = fieldValue;
-		}
-
-		public string FieldName { get; set; }
-		public object FieldValue { get; set; }
-	}
 }

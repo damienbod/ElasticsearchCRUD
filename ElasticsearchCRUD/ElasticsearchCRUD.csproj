@@ -204,6 +204,7 @@
     <Compile Include="Model\SearchModel\Filters\PrefixFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\QueryFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\RangeFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\ScriptFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\TermFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\TermsFilter.cs" />
     <Compile Include="Model\SearchModel\IFilter.cs" />
@@ -211,6 +212,7 @@
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
     <Compile Include="Model\SearchModel\Queries\QueryStringQuery.cs" />
+    <Compile Include="Model\SearchModel\ScriptParameter.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortGeoDistance.cs" />
     <Compile Include="Model\SearchModel\Sorting\ISort.cs" />
     <Compile Include="Model\SearchModel\Queries\BoolQuery.cs" />

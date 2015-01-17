@@ -372,5 +372,29 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQueryScriptFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(new ScriptFilter("doc['lift'].value * factor")
+				{
+					Params = new List<ScriptParameter>
+					{
+						new ScriptParameter("factor", 1.5)
+					},
+					Cache=false
+				})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }
