@@ -91,7 +91,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryTermsQuery()
 		{
-			var search = new Search { Query = new Query(new TermsQuery("name", new List<string> { "one" }) { Boost = 2.0 }) };
+			var search = new Search { Query = new Query(new TermsQuery("name", new List<object> { "one" }) { Boost = 2.0 }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -104,7 +104,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryTermsQueryTwoResults()
 		{
-			var search = new Search { Query = new Query(new TermsQuery("name", new List<string> { "one", "two" }) { Boost = 2.0, MinimumShouldMatch = "1" }) };
+			var search = new Search { Query = new Query(new TermsQuery("name", new List<object> { "one", "two" }) { Boost = 2.0, MinimumShouldMatch = "1" }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{

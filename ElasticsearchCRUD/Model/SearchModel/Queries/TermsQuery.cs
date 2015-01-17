@@ -6,13 +6,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 	public class TermsQuery : IQuery
 	{
 		private readonly string _term;
-		private readonly List<string> _termValues;
+		private readonly List<object> _termValues;
 		private double _boost;
 		private bool _boostSet;
 		private string _minimumShouldMatch;
 		private bool _minimumShouldMatchSet;
 
-		public TermsQuery(string term, List<string> termValues)
+		public TermsQuery(string term, List<object> termValues)
 		{
 			_term = term;
 			_termValues = termValues;

@@ -6,13 +6,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	public class TermsFilter : IFilter
 	{
 		private readonly string _term;
-		private readonly List<string> _termValues;
+		private readonly List<object> _termValues;
 		private bool _cache;
 		private bool _cacheSet;
 		private ExecutionMode _execution;
 		private bool _executionSet;
 
-		public TermsFilter(string term, List<string> termValues)
+		public TermsFilter(string term, List<object> termValues)
 		{
 			_term = term;
 			_termValues = termValues;

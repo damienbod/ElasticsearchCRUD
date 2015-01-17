@@ -8,11 +8,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 	public class TermQuery :IQuery
 	{
 		private readonly string _term;
-		private readonly string _termValue;
+		private readonly object _termValue;
 		private double _boost;
 		private bool _boostSet;
 
-		public TermQuery(string term, string termValue)
+		public TermQuery(string term, object termValue)
 		{
 			_term = term;
 			_termValue = termValue;

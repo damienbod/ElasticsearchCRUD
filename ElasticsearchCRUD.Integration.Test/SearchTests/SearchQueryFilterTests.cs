@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Threading;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
@@ -41,7 +40,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryTermsFilter()
 		{
-			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<string> { "one", "three" }) { Cache = false, Execution = ExecutionMode.@bool }) };
+			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<object> { "one", "three" }) { Cache = false, Execution = ExecutionMode.@bool }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -55,7 +54,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryTermsFilterExecutionModeAnd()
 		{
-			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<string> { "one", "three" }) { Cache = false, Execution = ExecutionMode.and }) };
+			var search = new Search { Filter = new Filter(new TermsFilter("name", new List<object> { "one", "three" }) { Cache = false, Execution = ExecutionMode.and }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -250,6 +249,23 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
 				Assert.AreEqual(0, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryIdsFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(new IdsFilter(new List<object> { 1, 2 }, "searchtest"))
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
 			}
 		}
 	}
