@@ -268,5 +268,28 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchFilteredQueryFilterLimit()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new Filtered(
+						new Filter(
+							new LimitFilter(1))
+						)
+					)
+				
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
 	}
 }

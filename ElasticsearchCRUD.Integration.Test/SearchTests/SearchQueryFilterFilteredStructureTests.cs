@@ -172,7 +172,32 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-	
+
+		[Test]
+		public void SearchQueryMatchAllSortFieldIdDescNestedFilter()
+		{
+			var search = new Search
+			{
+				Query = new Query(new MatchAllQuery()),
+				Sort = new SortHolder(
+					new List<ISort>
+					{
+						new SortStandard("id")
+						{
+							Order=OrderEnum.desc, Mode=SortMode.avg, Missing = SortMissing._last, UnmappedType="int", NestedFilter= new MatchAllFilter()					
+						}
+					}
+				) { TrackScores = true }
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
 
 	}
 }

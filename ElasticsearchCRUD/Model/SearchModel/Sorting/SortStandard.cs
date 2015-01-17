@@ -11,6 +11,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 		private bool _missingSet;
 		private string _unmappedType;
 		private bool _unmappedTypeSet;
+		private IFilter _nestedFilter;
+		private bool _nestedFilterSet;
 
 		public SortStandard(string field)
 		{
@@ -51,6 +53,19 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 		}
 
 		/// <summary>
+		/// "nested_filter"
+		/// </summary>
+		public IFilter NestedFilter
+		{
+			get { return _nestedFilter; }
+			set
+			{
+				_nestedFilter = value;
+				_nestedFilterSet = true;
+			}
+		}
+
+		/// <summary>
 		/// unmapped_type
 		/// By default, the search request will fail if there is no mapping associated with a field. The unmapped_type option allows to ignore fields that have no mapping and not sort by them. 
 		/// The value of this parameter is used to determine what sort values to emit.
@@ -77,6 +92,15 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 			JsonHelper.WriteValue("mode", _mode.ToString(), elasticsearchCrudJsonWriter, _modeSet);
 			JsonHelper.WriteValue("missing", _missing.ToString(), elasticsearchCrudJsonWriter, _missingSet);
 			JsonHelper.WriteValue("unmapped_type", _unmappedType, elasticsearchCrudJsonWriter, _unmappedTypeSet);
+
+			if (_nestedFilterSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("nested_filter");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				_nestedFilter.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+				
+			}
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
