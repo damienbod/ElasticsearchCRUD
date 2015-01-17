@@ -292,7 +292,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-
 		[Test]
 		public void SearchQueryQueryFilter()
 		{
@@ -313,5 +312,24 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryPrefixFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(new PrefixFilter("name", "on")
+				{
+					Cache = false
+				})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }
