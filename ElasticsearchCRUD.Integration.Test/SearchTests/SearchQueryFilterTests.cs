@@ -331,5 +331,26 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQueryMissingFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(new MissingFilter("notknown")
+				{
+					Existence = true,
+					NullValue=true
+				})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }

@@ -24,6 +24,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 				_cacheSet = true;
 			}
 		}
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("prefix");
