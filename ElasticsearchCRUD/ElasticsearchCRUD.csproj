@@ -199,6 +199,7 @@
     <Compile Include="Model\SearchModel\Filters\GeohashCellFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoPolygonFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoShapeFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\GeoShapePreIndexedFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\HasChildFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\HasParentFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\IdsFilter.cs" />

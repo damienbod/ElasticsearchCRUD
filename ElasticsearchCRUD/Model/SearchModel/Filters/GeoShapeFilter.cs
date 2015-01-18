@@ -28,7 +28,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("geo_shape");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
