@@ -544,5 +544,26 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQueryGeoHashFilter()
+		{
+			var search = new Search { Filter = new Filter(
+				new GeohashCellFilter(
+					"location", 
+					new GeoPoint(43, 43), 
+					3, 
+					true)) 
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
 	}
 }

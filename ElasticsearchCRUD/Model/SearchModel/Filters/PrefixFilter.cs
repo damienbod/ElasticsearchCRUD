@@ -31,8 +31,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			JsonHelper.WriteValue(_field, _prefix, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-		
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();	
 		}
 	}
 }

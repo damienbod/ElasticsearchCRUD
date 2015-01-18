@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[ElasticsearchGeoShape]
 		public GeoShapeCircle CircleTest { get; set; }
 
-		[ElasticsearchGeoPoint]
+		[ElasticsearchGeoPoint(GeohashPrecision = "100km", GeohashPrefix = true, Geohash = true)]
 		public GeoPoint Location { get; set; }
 
 		public double Lift { get; set; }
