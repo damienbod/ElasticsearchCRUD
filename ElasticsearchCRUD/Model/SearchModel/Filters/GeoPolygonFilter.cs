@@ -8,8 +8,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private readonly string _field;
 		private readonly List<GeoPoint> _locations;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public GeoPolygonFilter(string field, List<GeoPoint> locations)
 		{
@@ -19,16 +17,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 			_field = field;
 			_locations = locations;
-		}
-
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
 		}
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
@@ -45,8 +33,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 				item.WriteJson(elasticsearchCrudJsonWriter);
 			}
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
-
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

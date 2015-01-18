@@ -455,7 +455,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 							new GeoPoint(40,50),
 							new GeoPoint(40,40)
 						}
-					)			
+					)					
 				)
 			};
 
