@@ -197,6 +197,7 @@
     <Compile Include="Model\SearchModel\Filters\GeoDistanceRangeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoDistanceFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoPolygonFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\GeoShapeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\IdsFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\LimitFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\MatchAllFilter.cs" />

@@ -467,5 +467,38 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQueryGeoShapeFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(
+						new GeoShapeFilter("circletest", new GeoShapePolygon
+						{
+							Coordinates	= new List<List<GeoPoint>>
+							{
+								new List<GeoPoint>
+								{
+									new GeoPoint(40,40),
+									new GeoPoint(50,40),
+									new GeoPoint(50,50),
+									new GeoPoint(40,50),
+									new GeoPoint(40,40)
+								}
+							}
+						}	
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }
