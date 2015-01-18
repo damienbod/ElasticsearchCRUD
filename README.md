@@ -87,6 +87,16 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.25</strong><em> 2015.01.18</em>
+- Support for search filters:
+And Filter, Bool Filter, Exists Filter, Geo Bounding Box Filter, Geo Distance Filter, Geo Distance Range Filter, Geo Polygon Filter, GeoShape Filter, GeoShape Indexed Filter, Geohash Cell Filter, Has Child Filter, Has Parent Filter, Ids Filter, Limit Filter, Match All Filter, Missing Filter, Not Filter, Or Filter, Prefix Filter, Query Filter, Range Filter, Regexp Filter, Script Filter, Term Filter, Terms Filter
+- support for sort
+- support for Filter in Alias
+- Support for Queries in Scan and Scroll,
+- support search objects
+- support for basic queries:
+Match Query, Multi Match Query, Bool Query, Boosting Query, Constant Score Query, Dis Max Query, Filtered Query, Fuzzy Like This Query, Fuzzy Like This Field Query, Fuzzy Query, Match All Query, Range Query, Term Query, Terms Query
+
 <strong>Version 1.0.24</strong><em> 2015.01.05</em>
 - Support for geo_point index and mapping
 - Support for geo_shape index and mapping

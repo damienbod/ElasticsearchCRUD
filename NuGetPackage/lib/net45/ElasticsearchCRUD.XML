@@ -1825,12 +1825,70 @@
         <member name="P:ElasticsearchCRUD.ContextAlias.AliasModel.AliasAddParameters.Filter">
             <summary>
             An optional filter that can be associated with an alias.
-            TODO replace this raw json string with a filter object once the filter class has been created.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.ContextSearch.SearchModel.SeachType">
+             <summary>
+             There are different execution paths that can be done when executing a distributed search. The distributed search operation needs to be scattered to all the relevant shards and 
+             then all the results are gathered back. When doing scatter/gather type execution, there are several ways to do that, specifically with search engines.
+            
+             One of the questions when executing a distributed search is how much results to retrieve from each shard. For example, if we have 10 shards, 
+             the 1st shard might hold the most relevant results from 0 till 10, with other shards results ranking below it. For this reason, when executing a request, 
+             we will need to get results from 0 till 10 from all shards, sort them, and then return the results if we want to ensure correct results.
+            
+             Another question, which relates to the search engine, is the fact that each shard stands on its own. When a query is executed on a specific shard, 
+             it does not take into account term frequencies and other search engine information from the other shards. If we want to support accurate ranking, 
+             we would need to first gather the term frequencies from all shards to calculate global term frequencies, then execute the query on each shard using these globale frequencies.
+            
+             Also, because of the need to sort the results, getting back a large document set, or even scrolling it, 
+             while maintaing the correct sorting behavior can be a very expensive operation. For large result set scrolling without sorting, the scan search type (explained below) is also available.
+            
+             Elasticsearch is very flexible and allows to control the type of search to execute on a per search request basis. 
+             The type can be configured by setting the search_type parameter in the query string. 
+             </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.ContextSearch.SearchModel.SeachType.query_and_fetch">
+            <summary>
+            The most naive (and possibly fastest) implementation is to simply execute the query on all relevant shards and return the results. 
+            Each shard returns size results. Since each shard already returns size hits, this type actually returns size times number of shards results back to the caller.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.ContextSearch.SearchModel.SeachType.query_then_fetch">
+            <summary>
+            The query is executed against all shards, but only enough information is returned (not the document content). 
+            The results are then sorted and ranked, and based on it, only the relevant shards are asked for the actual document content. 
+            The return number of hits is exactly as specified in size, since they are the only ones that are fetched. 
+            This is very handy when the index has a lot of shards (not replicas, shard id groups).
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.ContextSearch.SearchModel.SeachType.dfs_query_and_fetch">
+            <summary>
+            Same as "Query And Fetch", except for an initial scatter phase which goes and computes the distributed term frequencies for more accurate scoring.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.ContextSearch.SearchModel.SeachType.count">
+            <summary>
+            A special search type that returns the count that matched the search request without any docs (represented in total_hits), and possibly, including facets as well. 
+            In general, this is preferable to the count API as it provides more options.
             </summary>
         </member>
         <member name="T:ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters">
             <summary>
             This class is used to set routing or pretty search for the url parameters. All other options can be sent in the body
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters.SeachType">
+            <summary>
+            search_type
+            The type of the search operation to perform. Can be dfs_query_then_fetch, dfs_query_and_fetch, query_then_fetch, query_and_fetch. 
+            Defaults to query_then_fetch. See Search Type for more.  count and scan
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters.QueryCache">
+            <summary>
+            query_cache
+            [1.4.0.Beta1] Added in 1.4.0.Beta1. Set to true or false to enable or disable the caching of search results for requests where ?search_type=count, 
+            ie aggregations and suggestions. See Shard query cache. 
             </summary>
         </member>
         <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicDate">
@@ -2169,9 +2227,1237 @@
              This will define vertex order for the coordinate list on the mapped geo_shape field. It can also be overridden on each document. 
              </summary>
         </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filter">
+             <summary>
+             As a general rule, filters should be used instead of queries:
+            
+             - for binary yes/no searches
+             - for queries on exact values 
+             
+             Filters and Caching
+            
+             Filters can be a great candidate for caching. Caching the result of a filter does not require a lot of memory, 
+             and will cause other queries executing against the same filter (same parameters) to be blazingly fast.
+             
+             Some filters already produce a result that is easily cacheable, and the difference between caching and not caching them is the act of placing the result in the cache or not. 
+             These filters, which include the term, terms, prefix, and range filters, are by default cached and
+             are recommended to use (compared to the equivalent query version) when the same filter (same parameters) will be used across multiple different queries 
+             (for example, a range filter with age higher than 10).
+             
+             Other filters, usually already working with the field data loaded into memory, are not cached by default. Those filters are already very fast, 
+             and the process of caching them requires extra processing in order to allow the filter result to be used with different queries than the one executed. 
+             These filters, including the geo, and script filters are not cached by default.
+             
+             The last type of filters are those working with other filters. The and, not and or filters are not cached as they basically just manipulate the internal filters.
+             
+             All filters allow to set _cache element on them to explicitly control caching. They also allow to set _cache_key which will be used as the caching key for that filter. 
+             This can be handy when using very large filters (like a terms filter with many elements in it).
+             </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filtered">
+             <summary>
+             The filtered query is used to combine another query with any filter. Filters are usually faster than queries because:
+            
+             they don’t have to calculate the relevance _score for each document —  
+             the answer is just a boolean “Yes, the document matches the filter” or “No, the document does not match the filter”.
+             the results from most filters can be cached in memory, making subsequent executions faster. 
+            
+             Tip Exclude as many document as you can with a filter, then query just the documents that remain.
+             
+             If a query is not specified, it defaults to the match_all query. 
+             This means that the filtered query can be used to wrap just a filter, so that it can be used wherever a query is expected.
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filtered.Query">
+            <summary>
+            defaults to a match_all  query if is not set
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filtered.Strategy">
+             <summary>
+             strategy
+             
+             The strategy parameter accepts the following options:
+            
+             leap_frog_query_first      - Look for the first document matching the query, and then alternatively advance the query and the filter to find common matches.
+             leap_frog_filter_first     - Look for the first document matching the filter, and then alternatively advance the query and the filter to find common matches.
+             leap_frog                  - Same as leap_frog_query_first.
+             query_first                - If the filter supports random access, then search for documents using the query, and then consult the filter to check whether there is a match. Otherwise fall back to leap_frog_query_first.
+             random_access_${threshold} - If the filter supports random access and if there is at least one matching document among the first threshold ones, then apply the filter first. Otherwise fall back to leap_frog_query_first. ${threshold} must be greater than or equal to 1.
+             random_access_always       - Apply the filter first if it supports random access. Otherwise fall back to leap_frog_query_first.
+            
+             The default strategy is to use query_first on filters that are not advanceable such as geo filters and script filters, and random_access_100 on other filters.
+             </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.AndFilter">
+            <summary>
+            A filter that matches documents using the AND boolean operator on other filters. Can be placed within queries that accept a filter.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.BoolFilter">
+             <summary>
+             A query that matches documents matching boolean combinations of other queries. The bool query maps to Lucene BooleanQuery. 
+             It is built using one or more boolean clauses, each clause with a typed occurrence.
+            {
+            	"query":{
+            		"bool" : {
+            			"must" : [ 
+            				{
+            					"term" : { "details" : "different" }
+            				},
+            				{
+            					"term" : { "details" : "data" }
+            				}
+            			],
+            			"must_not" : [
+            				{
+            					"range" : {
+            						"id" : { "from" : 7, "to" : 20 }
+            					}
+            				}
+            			],
+            			"should" : [
+            				{
+            					"term" : { "details" : "data" }
+            				},
+            				{
+            					"term" : { "details" : "alone" }
+            				}
+            			]
+            		}
+            	}
+            }
+             </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.ExistsFilter">
+            <summary>
+            Returns documents that have at least one non-null value in the original field:
+            Always cached
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.GeoBoundingBoxFilter">
+            <summary>
+            A filter allowing to filter hits based on a point location using a bounding box.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoBoundingBoxFilter.Type">
+            <summary>
+            type
+            The type of the bounding box execution by default is set to memory, which means in memory checks if the doc falls within the bounding box range. 
+            In some cases, an indexed option will perform faster (but note that the geo_point type must have lat and lon indexed in this case). 
+            Note, when using the indexed option, multi locations per document field are not supported.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter">
+            <summary>
+            Filters documents that include only hits that exists within a specific distance from a geo point. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter.#ctor(System.String,ElasticsearchCRUD.Model.GeoModel.GeoPoint,ElasticsearchCRUD.Model.Units.DistanceUnit,ElasticsearchCRUD.Model.Units.DistanceUnit)">
+            <summary>
+            Filters documents that include only hits that exists within a specific distance from a geo point. 
+            </summary>
+            <param name="field">name of the field used for the geo point</param>
+            <param name="location">GeoPoint location</param>
+            <param name="from">from in distance units</param>
+            <param name="to">to in distance units</param>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter.GreaterThanOrEqualTo">
+            <summary>
+            gte
+            Greater-than or equal to
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter.GreaterThan">
+            <summary>
+            gt
+            Greater-than
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter.LessThanOrEqualTo">
+            <summary>
+            lte
+            Less-than or equal to
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter.LessThan">
+            <summary>
+            lt
+            Less-than
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter.IncludeLower">
+            <summary>
+            include_lower
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceRangeFilter.IncludeUpper">
+            <summary>
+            include_upper
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceFilter">
+            <summary>
+            Filters documents that include only hits that exists within a specific distance from a geo point. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceFilter.#ctor(System.String,ElasticsearchCRUD.Model.GeoModel.GeoPoint,ElasticsearchCRUD.Model.Units.DistanceUnit)">
+            <summary>
+            Filters documents that include only hits that exists within a specific distance from a geo point. 
+            </summary>
+            <param name="field">name of the field used for the geo point</param>
+            <param name="location">GeoPoint location</param>
+            <param name="distance">The radius of the circle centred on the specified location. Points which fall into this circle are considered to be matches. 
+            The distance can be specified in various units. See the section called “Distance Unitsedit”. </param>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceFilter.DistanceType">
+            <summary>
+            distance_type
+            How to compute the distance. Can either be sloppy_arc (default), arc (slighly more precise but significantly slower) or plane 
+            (faster, but inaccurate on long distances and close to the poles).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoDistanceFilter.OptimizeBbox">
+            <summary>
+            optimize_bbox
+            Whether to use the optimization of first running a bounding box check before the distance check. Defaults to memory 
+            which will do in memory checks. Can also have values of indexed to use indexed value check (make sure the geo_point type index lat lon in this case), 
+            or none which disables bounding box optimization. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.GeoShapePreIndexedFilter">
+             <summary>
+             The Filter also supports using a shape which has already been indexed in another index and/or index type. 
+             This is particularly useful for when you have a pre-defined list of shapes which are useful to your application and you want to reference this using a logical name 
+             (for example New Zealand) rather than having to provide their coordinates each time. In this situation it is only necessary to provide:
+            
+                id - The ID of the document that containing the pre-indexed shape.
+                index - Name of the index where the pre-indexed shape is. Defaults to shapes.
+                type - Index type where the pre-indexed shape is.
+                path - The field specified as path containing the pre-indexed shape. Defaults to shape. 
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoShapePreIndexedFilter.Id">
+            <summary>
+            id - The ID of the document that containing the pre-indexed shape.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoShapePreIndexedFilter.Index">
+            <summary>
+            index - Name of the index where the pre-indexed shape is. Defaults to shapes.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoShapePreIndexedFilter.PreIndexedType">
+            <summary>
+            type - Index type where the pre-indexed shape is.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.GeoShapePreIndexedFilter.Path">
+            <summary>
+            path - The field specified as path containing the pre-indexed shape. Defaults to shape. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.HasChildFilter">
+            <summary>
+            The has_child filter accepts a query and the child type to run against, and results in parent documents that have child docs matching the query.
+            
+            The type is the child type to query against. The parent type to return is automatically detected based on the mappings.
+            
+            The way that the filter is implemented is by first running the child query, doing the matching up to the parent doc for each document matched.
+            
+            The has_child filter allows you to specify that a minimum and/or maximum number of children are required to match for the parent doc to be considered a match:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.HasChildFilter.MinChildren">
+            <summary>
+            min_children
+            
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.HasChildFilter.MaxChildren">
+            <summary>
+            max_children
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.HasParentFilter">
+            <summary>
+            The has_parent filter accepts a query and a parent type. The query is executed in the parent document space, which is specified by the parent type. 
+            This filter returns child documents which associated parents have matched. 
+            For the rest has_parent filter has the same options and works in the same manner as the has_child filter.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.IdsFilter">
+            <summary>
+            Filters documents that only have the provided ids. Note, this filter does not require the _id field to be indexed since it works using the _uid field.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.LimitFilter">
+            <summary>
+            A limit filter limits the number of documents (per shard) to execute on
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.MissingFilter.Existence">
+            <summary>
+            existence
+            When the existence parameter is set to true (the default), the missing filter will include documents where the field has no values
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.MissingFilter.NullValue">
+            <summary>
+            null_value
+            When the null_value parameter is set to true, the missing filter will include documents where the field contains a null value
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.OrFilter">
+            <summary>
+            A filter that matches documents using the OR boolean operator on other filters. Can be placed within queries that accept a filter.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.QueryFilter">
+            <summary>
+            Wraps any query to be used as a filter. Can be placed within queries that accept a filter.
+            
+            Keep in mind that once you wrap a query as a filter, it loses query features like highlighting and scoring because these are not features supported by filters.
+            
+            The result of the filter is not cached by default. The _cache can be set to true to cache the result of the filter. 
+            This is handy when the same query is used on several (many) other queries. Note, the process of caching the first execution is higher when not caching 
+            (since it needs to satisfy different queries).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RangeFilter.GreaterThanOrEqualTo">
+            <summary>
+            gte
+            Greater-than or equal to
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RangeFilter.GreaterThan">
+            <summary>
+            gt
+            Greater-than
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RangeFilter.LessThanOrEqualTo">
+            <summary>
+            lte
+            Less-than or equal to
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RangeFilter.LessThan">
+            <summary>
+            lt
+            Less-than
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RangeFilter.IncludeLower">
+            <summary>
+            include_lower
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RangeFilter.IncludeUpper">
+            <summary>
+            include_upper
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RangeFilter.TimeZone">
+            <summary>
+            time_zone
+            When applied on date fields the range filter accepts also a time_zone parameter. 
+            The time_zone parameter will be applied to your input lower and upper bounds and will move them to UTC time based date
+            
+            if you give a date with a timezone explicitly defined and use the time_zone parameter, time_zone will be ignored. For example,
+            setting gte to 2012-01-01T00:00:00+01:00 with "time_zone":"+10:00" will still use +01:00 time zone.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.RegExpFilter">
+            <summary>
+            The regexp query allows you to use regular expression term queries. See Regular expression syntax for details of the supported regular expression language. 
+            The "term queries" in that first sentence means that Elasticsearch will apply the regexp to the terms produced by the tokenizer for that field, 
+            and not to the original text of the field.
+            
+            Note: The performance of a regexp query heavily depends on the regular expression chosen. 
+            Matching everything like .* is very slow as well as using lookaround regular expressions. 
+            If possible, you should try to use a long prefix before your regular expression starts. Wildcard matchers like .*?+ will mostly lower performance.
+            
+            http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.ScriptFilter">
+            <summary>
+            Scripts are compiled and cached for faster execution. 
+            If the same script can be used, just with different parameters provider, it is preferable to use the ability to pass parameters to the script itself
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.TermsFilter.Execution">
+            <summary>
+            The way terms filter executes is by iterating over the terms provided and finding matches docs (loading into a bitset) and caching it. 
+            Sometimes, we want a different execution model that can still be achieved by building more complex queries in the DSL, 
+            but we can support them in the more compact model that terms filter provides.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Filters.ExecutionMode.plain">
+            <summary>
+            The default. Works as today. Iterates over all the terms, building a bit set matching it, and filtering. The total filter is cached.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Filters.ExecutionMode.fielddata">
+            <summary>
+            Generates a terms filters that uses the fielddata cache to compare terms. 
+            This execution mode is great to use when filtering on a field that is already loaded into the fielddata cache from faceting, sorting, 
+            or index warmers. When filtering on a large number of terms, this execution can be considerably faster than the other modes. 
+            The total filter is not cached unless explicitly configured to do so.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Filters.ExecutionMode.bool">
+            <summary>
+            Generates a term filter (which is cached) for each term, and wraps those in a bool filter. 
+            The bool filter itself is not cached as it can operate very quickly on the cached term filters.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Filters.ExecutionMode.and">
+            <summary>
+            Generates a term filter (which is cached) for each term, and wraps those in an and filter. The and filter itself is not cached.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Filters.ExecutionMode.or">
+            <summary>
+            Generates a term filter (which is cached) for each term, and wraps those in an or filter. The or filter itself is not cached. Generally, 
+            the bool execution mode should be preferred. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery">
+            <summary>
+            Query search which can do loads; see the documentation:
+            http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.DefaultField">
+            <summary>
+            default_field
+            The default field for query terms if no prefix field is specified. Defaults to the index.query.default_field index settings, which in turn defaults to _all.
+            
+            When not explicitly specifying the field to search on in the query string syntax, the index.query.
+            default_field will be used to derive which field to search on. It defaults to _all field.
+            
+            So, if _all field is disabled, it might make sense to change it to set a different default fie
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.DefaultOperator">
+            <summary>
+            default_operator
+            The default operator used if no explicit operator is specified. For example, with a default operator of OR, the query capital of Hungary is translated to capital OR of OR Hungary, 
+            and with default operator of AND, the same query is translated to capital AND of AND Hungary. The default value is OR.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.Analyzer">
+            <summary>
+            analyzer
+            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
+            It default to the field explicit mapping definition, or the default search analyzer, for example:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.AllowLeadingWildcard">
+            <summary>
+            allow_leading_wildcard
+            When set, * or ? are allowed as the first character. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.LowercaseExpandedTerms">
+            <summary>
+            lowercase_expanded_terms
+            Whether terms of wildcard, prefix, fuzzy, and range queries are to be automatically lower-cased or not (since they are not analyzed). Default it true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.EnablePositionIncrements">
+            <summary>
+            enable_position_increments
+            Set to true to enable position increments in result queries. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.FuzzyMaxExpansions">
+            <summary>
+            fuzzy_max_expansions
+            Controls the number of terms fuzzy queries will expand to. Defaults to 50
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.Fuzziness">
+            <summary>
+            fuzziness
+            The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.MinimumShouldMatch">
+             <summary>
+             minimum_should_match
+             The minimum_should_match parameter possible values:
+             
+             Integer : Indicates a fixed value regardless of the number of optional clauses.
+             Negative integer : Indicates that the total number of optional clauses, minus this number should be mandatory.
+             Percentage 75% : Indicates that this percent of the total number of optional clauses are necessary. The number computed from the percentage is rounded down and used as the minimum.
+             Negative percentage -25% Indicates that this percent of the total number of optional clauses can be missing.
+              The number computed from the percentage is rounded down, before being subtracted from the total to determine the minimum.
+             Combination : A positive integer, followed by the less-than symbol, followed by any of the previously mentioned specifiers is a conditional specification.
+              It indicates that if the number of optional clauses is equal to (or less than) the integer, they are all required, but if it’s greater than the integer,
+              the specification applies. In this example: if there are 1 to 3 clauses they are all required, but for 4 or more clauses only 90% are required.
+             Multiple combinations :  Multiple conditional specifications can be separated by spaces, each one only being valid for numbers greater than the one before it.
+              In this example: if there are 1 or 2 clauses both are required, if there are 3-9 clauses all but 25% are required, and if there are more than 9 clauses,
+              all but three are required.
+            
+             NOTE:
+             When dealing with percentages, negative values can be used to get different behavior in edge cases. 75% and -25% mean the same thing when dealing with 4 clauses, 
+             but when dealing with 5 clauses 75% means 3 are required, but -25% means 4 are required.
+            
+             If the calculations based on the specification determine that no optional clauses are needed, 
+             the usual rules about BooleanQueries still apply at search time (a BooleanQuery containing no required clauses must still match at least one optional clause)
+            
+             No matter what number the calculation arrives at, a value greater than the number of optional clauses, or a value less than 1 will never be used. 
+             (ie: no matter how low or how high the result of the calculation result is, the minimum number of required matches will never be lower than 1 or greater than the number of clauses.
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.FuzzyPrefixLength">
+            <summary>
+            fuzzy_prefix_length
+            Set the prefix length for fuzzy queries. Default is 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.PhraseSlop">
+            <summary>
+            phrase_slop
+            Sets the default slop for phrases. If zero, then exact phrase matches are required. Default value is 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.AnalyzeWildcard">
+            <summary>
+            analyze_wildcard
+            By default, wildcards terms in a query string are not analyzed. By setting this value to true, a best effort will be made to analyze those as well.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.AutoGeneratePhraseQueries">
+            <summary>
+            auto_generate_phrase_queries
+            Default to false
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.Lenient">
+            <summary>
+            lenient
+            If set to true will cause format based failures (like providing text to a numeric field) to be ignored.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.Locale">
+            <summary>
+            _locale
+            Locale that should be used for string conversions. Defaults to ROOT.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.UseDisMax">
+            <summary>
+            use_dis_max
+            Should the queries be combined using dis_max (set it to true), or a bool query (set it to false). Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery.TieBreaker">
+            <summary>
+            tie_breaker
+            When using dis_max, the disjunction max tie breaker. Defaults to 0
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortGeoDistance.Mode">
+            <summary>
+            mode
+            Elasticsearch supports sorting by array or multi-valued fields. 
+            The mode option controls what array value is picked for sorting the document it belongs to. The mode option can have the following values:
+            SortMode enum: min, max, avg
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Sorting.SortModeGeo.min">
+            <summary>
+            Pick the lowest value.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Sorting.SortModeGeo.max">
+            <summary>
+            Pick the highest value.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Sorting.SortModeGeo.avg">
+            <summary>
+            Use the average of all values as sort value. Only applicable for number based array fields. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.BoolQuery">
+             <summary>
+             A query that matches documents matching boolean combinations of other queries. The bool query maps to Lucene BooleanQuery. 
+             It is built using one or more boolean clauses, each clause with a typed occurrence.
+            {
+            	"query":{
+            		"bool" : {
+            			"must" : [ 
+            				{
+            					"term" : { "details" : "different" }
+            				},
+            				{
+            					"term" : { "details" : "data" }
+            				}
+            			],
+            			"must_not" : [
+            				{
+            					"range" : {
+            						"id" : { "from" : 7, "to" : 20 }
+            					}
+            				}
+            			],
+            			"should" : [
+            				{
+            					"term" : { "details" : "data" }
+            				},
+            				{
+            					"term" : { "details" : "alone" }
+            				}
+            			],
+            			"minimum_should_match" : 1,
+            			"boost" : 3.0
+            		}
+            	}
+            }
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.BoolQuery.MinimumShouldMatch">
+             <summary>
+             minimum_should_match
+             The minimum_should_match parameter possible values:
+             
+             Integer : Indicates a fixed value regardless of the number of optional clauses.
+             Negative integer : Indicates that the total number of optional clauses, minus this number should be mandatory.
+             Percentage 75% : Indicates that this percent of the total number of optional clauses are necessary. The number computed from the percentage is rounded down and used as the minimum.
+             Negative percentage -25% Indicates that this percent of the total number of optional clauses can be missing.
+              The number computed from the percentage is rounded down, before being subtracted from the total to determine the minimum.
+             Combination : A positive integer, followed by the less-than symbol, followed by any of the previously mentioned specifiers is a conditional specification.
+              It indicates that if the number of optional clauses is equal to (or less than) the integer, they are all required, but if it’s greater than the integer,
+              the specification applies. In this example: if there are 1 to 3 clauses they are all required, but for 4 or more clauses only 90% are required.
+             Multiple combinations :  Multiple conditional specifications can be separated by spaces, each one only being valid for numbers greater than the one before it.
+              In this example: if there are 1 or 2 clauses both are required, if there are 3-9 clauses all but 25% are required, and if there are more than 9 clauses,
+              all but three are required.
+            
+             NOTE:
+             When dealing with percentages, negative values can be used to get different behavior in edge cases. 75% and -25% mean the same thing when dealing with 4 clauses, 
+             but when dealing with 5 clauses 75% means 3 are required, but -25% means 4 are required.
+            
+             If the calculations based on the specification determine that no optional clauses are needed, 
+             the usual rules about BooleanQueries still apply at search time (a BooleanQuery containing no required clauses must still match at least one optional clause)
+            
+             No matter what number the calculation arrives at, a value greater than the number of optional clauses, or a value less than 1 will never be used. 
+             (ie: no matter how low or how high the result of the calculation result is, the minimum number of required matches will never be lower than 1 or greater than the number of clauses.
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.BoolQuery.DisableCoord">
+            <summary>
+            disable_coord
+            The bool query also supports disable_coord parameter (defaults to false). 
+            Basically the coord similarity computes a score factor based on the fraction of all query terms that a document contains. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.BoostingQuery">
+            <summary>
+            The boosting query can be used to effectively demote results that match a given query. Unlike the "NOT" clause in bool query, 
+            this still selects documents that contain undesirable terms, but reduces their overall score.
+            
+            {
+             "boosting" : {
+            	"positive" : {
+            		"term" : {
+            			"field1" : "value1"
+            		}
+            	},
+            	"negative" : {
+            		"term" : {
+            			"field2" : "value2"
+            		}
+            	},
+            	"negative_boost" : 0.2
+             }
+            }
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.BoostingQuery.Positive">
+            <summary>
+            positive
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.BoostingQuery.NegativeBoost">
+            <summary>
+            negative_boost
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.ConstantScoreQuery">
+            <summary>
+            A query that wraps a filter or another query and simply returns a constant score equal to the query boost for every document in the filter. 
+            Maps to Lucene ConstantScoreQuery.
+            
+            The filter object can hold only filter elements, not queries. Filters can be much faster compared to queries since they don’t perform any scoring, especially when they are cached.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.ConstantScoreQuery.Query">
+            <summary>
+            positive
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.DisMaxQuery">
+             <summary>
+             A query that generates the union of documents produced by its subqueries, and that scores each document with the maximum score for that document as produced by any subquery, 
+             plus a tie breaking increment for any additional matching subqueries.
+             
+             This is useful when searching for a word in multiple fields with different boost factors (so that the fields cannot be combined equivalently into a single search field). 
+             We want the primary score to be the one associated with the highest boost, not the sum of the field scores (as Boolean Query would give). If the query is "albino elephant" 
+             this ensures that "albino" matching one field and "elephant" matching another gets a higher score than "albino" matching both fields. 
+             To get this result, use both Boolean Query and DisjunctionMax Query: for each term a DisjunctionMaxQuery searches for it in each field, 
+             while the set of these DisjunctionMaxQuery’s is combined into a BooleanQuery.
+             
+             The tie breaker capability allows results that include the same term in multiple fields to be judged better than results that include this term in only the best of those multiple fields,
+             without confusing this with the better case of two different terms in the multiple fields.The default tie_breaker is 0.0.
+             
+             This query maps to Lucene DisjunctionMaxQuery
+             
+             {
+            	"dis_max" : {
+            		"tie_breaker" : 0.7,
+            		"boost" : 1.2,
+            		"queries" : [
+            			{
+            				"term" : { "age" : 34 }
+            			},
+            			{
+            				"term" : { "age" : 35 }
+            			}
+            		]
+            	}
+            }
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.DisMaxQuery.TieBreaker">
+            <summary>
+            tie_breaker
+            By default, each per-term blended query will use the best score returned by any field in a group, then these scores are added together to give the final score. 
+            The tie_breaker parameter can change the default behaviour of the per-term blended queries. It accepts:
+            
+            0.0 Take the single best score out of (eg) first_name:will and last_name:will (default)
+            1.0 Add together the scores for (eg) first_name:will and last_name:will
+            0.0 between 1.0 Take the single best score plus tie_breaker multiplied by each of the scores from other matching fields. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery">
+            <summary>
+            The fuzzy_like_this_field query is the same as the fuzzy_like_this query, except that it runs against a single field. 
+            It provides nicer query DSL over the generic fuzzy_like_this query, and support typed fields query 
+            (automatically wraps typed fields with type filter to match only on the specific type).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.IgnoreTf">
+            <summary>
+            ignore_tf
+            Should term frequency be ignored. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.MaxQueryTerms">
+            <summary>
+            max_query_terms
+            The maximum number of query terms that will be included in any generated query. Defaults to 25.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.Fuzziness">
+            <summary>
+            fuzziness
+            The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.PrefixLength">
+            <summary>
+            prefix_length
+            Length of required common prefix on variant terms. Defaults to 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.Analyzer">
+            <summary>
+            analyzer
+            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
+            It default to the field explicit mapping definition, or the default search analyzer, for example:
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery">
+            <summary>
+            Fuzzy like this query find documents that are "like" provided text by running it against one or more fields
+            
+            Fuzzifies ALL terms provided as strings and then picks the best n differentiating terms. 
+            In effect this mixes the behaviour of FuzzyQuery and MoreLikeThis but with special consideration of fuzzy scoring factors. 
+            This generally produces good results for queries where users may provide details in a number of fields and have no knowledge of boolean query syntax 
+            and also want a degree of fuzzy matching and a fast query.
+            
+            For each source term the fuzzy variants are held in a BooleanQuery with no coord factor (because we are not looking for matches on multiple variants in any one doc). 
+            Additionally, a specialized TermQuery is used for variants and does not use that variant term’s IDF because this would favor rarer terms, such as misspellings. 
+            Instead, all variants use the same IDF ranking (the one for the source query term) and this is factored into the variant’s boost. 
+            If the source query term does not exist in the index the average IDF of the variants is used.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.IgnoreTf">
+            <summary>
+            ignore_tf
+            Should term frequency be ignored. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.MaxQueryTerms">
+            <summary>
+            max_query_terms
+            The maximum number of query terms that will be included in any generated query. Defaults to 25.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.Fuzziness">
+            <summary>
+            fuzziness
+            The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.PrefixLength">
+            <summary>
+            prefix_length
+            Length of required common prefix on variant terms. Defaults to 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.Analyzer">
+            <summary>
+            analyzer
+            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
+            It default to the field explicit mapping definition, or the default search analyzer, for example:
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyQuery">
+            <summary>
+            The fuzzy query uses similarity based on Levenshtein edit distance for string fields, and a +/- margin on numeric and date fields.
+            String fields 
+            The fuzzy query generates all possible matching terms that are within the maximum edit distance specified in fuzziness and 
+            then checks the term dictionary to find out which of those generated terms actually exist in the index.
+            
+            Warning: this query can be very heavy if prefix_length and max_expansions are both set to 0. This could cause every term in the index to be examined!
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyQuery.MaxExpansions">
+            <summary>
+            max_expansions
+            The maximum number of terms that the fuzzy query will expand to. Defaults to 50. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyQuery.Fuzziness">
+            <summary>
+            fuzziness
+            The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyQuery.PrefixLength">
+            <summary>
+            prefix_length
+            Length of required common prefix on variant terms. Defaults to 0.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.MatchQuery">
+            <summary>
+            A family of match queries that accept text/numerics/dates, analyzes it, and constructs a query out of it. For example:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchBase.ZeroTermsQuery">
+            <summary>
+            zero_terms_query
+            If the analyzer used removes all tokens in a query like a stop filter does, the default behavior is to match no documents at all. 
+            In order to change that the zero_terms_query option can be used, which accepts none (default) and all which corresponds to a match_all query.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchBase.CutoffFrequency">
+            <summary>
+            cutoff_frequency range [0..1) 
+            
+            The match query supports a cutoff_frequency that allows specifying an absolute or relative document frequency where high frequency terms 
+            are moved into an optional subquery and are only scored 
+            if one of the low frequency (below the cutoff) terms in the case of an or operator or all of the low frequency terms in the case of an and operator match.
+            
+            This query allows handling stopwords dynamically at runtime, is domain independent and doesn’t require on a stopword file. 
+            It prevent scoring / iterating high frequency terms and only takes the terms into account if a more significant / lower frequency terms match a document. 
+            Yet, if all of the query terms are above the given cutoff_frequency the query is automatically transformed into a pure conjunction (and) query to ensure fast execution.
+            
+            The cutoff_frequency can either be relative to the number of documents in the index if in the range [0..1) or absolute if greater or equal to 1.0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchBase.Analyzer">
+            <summary>
+            analyzer
+            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
+            It default to the field explicit mapping definition, or the default search analyzer, for example:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchBase.Fuzziness">
+            <summary>
+            fuzziness
+            The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchBase.MinimumShouldMatch">
+             <summary>
+             minimum_should_match
+             The minimum_should_match parameter possible values:
+             
+             Integer : Indicates a fixed value regardless of the number of optional clauses.
+             Negative integer : Indicates that the total number of optional clauses, minus this number should be mandatory.
+             Percentage 75% : Indicates that this percent of the total number of optional clauses are necessary. The number computed from the percentage is rounded down and used as the minimum.
+             Negative percentage -25% Indicates that this percent of the total number of optional clauses can be missing.
+              The number computed from the percentage is rounded down, before being subtracted from the total to determine the minimum.
+             Combination : A positive integer, followed by the less-than symbol, followed by any of the previously mentioned specifiers is a conditional specification.
+              It indicates that if the number of optional clauses is equal to (or less than) the integer, they are all required, but if it’s greater than the integer,
+              the specification applies. In this example: if there are 1 to 3 clauses they are all required, but for 4 or more clauses only 90% are required.
+             Multiple combinations :  Multiple conditional specifications can be separated by spaces, each one only being valid for numbers greater than the one before it.
+              In this example: if there are 1 or 2 clauses both are required, if there are 3-9 clauses all but 25% are required, and if there are more than 9 clauses,
+              all but three are required.
+            
+             NOTE:
+             When dealing with percentages, negative values can be used to get different behavior in edge cases. 75% and -25% mean the same thing when dealing with 4 clauses, 
+             but when dealing with 5 clauses 75% means 3 are required, but -25% means 4 are required.
+            
+             If the calculations based on the specification determine that no optional clauses are needed, 
+             the usual rules about BooleanQueries still apply at search time (a BooleanQuery containing no required clauses must still match at least one optional clause)
+            
+             No matter what number the calculation arrives at, a value greater than the number of optional clauses, or a value less than 1 will never be used. 
+             (ie: no matter how low or how high the result of the calculation result is, the minimum number of required matches will never be lower than 1 or greater than the number of clauses.
+             </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.MatchPhaseQuery">
+            <summary>
+            The match_phrase query analyzes the text and creates a phrase query out of the analyzed text.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchPhaseQuery.Slop">
+            <summary>
+            slop
+            
+            The slop parameter tells the match_phrase query how far apart terms are allowed to be while still considering the document a match. 
+            By how far apart we mean how many times do you need to move a term in order to make the query and document match?
+            		
+            Phrase and proximity queries are more expensive than simple match queries. Whereas a match query just has to look up terms in the inverted index, 
+            a match_phrase query has to calculate and compare the positions of multiple possibly repeated terms.
+            The Lucene nightly benchmarks show that a simple term query is about 10 times as fast as a phrase query, 
+            and about 20 times as fast as a proximity query (a phrase query with slop). And of course, this cost is paid at search time instead of at index time.
+            
+            Usually the extra cost of phrase queries is not as scary as these numbers suggest. Really, the difference in performance is a testimony to just how fast a simple term query is. 
+            Phrase queries on typical full-text data usually complete within a few milliseconds, and are perfectly usable in practice, even on a busy cluster.
+            In certain pathological cases, phrase queries can be costly, but this is unusual. An example of a pathological case is DNA sequencing, 
+            where there are many many identical terms repeated in many positions. Using higher slop values in this case results in a huge growth in the number of position calculations.
+            
+            http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/slop.html
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.MatchPhasePrefixQuery">
+            <summary>
+            The match_phrase_prefix is the same as match_phrase, except that it allows for prefix matches on the last term in the text
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchPhasePrefixQuery.Slop">
+            <summary>
+            slop
+            
+            The slop parameter tells the match_phrase query how far apart terms are allowed to be while still considering the document a match. 
+            By how far apart we mean how many times do you need to move a term in order to make the query and document match?
+            
+            Phrase and proximity queries are more expensive than simple match queries. Whereas a match query just has to look up terms in the inverted index, 
+            a match_phrase query has to calculate and compare the positions of multiple possibly repeated terms.
+            The Lucene nightly benchmarks show that a simple term query is about 10 times as fast as a phrase query, 
+            and about 20 times as fast as a proximity query (a phrase query with slop). And of course, this cost is paid at search time instead of at index time.
+            
+            Usually the extra cost of phrase queries is not as scary as these numbers suggest. Really, the difference in performance is a testimony to just how fast a simple term query is. 
+            Phrase queries on typical full-text data usually complete within a few milliseconds, and are perfectly usable in practice, even on a busy cluster.
+            In certain pathological cases, phrase queries can be costly, but this is unusual. An example of a pathological case is DNA sequencing, 
+            where there are many many identical terms repeated in many positions. Using higher slop values in this case results in a huge growth in the number of position calculations.
+            
+            http://www.elasticsearch.org/guide/en/elasticsearch/guide/current/slop.html
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MatchPhasePrefixQuery.MaxExpansions">
+            <summary>
+            a max_expansions parameter that can control to how many prefixes the last term will be expanded. 
+            It is highly recommended to set it to an acceptable value to control the execution time of the query.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatch.MultiMatchType">
+            <summary>
+            type 
+            see MultiMatchType for possible values
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatch.TieBreaker">
+            <summary>
+            tie_breaker
+            By default, each per-term blended query will use the best score returned by any field in a group, then these scores are added together to give the final score. 
+            The tie_breaker parameter can change the default behaviour of the per-term blended queries. It accepts:
+            
+            0.0 Take the single best score out of (eg) first_name:will and last_name:will (default)
+            1.0 Add together the scores for (eg) first_name:will and last_name:will
+            0.0 between 1.0 Take the single best score plus tie_breaker multiplied by each of the scores from other matching fields. 
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatchType.best_fields">
+            <summary>
+            (default) Finds documents which match any field, but uses the _score from the best field. See best_fields.
+            
+            The best_fields type is most useful when you are searching for multiple words best found in the same field. For instance “brown fox” in a single field is more 
+            meaningful than “brown” in one field and “fox” in the other.
+            The best_fields type generates a match query for each field and wraps them in a dis_max query, to find the single best matching field. 
+            
+            Normally the best_fields type uses the score of the single best matching field, but if tie_breaker is specified, then it calculates the score as follows:
+            the score from the best matching field plus tie_breaker * _score for all other matching fields 
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatchType.most_fields">
+            <summary>
+            Finds documents which match any field and combines the _score from each field. See most_fields.
+            
+            The most_fields type is most useful when querying multiple fields that contain the same text analyzed in different ways. For instance, 
+            the main field may contain synonyms, stemming and terms without diacritics. A second field may contain the original terms, and a third field might contain shingles. 
+            By combining scores from all three fields we can match as many documents as possible with the main field, 
+            but use the second and third fields to push the most similar results to the top of the list.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatchType.cross_fields">
+            <summary>
+            Treats fields with the same analyzer as though they were one big field. Looks for each word in any field. See cross_fields.
+            
+            The cross_fields type is particularly useful with structured documents where multiple fields should match. 
+            For instance, when querying the first_name and last_name fields for “Will Smith”, the best match is likely to have “Will” in one field and “Smith” in the other.
+            
+            One way of dealing with these types of queries is simply to index the first_name and last_name fields into a single full_name field. Of course, this can only be done at index time.
+            
+            The cross_field type tries to solve these problems at query time by taking a term-centric approach. It first analyzes the query string into individual terms, 
+            then looks for each term in any of the fields, as though they were one big field.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatchType.phrase">
+            <summary>
+            Runs a match_phrase query on each field and combines the _score from each field. See phrase and phrase_prefix.
+            
+            The phrase and phrase_prefix types behave just like best_fields, but they use a match_phrase or match_phrase_prefix query instead of a match query.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatchType.phrase_prefix">
+            <summary>
+            Runs a match_phrase_prefix query on each field and combines the _score from each field. See phrase and phrase_prefix. 
+            
+            The phrase and phrase_prefix types behave just like best_fields, but they use a match_phrase or match_phrase_prefix query instead of a match query.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery">
+            <summary>
+            Matches documents with fields that have terms within a certain range. The type of the Lucene query depends on the field type, 
+            for string fields, the TermRangeQuery, while for number/date fields, the query is a NumericRangeQuery. The 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery.GreaterThanOrEqualTo">
+            <summary>
+            gte
+            Greater-than or equal to
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery.GreaterThan">
+            <summary>
+            gt
+            Greater-than
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery.LessThanOrEqualTo">
+            <summary>
+            lte
+            Less-than or equal to
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery.LessThan">
+            <summary>
+            lt
+            Less-than
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery.IncludeLower">
+            <summary>
+            include_lower
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery.IncludeUpper">
+            <summary>
+            include_upper
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RangeQuery.TimeZone">
+            <summary>
+            time_zone
+            When applied on date fields the range filter accepts also a time_zone parameter. 
+            The time_zone parameter will be applied to your input lower and upper bounds and will move them to UTC time based date
+            
+            if you give a date with a timezone explicitly defined and use the time_zone parameter, time_zone will be ignored. For example,
+            setting gte to 2012-01-01T00:00:00+01:00 with "time_zone":"+10:00" will still use +01:00 time zone.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.TermQuery">
+            <summary>
+            Matches documents that have fields that contain a term (not analyzed). The term query maps to Lucene TermQuery.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.TermsQuery.MinimumShouldMatch">
+             <summary>
+             minimum_should_match
+             The minimum_should_match parameter possible values:
+             
+             Integer : Indicates a fixed value regardless of the number of optional clauses.
+             Negative integer : Indicates that the total number of optional clauses, minus this number should be mandatory.
+             Percentage 75% : Indicates that this percent of the total number of optional clauses are necessary. The number computed from the percentage is rounded down and used as the minimum.
+             Negative percentage -25% Indicates that this percent of the total number of optional clauses can be missing.
+              The number computed from the percentage is rounded down, before being subtracted from the total to determine the minimum.
+             Combination : A positive integer, followed by the less-than symbol, followed by any of the previously mentioned specifiers is a conditional specification.
+              It indicates that if the number of optional clauses is equal to (or less than) the integer, they are all required, but if it’s greater than the integer,
+              the specification applies. In this example: if there are 1 to 3 clauses they are all required, but for 4 or more clauses only 90% are required.
+             Multiple combinations :  Multiple conditional specifications can be separated by spaces, each one only being valid for numbers greater than the one before it.
+              In this example: if there are 1 or 2 clauses both are required, if there are 3-9 clauses all but 25% are required, and if there are more than 9 clauses,
+              all but three are required.
+            
+             NOTE:
+             When dealing with percentages, negative values can be used to get different behavior in edge cases. 75% and -25% mean the same thing when dealing with 4 clauses, 
+             but when dealing with 5 clauses 75% means 3 are required, but -25% means 4 are required.
+            
+             If the calculations based on the specification determine that no optional clauses are needed, 
+             the usual rules about BooleanQueries still apply at search time (a BooleanQuery containing no required clauses must still match at least one optional clause)
+            
+             No matter what number the calculation arrives at, a value greater than the number of optional clauses, or a value less than 1 will never be used. 
+             (ie: no matter how low or how high the result of the calculation result is, the minimum number of required matches will never be lower than 1 or greater than the number of clauses.
+             </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Query">
+            <summary>
+            As a general rule, queries should be used instead of filters:
+            
+            - for full text search
+            - where the result depends on a relevance score 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Search">
+            <summary>
+            The search request can be executed with a search DSL, which includes the Query DSL, within its body.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Search.Timeout">
+            <summary>
+            timeout
+            A search timeout, bounding the search request to be executed within the specified time value and bail with the hits accumulated up to that point when expired. 
+            Defaults to no timeout. See the section called “Time unitsedit”. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Search.From">
+            <summary>
+            from
+            The starting from index of the hits to return. Defaults to 0. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Search.Size">
+            <summary>
+            size
+            The number of hits to return. Defaults to 10. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Search.TerminateAfter">
+            <summary>
+            terminate_after
+            [1.4.0.Beta1] Added in 1.4.0.Beta1. The maximum number of documents to collect for each shard, upon reaching which the query execution will terminate early. 
+            If set, the response will have a boolean field terminated_early to indicate whether the query execution has actually terminated_early. Defaults to no terminate_after. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Sorting.SortScript">
+             <summary>
+             Allow to sort based on custom scripts
+             
+             "sort" : {
+            	"_script" : {
+            		"script" : "doc['field_name'].value * factor",
+            		"type" : "number",
+            		"params" : {
+            			"factor" : 1.1
+            		},
+            		"order" : "asc"
+            	}
+            }
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortStandard.Mode">
+            <summary>
+            mode
+            Elasticsearch supports sorting by array or multi-valued fields. 
+            The mode option controls what array value is picked for sorting the document it belongs to. The mode option can have the following values:
+            SortMode enum: min, max, sum, avg
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortStandard.Missing">
+            <summary>
+            The missing parameter specifies how docs which are missing the field should be treated: 
+            The missing value can be set to _last, _first, or a custom value (that will be used for missing docs as the sort value).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortStandard.NestedFilter">
+            <summary>
+            "nested_filter"
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortStandard.UnmappedType">
+            <summary>
+            unmapped_type
+            By default, the search request will fail if there is no mapping associated with a field. The unmapped_type option allows to ignore fields that have no mapping and not sort by them. 
+            The value of this parameter is used to determine what sort values to emit.
+            
+            If any of the indices that are queried doesn’t have a mapping for price then Elasticsearch will handle it as if there was a mapping of type long, 
+            with all documents in this index having no value for this field.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Sorting.SortMode.min">
+            <summary>
+            Pick the lowest value.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Sorting.SortMode.max">
+            <summary>
+            Pick the highest value.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Sorting.SortMode.sum">
+            <summary>
+            Use the sum of all values as sort value. Only applicable for number based array fields.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Sorting.SortMode.avg">
+            <summary>
+            Use the average of all values as sort value. Only applicable for number based array fields. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Sorting.SortHolder">
+            <summary>
+            Allows to add one or more sort on specific fields. Each sort can be reversed as well. 
+            The sort is defined on a per field level, with special field name for _score to sort by score.
+            
+            When sorting, the relevant sorted field values are loaded into memory. This means that per shard, there should be enough memory to contain them. 
+            For string based types, the field sorted on should not be analyzed / tokenized. For numeric types, if possible, 
+            it is recommended to explicitly set the type to six_hun types (like short, integer and float).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortHolder.TrackScores">
+            <summary>
+            track_scores
+            When sorting on a field, scores are not computed. By setting track_scores to true, scores will still be computed and tracked.
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.Model.Shards">
             <summary>
             "_shards":{"total":5,"successful":5,"failed":0}
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.Units.DistanceUnit">
+            <summary>
+            Wherever distances need to be specified, such as the distance parameter in the Geo Distance Filter), 
+            the default unit if none is specified is the meter. Distances can be specified in other units, such as "1km" or "2mi" (2 miles).
             </summary>
         </member>
         <member name="F:ElasticsearchCRUD.ElasticsearchCrudReindex`2.ScanAndScrollConfiguration">
@@ -2517,6 +3803,15 @@
             <param name="searchUrlParameters">add routing or pretty parameters if required</param>
             <returns>A collection of documents of type T</returns>
         </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Search``1(ElasticsearchCRUD.Model.SearchModel.Search,ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters)">
+            <summary>
+            Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
+            </summary>
+            <typeparam name="T">Type T used for the index and tpye used in the search</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
+            <param name="searchUrlParameters">add routing or pretty parameters if required</param>
+            <returns>A collection of documents of type T</returns>
+        </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchAsync``1(System.String,ElasticsearchCRUD.ContextSearch.SearchModel.SearchUrlParameters)">
             <summary>
             async Search API method to search for anything. Any json string which matches the Elasticsearch Search API can be used. Only single index and type search
@@ -2553,12 +3848,30 @@
             <param name="routing">routing used for the search</param>
             <returns>true if one document exists for the search query</returns>
         </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExists``1(ElasticsearchCRUD.Model.SearchModel.Search,System.String)">
+            <summary>
+            executes a post request to checks if at least one document exists for the search query.
+            </summary>
+            <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
+            <param name="routing">routing used for the search</param>
+            <returns>true if one document exists for the search query</returns>
+        </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExistsAsync``1(System.String,System.String)">
             <summary>
             async executes a post request to checks if at least one document exists for the search query.
             </summary>
             <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
             <param name="searchJsonParameters">json query for elasticsearch</param>
+            <param name="routing">routing used for the search</param>
+            <returns>true if one document exists for the search query</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchExistsAsync``1(ElasticsearchCRUD.Model.SearchModel.Search,System.String)">
+            <summary>
+            async executes a post request to checks if at least one document exists for the search query.
+            </summary>
+            <typeparam name="T">Type used to define the type and index in elsticsearch</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
             <param name="routing">routing used for the search</param>
             <returns>true if one document exists for the search query</returns>
         </member>
@@ -2572,6 +3885,16 @@
             <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
             <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
         </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScroll``1(ElasticsearchCRUD.Model.SearchModel.Search,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
+            <summary>
+            Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+            If your doing a live reindexing, you should use a timestamp in the json content query.
+            </summary>
+            <typeparam name="T">index and type formt search scan and scroll</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
+            <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+            <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
+        </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScrollAsync``1(System.String,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
             <summary>
             Async Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
@@ -2579,6 +3902,16 @@
             </summary>
             <typeparam name="T">index and type formt search scan and scroll</typeparam>
             <param name="jsonContent">query which will be saved.</param>
+            <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
+            <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.SearchCreateScanAndScrollAsync``1(ElasticsearchCRUD.Model.SearchModel.Search,ElasticsearchCRUD.ContextSearch.ScanAndScrollConfiguration)">
+            <summary>
+            Async Creates a new scan and scroll search. Takes the query json content and returns a _scroll_id in the payload for the following searches.
+            If your doing a live reindexing, you should use a timestamp in the json content query.
+            </summary>
+            <typeparam name="T">index and type formt search scan and scroll</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
             <param name="scanAndScrollConfiguration">The scan and scroll configuration, for example scroll in time units</param>
             <returns>Returns the _scroll_id in the Payload property and the total number of hits.</returns>
         </member>
@@ -2590,12 +3923,28 @@
             <param name="jsonContent">json query data, returns all in emtpy</param>
             <returns>Result amount of document found</returns>
         </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.Count``1(ElasticsearchCRUD.Model.SearchModel.Search)">
+            <summary>
+            ElasticsearchContextCount to amount of hits for a index, type and query.
+            </summary>
+            <typeparam name="T">Type to find</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
+            <returns>Result amount of document found</returns>
+        </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.CountAsync``1(System.String)">
             <summary>
             ElasticsearchContextCount to amount of hits for a index, type and query.
             </summary>
             <typeparam name="T">Type to find</typeparam>
             <param name="jsonContent">json query data, returns all in emtpy</param>
+            <returns>Result amount of document found in a result details task</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.CountAsync``1(ElasticsearchCRUD.Model.SearchModel.Search)">
+            <summary>
+            ElasticsearchContextCount to amount of hits for a index, type and query.
+            </summary>
+            <typeparam name="T">Type to find</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
             <returns>Result amount of document found in a result details task</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteByQueryAsync``1(System.String)">
@@ -2612,6 +3961,14 @@
             </summary>
             <typeparam name="T">Type used to define the index and the type in Elasticsearch</typeparam>
             <param name="jsonContent">json string using directly in Elasticsearch API. </param>
+            <returns>Returns true if ok</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteByQuery``1(ElasticsearchCRUD.Model.SearchModel.Search)">
+            <summary>
+            Deletes all documents found using the query in the body.
+            </summary>
+            <typeparam name="T">Type used to define the index and the type in Elasticsearch</typeparam>
+            <param name="search">search body for Elasticsearch Search API</param>
             <returns>Returns true if ok</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.GetDocumentAsync``1(System.Object,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.RoutingDefinition)">
