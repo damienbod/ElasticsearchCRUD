@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
-using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Utils;
@@ -19,13 +18,21 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchFilterHasChildFilter()
 		{
-			var search = new Search {Filter = new Filter(new MatchAllFilter())};
+			var search = new Search { Filter = 
+				new Filter(
+					new HasChildFilter("testobjchildsep", new MatchAllFilter())
+					{
+						MaxChildren= 10,
+						MinChildren=2
+					}
+				) 
+			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
 				var items = context.Search<TestObjParentSep>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -100,7 +107,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				//var entityResult = context.DeleteIndexAsync<TestObjParentSep>(); entityResult.Wait();
+				var entityResult = context.DeleteIndexAsync<TestObjParentSep>(); entityResult.Wait();
 			}
 		}
 	}
