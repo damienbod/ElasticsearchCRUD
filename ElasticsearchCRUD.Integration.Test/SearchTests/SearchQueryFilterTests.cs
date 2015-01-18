@@ -474,21 +474,25 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var search = new Search
 			{
 				Filter = new Filter(
-						new GeoShapeFilter("circletest", new GeoShapePolygon
-						{
-							Coordinates	= new List<List<GeoPoint>>
+						new GeoShapeFilter("circletest", 
+							new GeoShapePolygon
 							{
-								new List<GeoPoint>
+								Coordinates	= new List<List<GeoPoint>>
 								{
-									new GeoPoint(40,40),
-									new GeoPoint(50,40),
-									new GeoPoint(50,50),
-									new GeoPoint(40,50),
-									new GeoPoint(40,40)
+									new List<GeoPoint>
+									{
+										new GeoPoint(40,40),
+										new GeoPoint(50,40),
+										new GeoPoint(50,50),
+										new GeoPoint(40,50),
+										new GeoPoint(40,40)
+									}
 								}
 							}
-						}	
-					)
+						)
+						{
+							Cache=false
+						}
 				)
 			};
 
@@ -500,5 +504,26 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQueryRegExpFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(new RegExpFilter("name", "o.*")
+				{
+					Cache = false
+				})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
 	}
 }

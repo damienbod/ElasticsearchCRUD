@@ -207,6 +207,7 @@
     <Compile Include="Model\SearchModel\Filters\PrefixFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\QueryFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\RangeFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\RegExpFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\ScriptFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\TermFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\TermsFilter.cs" />
