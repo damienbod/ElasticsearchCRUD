@@ -68,7 +68,17 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryRangeFilter()
 		{
-			var search = new Search { Filter = new Filter(new RangeFilter("id") { GreaterThanOrEqualTo = "2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1" }) };
+			var search = new Search { Filter = new Filter(
+				new RangeFilter("id")
+				{
+					GreaterThanOrEqualTo = 2, 
+					LessThan = 3, 
+					LessThanOrEqualTo = 2, 
+					GreaterThan = 1,
+					IncludeLower = false,
+					IncludeUpper = false
+				}) 
+			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -396,5 +406,39 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQueryGeoDistanceRangeFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter(
+					new GeoDistanceRangeFilter(
+						"location", 
+						new GeoPoint(43, 43), 
+						new DistanceUnitKilometer(1), 
+						new DistanceUnitKilometer(1000)
+					)
+					{
+						GreaterThan="1km",
+						GreaterThanOrEqualTo = "2km",
+						LessThan = "1000km",
+						LessThanOrEqualTo = "1000km",
+						Cache=false,
+						IncludeLower = false,
+						IncludeUpper = true
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
 	}
 }

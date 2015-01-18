@@ -194,6 +194,7 @@
     <Compile Include="Model\SearchModel\Filters\BoolFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\ExistsFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoBoundingBoxFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\GeoDistanceRangeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoDistanceFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\IdsFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\LimitFilter.cs" />

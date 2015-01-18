@@ -118,7 +118,17 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryRangeQuery()
 		{
-			var search = new Search { Query = new Query(new RangeQuery("id") { GreaterThanOrEqualTo = "2", LessThan = "3", LessThanOrEqualTo = "2", GreaterThan = "1", Boost = 2.0 }) };
+			var search = new Search { Query = new Query(
+				new RangeQuery("id")
+				{
+					GreaterThanOrEqualTo = "2", 
+					LessThan = "3", 
+					LessThanOrEqualTo = "2", 
+					GreaterThan = "1", 
+					Boost = 2.0,
+					IncludeLower = false,
+					IncludeUpper = false
+				}) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{

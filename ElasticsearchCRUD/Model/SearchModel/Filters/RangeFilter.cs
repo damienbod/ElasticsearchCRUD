@@ -5,16 +5,20 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	public class RangeFilter : IFilter
 	{
 		private readonly string _field;
-		private string _greaterThanOrEqualTo;
+		private object _greaterThanOrEqualTo;
 		private bool _greaterThanOrEqualToSet;
-		private string _greaterThan;
+		private object _greaterThan;
 		private bool _greaterThanSet;
-		private string _lessThanOrEqualTo;
+		private object _lessThanOrEqualTo;
 		private bool _lessThanOrEqualToSet;
-		private string _lessThan;
+		private object _lessThan;
 		private bool _lessThanSet;
 		private string _timeZone;
 		private bool _timeZoneSet;
+		private bool _includeLower;
+		private bool _includeLowerSet;
+		private bool _includeUpper;
+		private bool _includeUpperSet;
 
 		public RangeFilter(string field)
 		{
@@ -25,7 +29,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		/// gte
 		/// Greater-than or equal to
 		/// </summary>
-		public string GreaterThanOrEqualTo
+		public object GreaterThanOrEqualTo
 		{
 			get { return _greaterThanOrEqualTo; }
 			set
@@ -39,7 +43,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		/// gt
 		/// Greater-than
 		/// </summary>
-		public string GreaterThan
+		public object GreaterThan
 		{
 			get { return _greaterThan; }
 			set
@@ -53,7 +57,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		/// lte
 		/// Less-than or equal to
 		/// </summary>
-		public string LessThanOrEqualTo
+		public object LessThanOrEqualTo
 		{
 			get { return _lessThanOrEqualTo; }
 			set
@@ -67,13 +71,39 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		/// lt
 		/// Less-than
 		/// </summary>
-		public string LessThan
+		public object LessThan
 		{
 			get { return _lessThan; }
 			set
 			{
 				_lessThan = value;
 				_lessThanSet = true;
+			}
+		}
+
+		/// <summary>
+		/// include_lower
+		/// </summary>
+		public bool IncludeLower
+		{
+			get { return _includeLower; }
+			set
+			{
+				_includeLower = value;
+				_includeLowerSet = true;
+			}
+		}
+
+		/// <summary>
+		/// include_upper
+		/// </summary>
+		public bool IncludeUpper
+		{
+			get { return _includeUpper; }
+			set
+			{
+				_includeUpper = value;
+				_includeUpperSet = true;
 			}
 		}
 
@@ -108,6 +138,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			JsonHelper.WriteValue("lte", _lessThanOrEqualTo, elasticsearchCrudJsonWriter, _lessThanOrEqualToSet);
 			JsonHelper.WriteValue("lt", _lessThan, elasticsearchCrudJsonWriter, _lessThanSet);
 			JsonHelper.WriteValue("time_zone", _timeZone, elasticsearchCrudJsonWriter, _timeZoneSet);
+			JsonHelper.WriteValue("include_lower", _includeLower, elasticsearchCrudJsonWriter, _includeLowerSet);
+			JsonHelper.WriteValue("include_upper", _includeUpper, elasticsearchCrudJsonWriter, _includeUpperSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
