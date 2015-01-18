@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.Utils;
+﻿using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAlias.AliasModel
 {
@@ -11,7 +12,7 @@ namespace ElasticsearchCRUD.ContextAlias.AliasModel
 	public class AliasAddParameters : AliasBaseParameters
 	{
 		private string _routing;
-		private string _filter;
+		private IFilter _filter;
 		private bool _routingSet;
 		private bool _filterSet;
 
@@ -34,9 +35,8 @@ namespace ElasticsearchCRUD.ContextAlias.AliasModel
 
 		/// <summary>
 		/// An optional filter that can be associated with an alias.
-		/// TODO replace this raw json string with a filter object once the filter class has been created.
 		/// </summary>
-		public string Filter
+		public IFilter Filter
 		{
 			get { return _filter; }
 			set
@@ -52,7 +52,9 @@ namespace ElasticsearchCRUD.ContextAlias.AliasModel
 			if (_filterSet)
 			{
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filter");
-				elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue(_filter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				_filter.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 		}
 

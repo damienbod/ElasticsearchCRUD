@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextAlias.AliasModel;
+using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
 
@@ -127,7 +128,7 @@ namespace ElasticsearchCRUD.Integration.Test
 					new AliasAddParameters("test4", "indexaliasdtotests")
 					{
 						Routing="newroute",
-						Filter= "{ \"term\" : { \"description\" : \"boo\" } }"
+						Filter= new TermFilter("description", "boo") // "{ \"term\" : { \"description\" : \"boo\" } }"
 					}
 				}
 			};
