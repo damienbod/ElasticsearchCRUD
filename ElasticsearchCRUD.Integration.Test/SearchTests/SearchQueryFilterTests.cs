@@ -440,5 +440,32 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryGeoPolygonFilter()
+		{
+			var search = new Search
+			{
+				Filter = new Filter( 
+					new GeoPolygonFilter("location", 
+						new List<GeoPoint>
+						{
+							new GeoPoint(40,40),
+							new GeoPoint(50,40),
+							new GeoPoint(50,50),
+							new GeoPoint(40,50),
+							new GeoPoint(40,40)
+						}
+					)			
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }
