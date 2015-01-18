@@ -7,7 +7,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SetupSearch
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		protected const string ConnectionString = "http://localhost.fiddler:9200";
+		protected const string ConnectionString = "http://localhost:9200";
 
 		[TestFixtureSetUp]
 		public void Setup()
@@ -42,7 +42,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				//context.IndexCreate<SearchTest>();
+				context.IndexCreate<SearchTest>();
 				Thread.Sleep(1000);
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
@@ -58,7 +58,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				//var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
+				var entityResult = context.DeleteIndexAsync<SearchTest>(); entityResult.Wait();
 			}
 		}
 	}

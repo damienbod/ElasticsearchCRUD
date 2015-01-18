@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterTestsNested
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		protected const string ConnectionString = "http://localhost.fiddler:9200";
+		protected const string ConnectionString = "http://localhost:9200";
 
 		//[Test] // add this when the nested mapping is implemented
 		public void SearchFilterNestedFilter()
@@ -101,7 +101,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				//var entityResult = context.DeleteIndexAsync<TestObjParent>(); entityResult.Wait();
+				var entityResult = context.DeleteIndexAsync<TestObjParent>(); entityResult.Wait();
 			}
 		}
 	}

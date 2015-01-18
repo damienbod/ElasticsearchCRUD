@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryFilterTestsOneToNParentChild
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		protected const string ConnectionString = "http://localhost.fiddler:9200";
+		protected const string ConnectionString = "http://localhost:9200";
 
 		[Test]
 		public void SearchFilterHasChildFilter()
@@ -33,6 +33,25 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
 				var items = context.Search<TestObjParentSep>(search);
 				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
+		public void SearchFilterHasParentFilter()
+		{
+			var search = new Search
+			{
+				Filter =
+					new Filter(
+					new HasParentFilter("testobjparentsep", new MatchAllFilter())
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
+				var items = context.Search<TestObjChildSep>(search);
+				Assert.AreEqual(4, items.PayloadResult.Hits.Total);
 			}
 		}
 
