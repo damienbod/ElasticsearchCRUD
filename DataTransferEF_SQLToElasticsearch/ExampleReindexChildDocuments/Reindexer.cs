@@ -6,7 +6,6 @@ using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.Units;
 using ElasticsearchCRUD.Tracing;
-using ElasticsearchCRUD.Utils;
 
 namespace DataTransferSQLToEl.ExampleReindexChildDocuments
 {

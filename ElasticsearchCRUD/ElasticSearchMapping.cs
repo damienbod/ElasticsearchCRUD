@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Reflection;
 using System.Text;
-using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Model;
@@ -449,6 +448,7 @@ namespace ElasticsearchCRUD
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
+				// TODO Add "type" : "nested" if attribute is set
 				// Do class mapping for nested type
 				var routingDefinition = new RoutingDefinition
 				{

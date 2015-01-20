@@ -1,18 +1,20 @@
 ﻿using System.Collections.Generic;
 using ElasticsearchCRUD.Utils;
 
-namespace ElasticsearchCRUD.Model.SearchModel.Filters
+namespace ElasticsearchCRUD.Model.SearchModel.Queries
 {
-	/// <summary>
-	/// Filters documents that only have the provided ids. Note, this filter does not require the _id field to be indexed since it works using the _uid field.
-	/// </summary>
-	public class IdsFilter : IFilter
+	public class IdsQuery: IQuery
 	{
 		private readonly List<object> _ids;
 		private string _type;
 		private bool _typeSet;
 
-		public IdsFilter(List<object> ids)
+		/// <summary>
+		/// Filters documents that only have the provided ids. Note, this filter does not require the _id field to be indexed since it works using the _uid field.
+		/// </summary>
+		/// <param name="ids"></param>
+		/// <param name="type"></param>
+		public IdsQuery(List<object> ids)
 		{
 			_ids = ids;
 		}

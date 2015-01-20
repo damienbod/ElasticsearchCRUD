@@ -268,7 +268,10 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		{
 			var search = new Search
 			{
-				Filter = new Filter(new IdsFilter(new List<object> { 1, 2 }, "searchtest"))
+				Filter = new Filter(new IdsFilter(new List<object> { 1, 2 })
+				{
+					Type = "searchtest"
+				})
 			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))

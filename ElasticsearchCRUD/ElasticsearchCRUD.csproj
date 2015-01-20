@@ -220,6 +220,7 @@
     <Compile Include="Model\SearchModel\IFilterHolder.cs" />
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
+    <Compile Include="Model\SearchModel\Queries\IdsQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\QueryStringQuery.cs" />
     <Compile Include="Model\SearchModel\ScriptParameter.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortGeoDistance.cs" />
