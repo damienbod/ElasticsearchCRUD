@@ -67,9 +67,9 @@ namespace ElasticsearchCRUD.Model.GeoModel
 		{
 			if (objectType.IsInterface)
 			{
-				return objectType == typeof(IGeoType);
+				return objectType == typeof(GeoShapeGeometryCollection);
 			}
-			return typeof(IGeoType).IsAssignableFrom(objectType);
+			return typeof(GeoShapeGeometryCollection).IsAssignableFrom(objectType);
 		}
 	}
 }

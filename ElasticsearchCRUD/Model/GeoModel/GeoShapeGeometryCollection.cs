@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using ElasticsearchCRUD.Utils;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace ElasticsearchCRUD.Model.GeoModel
 {
