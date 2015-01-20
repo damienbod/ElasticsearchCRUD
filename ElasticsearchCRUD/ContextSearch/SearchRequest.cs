@@ -7,8 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch
@@ -195,8 +197,10 @@ namespace ElasticsearchCRUD.ContextSearch
 				var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(true);
 				_traceProvider.Trace(TraceEventType.Verbose, "{1}: Get Request response: {0}", responseString, "Search");
 				var responseObject = JObject.Parse(responseString);
+				var ser = new JsonSerializer();
+				ser.Converters.Add(new GeoShapeGeometryCollectionGeometriesConverter());
 
-				resultDetails.PayloadResult = responseObject.ToObject<SearchResult<T>>();
+				resultDetails.PayloadResult = responseObject.ToObject<SearchResult<T>>(ser);
 				return resultDetails;
 			}
 			catch (OperationCanceledException oex)

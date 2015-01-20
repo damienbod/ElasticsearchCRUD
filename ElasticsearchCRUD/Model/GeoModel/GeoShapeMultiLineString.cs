@@ -7,6 +7,8 @@ namespace ElasticsearchCRUD.Model.GeoModel
 	{
 		public List<List<GeoPoint>> Coordinates { get; set; }
 
+		public string Type { get; set; }
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();

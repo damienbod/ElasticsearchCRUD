@@ -8,6 +8,8 @@ namespace ElasticsearchCRUD.Model.GeoModel
 		// TODO validate that first and the last items in each polygon are the same
 		public List<List<List<GeoPoint>>> Coordinates { get; set; }
 
+		public string Type { get; set; }
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();

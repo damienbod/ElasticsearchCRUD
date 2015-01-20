@@ -180,6 +180,7 @@
     <Compile Include="Model\GeoModel\GeoShapeCircle.cs" />
     <Compile Include="Model\GeoModel\GeoShapeEnvelope.cs" />
     <Compile Include="Model\GeoModel\GeoShapeGeometryCollection.cs" />
+    <Compile Include="Model\GeoModel\GeoShapeGeometryCollectionGeometriesConverter.cs" />
     <Compile Include="Model\GeoModel\GeoShapeLineString.cs" />
     <Compile Include="Model\GeoModel\GeoShapeMultiLineString.cs" />
     <Compile Include="Model\GeoModel\GeoShapeMultiPoint.cs" />

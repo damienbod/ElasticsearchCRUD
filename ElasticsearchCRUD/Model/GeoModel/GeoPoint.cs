@@ -92,6 +92,8 @@ namespace ElasticsearchCRUD.Model.GeoModel
 			}
 		}
 
+		public string Type { get; set; }
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();

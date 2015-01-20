@@ -2,6 +2,7 @@
 {
 	public interface IGeoType
 	{
+		string Type { get; set; }
 		void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
 	}
 }

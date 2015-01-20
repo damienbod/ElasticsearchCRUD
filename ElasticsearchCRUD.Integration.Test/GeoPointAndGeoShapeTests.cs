@@ -26,7 +26,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult4 = context.DeleteIndexAsync<GeoShapeMultiPointDto>();
 				var entityResult5 = context.DeleteIndexAsync<GeoShapeMultiLineStringDto>();
 				var entityResult6 = context.DeleteIndexAsync<GeoShapeMultiPolygonDto>();
-				//var entityResult7 = context.DeleteIndexAsync<GeoShapeGeometryCollectionDto>();
+				var entityResult7 = context.DeleteIndexAsync<GeoShapeGeometryCollectionDto>();
 				var entityResult8 = context.DeleteIndexAsync<GeoShapeEnvelopeDto>();
 				var entityResult9 = context.DeleteIndexAsync<GeoShapeCircleDto>();
 
@@ -37,7 +37,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				entityResult4.Wait();
 				entityResult5.Wait();
 				entityResult6.Wait();
-				//entityResult7.Wait();
+				entityResult7.Wait();
 				entityResult8.Wait();
 				entityResult9.Wait();
 			}
@@ -379,73 +379,73 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		//[Test]
-		//public void CreateGeoShapeGeometryCollectionMapping()
-		//{
-		//	var geoShapeGeometryCollectionDto = new GeoShapeGeometryCollectionDto
-		//	{
-		//		Coordinates = new GeoShapeGeometryCollection
-		//		{
-		//			Geometries = new List<Object>
-		//			{
-		//				new GeoShapeMultiLineString
-		//				{
-		//					Coordinates =  new List<List<GeoPoint>>
-		//					{
-		//						// [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]
-		//						new List<GeoPoint>
-		//						{
-		//							new GeoPoint(100, 0),
-		//							new GeoPoint(101, 0),
-		//							new GeoPoint(101, 1),
-		//							new GeoPoint(100, 1),
-		//							new GeoPoint(100, 0)
-		//						},
-		//						//  [ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]
-		//						new List<GeoPoint>
-		//						{
-		//							new GeoPoint(100.2, 0.2),
-		//							new GeoPoint(100.8, 0.2),
-		//							new GeoPoint(100.8, 0.8),
-		//							new GeoPoint(100.2, 0.8),
-		//							new GeoPoint(100.2, 0.2)
-		//						}
-		//					}	
-		//				},
-		//				new GeoShapePoint
-		//				{
-		//					Coordinates =  new GeoPoint(45, 45)
-		//				},
-		//				new GeoShapeLineString
-		//				{
-		//					Coordinates = new List<GeoPoint>
-		//					{
-		//						new GeoPoint(45, 45),
-		//						new GeoPoint(46, 45)
-		//					}
-		//				}
-		//			}
-		//		},
-		//		Id = "1",
-		//		Name = "test",
-		//	};
+		[Test]
+		public void CreateGeoShapeGeometryCollectionMapping()
+		{
+			var geoShapeGeometryCollectionDto = new GeoShapeGeometryCollectionDto
+			{
+				Coordinates = new GeoShapeGeometryCollection
+				{
+					Geometries = new List<object>
+					{
+						new GeoShapeMultiLineString
+						{
+							Coordinates =  new List<List<GeoPoint>>
+							{
+								// [100.0, 0.0], [101.0, 0.0], [101.0, 1.0], [100.0, 1.0], [100.0, 0.0]
+								new List<GeoPoint>
+								{
+									new GeoPoint(100, 0),
+									new GeoPoint(101, 0),
+									new GeoPoint(101, 1),
+									new GeoPoint(100, 1),
+									new GeoPoint(100, 0)
+								},
+								//  [ [100.2, 0.2], [100.8, 0.2], [100.8, 0.8], [100.2, 0.8], [100.2, 0.2] ]
+								new List<GeoPoint>
+								{
+									new GeoPoint(100.2, 0.2),
+									new GeoPoint(100.8, 0.2),
+									new GeoPoint(100.8, 0.8),
+									new GeoPoint(100.2, 0.8),
+									new GeoPoint(100.2, 0.2)
+								}
+							}	
+						},
+						new GeoShapePoint
+						{
+							Coordinates =  new GeoPoint(45, 45)
+						},
+						new GeoShapeLineString
+						{
+							Coordinates = new List<GeoPoint>
+							{
+								new GeoPoint(45, 45),
+								new GeoPoint(46, 45)
+							}
+						}
+					}
+				},
+				Id = "1",
+				Name = "test",
+			};
 
-		//	using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
-		//	{
-		//		context.TraceProvider = new ConsoleTraceProvider();
-		//		context.IndexCreate<GeoShapeGeometryCollectionDto>();
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<GeoShapeGeometryCollectionDto>();
 
-		//		Thread.Sleep(1500);
-		//		Assert.IsNotNull(context.IndexExists<GeoShapeGeometryCollectionDto>());
+				Thread.Sleep(1500);
+				Assert.IsNotNull(context.IndexExists<GeoShapeGeometryCollectionDto>());
 
-		//		context.AddUpdateDocument(geoShapeGeometryCollectionDto, geoShapeGeometryCollectionDto.Id);
-		//		context.SaveChanges();
-		//		Thread.Sleep(1500);
-		//		Assert.AreEqual(1, context.Count<GeoShapeGeometryCollectionDto>());
-		//		var result = context.SearchById<GeoShapeGeometryCollectionDto>(1);
-		//		Assert.AreEqual(geoShapeGeometryCollectionDto.Coordinates.Geometries.Count, result.Coordinates.Geometries.Count);
-		//	}
-		//}
+				context.AddUpdateDocument(geoShapeGeometryCollectionDto, geoShapeGeometryCollectionDto.Id);
+				context.SaveChanges();
+				Thread.Sleep(1500);
+				Assert.AreEqual(1, context.Count<GeoShapeGeometryCollectionDto>());
+				var result = context.SearchById<GeoShapeGeometryCollectionDto>(1);
+				Assert.AreEqual(geoShapeGeometryCollectionDto.Coordinates.Geometries.Count, result.Coordinates.Geometries.Count);
+			}
+		}
 
 	}
 
@@ -519,15 +519,15 @@ namespace ElasticsearchCRUD.Integration.Test
 		public GeoShapeMultiPolygon Coordinates { get; set; }
 	}
 
-	//public class GeoShapeGeometryCollectionDto
-	//{
-	//	public string Id { get; set; }
+	public class GeoShapeGeometryCollectionDto
+	{
+		public string Id { get; set; }
 
-	//	public string Name { get; set; }
+		public string Name { get; set; }
 
-	//	[ElasticsearchGeoShape(Precision = "100m")]
-	//	public GeoShapeGeometryCollection Coordinates { get; set; }
-	//}
+		[ElasticsearchGeoShape(Precision = "100m")]
+		public GeoShapeGeometryCollection Coordinates { get; set; }
+	}
 
 	public class GeoShapeEnvelopeDto
 	{

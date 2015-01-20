@@ -11,6 +11,8 @@ namespace ElasticsearchCRUD.Model.GeoModel
 		/// </summary>
 		public string Radius { get; set; }
 
+		public string Type { get; set; }
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
