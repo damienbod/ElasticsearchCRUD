@@ -80,6 +80,28 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchFilterHasParentQuery()
+		{
+			var search = new Search
+			{
+				Query =
+					new Query(
+					new HasParentQuery("testobjparentsep", new MatchAllQuery())
+					{
+						ScoreMode= ScoreModeHasParentQuery.none
+					}
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
+				var items = context.Search<TestObjChildSep>(search);
+				Assert.AreEqual(4, items.PayloadResult.Hits.Total);
+			}
+		}
+
 		[TestFixtureSetUp]
 		public void Setup()
 		{
