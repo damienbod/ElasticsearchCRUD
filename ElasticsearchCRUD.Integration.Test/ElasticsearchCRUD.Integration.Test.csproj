@@ -72,6 +72,7 @@
     <Compile Include="SearchTests\SearchQueryFilterFilteredStructureTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTestsOneToNParentChild.cs" />
+    <Compile Include="SearchTests\SearchQueryQuerySpanTests.cs" />
     <Compile Include="SearchTests\SearchQueryQueryTests.cs" />
     <Compile Include="SearchTests\SearchTest.cs" />
     <Compile Include="SearchTests\SetupSearch.cs" />

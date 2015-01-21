@@ -432,30 +432,13 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
-		public void SearchQuerySpanFirstQuery()
+		public void SearchQueryWildcardQuery()
 		{
 			var search = new Search
 			{
-				Query = new Query(new SpanFirstQuery(new SpanTermQuery("name", "one"), 3))
-			};
-
-			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
-			}
-		}
-
-		[Test]
-		public void SearchQuerySpanTermQuery()
-		{
-			var search = new Search
-			{
-				Query = new Query(new SpanTermQuery("name", "one")
+				Query = new Query(new WildcardQuery("name", "o*")
 				{
-					Boost = 1.9
+					Boost = 2.0
 				})
 			};
 
@@ -468,6 +451,5 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		
 	}
 }
