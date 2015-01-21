@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
@@ -448,6 +449,40 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
 				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryGeoShapeQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+						new GeoShapeQuery("circletest",
+							new GeoShapePolygon
+							{
+								Coordinates = new List<List<GeoPoint>>
+								{
+									new List<GeoPoint>
+									{
+										new GeoPoint(40,40),
+										new GeoPoint(50,40),
+										new GeoPoint(50,50),
+										new GeoPoint(40,50),
+										new GeoPoint(40,40)
+									}
+								}
+							}
+						)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
 			}
 		}
 
