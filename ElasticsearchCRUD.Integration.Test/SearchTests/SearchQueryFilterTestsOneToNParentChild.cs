@@ -3,6 +3,7 @@ using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
+using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
 
@@ -52,6 +53,30 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
 				var items = context.Search<TestObjChildSep>(search);
 				Assert.AreEqual(4, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchFilterHasChildQuery()
+		{
+			var search = new Search
+			{
+				Query =
+					new Query(
+						new HasChildQuery("testobjchildsep", new MatchAllQuery())
+						{
+							MaxChildren = 10,
+							MinChildren = 2,
+							ScoreMode=ScoreMode.none 
+						}
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
+				var items = context.Search<TestObjParentSep>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 

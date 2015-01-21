@@ -284,6 +284,7 @@ namespace ElasticsearchCRUD
 
 		/// <summary>
 		/// Creates a new index from a Type and also all the property mappings and index definitions
+		/// Note: Child objects cannot be an interface if the mapping should be created first.
 		/// </summary>
 		/// <param name="indexDefinition">settings for the new index</param>
 		/// <returns>details</returns>

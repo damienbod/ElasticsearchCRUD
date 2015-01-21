@@ -444,17 +444,24 @@ namespace ElasticsearchCRUD
 				// collection of Objects
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
+				if (Attribute.IsDefined(prop, typeof(ElasticsearchNestedAttribute)))
+				{
+					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
+					elasticsearchCrudJsonWriter.JsonWriter.WriteValue("nested");
+
+					object[] attrs = prop.GetCustomAttributes(typeof(ElasticsearchNestedAttribute), true);
+
+					if ((attrs[0] as ElasticsearchNestedAttribute) != null)
+					{
+						(attrs[0] as ElasticsearchNestedAttribute).WriteJson(elasticsearchCrudJsonWriter);
+					}
+				}
+
 				// "properties": {
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-				if (Attribute.IsDefined(prop, typeof (ElasticsearchNestedAttribute)))
-				{
-					// TODO Add "type" : "nested" if attribute is set
-					//elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
-					//elasticsearchCrudJsonWriter.JsonWriter.WriteValue("nested");
-				}
-				
+	
 				// Do class mapping for nested type
 				var routingDefinition = new RoutingDefinition
 				{

@@ -62,7 +62,7 @@
     <Compile Include="MappingChildParentRoutingTests.cs" />
     <Compile Include="MappingTests.cs" />
     <Compile Include="MappingTypeTests.cs" />
-    <Compile Include="OneToN\NestedArraysTests.cs" />
+    <Compile Include="OneToN\NestedArraysTestsWithFiltersAndQueries.cs" />
     <Compile Include="OneToN\OneToNEntitiesSaveWithChildDocumentsTestWithRouting.cs" />
     <Compile Include="OneToN\OneToNEntitiesSaveWithChildDocumentsTest.cs" />
     <Compile Include="OneToN\OneToNNestedElasticsearchCrudTests.cs" />
@@ -72,7 +72,6 @@
     <Compile Include="SearchTests\SearchQueryFilterFilteredStructureTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTestsOneToNParentChild.cs" />
-    <Compile Include="SearchTests\SearchQueryFilterTestsNested.cs" />
     <Compile Include="SearchTests\SearchQueryQueryTests.cs" />
     <Compile Include="SearchTests\SearchTest.cs" />
     <Compile Include="SearchTests\SetupSearch.cs" />

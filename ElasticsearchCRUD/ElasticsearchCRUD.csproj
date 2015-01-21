@@ -212,6 +212,9 @@
     <Compile Include="Model\SearchModel\Filters\NotFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\OrFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\PrefixFilter.cs" />
+    <Compile Include="Model\SearchModel\Queries\HasChildQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\ISpanQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\PrefixQuery.cs" />
     <Compile Include="Model\SearchModel\Filters\QueryFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\RangeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\RegExpFilter.cs" />
@@ -223,7 +226,12 @@
     <Compile Include="Model\SearchModel\IQuery.cs" />
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
     <Compile Include="Model\SearchModel\Queries\IdsQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\NestedQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\QueryStringQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\RegExpQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\ScoreMode.cs" />
+    <Compile Include="Model\SearchModel\Queries\SpanFirstQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\SpanTermQuery.cs" />
     <Compile Include="Model\SearchModel\ScriptParameter.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortGeoDistance.cs" />
     <Compile Include="Model\SearchModel\Sorting\ISort.cs" />

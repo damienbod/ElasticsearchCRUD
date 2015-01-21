@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
@@ -389,5 +390,84 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchQueryPrefixQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(new PrefixQuery("name", "on")
+				{
+					Boost = 2.0
+				})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryRegExpQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(new RegExpQuery("name", "o.*")
+				{
+					Boost=1.7,
+					Flags = RegExpFlags.INTERSECTION
+				})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQuerySpanFirstQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(new SpanFirstQuery(new SpanTermQuery("name", "one"), 3))
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQuerySpanTermQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(new SpanTermQuery("name", "one")
+				{
+					Boost = 1.9
+				})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		
 	}
 }
