@@ -52,19 +52,20 @@
     <Compile Include="AliasElasticsearchCrudTests.cs" />
     <Compile Include="AnalysisSettingsTests.cs" />
     <Compile Include="AnalysisTests.cs" />
-    <Compile Include="ComplexRelationsTests.cs" />
+    <Compile Include="OneToN\ComplexRelationsTests.cs" />
     <Compile Include="CoreTypeMappingTests.cs" />
     <Compile Include="CreateIndexTest.cs" />
     <Compile Include="DefaultElasticsearchCRUDTests.cs" />
-    <Compile Include="DocumentsWithChildDocumentsTestNotAllowed.cs" />
+    <Compile Include="OneToN\DocumentsWithChildDocumentsTestNotAllowed.cs" />
     <Compile Include="ExistsTests.cs" />
     <Compile Include="GeoPointAndGeoShapeTests.cs" />
     <Compile Include="MappingChildParentRoutingTests.cs" />
     <Compile Include="MappingTests.cs" />
     <Compile Include="MappingTypeTests.cs" />
-    <Compile Include="OneToNEntitiesSaveWithChildDocumentsTestWithRouting.cs" />
-    <Compile Include="OneToNEntitiesSaveWithChildDocumentsTest.cs" />
-    <Compile Include="OneToNNestedElasticsearchCrudTests.cs" />
+    <Compile Include="OneToN\NestedArraysTests.cs" />
+    <Compile Include="OneToN\OneToNEntitiesSaveWithChildDocumentsTestWithRouting.cs" />
+    <Compile Include="OneToN\OneToNEntitiesSaveWithChildDocumentsTest.cs" />
+    <Compile Include="OneToN\OneToNNestedElasticsearchCrudTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchCreateScanAndScrollTests.cs" />
     <Compile Include="SearchHighlightResultTests.cs" />
@@ -75,9 +76,9 @@
     <Compile Include="SearchTests\SearchQueryQueryTests.cs" />
     <Compile Include="SearchTests\SearchTest.cs" />
     <Compile Include="SearchTests\SetupSearch.cs" />
-    <Compile Include="SkillParentCollection.cs" />
-    <Compile Include="SkillTestEntityElasticSearchMapping.cs" />
-    <Compile Include="SpecialMappingElasticsearchCRUDTests.cs" />
+    <Compile Include="OneToN\SkillParentCollection.cs" />
+    <Compile Include="OneToN\SkillTestEntityElasticSearchMapping.cs" />
+    <Compile Include="OneToN\SpecialMappingElasticsearchCRUDTests.cs" />
     <Compile Include="TestEntities.cs" />
   </ItemGroup>
   <ItemGroup>

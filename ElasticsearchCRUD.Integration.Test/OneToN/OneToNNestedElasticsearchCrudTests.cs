@@ -6,7 +6,7 @@ using System.Net;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
-namespace ElasticsearchCRUD.Integration.Test
+namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	[TestFixture]
 	public class OneToNNestedElasticsearchCrudTests
@@ -53,7 +53,8 @@ namespace ElasticsearchCRUD.Integration.Test
 				var entityResult10 = context.DeleteIndexAsync<SkillWithIntCollection>(); entityResult10.Wait();
 				var entityResult11 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleArray>(); entityResult11.Wait();
 				var entityResult12 = context.DeleteIndexAsync<SkillWithStringLongAndDoubleCollection>(); entityResult12.Wait();
-				var entityResult13 = context.DeleteIndexAsync<SkillDocumentHastSet>(); entityResult13.Wait();				
+				var entityResult13 = context.DeleteIndexAsync<SkillDocumentHastSet>(); entityResult13.Wait();		
+				
 			}
 		}
 

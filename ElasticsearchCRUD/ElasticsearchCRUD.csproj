@@ -67,6 +67,7 @@
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchIdAttribute.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchInteger.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchLong.cs" />
+    <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchNestedAttribute.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchNumber.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchShort.cs" />
     <Compile Include="ContextAddDeleteUpdate\CoreTypeAttributes\ElasticsearchString.cs" />

@@ -6,12 +6,11 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using ElasticsearchCRUD.ContextAddDeleteUpdate;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
-namespace ElasticsearchCRUD.Integration.Test
+namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	[TestFixture]
 	public class OneToNEntitiesWithChildDocumentsTestUserDefinedRouting

@@ -1,8 +1,7 @@
 ﻿using System;
 using ElasticsearchCRUD.Model;
-using Newtonsoft.Json;
 
-namespace ElasticsearchCRUD.Integration.Test
+namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	public class SkillTestEntityElasticsearchMapping : ElasticsearchMapping
 	{

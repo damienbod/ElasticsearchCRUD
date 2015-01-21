@@ -5,7 +5,7 @@ using System.Net;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
-namespace ElasticsearchCRUD.Integration.Test
+namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	[TestFixture]
 	public class ComplexRelationsTests

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Net;
 using NUnit.Framework;
 
-namespace ElasticsearchCRUD.Integration.Test
+namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	[TestFixture]
-	public class SpecialMappingElasticsearchCRUDTests
+	public class SpecialMappingElasticsearchCrudTests
 	{
 		private List<SkillTestEntity> _entitiesForTests;
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;

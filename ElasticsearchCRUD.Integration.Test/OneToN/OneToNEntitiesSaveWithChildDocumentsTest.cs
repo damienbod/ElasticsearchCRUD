@@ -131,7 +131,7 @@ http://localhost:9200/parentdocuments/22/_search
  
 */
 
-namespace ElasticsearchCRUD.Integration.Test
+namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	[TestFixture]
 	public class OneToNEntitiesWithChildDocumentsTest

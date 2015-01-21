@@ -2,6 +2,7 @@
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
+using ElasticsearchCRUD.Integration.Test.OneToN;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
