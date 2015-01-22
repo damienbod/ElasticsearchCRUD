@@ -20,29 +20,16 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var search = new Search
 			{
 				Query = new Query(
-
-					new DisMaxQuery
+					new MoreLikeThisQuery
 					{
-						Queries = new List<IQuery>
-						{
-							//new MatchAllQuery(),
-							new MoreLikeThisQuery
-							{
-								Fields = new List<string> { "info", "moreinfo" },
-								Documents = new List<Document>
-								{
-									new Document{Id= 1},
-									new Document{Id= 2},
-									new Document{Id= 3}
-								},
-								LikeText = "two",
-								MinTermFreq=1,
-								Boost=50,
-								MinDocFreq = 1
-							}
-						}
+						Fields = new List<string> {"moreinfo"},
+						LikeText = "yes one",
+						MinTermFreq = 1,
+						Boost = 50,
+						MinDocFreq = 1,
+						PercentTermsToMatch = 0.01
+
 					}
-					
 				)
 			};
 
@@ -76,7 +63,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Id = 3,
 				Info = "yes this is great three",
-				MoreInfo = "yes, I am going to test this query"
+				MoreInfo = "no, I am going to test this query"
 			};
 
 
