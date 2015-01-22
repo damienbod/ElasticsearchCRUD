@@ -48,6 +48,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _minDocFreqSet;
 		private uint _maxDocFreq;
 		private bool _maxDocFreqSet;
+		private uint _minWordLength;
+		private bool _minWordLengthSet;
+		private uint _maxWordLength;
+		private bool _maxWordLengthSet;
+		private uint _boostTerms;
+		private bool _boostTermsSet;
 
 		public List<string> Fields
 		{
@@ -230,20 +236,47 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
-//min_word_length
-//The minimum word length below which words will be ignored. Defaults to 0.(Old name "min_word_len" is deprecated)
+		/// <summary>
+		/// min_word_length
+		/// The minimum word length below which words will be ignored. Defaults to 0.(Old name "min_word_len" is deprecated)
+		/// </summary>
+		public uint MinWordLength
+		{
+			get { return _minWordLength; }
+			set
+			{
+				_minWordLength = value;
+				_minWordLengthSet = true;
+			}
+		}
 
-//max_word_length
-//The maximum word length above which words will be ignored. Defaults to unbounded (0). (Old name "max_word_len" is deprecated)
+		/// <summary>
+		/// max_word_length
+		/// The maximum word length above which words will be ignored. Defaults to unbounded (0). (Old name "max_word_len" is deprecated)
+		/// </summary>
+		public uint MaxWordLength
+		{
+			get { return _maxWordLength; }
+			set
+			{
+				_maxWordLength = value;
+				_maxWordLengthSet = true;
+			}
+		}
 
-//boost_terms
-//Sets the boost factor to use when boosting terms. Defaults to deactivated (0). Any other value activates boosting with given boost factor.
-
-//boost
-//Sets the boost value of the query. Defaults to 1.0.
-
-//analyzer
-//The analyzer that will be used to analyze the like text. Defaults to the analyzer associated with the first field in fields.
+		/// <summary>
+		/// boost_terms
+		/// Sets the boost factor to use when boosting terms. Defaults to deactivated (0). Any other value activates boosting with given boost factor.
+		/// </summary>
+		public uint BoostTerms
+		{
+			get { return _boostTerms; }
+			set
+			{
+				_boostTerms = value;
+				_boostTermsSet = true;
+			}
+		}
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -277,6 +310,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			JsonHelper.WriteListValue("stop_words", _stopWords, elasticsearchCrudJsonWriter, _stopWordsSet);
 			JsonHelper.WriteValue("min_doc_freq", _minDocFreq, elasticsearchCrudJsonWriter, _minDocFreqSet);
 			JsonHelper.WriteValue("max_doc_freq", _maxDocFreq, elasticsearchCrudJsonWriter, _maxDocFreqSet);
+			JsonHelper.WriteValue("min_word_length", _minWordLength, elasticsearchCrudJsonWriter, _minWordLengthSet);
+			JsonHelper.WriteValue("max_word_length", _maxWordLength, elasticsearchCrudJsonWriter, _maxWordLengthSet);
+			JsonHelper.WriteValue("boost_terms", _boostTerms, elasticsearchCrudJsonWriter, _boostTermsSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

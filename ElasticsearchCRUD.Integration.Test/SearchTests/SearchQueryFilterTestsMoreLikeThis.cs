@@ -2,15 +2,12 @@
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Model.SearchModel;
-using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
-using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
-
 	[TestFixture]
 	public class SearchQueryFilterTestsMoreLikeThis
 	{
@@ -24,7 +21,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Query = new Query(
 
-					new DisMaxQuery()
+					new DisMaxQuery
 					{
 						Queries = new List<IQuery>
 						{
