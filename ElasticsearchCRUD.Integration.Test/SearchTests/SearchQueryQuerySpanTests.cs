@@ -202,7 +202,11 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 					new SpanNotQuery(
 						new SpanTermQuery("name", "one"),
 						new SpanTermQuery("name", "bvobx") { Boost = 1.9 }			
-					))
+					)
+					{
+						Pre = 2
+					}
+				)
 			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))

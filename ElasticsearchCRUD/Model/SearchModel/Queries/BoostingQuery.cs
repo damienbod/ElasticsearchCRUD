@@ -1,6 +1,4 @@
-﻿
-using System.Net.NetworkInformation;
-using ElasticsearchCRUD.Utils;
+﻿using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries
 {
