@@ -485,6 +485,5 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
 			}
 		}
-
 	}
 }

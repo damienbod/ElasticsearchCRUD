@@ -40,6 +40,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
+		/// <summary>
+		/// post
+		/// If set the amount of tokens after the include span can’t have overlap with the exclude span.
+		/// </summary>
 		public uint Post
 		{
 			get { return _post; }
@@ -50,6 +54,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
+		/// <summary>
+		/// dist
+		/// If set the amount of tokens from within the include span can’t have overlap with the exclude span. Equivalent of setting both pre and post. 
+		/// </summary>
 		public uint Dist
 		{
 			get { return _dist; }
@@ -59,12 +67,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 				_distSet = true;
 			}
 		}
-//post
-//If set the amount of tokens after the include span can’t have overlap with the exclude span.
-
-//dist
-//If set the amount of tokens from within the include span can’t have overlap with the exclude span. Equivalent of setting both pre and post. 
-
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -81,8 +83,15 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			_exclude.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
-			JsonHelper.WriteValue("pre", _pre,elasticsearchCrudJsonWriter,_preSet);
-			JsonHelper.WriteValue("post", _post, elasticsearchCrudJsonWriter, _postSet);
+			if (_distSet)
+			{
+				JsonHelper.WriteValue("dist", _dist, elasticsearchCrudJsonWriter, _distSet);
+			}
+			else
+			{
+				JsonHelper.WriteValue("pre", _pre, elasticsearchCrudJsonWriter, _preSet);
+				JsonHelper.WriteValue("post", _post, elasticsearchCrudJsonWriter, _postSet);
+			}
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

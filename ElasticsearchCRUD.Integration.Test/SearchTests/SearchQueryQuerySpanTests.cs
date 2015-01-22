@@ -194,7 +194,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
-		public void SearchQuerySpanNotQuery()
+		public void SearchQuerySpanNotQueryPostPre()
 		{
 			var search = new Search
 			{
@@ -204,7 +204,33 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 						new SpanTermQuery("name", "bvobx") { Boost = 1.9 }			
 					)
 					{
-						Pre = 2
+						Pre = 2,
+						Post = 6
+					}
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQuerySpanNotQueryDist()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new SpanNotQuery(
+						new SpanTermQuery("name", "one"),
+						new SpanTermQuery("name", "bvobx") { Boost = 1.9 }
+					)
+					{
+						Dist = 2
 					}
 				)
 			};
