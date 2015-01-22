@@ -15,6 +15,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			{
 				throw new ElasticsearchCrudException("parameter List<ISpanQuery> queries cannot be null");
 			}
+			if (queries.Count < 0)
+			{
+				throw new ElasticsearchCrudException("parameter List<ISpanQuery> queries should have at least one element");
+			}
 			_queries = queries;
 		}
 
