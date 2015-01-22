@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
@@ -168,6 +169,29 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
 			}
 		}
-	
+
+		[Test]
+		public void SearchQuerySpanOrQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(new SpanOrQuery(
+					new List<ISpanQuery>()
+					{
+						new SpanTermQuery("name", "one") { Boost = 1.9 },
+						new SpanMultiQuery( new PrefixQuery("name", "on"))
+					
+					}))
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
+
 	}
 }
