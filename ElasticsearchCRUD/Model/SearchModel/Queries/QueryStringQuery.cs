@@ -372,11 +372,5 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}
-
-	public enum QueryDefaultOperator
-	{
-		AND,
-		OR
-	}
 }
 

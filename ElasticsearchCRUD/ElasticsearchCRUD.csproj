@@ -201,6 +201,7 @@
     <Compile Include="Model\SearchModel\Filters\GeoDistanceFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeohashCellFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoPolygonFilter.cs" />
+    <Compile Include="Model\SearchModel\Queries\CommonTermsQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\GeoShapeQuery.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoShapeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoShapePreIndexedFilter.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="Model\SearchModel\IQueryHolder.cs" />
     <Compile Include="Model\SearchModel\Queries\IdsQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\NestedQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\QueryDefaultOperator.cs" />
     <Compile Include="Model\SearchModel\Queries\QueryStringQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\RegExpQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\ScoreMode.cs" />

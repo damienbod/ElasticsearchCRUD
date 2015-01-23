@@ -69,7 +69,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchMappingResolver()))
 			{
-				context.IndexCreate<TestObjParentSep>();
+				context.IndexCreate<MoreLikeThisTestDto>();
 				Thread.Sleep(1000);
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
