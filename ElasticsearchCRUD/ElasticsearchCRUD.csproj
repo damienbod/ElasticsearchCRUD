@@ -236,6 +236,7 @@
     <Compile Include="Model\SearchModel\Queries\ScoreMode.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanFirstQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanMultiQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\SpanNearQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanNotQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanOrQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanTermQuery.cs" />

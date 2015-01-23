@@ -243,6 +243,33 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQuerySpanNearQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new SpanNearQuery(new List<ISpanQuery>
+					{
+						new SpanTermQuery("details", "document"),
+						new SpanTermQuery("details", "two") {Boost = 1.9}
+					}, 50)
+					{
+						CollectPayloads=true,
+						InOrder=true
+					})
+						
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 
 }
