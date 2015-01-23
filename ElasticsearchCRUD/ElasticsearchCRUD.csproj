@@ -202,6 +202,10 @@
     <Compile Include="Model\SearchModel\Filters\GeohashCellFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoPolygonFilter.cs" />
     <Compile Include="Model\SearchModel\Queries\CommonTermsQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\FunctionQuery\FunctionScoreFunction.cs" />
+    <Compile Include="Model\SearchModel\Queries\FunctionQuery\FunctionScoreQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\FunctionQuery\FunctionScoreQueryBoostMode.cs" />
+    <Compile Include="Model\SearchModel\Queries\FunctionQuery\FunctionScoreQueryScoreMode.cs" />
     <Compile Include="Model\SearchModel\Queries\GeoShapeQuery.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoShapeFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoShapePreIndexedFilter.cs" />
