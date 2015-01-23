@@ -250,7 +250,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var search = new Search
 			{
 				Query = new Query(
-					new SpanNearQuery(new List<ISpanQuery>
+					new SpanNearQuery(new List<SpanTermQuery>
 					{
 						new SpanTermQuery("details", "document"),
 						new SpanTermQuery("details", "two") {Boost = 1.9}

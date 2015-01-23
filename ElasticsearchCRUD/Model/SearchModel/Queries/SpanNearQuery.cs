@@ -12,14 +12,14 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 	/// </summary>
 	public class SpanNearQuery : ISpanQuery
 	{
-		private readonly List<ISpanQuery> _queries;
+		private readonly List<SpanTermQuery> _queries;
 		private readonly uint _slop;
 		private bool _inOrder;
 		private bool _inOrderSet;
 		private bool _collectPayloads;
 		private bool _collectPayloadsSet;
 
-		public SpanNearQuery(List<ISpanQuery> queries, uint slop)
+		public SpanNearQuery(List<SpanTermQuery> queries, uint slop)
 		{
 			if (queries == null)
 			{

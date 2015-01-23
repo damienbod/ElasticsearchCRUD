@@ -485,5 +485,30 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQuerySimpleQueryStringQuery()
+		{
+			var search = new Search
+			{
+				Query = new Query(new SimpleQueryStringQuery("doc*")
+				{
+					Analyzer=DefaultAnalyzers.Snowball,
+					DefaultOperator= QueryDefaultOperator.OR,
+					Flags = SimpleQueryFlags.ALL,
+					Lenient=true,
+					LowercaseExpandedTerms=true,
+					Fields = new List<string> { "details"}
+				}) 
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }

@@ -127,7 +127,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 				_allowLeadingWildcardSet = true;
 			}
 		}
-
 		
 		/// <summary>
 		/// lowercase_expanded_terms
