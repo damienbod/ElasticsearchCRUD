@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 	{
 		private readonly IFilter _filter;
 		private readonly IQuery _query;
-		private readonly List<FunctionScoreFunction> _functions;
+		private readonly List<BaseScoreFunction> _functions;
 		private readonly bool _querySet;
 		private readonly bool _filterSet;
 		private double _boost;
@@ -25,7 +25,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 		private double _maxBoost;
 		private bool _maxBoostSet;
 
-		public FunctionScoreQuery(IQuery query, List<FunctionScoreFunction> functions)
+		public FunctionScoreQuery(IQuery query, List<BaseScoreFunction> functions)
 		{
 			_query = query;
 			_functions = functions;

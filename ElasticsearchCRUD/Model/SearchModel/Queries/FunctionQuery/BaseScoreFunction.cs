@@ -1,16 +1,10 @@
+using System;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 {
-	public class FunctionScoreFunction
+	public abstract class BaseScoreFunction
 	{
-		private readonly string _function;
-
-		public FunctionScoreFunction(string function)
-		{
-			_function = function;
-		}
-
 		private IFilter _filter;
 		private bool _filterSet;
 		private double _weight;
@@ -36,7 +30,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 			}
 		}
 
-		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		public abstract void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
+
+		protected virtual void WriteJsonBase(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, Action<ElasticsearchCrudJsonWriter> writeFunctionSpecific)
 		{
 			if (_filterSet)
 			{
@@ -47,11 +43,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 			}
 			JsonHelper.WriteValue("weight", _weight, elasticsearchCrudJsonWriter, _weightSet);
 
-			// TODO change the function the a class
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("FUNCTION");
-			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-			elasticsearchCrudJsonWriter.JsonWriter.WriteRaw(_function);
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			writeFunctionSpecific.Invoke(elasticsearchCrudJsonWriter);
 		}
 
 	}
