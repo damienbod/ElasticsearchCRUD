@@ -241,6 +241,7 @@
     <Compile Include="Model\SearchModel\Queries\SpanNotQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanOrQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanTermQuery.cs" />
+    <Compile Include="Model\SearchModel\Queries\TopChildrenQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\WildcardQuery.cs" />
     <Compile Include="Model\SearchModel\ScriptParameter.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortGeoDistance.cs" />

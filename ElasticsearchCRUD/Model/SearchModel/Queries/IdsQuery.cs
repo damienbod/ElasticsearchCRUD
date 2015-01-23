@@ -13,7 +13,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		/// Filters documents that only have the provided ids. Note, this filter does not require the _id field to be indexed since it works using the _uid field.
 		/// </summary>
 		/// <param name="ids"></param>
-		/// <param name="type"></param>
 		public IdsQuery(List<object> ids)
 		{
 			_ids = ids;

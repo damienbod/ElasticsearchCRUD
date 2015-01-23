@@ -85,7 +85,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<TestObjParentSep>(); entityResult.Wait();
+				var entityResult = context.DeleteIndexAsync<MoreLikeThisTestDto>(); entityResult.Wait();
 			}
 		}
 	}
