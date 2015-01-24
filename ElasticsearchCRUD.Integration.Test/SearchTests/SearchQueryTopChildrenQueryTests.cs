@@ -119,7 +119,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(ElasticsearchMappingResolver,true,true)))
 			{
-				//context.IndexCreate<TestObjParentSep>();
+				context.IndexCreate<TestObjParentSep>();
 				Thread.Sleep(1000);
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
@@ -135,7 +135,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.AllowDeleteForIndex = true;
-				//var entityResult = context.DeleteIndexAsync<TestObjParentSep>(); entityResult.Wait();
+				var entityResult = context.DeleteIndexAsync<TestObjParentSep>(); entityResult.Wait();
 			}
 		}
 	}
