@@ -85,7 +85,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 
 			JsonHelper.WriteValue("origin", _origin, elasticsearchCrudJsonWriter, _originSet);
 			JsonHelper.WriteValue("offset", _offset, elasticsearchCrudJsonWriter, _offsetSet);
-			JsonHelper.WriteValue("scale", _scale, elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("scale", _scale.GetTimeUnit(), elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("decay", _decay, elasticsearchCrudJsonWriter, _decaySet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

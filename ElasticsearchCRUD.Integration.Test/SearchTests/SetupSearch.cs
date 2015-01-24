@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using ElasticsearchCRUD.Model.GeoModel;
 using NUnit.Framework;
@@ -19,7 +20,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Name = "one",
 				CircleTest = new GeoShapeCircle { Radius = "100m", Coordinates = new GeoPoint(45, 45) },
 				Location = new GeoPoint(45, 45),
-				Lift = 2.9
+				Lift = 2.9,
+				DateOfDetails = DateTime.UtcNow.AddDays(-20)
 			};
 
 			var doc2 = new SearchTest
@@ -29,7 +31,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Name = "two",
 				CircleTest = new GeoShapeCircle { Radius = "50m", Coordinates = new GeoPoint(46, 45) },
 				Location = new GeoPoint(46, 45),
-				Lift = 2.5
+				Lift = 2.5,
+				DateOfDetails = DateTime.UtcNow.AddDays(-209)
 			};
 			var doc3 = new SearchTest
 			{
@@ -38,7 +41,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Name = "three",
 				CircleTest = new GeoShapeCircle { Radius = "80m", Coordinates = new GeoPoint(37, 42) },
 				Location = new GeoPoint(37, 42),
-				Lift = 2.1
+				Lift = 2.1,
+				DateOfDetails = DateTime.UtcNow.AddDays(-34)
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{

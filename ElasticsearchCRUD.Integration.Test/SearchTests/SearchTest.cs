@@ -1,3 +1,4 @@
+using System;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.GeoModel;
@@ -20,5 +21,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		public GeoPoint Location { get; set; }
 
 		public double Lift { get; set; }
+
+		public DateTime DateOfDetails { get; set; }
 	}
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
@@ -29,6 +30,38 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 								Filter = new MatchAllFilter(),
 								Offset= 3,
 								Weight= 3.0
+							}
+						}
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryFunctionScoreQueryLinearDateTime()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new FunctionScoreQuery(
+						new MatchAllQuery(),
+						new List<BaseScoreFunction>
+						{
+							new LinearDateTimePointFunction("dateofdetails", new TimeUnitDay(2))
+							{
+								Decay=0.3,
+								Filter = new MatchAllFilter(),
+								Offset= 3,
+								Weight= 3.0,
+								Origin = DateTime.UtcNow
 							}
 						}
 					)
@@ -107,6 +140,38 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
+		public void SearchQueryFunctionScoreQueryGaussDateTime()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new FunctionScoreQuery(
+						new MatchAllQuery(),
+						new List<BaseScoreFunction>
+						{
+							new GaussDateTimePointFunction("dateofdetails", new TimeUnitDay(2))
+							{
+								Decay=0.3,
+								Filter = new MatchAllFilter(),
+								Offset= 3,
+								Weight= 3.0,
+								Origin = DateTime.UtcNow
+							}
+						}
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
 		public void SearchQueryFunctionScoreQueryGaussGeoPoint()
 		{
 			var search = new Search
@@ -153,6 +218,38 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 								Filter = new MatchAllFilter(),
 								Offset= 3,
 								Weight= 3.0
+							}
+						}
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryFunctionScoreQueryExpDateTime()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new FunctionScoreQuery(
+						new MatchAllQuery(),
+						new List<BaseScoreFunction>
+						{
+							new ExpDateTimePointFunction("dateofdetails", new TimeUnitDay(2))
+							{
+								Decay=0.3,
+								Filter = new MatchAllFilter(),
+								Offset= 3,
+								Weight= 3.0,
+								Origin = DateTime.UtcNow
 							}
 						}
 					)
