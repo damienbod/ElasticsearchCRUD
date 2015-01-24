@@ -87,6 +87,13 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.26</strong><em> 2015.01.24</em>
+- Support for core type geometrycollection
+- Support for nested filter and query
+- Support mapping for nested objects
+- Add more search queries:
+Common Terms Query, Function Score Query, GeoShape Query, Has Child Query, Has Parent Query, Ids Query, More Like This Query, Nested Query, Prefix Query, Query String Query, Simple Query String Query, Regexp Query, Span First Query, Span Multi Term Query, Span Near Query, Span Not Query, Span Or Query, Span Term Query, Top Children Query, Wildcard Query
+
 <strong>Version 1.0.25</strong><em> 2015.01.18</em>
 - Support for search filters:
 And Filter, Bool Filter, Exists Filter, Geo Bounding Box Filter, Geo Distance Filter, Geo Distance Range Filter, Geo Polygon Filter, GeoShape Filter, GeoShape Indexed Filter, Geohash Cell Filter, Has Child Filter, Has Parent Filter, Ids Filter, Limit Filter, Match All Filter, Missing Filter, Not Filter, Or Filter, Prefix Filter, Query Filter, Range Filter, Regexp Filter, Script Filter, Term Filter, Terms Filter
