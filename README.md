@@ -91,7 +91,7 @@ Example showing mapping configuration.
 - Support for core type geometrycollection
 - Support for nested filter and query
 - Support mapping for nested objects
-- Add more search queries:
+- Added more search queries:
 Common Terms Query, Function Score Query, GeoShape Query, Has Child Query, Has Parent Query, Ids Query, More Like This Query, Nested Query, Prefix Query, Query String Query, Simple Query String Query, Regexp Query, Span First Query, Span Multi Term Query, Span Near Query, Span Not Query, Span Or Query, Span Term Query, Top Children Query, Wildcard Query
 
 <strong>Version 1.0.25</strong><em> 2015.01.18</em>
