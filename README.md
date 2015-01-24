@@ -39,6 +39,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="https://damienbod.wordpress.com/2015/01/07/mvc-google-maps-search-using-elasticsearch/">Part 13: MVC google maps search using Elasticsearch</a>
 
+<a href="https://damienbod.wordpress.com/2015/01/24/search-queries-and-filters-with-elasticsearchcrud/">Part 14: Search Queries and Filters with ElasticsearchCRUD</a>
+
 ========================
 
 <strong>Examples:</strong>
