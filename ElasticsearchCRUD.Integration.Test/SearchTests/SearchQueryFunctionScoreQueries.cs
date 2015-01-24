@@ -295,6 +295,118 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
 			}
 		}
+
+		[Test]
+		public void SearchQueryFunctionScoreQueryScriptScoreFunction()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new FunctionScoreQuery(
+						new MatchAllQuery(),
+						new List<BaseScoreFunction>
+						{
+							new ScriptScoreFunction("_score * doc['lift'].value / pow(param1, param2)")
+							{
+								Params= new List<ScriptParameter>
+								{
+									new ScriptParameter("param1", 2.0),
+									new ScriptParameter("param2", 2.5)
+								}
+							}
+						}
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryFunctionScoreQueryRandomFunctionString()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new FunctionScoreQuery(
+						new MatchAllQuery(),
+						new List<BaseScoreFunction>
+						{
+							new RandomScoreFunction<string>("d")
+						}
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryFunctionScoreQueryRandomFunctionLong()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new FunctionScoreQuery(
+						new MatchAllQuery(),
+						new List<BaseScoreFunction>
+						{
+							new RandomScoreFunction<long>(4)
+						}
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryFunctionScoreQueryFieldValueFactorFunction()
+		{
+			var search = new Search
+			{
+				Query = new Query(
+					new FunctionScoreQuery(
+						new MatchAllQuery(),
+						new List<BaseScoreFunction>
+						{
+							new FieldValueFactorFunction("lift")
+							{
+								Factor=2.3,
+								Modifier= FieldValueFactorModifier.sqrt
+							}
+						}
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+		
 	}
 
 }

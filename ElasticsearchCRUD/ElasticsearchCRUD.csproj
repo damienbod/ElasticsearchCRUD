@@ -208,6 +208,7 @@
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\ExpDateTimePointFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\ExpGeoPointFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\ExpNumericFunction.cs" />
+    <Compile Include="Model\SearchModel\Queries\FunctionQuery\FieldValueFactorFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\FunctionScoreQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\FunctionScoreQueryBoostMode.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\FunctionScoreQueryScoreMode.cs" />

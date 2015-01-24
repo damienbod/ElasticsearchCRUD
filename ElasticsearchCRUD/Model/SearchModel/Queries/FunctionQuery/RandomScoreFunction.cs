@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ElasticsearchCRUD.Utils;
+﻿using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 {
 	public class RandomScoreFunction<T>: BaseScoreFunction
 	{
-		private T _seed;
-		private bool _seedSet;
+		private readonly T _seed;
 
-		public T Lang
+		public RandomScoreFunction(T seed)
 		{
-			get { return _seed; }
-			set
-			{
-				_seed = value;
-				_seedSet = true;
-			}
+			_seed = seed;
 		}
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
@@ -32,7 +21,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("random_score");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			JsonHelper.WriteValue("seed", _seed, elasticsearchCrudJsonWriter, _seedSet);		
+			JsonHelper.WriteValue("seed", _seed, elasticsearchCrudJsonWriter);		
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
