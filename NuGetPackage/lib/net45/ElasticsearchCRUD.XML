@@ -329,6 +329,41 @@
             but can be overridden in each individual GeoJSON document.
             </summary>
         </member>
+        <member name="T:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNestedAttribute">
+            <summary>
+             This attribute is used if you need to change the structure of the nested objects in Elastissearch to nested nested objects.
+            
+            Nested fields may contain other nested fields. 
+            The include_in_parent object refers to the direct parent of the field, while the include_in_root parameter 
+            refers only to the topmost “root” object or document.
+            
+            Nested docs will automatically use the root doc _all field only.
+            
+            Internally, nested objects are indexed as additional documents, but, since they can be guaranteed to be indexed within the same "block", 
+            it allows for extremely fast joining with parent docs.
+            
+            Those internal nested documents are automatically masked away when doing operations against the index (like searching with a match_all query), 
+            and they bubble out when using the nested query.
+            
+            Because nested docs are always masked to the parent doc, the nested docs can never be accessed outside the scope of the nested query. 
+            For example stored fields can be enabled on fields inside nested objects, but there is no way of retrieving them, 
+            since stored fields are fetched outside of the nested query scope.
+            
+            The _source field is always associated with the parent document and because of that field values via the source can be fetched for nested object.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNestedAttribute.IncludeInParent">
+            <summary>
+            include_in_parent
+            You may want to index inner objects both as nested fields and as flattened object fields, eg for highlighting. This can be achieved by setting include_in_parent to true:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchNestedAttribute.IncludeInRoot">
+            <summary>
+            include_in_root
+            
+            </summary>
+        </member>
         <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes.ElasticsearchString.IndexName">
             <summary>
             index_name
@@ -2425,6 +2460,246 @@
             or none which disables bounding box optimization. 
             </summary>
         </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.CommonTermsQuery">
+            <summary>
+            The common terms query is a modern alternative to stopwords which improves the precision and recall of search results (by taking stopwords into account), without sacrificing performance.
+            
+            The problem
+            
+            Every term in a query has a cost. A search for "The brown fox" requires three term queries, one for each of "the", "brown" and "fox", 
+            all of which are executed against all documents in the index. The query for "the" is likely to match many documents and thus has a much smaller impact on relevance than the other two terms.
+            
+            Previously, the solution to this problem was to ignore terms with high frequency. By treating "the" as a stopword, 
+            we reduce the index size and reduce the number of term queries that need to be executed.
+            
+            The problem with this approach is that, while stopwords have a small impact on relevance, they are still important. 
+            If we remove stopwords, we lose precision, (eg we are unable to distinguish between "happy" and "not happy") 
+            and we lose recall (eg text like "The The" or "To be or not to be" would simply not exist in the index).
+            
+            The solution
+            
+            The common terms query divides the query terms into two groups: more important (ie low frequency terms) and less important (ie high frequency terms 
+            which would previously have been stopwords).
+            
+            First it searches for documents which match the more important terms. These are the terms which appear in fewer documents and have a greater impact on relevance.
+            
+            Then, it executes a second query for the less important terms — terms which appear frequently and have a low impact on relevance. 
+            But instead of calculating the relevance score for all matching documents, it only calculates the _score for documents already matched by the first query. 
+            In this way the high frequency terms can improve the relevance calculation without paying the cost of poor performance.
+            
+            If a query consists only of high frequency terms, then a single query is executed as an AND (conjunction) query, in other words all terms are required. 
+            Even though each individual term will match many documents, the combination of terms narrows down the resultset to only the most relevant. 
+            The single query can also be executed as an OR with a specific minimum_should_match, in this case a high enough value should probably be used.
+            
+            Terms are allocated to the high or low frequency groups based on the cutoff_frequency, which can be specified as an absolute frequency (>=1) or as a relative frequency (0.0 .. 1.0).
+            
+            Perhaps the most interesting property of this query is that it adapts to domain specific stopwords automatically. For example, 
+            on a video hosting site, common terms like "clip" or "video" will automatically behave as stopwords without the need to maintain a manual list.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.CommonTermsQuery.LowFreqOperator">
+            <summary>
+            low_freq_operator
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.CommonTermsQuery.HighFreqOperator">
+            <summary>
+            high_freq_operator
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.CommonTermsQuery.MinimumShouldMatch">
+            <summary>
+            minimum_should_match
+            This can be set or the high_freq, low_freq values. If minimum_should_match is set, the other values will be ignored
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DateTimeDecayBaseScoreFunction._origin">
+            <summary>
+            origin
+            The point of origin used for calculating distance. Must be given as a number for numeric field, date for date fields and geo point for geo fields. 
+            Required for geo and numeric field. For date fields the default is now. Date math (for example now-1h) is supported for origin.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DateTimeDecayBaseScoreFunction._scale">
+            <summary>
+            scale
+            Required for all types. Defines the distance from origin at which the computed score will equal decay parameter. 
+            For geo fields: Can be defined as number+unit (1km, 12m,…). Default unit is meters. For date fields: Can to be defined as a number+unit ("1h", "10d",…). 
+            Default unit is milliseconds. For numeric field: Any number.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DateTimeDecayBaseScoreFunction.Offset">
+            <summary>
+            offset
+            If an offset is defined, the decay function will only compute the decay function for documents with a distance greater that the defined offset. The default is 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DateTimeDecayBaseScoreFunction.Decay">
+            <summary>
+            decay
+            The decay parameter defines how documents are scored at the distance given at scale. If no decay is defined, documents at the distance scale will be scored 0.5. 
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DecayBaseScoreFunction`1._origin">
+            <summary>
+            origin
+            The point of origin used for calculating distance. Must be given as a number for numeric field, date for date fields and geo point for geo fields. 
+            Required for geo and numeric field. For date fields the default is now. Date math (for example now-1h) is supported for origin.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DecayBaseScoreFunction`1._scale">
+            <summary>
+            scale
+            Required for all types. Defines the distance from origin at which the computed score will equal decay parameter. 
+            For geo fields: Can be defined as number+unit (1km, 12m,…). Default unit is meters. For date fields: Can to be defined as a number+unit ("1h", "10d",…). 
+            Default unit is milliseconds. For numeric field: Any number.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DecayBaseScoreFunction`1.Offset">
+            <summary>
+            offset
+            If an offset is defined, the decay function will only compute the decay function for documents with a distance greater that the defined offset. The default is 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.DecayBaseScoreFunction`1.Decay">
+            <summary>
+            decay
+            The decay parameter defines how documents are scored at the distance given at scale. If no decay is defined, documents at the distance scale will be scored 0.5. 
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.GeoDecayBaseScoreFunction._origin">
+            <summary>
+            origin
+            The point of origin used for calculating distance. Must be given as a number for numeric field, date for date fields and geo point for geo fields. 
+            Required for geo and numeric field. For date fields the default is now. Date math (for example now-1h) is supported for origin.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.GeoDecayBaseScoreFunction._scale">
+            <summary>
+            scale
+            Required for all types. Defines the distance from origin at which the computed score will equal decay parameter. 
+            For geo fields: Can be defined as number+unit (1km, 12m,…). Default unit is meters. For date fields: Can to be defined as a number+unit ("1h", "10d",…). 
+            Default unit is milliseconds. For numeric field: Any number.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.GeoDecayBaseScoreFunction.Offset">
+            <summary>
+            offset
+            If an offset is defined, the decay function will only compute the decay function for documents with a distance greater that the defined offset. The default is 0.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.GeoDecayBaseScoreFunction.Decay">
+            <summary>
+            decay
+            The decay parameter defines how documents are scored at the distance given at scale. If no decay is defined, documents at the distance scale will be scored 0.5. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FieldValueFactorFunction.#ctor(System.String)">
+            <summary>
+            The field_value_factor function allows you to use a field from a document to influence the score. It’s similar to using the script_score function, 
+            however, it avoids the overhead of scripting. If used on a multi-valued field, only the first value of the field is used in calculations.
+            
+            Keep in mind that taking the log() of 0, or the square root of a negative number is an illegal operation, and an exception will be thrown. 
+            Be sure to limit the values of the field with a range filter to avoid this, or use log1p and ln1p.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FieldValueFactorFunction.Factor">
+            <summary>
+            Optional factor to multiply the field value with, defaults to 1.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FieldValueFactorFunction.Modifier">
+            <summary>
+            modifier
+            Modifier to apply to the field value, can be one of: none, log, log1p, log2p, ln, ln1p, ln2p, square, sqrt, or reciprocal. Defaults to none.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQuery">
+            <summary>
+            The function_score allows you to modify the score of documents that are retrieved by a query. 
+            This can be useful if, for example, a score function is computationally expensive and it is sufficient to compute the score on a filtered set of documents.
+            function_score provides the same functionality that custom_boost_factor, 
+            custom_score and custom_filters_score provided but with additional capabilities such as distance and recency scoring
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQuery.ScoreMode">
+            <summary>
+            score_mode
+            If no filter is given with a function this is equivalent to specifying "match_all": {}
+            First, each document is scored by the defined functions. The parameter score_mode specifies how the computed scores are combined.
+            
+            Because scores can be on different scales (for example, between 0 and 1 for decay functions but arbitrary for field_value_factor) 
+            and also because sometimes a different impact of functions on the score is desirable, the score of each function can be adjusted with a user defined weight ( [1.4.0.Beta1] 
+            Added in 1.4.0.Beta1.). The weight can be defined per function in the functions array (example above) and is multiplied with the score computed by the respective function. 
+            If weight is given without any other function declaration, weight acts as a function that simply returns the weight.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQuery.BoostMode">
+            <summary>
+            The new score can be restricted to not exceed a certain limit by setting the max_boost parameter. The default for max_boost is FLT_MAX.
+            Finally, the newly computed score is combined with the score of the query. The parameter boost_mode defines how.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryBoostMode.multiply">
+            <summary>
+            query score and function score is multiplied (default)
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryBoostMode.replace">
+            <summary>
+            only function score is used, the query score is ignored
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryBoostMode.sum">
+            <summary>
+            query score and function score are added
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryBoostMode.avg">
+            <summary>
+            average
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryBoostMode.max">
+            <summary>
+            max of query score and function score
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryBoostMode.min">
+            <summary>
+            min of query score and function score 
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryScoreMode.multiply">
+            <summary>
+            scores are multiplied (default)
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryScoreMode.sum">
+            <summary>
+            scores are summed
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryScoreMode.avg">
+            <summary>
+            scores are averaged
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryScoreMode.first">
+            <summary>
+            the first function that has a matching filter is applied
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryScoreMode.max">
+            <summary>
+            maximum score is used
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery.FunctionScoreQueryScoreMode.min">
+            <summary>
+            minimum score is used 
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.GeoShapePreIndexedFilter">
              <summary>
              The Filter also supports using a shape which has already been indexed in another index and/or index type. 
@@ -2479,6 +2754,24 @@
             max_children
             </summary>
         </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.HasParentQuery">
+            <summary>
+            The has_parent query works the same as the has_parent filter, by automatically wrapping the filter with a constant_score 
+            (when using the default score type). It has the same syntax as the has_parent filter.
+            
+            The has_parent also has scoring support. The supported score types are score or none. 
+            The default is none and this ignores the score from the parent document. 
+            The score is in this case equal to the boost on the has_parent query (Defaults to 1). 
+            If the score type is set to score, then the score of the matching parent document is aggregated into the child documents belonging to the matching parent document. 
+            The score type can be specified with the score_mode field inside the has_parent query
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.HasParentQuery.ScoreMode">
+            <summary>
+            score_mode
+            score, none
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.HasParentFilter">
             <summary>
             The has_parent filter accepts a query and a parent type. The query is executed in the parent document space, which is specified by the parent type. 
@@ -2511,6 +2804,134 @@
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.OrFilter">
             <summary>
             A filter that matches documents using the OR boolean operator on other filters. Can be placed within queries that accept a filter.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.HasChildQuery">
+            <summary>
+            The has_child filter accepts a query and the child type to run against, and results in parent documents that have child docs matching the query.
+            
+            The type is the child type to query against. The parent type to return is automatically detected based on the mappings.
+            
+            The way that the filter is implemented is by first running the child query, doing the matching up to the parent doc for each document matched.
+            
+            The has_child filter allows you to specify that a minimum and/or maximum number of children are required to match for the parent doc to be considered a match:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.HasChildQuery.MinChildren">
+            <summary>
+            min_children
+            
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.HasChildQuery.MaxChildren">
+            <summary>
+            max_children
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.HasChildQuery.ScoreMode">
+            <summary>
+            score_mode
+            The score_mode allows to set how inner children matching affects scoring of parent. It defaults to avg, but can be sum, max and none.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery">
+            <summary>
+            More like this query find documents that are "like" provided text by running it against one or more fields.
+            Additionally, More Like This can find documents that are "like" a set of chosen documents. 
+            The syntax to specify one or more documents is similar to the Multi GET API, and supports the ids or docs array. 
+            If only one document is specified, the query behaves the same as the More Like This API.
+            
+            Under the hood, more_like_this simply creates multiple should clauses in a bool query of interesting terms extracted from some provided text. 
+            The interesting terms are selected with respect to their tf-idf scores. These are controlled by min_term_freq, min_doc_freq, and max_doc_freq. 
+            The number of interesting terms is controlled by max_query_terms. 
+            While the minimum number of clauses that must be satisfied is controlled by percent_terms_to_match. 
+            The terms are extracted from like_text which is analyzed by the analyzer associated with the field, unless specified by analyzer. 
+            There are other parameters, such as min_word_length, max_word_length or stop_words, to control what terms should be considered as interesting. 
+            In order to give more weight to more interesting terms, 
+            each boolean clause associated with a term could be boosted by the term tf-idf score times some boosting factor boost_terms. 
+            When a search for multiple docs is issued, More Like This generates a more_like_this query per document field in fields. 
+            These fields are specified as a top level parameter or within each doc.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.LikeText">
+            <summary>
+            like_text
+            The text to find documents like it, required if ids or docs are not specified.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.Include">
+            <summary>
+            include
+            When using ids or docs, specifies whether the documents should be included from the search. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.Exclude">
+            <summary>
+            exclude
+            When using ids or docs, specifies whether the documents should be excluded from the search. Defaults to true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.PercentTermsToMatch">
+            <summary>
+            percent_terms_to_match
+            From the generated query, the percentage of terms that must match (float value between 0 and 1). Defaults to 0.3 (30 percent).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MinTermFreq">
+            <summary>
+            min_term_freq
+            The frequency below which terms will be ignored in the source doc. The default frequency is 2.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MaxQueryTerms">
+            <summary>
+            max_query_terms
+            The maximum number of query terms that will be included in any generated query. Defaults to 25.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.Analyzer">
+            <summary>
+            analyzer
+            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
+            It default to the field explicit mapping definition, or the default search analyzer, for example:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.StopWords">
+            <summary>
+            stop_words
+            An array of stop words. Any word in this set is considered "uninteresting" and ignored. 
+            Even if your Analyzer allows stopwords, you might want to tell the MoreLikeThis code to ignore them, 
+            as for the purposes of document similarity it seems reasonable to assume that "a stop word is never interesting".
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MinDocFreq">
+            <summary>
+            min_doc_freq
+            The frequency at which words will be ignored which do not occur in at least this many docs. Defaults to 5.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MaxDocFreq">
+            <summary>
+            max_doc_freq
+            The maximum frequency in which words may still appear. Words that appear in more than this many docs will be ignored. Defaults to unbounded.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MinWordLength">
+            <summary>
+            min_word_length
+            The minimum word length below which words will be ignored. Defaults to 0.(Old name "min_word_len" is deprecated)
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MaxWordLength">
+            <summary>
+            max_word_length
+            The maximum word length above which words will be ignored. Defaults to unbounded (0). (Old name "max_word_len" is deprecated)
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.BoostTerms">
+            <summary>
+            boost_terms
+            Sets the boost factor to use when boosting terms. Defaults to deactivated (0). Any other value activates boosting with given boost factor.
             </summary>
         </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.QueryFilter">
@@ -2622,6 +3043,25 @@
             <summary>
             Generates a term filter (which is cached) for each term, and wraps those in an or filter. The or filter itself is not cached. Generally, 
             the bool execution mode should be preferred. 
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.SearchModel.Queries.IdsQuery.#ctor(System.Collections.Generic.List{System.Object})">
+            <summary>
+            Filters documents that only have the provided ids. Note, this filter does not require the _id field to be indexed since it works using the _uid field.
+            </summary>
+            <param name="ids"></param>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.NestedQuery">
+            <summary>
+            Nested query allows to query nested objects / docs (see nested mapping). 
+            The query is executed against the nested objects / docs as if they were indexed as separate docs (they are, internally) 
+            and resulting in the root parent doc (or parent nested mapping). 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.NestedQuery.ScoreMode">
+            <summary>
+            score_mode
+            The score_mode allows to set how inner children matching affects scoring of parent. It defaults to avg, but can be sum, max and none.
             </summary>
         </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.QueryStringQuery">
@@ -2759,6 +3199,168 @@
             <summary>
             tie_breaker
             When using dis_max, the disjunction max tie breaker. Defaults to 0
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.RegExpQuery">
+            <summary>
+            The regexp query allows you to use regular expression term queries. See Regular expression syntax for details of the supported regular expression language. 
+            The "term queries" in that first sentence means that Elasticsearch will apply the regexp to the terms produced by the tokenizer for that field, 
+            and not to the original text of the field.
+            
+            Note: The performance of a regexp query heavily depends on the regular expression chosen. 
+            Matching everything like .* is very slow as well as using lookaround regular expressions. 
+            If possible, you should try to use a long prefix before your regular expression starts. Wildcard matchers like .*?+ will mostly lower performance.
+            
+            http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery">
+             <summary>
+             A query that uses the SimpleQueryParser to parse its context. Unlike the regular query_string query, 
+             the simple_query_string query will never throw an exception, and discards invalid parts of the query
+             
+             The simple_query_string supports the following special characters:
+            
+             + signifies AND operation
+             | signifies OR operation
+             - negates a single token
+             " wraps a number of tokens to signify a phrase for searching
+             * at the end of a term signifies a prefix query
+             ( and ) signify precedence
+             ~N after a word signifies edit distance (fuzziness)
+             ~N after a phrase signifies slop amount 
+             </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery.DefaultOperator">
+            <summary>
+            default_operator
+            The default operator used if no explicit operator is specified. For example, with a default operator of OR, the query capital of Hungary is translated to capital OR of OR Hungary, 
+            and with default operator of AND, the same query is translated to capital AND of AND Hungary. The default value is OR.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery.Analyzer">
+            <summary>
+            analyzer
+            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
+            It default to the field explicit mapping definition, or the default search analyzer, for example:
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery.LowercaseExpandedTerms">
+            <summary>
+            lowercase_expanded_terms
+            Whether terms of wildcard, prefix, fuzzy, and range queries are to be automatically lower-cased or not (since they are not analyzed). Default it true.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery.Lenient">
+            <summary>
+            lenient
+            If set to true will cause format based failures (like providing text to a numeric field) to be ignored.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery.Locale">
+            <summary>
+            _locale
+            Locale that should be used for string conversions. Defaults to ROOT.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery.Fields">
+            <summary>
+            fields
+            The fields to perform the parsed query against. Defaults to the index.query.default_field index settings, which in turn defaults to _all.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.SpanFirstQuery">
+            <summary>
+            Matches spans near the beginning of a field. The span first query maps to Lucene SpanFirstQuery.
+            The match clause can be any other span type query. The end controls the maximum end position permitted in a match.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.SpanMultiQuery">
+            <summary>
+            The span_multi query allows you to wrap a multi term query (one of fuzzy, prefix, term range or regexp query) as a span query, so it can be nested. Example:
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.SpanNearQuery">
+            <summary>
+            Matches spans which are near one another. 
+            One can specify slop, the maximum number of intervening unmatched positions, as well as whether matches are required to be in-order. 
+            The span near query maps to Lucene SpanNearQuery. 
+            
+            The clauses element is a list of one or more other span type queries and the slop controls the maximum number of intervening unmatched positions permitted.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SpanNearQuery.InOrder">
+            <summary>
+            in_order
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SpanNearQuery.CollectPayloads">
+            <summary>
+            collect_payloads
+            </summary>
+        </member>
+        <member name="M:ElasticsearchCRUD.Model.SearchModel.Queries.SpanNotQuery.#ctor(ElasticsearchCRUD.Model.SearchModel.Queries.ISpanQuery,ElasticsearchCRUD.Model.SearchModel.Queries.ISpanQuery)">
+            <summary>
+            Removes matches which overlap with another span query. The span not query maps to Lucene SpanNotQuery.
+            The include and exclude clauses can be any span type query. The include clause is the span query whose matches are filtered, 
+            and the exclude clause is the span query whose matches must not overlap those returned.
+            
+            In the above example all documents with the term hoya are filtered except the ones that have la preceeding them.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SpanNotQuery.Pre">
+            <summary>
+            pre
+            If set the amount of tokens before the include span can’t have overlap with the exclude span.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SpanNotQuery.Post">
+            <summary>
+            post
+            If set the amount of tokens after the include span can’t have overlap with the exclude span.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.SpanNotQuery.Dist">
+            <summary>
+            dist
+            If set the amount of tokens from within the include span can’t have overlap with the exclude span. Equivalent of setting both pre and post. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.SpanOrQuery">
+            <summary>
+            Matches the union of its span clauses. The span or query maps to Lucene SpanOrQuery.
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.SpanTermQuery">
+            <summary>
+            Matches spans containing a term. The span term query maps to Lucene SpanTermQuery. 
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.TopChildrenQuery">
+            <summary>
+            The top_children query runs the child query with an estimated hits size, and out of the hit docs, aggregates it into parent docs. 
+            If there aren’t enough parent docs matching the requested from/size search request, then it is run again with a wider (more hits) search.
+            
+            The top_children also provide scoring capabilities, with the ability to specify max, sum or avg as the score type.
+            
+            One downside of using the top_children is that if there are more child docs matching the required hits when executing the child query, 
+            then the total_hits result of the search response will be incorrect.
+            
+            How many hits are asked for in the first child query run is controlled using the factor parameter (defaults to 5). For example, when asking for 10 parent docs (with from set to 0), 
+            then the child query will execute with 50 hits expected. If not enough parents are found (in our example 10), 
+            and there are still more child docs to query, then the child search hits are expanded by multiplying by the incremental_factor (defaults to 2).
+            
+            The required parameters are the query and type (the child type to execute the query on).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.TopChildrenQuery.Factor">
+            <summary>
+            _factor
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.TopChildrenQuery.IncrementalFactor">
+            <summary>
+            incremental_factor
             </summary>
         </member>
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortGeoDistance.Mode">
@@ -3739,6 +4341,7 @@
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexDefinition)">
             <summary>
             Creates a new index from a Type and also all the property mappings and index definitions
+            Note: Child objects cannot be an interface if the mapping should be created first.
             </summary>
             <param name="indexDefinition">settings for the new index</param>
             <returns>details</returns>
