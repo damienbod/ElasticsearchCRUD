@@ -218,6 +218,7 @@
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\LinearDateTimePointFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\LinearGeoPointFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\LinearNumericFunction.cs" />
+    <Compile Include="Model\SearchModel\Queries\FunctionQuery\RandomScoreFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\ScriptScoreFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\GeoShapeQuery.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoShapeFilter.cs" />
