@@ -32,9 +32,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 			_querySet = true;
 		}
 
-		public FunctionScoreQuery(IFilter filter)
+		public FunctionScoreQuery(IFilter filter, List<BaseScoreFunction> functions)
 		{
 			_filter = filter;
+			_functions = functions;
 			_filterSet = true;
 		}
 

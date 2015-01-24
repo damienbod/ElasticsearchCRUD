@@ -59,6 +59,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries.FunctionQuery
 			get { return _decay; }
 			set
 			{
+				if (value <= 0) throw new ElasticsearchCrudException("_decay must be larger than 0.0");
+				if (value > 1) throw new ElasticsearchCrudException("_decay must be equal or smaller than 1.0");
 				_decay = value;
 				_decaySet = true;
 			}
