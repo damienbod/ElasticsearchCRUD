@@ -71,6 +71,7 @@
     <Compile Include="SearchHighlightResultTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterFilteredStructureTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTests.cs" />
+    <Compile Include="SearchTests\SearchQueryQueryStringQueryTest.cs" />
     <Compile Include="SearchTests\SearchQueryQueryFunctionScoreTest.cs" />
     <Compile Include="SearchTests\SearchQueryQueryFuzzyTests.cs" />
     <Compile Include="SearchTests\SearchQueryQueryCommonTermsTests.cs" />
