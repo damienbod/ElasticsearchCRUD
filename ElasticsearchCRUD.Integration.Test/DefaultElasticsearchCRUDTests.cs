@@ -17,7 +17,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		private void WaitForDataOrFail()
 		{
@@ -397,11 +397,13 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				// Delete the entity
 				context.DeleteDocument<SkillTestEntity>(entityId);
-				context.SaveChanges();
+				var result = context.SaveChanges();
+				Assert.AreEqual(result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.Status, HttpStatusCode.OK);
 				Assert.AreEqual(entityResult.Result.PayloadResult.Id, entityId);
 			}
 		}
+
 
 		[Test]
 		[ExpectedException(typeof(ElasticsearchCrudException))]

@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.Model
 			RoutingDefinition = new RoutingDefinition();
 		}
 
-		public string Id { get; set; }
+		public object Id { get; set; }
 		public bool DeleteDocument { get; set; }
 		public Type EntityType { get; set; }
 		public Type ParentEntityType { get; set; }
