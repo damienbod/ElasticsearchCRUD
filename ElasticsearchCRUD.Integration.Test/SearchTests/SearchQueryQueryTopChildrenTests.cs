@@ -9,13 +9,13 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
 	[TestFixture]
-	public class SearchQueryTopChildrenQueryTests
+	public class SearchQueryQueryTopChildrenTests
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		protected const string ConnectionString = "http://localhost:9200";
 
 		[Test]
-		public void SearchQueryMoreLikeThisQueryMatchAll()
+		public void SearchQueryTopChildrenQueryMatchAll()
 		{
 			var search = new Search
 			{
@@ -40,7 +40,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
-		public void SearchQueryMoreLikeThisQueryMatchOne()
+		public void SearchQueryTopChildrenQueryMatchOne()
 		{
 			var search = new Search
 			{

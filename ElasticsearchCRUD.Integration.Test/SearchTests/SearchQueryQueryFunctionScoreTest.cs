@@ -12,7 +12,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
 	[TestFixture]
-	public class SearchQueryFunctionScoreQueries : SetupSearch
+	public class SearchQueryQueryFunctionScoreTest : SetupSearch
 	{
 		[Test]
 		public void SearchQueryFunctionScoreQueryLinearNumber()
