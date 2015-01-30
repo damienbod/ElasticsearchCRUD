@@ -1,19 +1,20 @@
 using System;
 using System.Threading;
+using ElasticsearchCRUD.Integration.Test.SearchTests;
 using ElasticsearchCRUD.Model.GeoModel;
 using NUnit.Framework;
 
-namespace ElasticsearchCRUD.Integration.Test.SearchTests
+namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-	public class SetupSearch
+	public class SetupSearchAgg
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		protected const string ConnectionString = "http://localhost:9200";
+		protected const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureSetUp]
 		public void Setup()
 		{
-			var doc1 = new SearchTest
+			var doc1 = new SearchAggTest
 			{
 				Id = 1,
 				Details = "This is the details of the document, very interesting",
@@ -24,7 +25,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				DateOfDetails = DateTime.UtcNow.AddDays(-20)
 			};
 
-			var doc2 = new SearchTest
+			var doc2 = new SearchAggTest
 			{
 				Id = 2,
 				Details = "Details of the document two, leave it alone",
@@ -34,7 +35,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Lift = 2.5,
 				DateOfDetails = DateTime.UtcNow.AddDays(-209)
 			};
-			var doc3 = new SearchTest
+			var doc3 = new SearchAggTest
 			{
 				Id = 3,
 				Details = "This data is different",
@@ -46,7 +47,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				context.IndexCreate<SearchTest>();
+				context.IndexCreate<SearchAggTest>();
 				Thread.Sleep(1000);
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
