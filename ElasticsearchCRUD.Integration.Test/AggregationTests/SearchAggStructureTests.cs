@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel;
@@ -18,7 +19,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search);
-				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
+				Assert.AreEqual(2, (int)aggResult);
 			}
 		}
 
@@ -31,7 +33,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters{SeachType= SeachType.count});
-				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
+				Assert.AreEqual(2.1, aggResult);
 			}
 		}
 
@@ -55,7 +58,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
+				Assert.AreEqual(29, (int)aggResult);
 			}
 		}
 	}
