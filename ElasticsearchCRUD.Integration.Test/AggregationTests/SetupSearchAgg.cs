@@ -47,7 +47,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				context.IndexCreate<SearchAggTest>();
+				//context.IndexCreate<SearchAggTest>();
 				Thread.Sleep(1000);
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
