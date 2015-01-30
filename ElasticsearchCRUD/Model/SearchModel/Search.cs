@@ -156,7 +156,10 @@ namespace ElasticsearchCRUD.Model.SearchModel
 
 			if (_aggsSet)
 			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("aggs");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 				_aggs.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();	
 			}
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

@@ -190,6 +190,7 @@
     <Compile Include="Model\GeoModel\GeoShapePolygon.cs" />
     <Compile Include="Model\GeoModel\GeoType.cs" />
     <Compile Include="Model\LanguageAnalyzers.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\MinAggregation.cs" />
     <Compile Include="Model\SearchModel\Document.cs" />
     <Compile Include="Model\SearchModel\Filter.cs" />
     <Compile Include="Model\SearchModel\Filtered.cs" />
@@ -339,9 +340,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Model\SearchModel\Aggregations\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
