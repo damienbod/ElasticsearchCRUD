@@ -192,10 +192,12 @@
     <Compile Include="Model\LanguageAnalyzers.cs" />
     <Compile Include="Model\SearchModel\Aggregations\AvgAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\BaseMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\StatsAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MaxAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MinAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\SumAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\ValueCountAggregation.cs" />
     <Compile Include="Model\SearchModel\Document.cs" />
     <Compile Include="Model\SearchModel\Filter.cs" />
     <Compile Include="Model\SearchModel\Filtered.cs" />

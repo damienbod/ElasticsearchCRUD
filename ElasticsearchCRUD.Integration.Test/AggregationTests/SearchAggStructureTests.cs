@@ -219,5 +219,83 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.AreEqual(35, (int)aggResult);
 			}
 		}
+
+		[Test]
+		public void SearchAggExtendedStatsAggregationNoHits()
+		{
+			var search = new Search { Aggs = new ExtendedStatsAggregation("test_ExtendedStatsAggregation", "lift") };
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_ExtendedStatsAggregation");
+				Assert.AreEqual("2.5", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+			}
+		}
+
+		[Test]
+		public void SearchAggExtendedStatsAggregationScriptNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new StatsAggregation("test_ExtendedStatsAggregation", "lift")
+				{
+					Script = "_value * times * constant",
+					Params = new List<ScriptParameter>
+					{
+						new ScriptParameter("times", 1.4),
+						new ScriptParameter("constant", 10.2)
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_ExtendedStatsAggregation");
+				Assert.AreEqual(35, (int)aggResult);
+			}
+		}
+
+		[Test]
+		public void SearchAggValueCountAggregationNoHits()
+		{
+			var search = new Search { Aggs = new ValueCountAggregation("test_ValueCountAggregation", "lift") };
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_ValueCountAggregation");
+				Assert.AreEqual("3", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+			}
+		}
+
+		[Test]
+		public void SearchAggValueCountAggregationScriptNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new ValueCountAggregation("test_ValueCountAggregation", "lift")
+				{
+					Script = "_value * times * constant",
+					Params = new List<ScriptParameter>
+					{
+						new ScriptParameter("times", 1.4),
+						new ScriptParameter("constant", 10.2)
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_ValueCountAggregation");
+				Assert.AreEqual(3, (int)aggResult);
+			}
+		}
 	}
 }
