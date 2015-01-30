@@ -201,6 +201,7 @@
     <Compile Include="Model\SearchModel\Filters\GeoDistanceFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeohashCellFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoPolygonFilter.cs" />
+    <Compile Include="Model\SearchModel\IAggs.cs" />
     <Compile Include="Model\SearchModel\Queries\CommonTermsQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\BaseScoreFunction.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\DateTimeDecayBaseScoreFunction.cs" />
@@ -338,7 +339,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Model\SearchModel\Aggregations\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
