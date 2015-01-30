@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
@@ -21,7 +22,6 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-
 		[Test]
 		public void SearchAggMinAggregationNoHits()
 		{
@@ -35,5 +35,28 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
+		[Test]
+		public void SearchAggMinAggregationScriptNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new MinAggregation("test_min", "lift")
+				{
+					Script = "_value * times * constant",
+					Params = new List<ScriptParameter>
+					{
+						new ScriptParameter("times", 1.4),
+						new ScriptParameter("constant", 10.2)
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
 	}
 }

@@ -2,13 +2,13 @@ namespace ElasticsearchCRUD.Model.SearchModel
 {
 	public class ScriptParameter
 	{
-		public ScriptParameter(string fieldName, object fieldValue)
+		public ScriptParameter(string parameterName, object parameterValue)
 		{
-			FieldName = fieldName;
-			FieldValue = fieldValue;
+			ParameterName = parameterName;
+			ParameterValue = parameterValue;
 		}
 
-		public string FieldName { get; set; }
-		public object FieldValue { get; set; }
+		public string ParameterName { get; set; }
+		public object ParameterValue { get; set; }
 	}
 }

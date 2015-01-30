@@ -54,8 +54,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 				foreach (var item in _params)
 				{
-					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(item.FieldName);
-					elasticsearchCrudJsonWriter.JsonWriter.WriteValue(item.FieldValue);
+					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(item.ParameterName);
+					elasticsearchCrudJsonWriter.JsonWriter.WriteValue(item.ParameterValue);
 				}
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
