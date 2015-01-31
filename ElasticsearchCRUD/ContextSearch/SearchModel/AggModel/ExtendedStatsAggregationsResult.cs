@@ -14,9 +14,36 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		public double StdDeviation { get; set; }    
 		public StdDeviationBounds StdDeviationBounds { get; set; }
 
+		//"count": 9,
+		//   "min": 72,
+		//   "max": 99,
+		//   "avg": 86,
+		//   "sum": 774,
+		//   "sum_of_squares": 67028,
+		//   "variance": 51.55555555555556,
+		//   "std_deviation": 7.180219742846005,
+		//   "std_deviation_bounds": {
+		//	"upper": 100.36043948569201,
+		//	"lower": 71.63956051430799
+		//   }
 		public override ExtendedStatsAggregationsResult GetValueFromJToken(JToken result)
 		{
-			// TODO set the values
+			Count = result["count"].Value<double>();
+			Min = result["min"].Value<double>();
+			Max = result["max"].Value<double>();
+			Avg = result["avg"].Value<double>();
+			Sum = result["sum"].Value<double>();
+			SumOfSquares = result["sum_of_squares"].Value<double>();
+			Variance = result["variance"].Value<double>();
+			StdDeviation = result["std_deviation"].Value<double>();
+			if (result["std_deviation_bounds"] != null)
+			{
+				StdDeviationBounds = new StdDeviationBounds
+				{
+					Upper = result["std_deviation_bounds"]["upper"].Value<double>(),
+					Lower = result["std_deviation_bounds"]["lower"].Value<double>()
+				};
+			}
 			return this;
 		}
 	}

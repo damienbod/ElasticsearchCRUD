@@ -232,7 +232,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<ExtendedStatsAggregationsResult>("test_ExtendedStatsAggregation");
-				Assert.AreEqual("2.5", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("3", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
 			}
 		}
 
@@ -257,7 +257,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<ExtendedStatsAggregationsResult>("test_ExtendedStatsAggregation");
-				Assert.AreEqual("2.5", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("3", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
 			}
 		}
 
