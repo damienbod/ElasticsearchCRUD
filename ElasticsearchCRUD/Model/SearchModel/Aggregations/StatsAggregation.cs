@@ -6,7 +6,7 @@
 	/// 
 	/// The stats that are returned consist of: min, max, sum, count and avg.
 	/// </summary>
-	public class StatsAggregation : BaseMetricAggregation
+	public class StatsAggregation : BaseAggregation
 	{
 		public StatsAggregation(string name, string field) : base("stats", name, field) { }
 

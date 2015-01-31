@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	public class ValueCountAggregation : BaseMetricAggregation
+	public class ValueCountAggregation : BaseAggregation
 	{
 		public ValueCountAggregation(string name, string field) : base("value_count", name, field) { }
 

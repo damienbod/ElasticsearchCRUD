@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	public class MaxAggregation : BaseMetricAggregation
+	public class MaxAggregation : BaseAggregation
 	{
 		public MaxAggregation(string name, string field) : base("max", name, field) { }
 

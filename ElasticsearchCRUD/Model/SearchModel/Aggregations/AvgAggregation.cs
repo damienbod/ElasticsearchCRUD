@@ -1,6 +1,6 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	public class AvgAggregation : BaseMetricAggregation
+	public class AvgAggregation : BaseAggregation
 	{
 		public AvgAggregation(string name, string field) : base("avg", name, field) { }
 
