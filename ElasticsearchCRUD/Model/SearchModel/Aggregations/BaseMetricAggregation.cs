@@ -17,6 +17,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private List<ScriptParameter> _params;
 		private bool _paramsSet;
 		private bool _scriptSet;
+		private IAggs _aggs;
+		private bool _aggsSet;
 
 		public BaseMetricAggregation(string type, string name, string field)
 		{
@@ -32,6 +34,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			{
 				_script = value;
 				_scriptSet = true;
+			}
+		}
+
+		public IAggs Aggs
+		{
+			get { return _aggs; }
+			set
+			{
+				_aggs = value;
+				_aggsSet = true;
 			}
 		}
 
@@ -73,6 +85,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+
+			if (_aggsSet)
+			{
+			
+				_aggs.WriteJson(elasticsearchCrudJsonWriter);
+			
+			}
 		}
 	}
 }

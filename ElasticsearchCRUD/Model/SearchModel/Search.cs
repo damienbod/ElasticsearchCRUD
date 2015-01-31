@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.Model.SearchModel.Sorting;
+﻿using System.Collections.Generic;
+using ElasticsearchCRUD.Model.SearchModel.Sorting;
 using ElasticsearchCRUD.Model.Units;
 using ElasticsearchCRUD.Utils;
 
@@ -23,7 +24,7 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		private bool _terminateAfterSet;
 		private bool _sortSet;
 		private ISortHolder _sortHolder;
-		private IAggs _aggs;
+		private List<IAggs> _aggs;
 		private bool _aggsSet;
 
 		/// <summary>
@@ -117,7 +118,7 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		/// <summary>
 		/// aggregations request
 		/// </summary>
-		public IAggs Aggs
+		public List<IAggs> Aggs
 		{
 			get { return _aggs; }
 			set
@@ -158,7 +159,11 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			{
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("aggs");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-				_aggs.WriteJson(elasticsearchCrudJsonWriter);
+				foreach (var item in _aggs)
+				{
+					item.WriteJson(elasticsearchCrudJsonWriter);
+				}
+				
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();	
 			}
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
