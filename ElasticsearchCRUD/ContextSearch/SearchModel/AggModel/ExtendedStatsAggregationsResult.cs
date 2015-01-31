@@ -11,7 +11,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		public double Sum { get; set; }
 		public double SumOfSquares { get; set; }
 		public double Variance { get; set; }
-		public double StdDeviation { get; set; }    
+		public double StdDeviation { get; set; }
+
+		// support from version 1.4.3
 		public StdDeviationBounds StdDeviationBounds { get; set; }
 
 		//"count": 9,

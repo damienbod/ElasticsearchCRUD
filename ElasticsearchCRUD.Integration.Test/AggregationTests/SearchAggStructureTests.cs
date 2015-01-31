@@ -192,8 +192,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_StatsAggregation");
-				Assert.AreEqual("2.5", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_StatsAggregation");
+				Assert.AreEqual("3", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("2.5", Math.Round(aggResult.Avg, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("2.9", Math.Round(aggResult.Max, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("2.1", Math.Round(aggResult.Min, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("7.5", Math.Round(aggResult.Sum, 2).ToString(CultureInfo.InvariantCulture));
 			}
 		}
 
@@ -216,16 +220,29 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
-				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_StatsAggregation");
-				Assert.AreEqual(35, (int)aggResult);
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters {SeachType = SeachType.count});
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_StatsAggregation");
+				Assert.AreEqual("3", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("35.7", Math.Round(aggResult.Avg, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("41.41", Math.Round(aggResult.Max, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("29.99", Math.Round(aggResult.Min, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("107.1", Math.Round(aggResult.Sum, 2).ToString(CultureInfo.InvariantCulture));
 			}
 		}
 
 		[Test]
 		public void SearchAggExtendedStatsAggregationNoHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new ExtendedStatsAggregation("test_ExtendedStatsAggregation", "lift") }};
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new ExtendedStatsAggregation("test_ExtendedStatsAggregation", "lift")
+					{
+						//Sigma = 2.3
+					}
+				}
+			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -233,6 +250,13 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<ExtendedStatsAggregationsResult>("test_ExtendedStatsAggregation");
 				Assert.AreEqual("3", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("2.5", Math.Round(aggResult.Avg, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("2.9", Math.Round(aggResult.Max, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("2.1", Math.Round(aggResult.Min, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("7.5", Math.Round(aggResult.Sum, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("0.33", Math.Round(aggResult.StdDeviation, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("19.07", Math.Round(aggResult.SumOfSquares, 2).ToString(CultureInfo.InvariantCulture));
+				Assert.AreEqual("0.11", Math.Round(aggResult.Variance, 2).ToString(CultureInfo.InvariantCulture));
 			}
 		}
 
@@ -241,7 +265,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new StatsAggregation("test_ExtendedStatsAggregation", "lift")
+				Aggs = new List<IAggs>{ new ExtendedStatsAggregation("test_ExtendedStatsAggregation", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>

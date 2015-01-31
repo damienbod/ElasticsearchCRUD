@@ -7,5 +7,14 @@
 	public class MinAggregation : BaseMetricAggregation
 	{
 		public MinAggregation(string name, string field) : base("min", name,field){}
+
+		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			base.WriteJsonBase(elasticsearchCrudJsonWriter, WriteValues);
+		}
+
+		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+		}
 	}
 }
