@@ -15,7 +15,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		[Test]
 		public void SearchAggMinAggregationWithHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new MinAggregation("test_min", "lift")}};
+			var search = new Search { Aggs = new List<IAggs>{ new MinMetricAggregation("test_min", "lift")}};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -29,7 +29,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		[Test]
 		public void SearchAggMinAggregationNoHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new MinAggregation("test_min", "lift") }};
+			var search = new Search { Aggs = new List<IAggs>{ new MinMetricAggregation("test_min", "lift") }};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -45,7 +45,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new MinAggregation("test_min", "lift")
+				Aggs = new List<IAggs>{ new MinMetricAggregation("test_min", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>
@@ -68,7 +68,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		[Test]
 		public void SearchAggMaxAggregationNoHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new MaxAggregation("test_max", "lift") }};
+			var search = new Search { Aggs = new List<IAggs>{ new MaxMetricAggregation("test_max", "lift") }};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -84,7 +84,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new MaxAggregation("test_max", "lift")
+				Aggs = new List<IAggs>{ new MaxMetricAggregation("test_max", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>
@@ -107,7 +107,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		[Test]
 		public void SearchAggSumAggregationNoHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new SumAggregation("test_sum", "lift") }};
+			var search = new Search { Aggs = new List<IAggs>{ new SumMetricAggregation("test_sum", "lift") }};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -123,7 +123,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new SumAggregation("test_sum", "lift")
+				Aggs = new List<IAggs>{ new SumMetricAggregation("test_sum", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>
@@ -146,7 +146,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		[Test]
 		public void SearchAggAvgAggregationNoHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new AvgAggregation("test_avg", "lift") }};
+			var search = new Search { Aggs = new List<IAggs>{ new AvgMetricAggregation("test_avg", "lift") }};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -162,7 +162,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new AvgAggregation("test_avg", "lift")
+				Aggs = new List<IAggs>{ new AvgMetricAggregation("test_avg", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>
@@ -186,7 +186,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		[Test]
 		public void SearchAggStatsAggregationNoHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new StatsAggregation("test_StatsAggregation", "lift") }};
+			var search = new Search { Aggs = new List<IAggs>{ new StatsMetricAggregation("test_StatsAggregation", "lift") }};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -206,7 +206,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new StatsAggregation("test_StatsAggregation", "lift")
+				Aggs = new List<IAggs>{ new StatsMetricAggregation("test_StatsAggregation", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>
@@ -237,7 +237,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new ExtendedStatsAggregation("test_ExtendedStatsAggregation", "lift")
+					new ExtendedStatsMetricAggregation("test_ExtendedStatsAggregation", "lift")
 					{
 						//Sigma = 2.3
 					}
@@ -265,7 +265,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new ExtendedStatsAggregation("test_ExtendedStatsAggregation", "lift")
+				Aggs = new List<IAggs>{ new ExtendedStatsMetricAggregation("test_ExtendedStatsAggregation", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>
@@ -288,7 +288,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		[Test]
 		public void SearchAggValueCountAggregationNoHits()
 		{
-			var search = new Search { Aggs = new List<IAggs>{ new ValueCountAggregation("test_ValueCountAggregation", "lift") }};
+			var search = new Search { Aggs = new List<IAggs>{ new ValueCountMetricAggregation("test_ValueCountAggregation", "lift") }};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -304,7 +304,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new ValueCountAggregation("test_ValueCountAggregation", "lift")
+				Aggs = new List<IAggs>{ new ValueCountMetricAggregation("test_ValueCountAggregation", "lift")
 				{
 					Script = "_value * times * constant",
 					Params = new List<ScriptParameter>
@@ -329,10 +329,14 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		{
 			var search = new Search
 			{
-				Aggs = new List<IAggs>{ new ValueCountAggregation("test_Value", "lift")
-				{
-					Aggs = new AvgAggregation("aggResultChildAvg", "lift")
-				}}
+				Aggs = new List<IAggs>
+				{ 
+					new ValueCountMetricAggregation("test_Value", "lift")
+					{
+						
+					},
+					new AvgMetricAggregation("aggResultChildAvg", "lift")
+				}
 			};
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
@@ -353,8 +357,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new ValueCountAggregation("testvalue", "lift"),
-					new SumAggregation("testsum", "lift") 
+					new ValueCountMetricAggregation("testvalue", "lift"),
+					new SumMetricAggregation("testsum", "lift") 
 				}
 			};
 

@@ -5,7 +5,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 	/// <summary>
 	/// A multi-bucket value source based aggregation where buckets are dynamically built - one per unique value.
 	/// </summary>
-	public class TermsAggregation : BaseAggregation
+	public class TermsBucketAggregation : BaseBucketAggregation
 	{
 		private uint _size;
 		private bool _sizeSet;
@@ -18,7 +18,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private uint _shardMinDocCount;
 		private bool _shardMinDocCountSet;
 
-		public TermsAggregation(string name, string field) : base("terms", name, field)
+		public TermsBucketAggregation(string name, string field) : base("terms", name, field)
 		{
 		}
 

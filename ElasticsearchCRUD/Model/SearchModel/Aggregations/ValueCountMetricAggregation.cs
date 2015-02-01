@@ -1,8 +1,8 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	public class SumAggregation : BaseAggregation
+	public class ValueCountMetricAggregation : BaseMetricAggregation
 	{
-		public SumAggregation(string name, string field) : base("sum", name, field) { }
+		public ValueCountMetricAggregation(string name, string field) : base("value_count", name, field) { }
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
@@ -14,4 +14,3 @@
 		}
 	}
 }
-

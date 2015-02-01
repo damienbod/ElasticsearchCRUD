@@ -9,12 +9,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 	/// The extended_stats aggregations is an extended version of the stats aggregation, 
 	/// where additional metrics are added such as sum_of_squares, variance, std_deviation and std_deviation_bounds.
 	/// </summary>
-	public class ExtendedStatsAggregation : BaseAggregation
+	public class ExtendedStatsMetricAggregation : BaseMetricAggregation
 	{
 		private double _sigma;
 		private bool _sigmaSet;
 
-		public ExtendedStatsAggregation(string name, string field) : base("extended_stats", name, field)
+		public ExtendedStatsMetricAggregation(string name, string field) : base("extended_stats", name, field)
 		{
 			
 		}
