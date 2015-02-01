@@ -22,6 +22,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				CircleTest = new GeoShapeCircle { Radius = "100m", Coordinates = new GeoPoint(45, 45) },
 				Location = new GeoPoint(45, 45),
 				Lift = 2.9,
+				LengthOfSomeThing = 345.4,
 				DateOfDetails = DateTime.UtcNow.AddDays(-20)
 			};
 
@@ -33,6 +34,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				CircleTest = new GeoShapeCircle { Radius = "50m", Coordinates = new GeoPoint(46, 45) },
 				Location = new GeoPoint(46, 45),
 				Lift = 2.5,
+				LengthOfSomeThing = 289.0,
 				DateOfDetails = DateTime.UtcNow.AddDays(-209)
 			};
 			var doc3 = new SearchAggTest
@@ -43,7 +45,56 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				CircleTest = new GeoShapeCircle { Radius = "80m", Coordinates = new GeoPoint(37, 42) },
 				Location = new GeoPoint(37, 42),
 				Lift = 2.1,
+				LengthOfSomeThing = 324.0,
 				DateOfDetails = DateTime.UtcNow.AddDays(-34)
+			};
+
+			var doc4 = new SearchAggTest
+			{
+				Id = 4,
+				Details = "This data is different from the last one",
+				Name = "four",
+				CircleTest = new GeoShapeCircle { Radius = "800m", Coordinates = new GeoPoint(34, 42) },
+				Location = new GeoPoint(37, 42),
+				Lift = 2.1,
+				LengthOfSomeThing = 625.0,
+				DateOfDetails = DateTime.UtcNow.AddDays(-37)
+			};
+
+			var doc5 = new SearchAggTest
+			{
+				Id = 5,
+				Details = "five stuff from the road",
+				Name = "five",
+				CircleTest = new GeoShapeCircle { Radius = "300m", Coordinates = new GeoPoint(34, 41) },
+				Location = new GeoPoint(37, 42),
+				Lift = 1.7,
+				LengthOfSomeThing = 605.0,
+				DateOfDetails = DateTime.UtcNow.AddDays(-47)
+			};
+
+			var doc6 = new SearchAggTest
+			{
+				Id = 6,
+				Details = "a lot of things happening now",
+				Name = "six",
+				CircleTest = new GeoShapeCircle { Radius = "3000m", Coordinates = new GeoPoint(35, 41) },
+				Location = new GeoPoint(32, 44),
+				Lift = 2.9,
+				LengthOfSomeThing = 128.0,
+				DateOfDetails = DateTime.UtcNow.AddDays(-46)
+			};
+
+			var doc7 = new SearchAggTest
+			{
+				Id = 7,
+				Details = "we made it to seven",
+				Name = "seven",
+				CircleTest = new GeoShapeCircle { Radius = "4000m", Coordinates = new GeoPoint(35, 40) },
+				Location = new GeoPoint(34, 43),
+				Lift = 2.1,
+				LengthOfSomeThing = 81,
+				DateOfDetails = DateTime.UtcNow.AddDays(-46)
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
@@ -52,6 +103,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
 				context.AddUpdateDocument(doc3, doc3.Id);
+				context.AddUpdateDocument(doc4, doc4.Id);
+				context.AddUpdateDocument(doc5, doc5.Id);
+				context.AddUpdateDocument(doc6, doc6.Id);
+				context.AddUpdateDocument(doc7, doc7.Id);
 				context.SaveChanges();
 				Thread.Sleep(1000);
 			}

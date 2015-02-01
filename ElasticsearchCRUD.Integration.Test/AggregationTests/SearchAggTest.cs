@@ -22,6 +22,9 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 		public double Lift { get; set; }
 
+		public double LengthOfSomeThing { get; set; }
+
+
 		public DateTime DateOfDetails { get; set; }
 	}
 }
