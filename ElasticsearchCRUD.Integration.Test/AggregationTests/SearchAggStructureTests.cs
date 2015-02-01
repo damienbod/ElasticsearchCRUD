@@ -373,5 +373,45 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
+		[Test]
+		public void SearchAggPercentilesMetricAggregationNoHits()
+		{
+			var search = new Search { Aggs = new List<IAggs> { new PercentilesMetricAggregation("test_PercentilesMetricAggregation", "lift") } };
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_PercentilesMetricAggregation");
+				// TODO
+			}
+		}
+
+		[Test]
+		public void SearchAggPercentilesMetricAggregationScriptNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>{ new PercentilesMetricAggregation("test_PercentilesMetricAggregation", "lift")
+				{
+					Script = "_value * times * constant",
+					Params = new List<ScriptParameter>
+					{
+						new ScriptParameter("times", 1.4),
+						new ScriptParameter("constant", 10.2)
+					}
+				}}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters {SeachType = SeachType.count});
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_PercentilesMetricAggregation");
+				// TODO
+			}
+		}
+		
+
 	}
 }

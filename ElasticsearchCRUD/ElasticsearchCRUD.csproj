@@ -203,6 +203,7 @@
     <Compile Include="Model\SearchModel\Aggregations\IncludeExcludeExpressionFlags.cs" />
     <Compile Include="Model\SearchModel\Aggregations\IncludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\OrderAgg.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\PercentilesMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\StatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MaxMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MinMetricAggregation.cs" />
