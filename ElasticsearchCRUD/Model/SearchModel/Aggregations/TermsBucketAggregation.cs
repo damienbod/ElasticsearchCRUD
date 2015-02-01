@@ -17,6 +17,14 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _minDocCountSet;
 		private uint _shardMinDocCount;
 		private bool _shardMinDocCountSet;
+		private IncludeExpression _include;
+		private bool _includeSet;
+		private ExcludeExpression _exclude;
+		private bool _excludeSet;
+		private CollectMode _collectMode;
+		private bool _collectModeSet;
+		private ExecutionHint _executionHint;
+		private bool _executionHintSet;
 
 		public TermsBucketAggregation(string name, string field) : base("terms", name, field)
 		{
@@ -128,6 +136,72 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			}
 		}
 
+		public IncludeExpression Include
+		{
+			get { return _include; }
+			set
+			{
+				_include = value;
+				_includeSet = true;
+			}
+		}
+
+		public ExcludeExpression Exclude
+		{
+			get { return _exclude; }
+			set
+			{
+				_exclude = value;
+				_excludeSet = true;
+			}
+		}
+
+		/// <summary>
+		/// Deferring calculation of child aggregations
+		/// 
+		/// For fields with many unique terms and a small number of required results it can be more efficient to delay the calculation of child aggregations 
+		/// until the top parent-level aggs have been pruned. Ordinarily, all branches of the aggregation tree are expanded in one depth-first pass and only then any pruning occurs. 
+		/// In some rare scenarios this can be very wasteful and can hit memory constraints.
+		/// 
+		/// When using breadth_first mode the set of documents that fall into the uppermost buckets are cached for subsequent replay so there is a memory overhead in doing this
+		/// which is linear with the number of matching documents. 
+		/// In most requests the volume of buckets generated is smaller than the number of documents that fall into them so the default depth_first collection mode is normally the best bet 
+		/// but occasionally the breadth_first strategy can be significantly more efficient. 
+		/// Currently elasticsearch will always use the depth_first collect_mode unless explicitly instructed to use breadth_first as in the above example. 
+		/// Note that the order parameter can still be used to refer to data from a child aggregation when using the breadth_first setting 
+		/// - the parent aggregation understands that this child aggregation will need to be called first before any of the other child aggregations.
+		/// </summary>
+		public CollectMode CollectMode
+		{
+			get { return _collectMode; }
+			set
+			{
+				_collectMode = value;
+				_collectModeSet = true;
+			}
+		}
+
+		/// <summary>
+		/// execution_hint
+		/// There are different mechanisms by which terms aggregations can be executed:
+		///
+		/// by using field values directly in order to aggregate data per-bucket (map)
+		/// by using ordinals of the field and preemptively allocating one bucket per ordinal value (global_ordinals)
+		/// by using ordinals of the field and dynamically allocating one bucket per ordinal value (global_ordinals_hash)
+		/// by using per-segment ordinals to compute counts and remap these counts to global counts using global ordinals (global_ordinals_low_cardinality) 
+		///
+		/// Elasticsearch tries to have sensible defaults so this is something that generally doesn’t need to be configured.
+		/// </summary>
+		public ExecutionHint ExecutionHint
+		{
+			get { return _executionHint; }
+			set
+			{
+				_executionHint = value;
+				_executionHintSet = true;
+			}
+		}
+		
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			base.WriteJsonBase(elasticsearchCrudJsonWriter, WriteValues);
@@ -143,6 +217,48 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			}
 			JsonHelper.WriteValue("min_doc_count", _minDocCount, elasticsearchCrudJsonWriter, _minDocCountSet);
 			JsonHelper.WriteValue("shard_min_doc_count", _shardMinDocCount, elasticsearchCrudJsonWriter, _shardMinDocCountSet);
+			if (_includeSet)
+			{
+				_include.WriteJson(elasticsearchCrudJsonWriter);
+			}
+			if (_excludeSet)
+			{
+				_exclude.WriteJson(elasticsearchCrudJsonWriter);
+			}
+			JsonHelper.WriteValue("collect_mode", _collectMode.ToString(), elasticsearchCrudJsonWriter, _collectModeSet);
+			JsonHelper.WriteValue("execution_hint", _executionHint.ToString(), elasticsearchCrudJsonWriter, _executionHintSet);
 		}
+	}
+
+	public enum ExecutionHint
+	{
+		/// <summary>
+		/// should only be considered when very few documents match a query. Otherwise the ordinals-based execution modes are significantly faster. 
+		/// By default, map is only used when running an aggregation on scripts, since they don’t have ordinals.
+		/// </summary>
+		map, 
+
+		/// <summary>
+		/// only works for leaf terms aggregations but is usually the fastest execution mode. 
+		/// Memory usage is linear with the number of unique values in the field, so it is only enabled by default on low-cardinality fields.
+		/// </summary>
+		global_ordinals_low_cardinality,
+		
+		/// <summary>
+		///  is the second fastest option, but the fact that it preemptively allocates buckets can be memory-intensive,
+		///  especially if you have one or more sub aggregations. It is used by default on top-level terms aggregations.
+		/// </summary>
+		global_ordinals,
+
+		/// <summary>
+		///  on the contrary to global_ordinals and global_ordinals_low_cardinality allocates buckets dynamically 
+		/// so memory usage is linear to the number of values of the documents that are part of the aggregation scope. It is used by default in inner aggregations.
+		/// </summary>
+		global_ordinals_hash
+	}
+
+	public enum CollectMode
+	{
+		breadth_first, depth_first
 	}
 }

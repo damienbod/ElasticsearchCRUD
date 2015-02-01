@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 	public class TermsAggregationTests : SetupSearchAgg
 	{
 		[Test]
-		public void SearchAggMinAggregationWithNoHits()
+		public void SearchAggTermsBucketAggregationWithNoHits()
 		{
 			var search = new Search
 			{
@@ -33,7 +33,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		}
 
 		[Test]
-		public void SearchAggMinAggregationWithOrderCountNoHits()
+		public void SearchAggTermsBucketAggregationWithOrderCountNoHits()
 		{
 			var search = new Search 
 			{ 
@@ -56,7 +56,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		}
 
 		[Test]
-		public void SearchAggMinAggregationWithOrderSumSubSumAggNoHits()
+		public void SearchAggTermsBucketAggregationnWithOrderSumSubSumAggNoHits()
 		{
 			var search = new Search
 			{
@@ -84,7 +84,35 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		}
 
 		[Test]
-		public void SearchAggMinAggregationAndOrderSumSubSumAggNoHits()
+		public void SearchAggTermsBucketAggregationnWithOrderSumStatsAggNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new TermsBucketAggregation("test_min", "lift")
+					{
+						Order= new OrderAgg("stats_sub.avg", OrderEnum.asc),
+						Aggs = new List<IAggs>
+						{
+							new StatsMetricAggregation("stats_sub", "lift")
+						} 
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
+				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+			}
+		}
+
+
+		[Test]
+		public void SearchAggTermsBucketAggregationAndOrderSumSubSumAggNoHits()
 		{
 			var search = new Search
 			{

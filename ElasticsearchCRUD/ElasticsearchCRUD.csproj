@@ -197,7 +197,11 @@
     <Compile Include="Model\SearchModel\Aggregations\AvgMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\BaseBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\BaseMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\ExcludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\IncludeExcludeBaseExpression.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\IncludeExcludeExpressionFlags.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\IncludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\OrderAgg.cs" />
     <Compile Include="Model\SearchModel\Aggregations\StatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MaxMetricAggregation.cs" />
