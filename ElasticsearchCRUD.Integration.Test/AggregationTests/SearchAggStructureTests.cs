@@ -382,8 +382,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_PercentilesMetricAggregation");
-				// TODO
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<PercentilesMetricAggregationsResult>("test_PercentilesMetricAggregation");
+				Assert.AreEqual(2.1, aggResult.Values["25.0"]);
 			}
 		}
 
@@ -407,11 +407,33 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters {SeachType = SeachType.count});
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_PercentilesMetricAggregation");
-				// TODO
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<PercentilesMetricAggregationsResult>("test_PercentilesMetricAggregation");
+				Assert.AreEqual(29.99, Math.Round(aggResult.Values["25.0"], 2));
 			}
 		}
-		
+
+		[Test]
+		public void SearchAggPercentilesMetricAggregationPrecentsNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new PercentilesMetricAggregation("test_PercentilesMetricAggregation", "lift")
+					{
+						Percents = new List<double>{20.0, 60.0, 99.0}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<PercentilesMetricAggregationsResult>("test_PercentilesMetricAggregation");
+				Assert.AreEqual(2.1, Math.Round(aggResult.Values["20.0"], 2));
+			}
+		}
 
 	}
 }
