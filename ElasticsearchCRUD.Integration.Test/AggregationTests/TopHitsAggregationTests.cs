@@ -67,7 +67,6 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-
 		[Test]
 		public void SearchAggTermsBucketAggregationWithSubTopHitsMetricAggregationSortWithNoHits()
 		{
