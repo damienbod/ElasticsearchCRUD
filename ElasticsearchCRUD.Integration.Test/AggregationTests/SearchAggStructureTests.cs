@@ -238,9 +238,6 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Aggs = new List<IAggs>
 				{
 					new ExtendedStatsMetricAggregation("test_ExtendedStatsAggregation", "lift")
-					{
-						//Sigma = 2.3
-					}
 				}
 			};
 
@@ -331,10 +328,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{ 
-					new ValueCountMetricAggregation("test_Value", "lift")
-					{
-						
-					},
+					new ValueCountMetricAggregation("test_Value", "lift"),
 					new AvgMetricAggregation("aggResultChildAvg", "lift")
 				}
 			};
@@ -503,7 +497,6 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.AreEqual(100, aggResult.Values["20.0"]);
 			}
 		}
-
 
 		[Test]
 		public void SearchAggPercentileRanksMetricAggregationScriptNoHits()
