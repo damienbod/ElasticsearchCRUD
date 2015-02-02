@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
@@ -9,8 +10,12 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		public double Max { get; set; }
 		public double Avg { get; set; }
 		public double Sum { get; set; }
+
+		[JsonProperty("sum_of_squares")]
 		public double SumOfSquares { get; set; }
 		public double Variance { get; set; }
+
+		[JsonProperty("std_deviation")]
 		public double StdDeviation { get; set; }
 	
 		/// <summary>
@@ -19,6 +24,7 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		/// Your data must be normally distributed for the metrics to make sense. The statistics behind standard deviations assumes normally distributed data, 
 		/// so if your data is skewed heavily left or right, the value returned will be misleading.
 		/// </summary>
+		[JsonProperty("std_deviation_bounds")]
 		public StdDeviationBounds StdDeviationBounds { get; set; }
 
 		//"count": 9,
@@ -35,23 +41,7 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		//   }
 		public override ExtendedStatsAggregationsResult GetValueFromJToken(JToken result)
 		{
-			Count = result["count"].Value<double>();
-			Min = result["min"].Value<double>();
-			Max = result["max"].Value<double>();
-			Avg = result["avg"].Value<double>();
-			Sum = result["sum"].Value<double>();
-			SumOfSquares = result["sum_of_squares"].Value<double>();
-			Variance = result["variance"].Value<double>();
-			StdDeviation = result["std_deviation"].Value<double>();
-			if (result["std_deviation_bounds"] != null)
-			{
-				StdDeviationBounds = new StdDeviationBounds
-				{
-					Upper = result["std_deviation_bounds"]["upper"].Value<double>(),
-					Lower = result["std_deviation_bounds"]["lower"].Value<double>()
-				};
-			}
-			return this;
+			return result.ToObject<ExtendedStatsAggregationsResult>();
 		}
 	}
 }

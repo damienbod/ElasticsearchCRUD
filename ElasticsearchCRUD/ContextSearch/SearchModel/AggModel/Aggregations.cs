@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		[JsonExtensionData]
 		public Dictionary<string, JToken> Fields { get; set; }
 
-		public T GetSingleValueMetric<T>(string name)
+		public T GetSingleMetricAggregationValue<T>(string name)
 		{
 			return Fields[name]["value"].Value<T>();
 		}

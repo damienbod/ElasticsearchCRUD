@@ -17,12 +17,7 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		//   "sum": 774,
 		public override StatsAggregationsResult GetValueFromJToken(JToken result)
 		{
-			Count = result["count"].Value<double>();
-			Min = result["min"].Value<double>();
-			Max = result["max"].Value<double>();
-			Avg = result["avg"].Value<double>();
-			Sum = result["sum"].Value<double>();
-			return this;
+			return result.ToObject<StatsAggregationsResult>();
 		}
 	}
 }

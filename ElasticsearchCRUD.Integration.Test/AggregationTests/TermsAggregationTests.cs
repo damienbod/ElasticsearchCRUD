@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
@@ -29,7 +28,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
-				Assert.AreEqual("2", aggResult);
+				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
 			}
 		}
 
@@ -51,8 +50,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
-				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				Assert.AreEqual(1, aggResult.Buckets[0].DocCount);
 			}
 		}
 
@@ -69,7 +68,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 						Aggs = new List<IAggs>
 						{
 							new SumMetricAggregation("childAggSum", "lift"),
-							new AvgMetricAggregation("childAggAvg", "lift")
+							new AvgMetricAggregation("childAggAvg", "lift")						
 						} 
 					}
 				}
@@ -79,8 +78,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
-				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				var bucketchildAggSum = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggSum");
+				var bucketchildAggAvg = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggAvg");
+				Assert.AreEqual(1, aggResult.Buckets[0].DocCount);
+				Assert.AreEqual(1.7, bucketchildAggSum);
+				Assert.AreEqual(1.7, bucketchildAggAvg);
 			}
 		}
 
@@ -93,7 +96,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				{
 					new TermsBucketAggregation("test_min", "lift")
 					{
-						Order= new OrderAgg("stats_sub.avg", OrderEnum.asc),
+						Order= new OrderAgg("stats_sub.avg", OrderEnum.desc),
 						Aggs = new List<IAggs>
 						{
 							new StatsMetricAggregation("stats_sub", "lift")
@@ -106,8 +109,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
-				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				var bucketchildStatsAggregationsResult = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<StatsAggregationsResult>("stats_sub");
+				Assert.AreEqual(2, aggResult.Buckets[0].DocCount);
+				Assert.AreEqual(2.9, Math.Round(bucketchildStatsAggregationsResult.Avg, 2));
+				Assert.AreEqual(5.8, Math.Round(bucketchildStatsAggregationsResult.Sum, 2));
 			}
 		}
 
@@ -130,8 +136,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
-				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				var aggResultAvgMetricAggregation = items.PayloadResult.Aggregations.GetSingleMetricAggregationValue<double>("childAgg");
+				Assert.AreEqual(1, aggResult.Buckets[0].DocCount);
+				Assert.AreEqual(2.33, Math.Round(aggResultAvgMetricAggregation, 2));
 			}
 		}
 
@@ -175,8 +183,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
-				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				Assert.AreEqual(2, aggResult.Buckets[0].DocCount);
 			}
 		}
 
@@ -203,8 +211,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
-				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
 			}
 		}
 

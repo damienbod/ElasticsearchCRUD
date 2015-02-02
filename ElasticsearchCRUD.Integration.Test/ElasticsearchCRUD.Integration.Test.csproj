@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregationTests\TopHitsAggregationTests.cs" />
     <Compile Include="AggregationTests\TermsAggregationTests.cs" />
     <Compile Include="AliasElasticsearchCrudTests.cs" />
     <Compile Include="AnalysisSettingsTests.cs" />
