@@ -167,6 +167,7 @@
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Aggregations.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\ExtendedStatsAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\PercentileRanksAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentilesMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\StatsAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\TermBuckets.cs" />
