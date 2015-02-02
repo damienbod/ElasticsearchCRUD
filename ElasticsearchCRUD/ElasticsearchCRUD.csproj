@@ -171,6 +171,7 @@
     <Compile Include="ContextSearch\SearchModel\AggModel\StatsAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\TermBuckets.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\TermsAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\TopHitsAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\Hit.cs" />
     <Compile Include="ContextSearch\SearchModel\Hits.cs" />
     <Compile Include="ContextSearch\SearchModel\SeachType.cs" />

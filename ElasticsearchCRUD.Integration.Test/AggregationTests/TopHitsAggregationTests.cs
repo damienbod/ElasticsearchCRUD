@@ -28,8 +28,9 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TopHitsAggregationsResult<SearchAggTest>>("topHits");
+				Assert.AreEqual(7, aggResult.Hits.Total);
+				Assert.AreEqual(2.1, aggResult.Hits.HitsResult[0].Source.Lift);
 			}
 		}
 
@@ -58,7 +59,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				var hitsForBucket = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsAggregationsResult<SearchAggTest>>("topHits");
+				
 				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+				Assert.AreEqual(2.1, hitsForBucket.Hits.HitsResult[0].Source.Lift);
 			}
 		}
 	}
