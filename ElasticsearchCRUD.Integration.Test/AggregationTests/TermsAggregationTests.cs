@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
+using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Sorting;
@@ -27,8 +28,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetSingleValueMetric<double>("test_min");
-				Assert.AreEqual("2.1", Math.Round(aggResult, 2).ToString(CultureInfo.InvariantCulture));
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				Assert.AreEqual("2", aggResult);
 			}
 		}
 
