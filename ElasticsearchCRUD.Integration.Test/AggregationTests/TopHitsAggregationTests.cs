@@ -93,7 +93,9 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 										{
 											Order = OrderEnum.asc
 										}
-									})
+									}
+								),
+								From= 1
 							}
 						}
 					}
