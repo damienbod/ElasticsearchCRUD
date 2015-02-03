@@ -4,11 +4,8 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 {
-	public class TermBuckets
+	public class GlobalBucketAggregationsResult : AggregationResult<GlobalBucketAggregationsResult>
 	{
-		[JsonProperty("key")]
-		public object Key { get; set; }
-
 		[JsonProperty("doc_count")]
 		public int DocCount { get; set; }
 
@@ -24,5 +21,11 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		{
 			return SubAggregations[name]["value"].Value<T>();
 		}
+
+		public override GlobalBucketAggregationsResult GetValueFromJToken(JToken result)
+		{
+			return result.ToObject<GlobalBucketAggregationsResult>();
+		}
+
 	}
 }

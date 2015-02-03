@@ -39,6 +39,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			get { return _aggs; }
 			set
 			{
+				if (value.Exists(l => l.GetType() == typeof(GlobalBucketAggregation)))
+				{
+					throw new ElasticsearchCrudException("GlobalBucketAggregation cannot be sub aggregations");
+				}
 				_aggs = value;
 				_aggsSet = true;
 			}
