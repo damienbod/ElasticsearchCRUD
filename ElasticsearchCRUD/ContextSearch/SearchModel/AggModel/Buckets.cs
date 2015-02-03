@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 {
-	public class TermBuckets
+	public class Buckets
 	{
 		[JsonProperty("key")]
 		public object Key { get; set; }

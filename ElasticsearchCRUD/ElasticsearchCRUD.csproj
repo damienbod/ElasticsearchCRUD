@@ -170,11 +170,12 @@
     <Compile Include="ContextSearch\SearchModel\AggModel\FilterBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GeoBoundsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GlobalBucketAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\HistogramBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\MissingBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentileRanksMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentilesMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\StatsMetricAggregationsResult.cs" />
-    <Compile Include="ContextSearch\SearchModel\AggModel\TermBuckets.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\Buckets.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\TermsBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\TopHitsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\Hit.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Model\SearchModel\Aggregations\FilterBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeoBoundsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GlobalBucketAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\HistogramBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\IncludeExcludeBaseExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\IncludeExcludeExpressionFlags.cs" />
     <Compile Include="Model\SearchModel\Aggregations\IncludeExpression.cs" />

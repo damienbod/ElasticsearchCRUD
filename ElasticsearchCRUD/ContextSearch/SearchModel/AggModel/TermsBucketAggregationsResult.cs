@@ -17,7 +17,7 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		/// </summary>
 		public int SumOtherDocCount { get; set; }
 
-		public List<TermBuckets> Buckets { get; set; }
+		public List<Buckets> Buckets { get; set; }
 
 		public override TermsBucketAggregationsResult GetValueFromJToken(JToken result)
 		{
