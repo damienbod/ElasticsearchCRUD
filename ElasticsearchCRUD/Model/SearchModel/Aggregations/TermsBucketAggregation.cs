@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.Utils;
+﻿using System.Collections.Generic;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
@@ -7,6 +8,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 	/// </summary>
 	public class TermsBucketAggregation : BaseBucketAggregation
 	{
+		private readonly string _field;
 		private uint _size;
 		private bool _sizeSet;
 		private uint _shardSize;
@@ -25,9 +27,14 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _collectModeSet;
 		private ExecutionHint _executionHint;
 		private bool _executionHintSet;
+		private string _script;
+		private List<ScriptParameter> _params;
+		private bool _paramsSet;
+		private bool _scriptSet;
 
-		public TermsBucketAggregation(string name, string field) : base("terms", name, field)
+		public TermsBucketAggregation(string name, string field) : base("terms", name)
 		{
+			_field = field;
 		}
 
 		/// <summary>
@@ -201,7 +208,27 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 				_executionHintSet = true;
 			}
 		}
-		
+		public string Script
+		{
+			get { return _script; }
+			set
+			{
+				_script = value;
+				_scriptSet = true;
+			}
+		}
+
+		public List<ScriptParameter> Params
+		{
+			get { return _params; }
+			set
+			{
+				_params = value;
+				_paramsSet = true;
+			}
+		}
+
+
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			base.WriteJsonBase(elasticsearchCrudJsonWriter, WriteValues);
@@ -209,6 +236,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
+			JsonHelper.WriteValue("field", _field, elasticsearchCrudJsonWriter);
+
 			JsonHelper.WriteValue("size", _size, elasticsearchCrudJsonWriter, _sizeSet);
 			JsonHelper.WriteValue("shard_size", _shardSize, elasticsearchCrudJsonWriter, _shardSizeSet);
 			if (_orderSet)
@@ -227,6 +256,24 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			}
 			JsonHelper.WriteValue("collect_mode", _collectMode.ToString(), elasticsearchCrudJsonWriter, _collectModeSet);
 			JsonHelper.WriteValue("execution_hint", _executionHint.ToString(), elasticsearchCrudJsonWriter, _executionHintSet);
+
+			if (_scriptSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("script");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("\"" + _script + "\"");
+				if (_paramsSet)
+				{
+					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("params");
+					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+					foreach (var item in _params)
+					{
+						elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(item.ParameterName);
+						elasticsearchCrudJsonWriter.JsonWriter.WriteValue(item.ParameterValue);
+					}
+					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+				}
+			}
 		}
 	}
 

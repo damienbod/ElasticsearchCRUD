@@ -1,12 +1,12 @@
 ﻿namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	public class GlobalBucketAggregation : BaseBucketAggregation
+	public class FilterBucketAggregation : BaseBucketAggregation
 	{
-		private readonly string _name;
+		private readonly IFilter _filter;
 
-		public GlobalBucketAggregation(string name) : base("global", name)
+		public FilterBucketAggregation(string name, IFilter filter) : base("filter", name)
 		{
-			_name = name;
+			_filter = filter;
 		}
 
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
@@ -16,7 +16,7 @@
 
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			
+			_filter.WriteJson(elasticsearchCrudJsonWriter);
 		}
 	}
 }

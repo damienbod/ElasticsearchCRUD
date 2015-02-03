@@ -167,6 +167,7 @@
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Aggregations.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\ExtendedStatsMetricAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\FilterBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GeoBoundsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GlobalBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentileRanksMetricAggregationsResult.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="Model\SearchModel\Aggregations\CardinalityMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExcludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\FilterBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeoBoundsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GlobalBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\IncludeExcludeBaseExpression.cs" />
