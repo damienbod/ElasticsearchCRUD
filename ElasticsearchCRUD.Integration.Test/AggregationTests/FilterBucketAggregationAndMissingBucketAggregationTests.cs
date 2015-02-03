@@ -86,5 +86,33 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
+		[Test]
+		public void SearchAggMissingBucketAggregationWithTopHitsWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new MissingBucketAggregation("missingbucket", "nonExistingFieldName")
+					{
+						Aggs = new List<IAggs>
+						{
+							new TopHitsMetricAggregation("topHits")
+							{
+								Size = 5
+							}
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<MissingBucketAggregationsResult>("missingbucket");
+				Assert.AreEqual(7, aggResult.DocCount);
+			}
+		}
 	}
 }
