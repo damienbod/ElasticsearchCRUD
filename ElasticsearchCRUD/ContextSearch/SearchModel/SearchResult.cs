@@ -1,4 +1,5 @@
-﻿using ElasticsearchCRUD.Model;
+﻿using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
+using ElasticsearchCRUD.Model;
 using Newtonsoft.Json;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel
@@ -34,5 +35,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 
 		[JsonProperty(PropertyName = "hits")]
 		public Hits<T> Hits { get; set; }
+
+		[JsonProperty(PropertyName = "aggregations")]
+		public Aggregations Aggregations { get; set; }
+		
 	}
 }

@@ -49,6 +49,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AggregationTests\GlobalBucketAggregationTests.cs" />
+    <Compile Include="AggregationTests\TopHitsAggregationTests.cs" />
+    <Compile Include="AggregationTests\TermsAggregationTests.cs" />
     <Compile Include="AliasElasticsearchCrudTests.cs" />
     <Compile Include="AnalysisSettingsTests.cs" />
     <Compile Include="AnalysisTests.cs" />
@@ -71,6 +74,7 @@
     <Compile Include="SearchHighlightResultTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterFilteredStructureTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTests.cs" />
+    <Compile Include="AggregationTests\SearchAggStructureTests.cs" />
     <Compile Include="SearchTests\SearchQueryQueryStringQueryTest.cs" />
     <Compile Include="SearchTests\SearchQueryQueryFunctionScoreTest.cs" />
     <Compile Include="SearchTests\SearchQueryQueryFuzzyTests.cs" />
@@ -81,7 +85,9 @@
     <Compile Include="SearchTests\SearchQueryFilterTestsOneToNParentChild.cs" />
     <Compile Include="SearchTests\SearchQueryQuerySpanTests.cs" />
     <Compile Include="SearchTests\SearchQueryQueryTests.cs" />
+    <Compile Include="AggregationTests\SearchAggTest.cs" />
     <Compile Include="SearchTests\SearchTest.cs" />
+    <Compile Include="AggregationTests\SetupSearchAgg.cs" />
     <Compile Include="SearchTests\SetupSearch.cs" />
     <Compile Include="OneToN\SkillParentCollection.cs" />
     <Compile Include="OneToN\SkillTestEntityElasticSearchMapping.cs" />
