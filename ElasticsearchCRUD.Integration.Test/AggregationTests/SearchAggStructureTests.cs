@@ -192,7 +192,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_StatsAggregation");
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsMetricAggregationsResult>("test_StatsAggregation");
 				Assert.AreEqual("7", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
 				Assert.AreEqual("2.33", Math.Round(aggResult.Avg, 2).ToString(CultureInfo.InvariantCulture));
 				Assert.AreEqual("2.9", Math.Round(aggResult.Max, 2).ToString(CultureInfo.InvariantCulture));
@@ -221,7 +221,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters {SeachType = SeachType.count});
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsAggregationsResult>("test_StatsAggregation");
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<StatsMetricAggregationsResult>("test_StatsAggregation");
 				Assert.AreEqual("7", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
 				Assert.AreEqual("33.25", Math.Round(aggResult.Avg, 2).ToString(CultureInfo.InvariantCulture));
 				Assert.AreEqual("41.41", Math.Round(aggResult.Max, 2).ToString(CultureInfo.InvariantCulture));
@@ -245,7 +245,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<ExtendedStatsAggregationsResult>("test_ExtendedStatsAggregation");
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<ExtendedStatsMetricAggregationsResult>("test_ExtendedStatsAggregation");
 				Assert.AreEqual("7", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
 				Assert.AreEqual("2.33", Math.Round(aggResult.Avg, 2).ToString(CultureInfo.InvariantCulture));
 				Assert.AreEqual("2.9", Math.Round(aggResult.Max, 2).ToString(CultureInfo.InvariantCulture));
@@ -277,7 +277,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<ExtendedStatsAggregationsResult>("test_ExtendedStatsAggregation");
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<ExtendedStatsMetricAggregationsResult>("test_ExtendedStatsAggregation");
 				Assert.AreEqual("7", Math.Round(aggResult.Count, 2).ToString(CultureInfo.InvariantCulture));
 			}
 		}
@@ -493,7 +493,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<PercentileRanksAggregationsResult>("test_PercentilesMetricAggregation");
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<PercentileRanksMetricAggregationsResult>("test_PercentilesMetricAggregation");
 				Assert.AreEqual(100, aggResult.Values["20.0"]);
 			}
 		}
@@ -518,7 +518,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<PercentileRanksAggregationsResult>("test_PercentilesMetricAggregation");
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<PercentileRanksMetricAggregationsResult>("test_PercentilesMetricAggregation");
 				Assert.AreEqual(42.92, Math.Round(aggResult.Values["30.0"],2));
 			}
 		}

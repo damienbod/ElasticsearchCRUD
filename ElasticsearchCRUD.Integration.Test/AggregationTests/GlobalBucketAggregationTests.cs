@@ -85,7 +85,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsAggregationsResult>("test_min");
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
 				var bucketchildAggSum = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggSum");
 				var bucketchildAggAvg = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggAvg");
 				Assert.AreEqual(1, aggResult.Buckets[0].DocCount);

@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 {
-	public class StatsAggregationsResult : AggregationResult<StatsAggregationsResult>
+	public class StatsMetricAggregationsResult : AggregationResult<StatsMetricAggregationsResult>
 	{
 		public double Count { get; set; }
 		public double Min { get; set; }
@@ -15,9 +15,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		//   "max": 99,
 		//   "avg": 86,
 		//   "sum": 774,
-		public override StatsAggregationsResult GetValueFromJToken(JToken result)
+		public override StatsMetricAggregationsResult GetValueFromJToken(JToken result)
 		{
-			return result.ToObject<StatsAggregationsResult>();
+			return result.ToObject<StatsMetricAggregationsResult>();
 		}
 	}
 }

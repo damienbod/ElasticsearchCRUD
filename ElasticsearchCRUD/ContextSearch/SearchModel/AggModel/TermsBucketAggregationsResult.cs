@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 {
-	public class TermsAggregationsResult : AggregationResult<TermsAggregationsResult>
+	public class TermsBucketAggregationsResult : AggregationResult<TermsBucketAggregationsResult>
 	{
 		//doc_count_error_upper_bound":0,"sum_other_doc_count":0
 
@@ -19,9 +19,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 
 		public List<TermBuckets> Buckets { get; set; }
 
-		public override TermsAggregationsResult GetValueFromJToken(JToken result)
+		public override TermsBucketAggregationsResult GetValueFromJToken(JToken result)
 		{
-			return result.ToObject<TermsAggregationsResult>();
+			return result.ToObject<TermsBucketAggregationsResult>();
 		}
 		
 	}

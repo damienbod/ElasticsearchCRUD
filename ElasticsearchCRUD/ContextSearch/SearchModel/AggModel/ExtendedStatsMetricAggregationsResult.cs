@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 {
-	public class ExtendedStatsAggregationsResult : AggregationResult<ExtendedStatsAggregationsResult>
+	public class ExtendedStatsMetricAggregationsResult : AggregationResult<ExtendedStatsMetricAggregationsResult>
 	{
 		public double Count { get; set; }
 		public double Min { get; set; }
@@ -39,9 +39,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		//	"upper": 100.36043948569201,
 		//	"lower": 71.63956051430799
 		//   }
-		public override ExtendedStatsAggregationsResult GetValueFromJToken(JToken result)
+		public override ExtendedStatsMetricAggregationsResult GetValueFromJToken(JToken result)
 		{
-			return result.ToObject<ExtendedStatsAggregationsResult>();
+			return result.ToObject<ExtendedStatsMetricAggregationsResult>();
 		}
 	}
 }
