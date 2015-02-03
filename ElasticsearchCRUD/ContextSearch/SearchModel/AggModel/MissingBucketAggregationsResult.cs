@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 {
-	public class FilterBucketAggregationsResult : AggregationResult<FilterBucketAggregationsResult>
+	public class MissingBucketAggregationsResult : AggregationResult<MissingBucketAggregationsResult>
 	{
 		[JsonProperty("doc_count")]
 		public int DocCount { get; set; }
@@ -21,9 +21,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		{
 			return SubAggregations[name]["value"].Value<T>();
 		}
-		public override FilterBucketAggregationsResult GetValueFromJToken(JToken result)
+		public override MissingBucketAggregationsResult GetValueFromJToken(JToken result)
 		{
-			return result.ToObject<FilterBucketAggregationsResult>();
+			return result.ToObject<MissingBucketAggregationsResult>();
 		}
 	}
 }

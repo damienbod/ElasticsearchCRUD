@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
 	[TestFixture]
-	public class FilterBucketAggregationTests : SetupSearchAgg
+	public class FilterBucketAggregationAndMissingBucketAggregationTests : SetupSearchAgg
 	{
 		[Test]
 		public void SearchAggFilterBucketAggregationWithNoHits()
@@ -66,6 +66,25 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
+		[Test]
+		public void SearchAggMissingBucketAggregationWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new MissingBucketAggregation("missingbucket", "nonExistingFieldName")				
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<MissingBucketAggregationsResult>("missingbucket");
+				Assert.AreEqual(7, aggResult.DocCount);
+			}
+		}
 
 	}
 }

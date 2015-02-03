@@ -49,7 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AggregationTests\FilterBucketAggregationTests.cs" />
+    <Compile Include="AggregationTests\FilterBucketAggregationAndMissingBucketAggregationTests.cs" />
     <Compile Include="AggregationTests\GlobalBucketAggregationTests.cs" />
     <Compile Include="AggregationTests\TopHitsAggregationTests.cs" />
     <Compile Include="AggregationTests\TermsAggregationTests.cs" />
