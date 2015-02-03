@@ -212,6 +212,7 @@
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FilterBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeoBoundsMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\GeohashGridBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GlobalBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\HistogramBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\IncludeExcludeBaseExpression.cs" />
