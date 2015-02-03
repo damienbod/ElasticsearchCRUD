@@ -523,5 +523,31 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
+		[Test]
+		public void SearchAggGeoBoundsMetricAggregationNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new GeoBoundsMetricAggregation("testGeoBoundsMetricAggregation", "location")
+					{
+						WrapLongitude = true
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeoBoundsMetricAggregationsResult>("testGeoBoundsMetricAggregation");
+				
+				Assert.AreEqual(32.0, aggResult.BoundsTopLeft[0]);
+				Assert.AreEqual(45.0, aggResult.BoundsTopLeft[1]);
+			}
+		}
+		
+
 	}
 }

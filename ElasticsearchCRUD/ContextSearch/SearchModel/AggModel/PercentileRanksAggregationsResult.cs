@@ -12,6 +12,6 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 			Values = result["values"].ToObject<Dictionary<string, double>>();
 			return this;
 		}
-
 	}
 }
+
