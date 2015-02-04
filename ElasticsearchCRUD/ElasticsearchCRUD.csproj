@@ -169,6 +169,7 @@
     <Compile Include="ContextSearch\SearchModel\AggModel\ExtendedStatsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\FilterBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GeoBoundsMetricAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\GeohashGridBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GlobalBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\HistogramBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\MissingBucketAggregationsResult.cs" />

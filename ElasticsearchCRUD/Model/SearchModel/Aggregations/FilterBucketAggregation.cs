@@ -1,4 +1,6 @@
-﻿namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
+﻿using System.Collections.Generic;
+
+namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
 	public class FilterBucketAggregation : BaseBucketAggregation
 	{

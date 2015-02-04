@@ -35,13 +35,14 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private uint _shardSize;
 		private bool _shardSizeSet;
 
-		public GeohashGridBucketAggregation(string name, string field) : base("histogram", name)
+		public GeohashGridBucketAggregation(string name, string field) : base("geohash_grid", name)
 		{
 			_field = field;
 		}
 
 		/// <summary>
-		/// _precision
+		/// _precision The string length of the geohashes used to define cells/buckets in the results. Defaults to 5. 
+		/// 
 		/// 1 : 5,009.4km x 4,992.6km
 		/// 2 : 1,252.3km x 624.1km
 		/// 3 : 156.5km x 156km
@@ -62,16 +63,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			{
 				_precision = value;
 				_precisionSet = true;
-			}
-		}
-
-		public string Script
-		{
-			get { return _script; }
-			set
-			{
-				_script = value;
-				_scriptSet = true;
 			}
 		}
 
@@ -116,6 +107,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			{
 				_shardSize = value;
 				_shardSizeSet = true;
+			}
+		}
+
+		public string Script
+		{
+			get { return _script; }
+			set
+			{
+				_script = value;
+				_scriptSet = true;
 			}
 		}
 
