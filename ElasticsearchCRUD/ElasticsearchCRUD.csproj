@@ -223,6 +223,7 @@
     <Compile Include="Model\SearchModel\Aggregations\OrderAgg.cs" />
     <Compile Include="Model\SearchModel\Aggregations\PercentileRanksMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\PercentilesMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\ScriptedMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\StatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MaxMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MinMetricAggregation.cs" />

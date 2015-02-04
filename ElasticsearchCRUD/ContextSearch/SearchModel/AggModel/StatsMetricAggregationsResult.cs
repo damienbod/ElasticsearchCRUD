@@ -21,3 +21,4 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		}
 	}
 }
+
