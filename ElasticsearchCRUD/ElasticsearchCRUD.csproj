@@ -175,6 +175,7 @@
     <Compile Include="ContextSearch\SearchModel\AggModel\MissingBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentileRanksMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentilesMetricAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\SignificantTermsBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\StatsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\TermsBucketAggregationsResult.cs" />
@@ -224,6 +225,7 @@
     <Compile Include="Model\SearchModel\Aggregations\PercentileRanksMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\PercentilesMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ScriptedMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\SignificantTermsBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\StatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MaxMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\MinMetricAggregation.cs" />

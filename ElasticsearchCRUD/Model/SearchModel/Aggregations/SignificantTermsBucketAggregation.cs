@@ -1,12 +1,28 @@
-ï»¿using System.Collections.Generic;
+using System.Collections.Generic;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
 	/// <summary>
-	/// A multi-bucket value source based aggregation where buckets are dynamically built - one per unique value.
+	/// Example use cases:
+	///
+	///	Suggesting "H5N1" when users search for "bird flu" in text
+	///	Identifying the merchant that is the "common point of compromise" from the transaction history of credit card owners reporting loss
+	///	Suggesting keywords relating to stock symbol $ATI for an automated news classifier
+	///	Spotting the fraudulent doctor who is diagnosing more than his fair share of whiplash injuries
+	///	Spotting the tire manufacturer who has a disproportionate number of blow-outs 
+	///
+	/// In all these cases the terms being selected are not simply the most popular terms in a set. 
+	/// They are the terms that have undergone a significant change in popularity measured between a foreground and background set. 
+	/// If the term "H5N1" only exists in 5 documents in a 10 million document index and yet is found in 4 of the 100 documents that make up a user’s search results that is significant
+	///  and probably very relevant to their search. 5/10,000,000 vs 4/100 is a big swing in frequency.
+	/// Single-set analysise
+	///
+	/// In the simplest case, the foreground set of interest is the search results matched by a query and the background set used for statistical comparisons is the index 
+	/// or indices from which the results were gathered.
+	///
 	/// </summary>
-	public class TermsBucketAggregation : BaseBucketAggregation
+	public class SignificantTermsBucketAggregation : BaseBucketAggregation
 	{
 		private readonly string _field;
 		private uint _size;
@@ -32,7 +48,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _paramsSet;
 		private bool _scriptSet;
 
-		public TermsBucketAggregation(string name, string field) : base("terms", name)
+		public SignificantTermsBucketAggregation(string name, string field)
+			: base("significant_terms", name)
 		{
 			_field = field;
 		}
@@ -67,9 +84,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		/// If set to 0, the shard_size will be set to Integer.MAX_VALUE
 		/// 
 		/// Note
-		/// shard_size cannot be smaller than size (as it doesnâ€™t make much sense). When it is, elasticsearch will override it and reset it to be equal to size.
+		/// shard_size cannot be smaller than size (as it doesn’t make much sense). When it is, elasticsearch will override it and reset it to be equal to size.
 		/// It is possible to not limit the number of terms that are returned by setting size to 0. 
-		/// Donâ€™t use this on high-cardinality fields as this will kill both your CPU since terms need to be return sorted, and your network.
+		/// Don’t use this on high-cardinality fields as this will kill both your CPU since terms need to be return sorted, and your network.
 		/// </summary>
 		public uint ShardSize
 		{
@@ -123,7 +140,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		/// 
 		/// Note
 		/// 
-		/// Setting min_doc_count=0 will also return buckets for terms that didnâ€™t match any hit. 
+		/// Setting min_doc_count=0 will also return buckets for terms that didn’t match any hit. 
 		/// However, some of the returned terms which have a document count of zero might only belong to deleted documents, 
 		/// so there is no warranty that a match_all query would find a positive document count for those terms
 		/// 
@@ -197,7 +214,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		/// by using ordinals of the field and dynamically allocating one bucket per ordinal value (global_ordinals_hash)
 		/// by using per-segment ordinals to compute counts and remap these counts to global counts using global ordinals (global_ordinals_low_cardinality) 
 		///
-		/// Elasticsearch tries to have sensible defaults so this is something that generally doesnâ€™t need to be configured.
+		/// Elasticsearch tries to have sensible defaults so this is something that generally doesn’t need to be configured.
 		/// </summary>
 		public ExecutionHint ExecutionHint
 		{
@@ -275,37 +292,5 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 				}
 			}
 		}
-	}
-
-	public enum ExecutionHint
-	{
-		/// <summary>
-		/// should only be considered when very few documents match a query. Otherwise the ordinals-based execution modes are significantly faster. 
-		/// By default, map is only used when running an aggregation on scripts, since they donâ€™t have ordinals.
-		/// </summary>
-		map, 
-
-		/// <summary>
-		/// only works for leaf terms aggregations but is usually the fastest execution mode. 
-		/// Memory usage is linear with the number of unique values in the field, so it is only enabled by default on low-cardinality fields.
-		/// </summary>
-		global_ordinals_low_cardinality,
-		
-		/// <summary>
-		///  is the second fastest option, but the fact that it preemptively allocates buckets can be memory-intensive,
-		///  especially if you have one or more sub aggregations. It is used by default on top-level terms aggregations.
-		/// </summary>
-		global_ordinals,
-
-		/// <summary>
-		///  on the contrary to global_ordinals and global_ordinals_low_cardinality allocates buckets dynamically 
-		/// so memory usage is linear to the number of values of the documents that are part of the aggregation scope. It is used by default in inner aggregations.
-		/// </summary>
-		global_ordinals_hash
-	}
-
-	public enum CollectMode
-	{
-		breadth_first, depth_first
 	}
 }
