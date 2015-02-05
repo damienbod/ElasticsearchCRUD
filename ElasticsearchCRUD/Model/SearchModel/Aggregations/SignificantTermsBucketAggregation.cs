@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
@@ -29,8 +28,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _sizeSet;
 		private uint _shardSize;
 		private bool _shardSizeSet;
-		private OrderAgg _order;
-		private bool _orderSet;
 		private uint _minDocCount;
 		private bool _minDocCountSet;
 		private uint _shardMinDocCount;
@@ -39,14 +36,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _includeSet;
 		private ExcludeExpression _exclude;
 		private bool _excludeSet;
-		private CollectMode _collectMode;
-		private bool _collectModeSet;
 		private ExecutionHint _executionHint;
 		private bool _executionHintSet;
-		private string _script;
-		private List<ScriptParameter> _params;
-		private bool _paramsSet;
-		private bool _scriptSet;
+		private IFilter _backgroundFilter;
+		private bool _backgroundFilterSet;
+		private InformationRetrieval _informationRetrieval;
+		private bool _informationRetrievalSet;
 
 		public SignificantTermsBucketAggregation(string name, string field)
 			: base("significant_terms", name)
@@ -97,16 +92,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 				_shardSizeSet = true;
 			}
 		}
-		
-		public OrderAgg Order
-		{
-			get { return _order; }
-			set
-			{
-				_order = value;
-				_orderSet = true;
-			}
-		}
+	
 
 		/// <summary>
 		/// min_doc_count
@@ -181,31 +167,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		}
 
 		/// <summary>
-		/// Deferring calculation of child aggregations
-		/// 
-		/// For fields with many unique terms and a small number of required results it can be more efficient to delay the calculation of child aggregations 
-		/// until the top parent-level aggs have been pruned. Ordinarily, all branches of the aggregation tree are expanded in one depth-first pass and only then any pruning occurs. 
-		/// In some rare scenarios this can be very wasteful and can hit memory constraints.
-		/// 
-		/// When using breadth_first mode the set of documents that fall into the uppermost buckets are cached for subsequent replay so there is a memory overhead in doing this
-		/// which is linear with the number of matching documents. 
-		/// In most requests the volume of buckets generated is smaller than the number of documents that fall into them so the default depth_first collection mode is normally the best bet 
-		/// but occasionally the breadth_first strategy can be significantly more efficient. 
-		/// Currently elasticsearch will always use the depth_first collect_mode unless explicitly instructed to use breadth_first as in the above example. 
-		/// Note that the order parameter can still be used to refer to data from a child aggregation when using the breadth_first setting 
-		/// - the parent aggregation understands that this child aggregation will need to be called first before any of the other child aggregations.
-		/// </summary>
-		public CollectMode CollectMode
-		{
-			get { return _collectMode; }
-			set
-			{
-				_collectMode = value;
-				_collectModeSet = true;
-			}
-		}
-
-		/// <summary>
 		/// execution_hint
 		/// There are different mechanisms by which terms aggregations can be executed:
 		///
@@ -226,26 +187,52 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			}
 		}
 
-		public string Script
+		public IFilter BackgroundFilter
 		{
-			get { return _script; }
+			get { return _backgroundFilter; }
 			set
 			{
-				_script = value;
-				_scriptSet = true;
+				_backgroundFilter = value;
+				_backgroundFilterSet = true;
 			}
 		}
 
-		public List<ScriptParameter> Params
+		/// <summary>
+		/// mutual_information, chi_square, gnd, jlh
+		/// 
+		/// Mutual information as described in "Information Retrieval", Manning et al., Chapter 13.5.1 can be used as significance score by adding the parameter
+		///
+        /// "mutual_information": {
+        ///      "include_negatives": true
+        ///  }
+		///
+		/// Mutual information does not differentiate between terms that are descriptive for the subset or for documents outside the subset. 
+		/// The significant terms therefore can contain terms that appear more or less frequent in the subset than outside the subset. 
+		/// To filter out the terms that appear less often in the subset than in documents outside the subset, include_negatives can be set to false.
+		/// 
+		/// Per default, the assumption is that the documents in the bucket are also contained in the background. 
+		/// If instead you defined a custom background filter that represents a different set of documents that you want to compare to, set
+		/// 
+		/// Roughly, mutual_information prefers high frequent terms even if they occur also frequently in the background. For example, 
+		/// in an analysis of natural language text this might lead to selection of stop words. mutual_information is unlikely to select very rare terms like misspellings. 
+		/// gnd prefers terms with a high co-occurence and avoids selection of stopwords. It might be better suited for synonym detection. 
+		/// However, gnd has a tendency to select very rare terms that are, for example, a result of misspelling. chi_square and jlh are somewhat in-between.
+		/// 
+		/// It is hard to say which one of the different heuristics will be the best choice as it depends on what the significant terms are used for 
+		/// (see for example [Yang and Pedersen, "A Comparative Study on Feature Selection in Text Categorization", 1997]
+		/// (http://courses.ischool.berkeley.edu/i256/f06/papers/yang97comparative.pdf) 
+		/// for a study on using significant terms for feature selection for text classification).
+		/// </summary>
+		public InformationRetrieval InformationRetrievalRetrieval
 		{
-			get { return _params; }
+			get { return _informationRetrieval; }
 			set
 			{
-				_params = value;
-				_paramsSet = true;
+				_informationRetrieval = value;
+				_informationRetrievalSet = true;
 			}
 		}
-
+		
 		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			base.WriteJsonBase(elasticsearchCrudJsonWriter, WriteValues);
@@ -257,10 +244,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 
 			JsonHelper.WriteValue("size", _size, elasticsearchCrudJsonWriter, _sizeSet);
 			JsonHelper.WriteValue("shard_size", _shardSize, elasticsearchCrudJsonWriter, _shardSizeSet);
-			if (_orderSet)
-			{
-				_order.WriteJson(elasticsearchCrudJsonWriter);
-			}
 			JsonHelper.WriteValue("min_doc_count", _minDocCount, elasticsearchCrudJsonWriter, _minDocCountSet);
 			JsonHelper.WriteValue("shard_min_doc_count", _shardMinDocCount, elasticsearchCrudJsonWriter, _shardMinDocCountSet);
 			if (_includeSet)
@@ -271,26 +254,144 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			{
 				_exclude.WriteJson(elasticsearchCrudJsonWriter);
 			}
-			JsonHelper.WriteValue("collect_mode", _collectMode.ToString(), elasticsearchCrudJsonWriter, _collectModeSet);
+			
 			JsonHelper.WriteValue("execution_hint", _executionHint.ToString(), elasticsearchCrudJsonWriter, _executionHintSet);
 
-			if (_scriptSet)
+			if (_backgroundFilterSet)
 			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("script");
-				elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue("\"" + _script + "\"");
-				if (_paramsSet)
-				{
-					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("params");
-					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("background_filter");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				_backgroundFilter.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
 
-					foreach (var item in _params)
-					{
-						elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(item.ParameterName);
-						elasticsearchCrudJsonWriter.JsonWriter.WriteValue(item.ParameterValue);
-					}
-					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-				}
+			if (_informationRetrievalSet)
+			{
+				_informationRetrieval.WriteJson(elasticsearchCrudJsonWriter);
 			}
 		}
+	}
+
+	/// <summary>
+	/// mutual_information
+	/// </summary>
+	public abstract class InformationRetrieval
+	{	
+		public abstract void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter);
+	}
+
+	public class Jlh : InformationRetrieval
+	{
+		
+		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(InformationRetrievalEnum.jlh.ToString());
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+;
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+	}
+
+	public class Gnd : InformationRetrieval
+	{
+		private bool _backgroundIsSuperset;
+		private bool _backgroundIsSupersetSet;
+
+		public bool BackgroundIsSuperset
+		{
+			get { return _backgroundIsSuperset; }
+			set
+			{
+				_backgroundIsSuperset = value;
+				_backgroundIsSupersetSet = true;
+			}
+		}
+
+		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(InformationRetrievalEnum.gnd.ToString());
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			JsonHelper.WriteValue("background_is_superset", _backgroundIsSuperset, elasticsearchCrudJsonWriter, _backgroundIsSupersetSet);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+	}
+
+	public class ChiSquare : InformationRetrieval
+	{
+		private bool _includeNegatives;
+		private bool _includeNegativesSet;
+		private bool _backgroundIsSuperset;
+		private bool _backgroundIsSupersetSet;
+
+		public bool IncludeNegatives
+		{
+			get { return _includeNegatives; }
+			set
+			{
+				_includeNegatives = value;
+				_includeNegativesSet = true;
+			}
+		}
+
+		public bool BackgroundIsSuperset
+		{
+			get { return _backgroundIsSuperset; }
+			set
+			{
+				_backgroundIsSuperset = value;
+				_backgroundIsSupersetSet = true;
+			}
+		}
+
+		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(InformationRetrievalEnum.chi_square.ToString());
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			JsonHelper.WriteValue("include_negatives", _includeNegatives, elasticsearchCrudJsonWriter, _includeNegativesSet);
+			JsonHelper.WriteValue("background_is_superset", _backgroundIsSuperset, elasticsearchCrudJsonWriter, _backgroundIsSupersetSet);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+	}
+
+	public class MutualInformation : InformationRetrieval
+	{
+		private bool _includeNegatives;
+		private bool _includeNegativesSet;
+		private bool _backgroundIsSuperset;
+		private bool _backgroundIsSupersetSet;
+
+		public bool IncludeNegatives
+		{
+			get { return _includeNegatives; }
+			set
+			{
+				_includeNegatives = value;
+				_includeNegativesSet = true;
+			}
+		}
+
+		public bool BackgroundIsSuperset
+		{
+			get { return _backgroundIsSuperset; }
+			set
+			{
+				_backgroundIsSuperset = value;
+				_backgroundIsSupersetSet = true;
+			}
+		}
+
+		public override void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
+		{
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(InformationRetrievalEnum.mutual_information.ToString());
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+			JsonHelper.WriteValue("include_negatives", _includeNegatives, elasticsearchCrudJsonWriter, _includeNegativesSet);
+			JsonHelper.WriteValue("background_is_superset", _backgroundIsSuperset, elasticsearchCrudJsonWriter, _backgroundIsSupersetSet);
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+	}
+
+	public enum InformationRetrievalEnum
+	{
+		mutual_information, chi_square, gnd, jlh
 	}
 }
