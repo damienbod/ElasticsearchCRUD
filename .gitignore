@@ -25,3 +25,11 @@ DataTransferEF_SQLToElasticsearch/bin/Release/EntityFramework.SqlServer.xml
 DataTransferEF_SQLToElasticsearch/bin
 DataTransferEF_SQLToElasticsearch/obj
 ElasticsearchCRUD/ElasticsearchCRUD.csproj.user
+Examples/ConsoleElasticsearchCrudExample/bin
+Examples/ConsoleElasticsearchCrudExample/obj
+Examples/Damienbod.AnimalProvider/bin
+Examples/DataTransferEF_SQLToElasticsearch/obj
+Examples/Damienbod.AnimalProvider/obj
+Examples/DataTransferEF_SQLToElasticsearch/bin
+Examples/WebApiElasticsearchCrudExample/bin
+Examples/WebApiElasticsearchCrudExample/obj

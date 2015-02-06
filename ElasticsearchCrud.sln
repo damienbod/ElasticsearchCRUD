@@ -1,22 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.AnimalProvider", "Damienbod.AnimalProvider\Damienbod.AnimalProvider.csproj", "{B77C46C2-82AB-4871-8ED3-2521512D30C6}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleElasticsearchCrudExample", "ConsoleElasticsearchCrudExample\ConsoleElasticsearchCrudExample.csproj", "{1E850A6D-11E5-45E1-AE91-7930F908554A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiElasticsearchCrudExample", "WebApiElasticsearchCrudExample\WebApiElasticsearchCrudExample.csproj", "{F32E948D-41C9-47C7-B305-6BB18997B19A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticsearchCRUD", "ElasticsearchCRUD\ElasticsearchCRUD.csproj", "{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElasticsearchCRUD.Integration.Test", "ElasticsearchCRUD.Integration.Test\ElasticsearchCRUD.Integration.Test.csproj", "{0871F436-A4A1-445C-BE17-98EBCCAF7973}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransferEF_SQLToElasticsearch", "DataTransferEF_SQLToElasticsearch\DataTransferEF_SQLToElasticsearch.csproj", "{5D2337D7-426B-4DF6-8237-0C7638DF757C}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF} = {D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}
-	EndProjectSection
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{13B9DD7F-EB18-4808-B498-5F2F30586B08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleElasticsearchCrudExample", "Examples\ConsoleElasticsearchCrudExample\ConsoleElasticsearchCrudExample.csproj", "{1E850A6D-11E5-45E1-AE91-7930F908554A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.AnimalProvider", "Examples\Damienbod.AnimalProvider\Damienbod.AnimalProvider.csproj", "{B77C46C2-82AB-4871-8ED3-2521512D30C6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransferEF_SQLToElasticsearch", "Examples\DataTransferEF_SQLToElasticsearch\DataTransferEF_SQLToElasticsearch.csproj", "{5D2337D7-426B-4DF6-8237-0C7638DF757C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,18 +21,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F32E948D-41C9-47C7-B305-6BB18997B19A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D40FD7B8-3FBC-4F06-88ED-704E60B1A3AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -44,6 +29,14 @@ Global
 		{0871F436-A4A1-445C-BE17-98EBCCAF7973}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0871F436-A4A1-445C-BE17-98EBCCAF7973}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0871F436-A4A1-445C-BE17-98EBCCAF7973}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E850A6D-11E5-45E1-AE91-7930F908554A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B77C46C2-82AB-4871-8ED3-2521512D30C6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -51,5 +44,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1E850A6D-11E5-45E1-AE91-7930F908554A} = {13B9DD7F-EB18-4808-B498-5F2F30586B08}
+		{B77C46C2-82AB-4871-8ED3-2521512D30C6} = {13B9DD7F-EB18-4808-B498-5F2F30586B08}
+		{5D2337D7-426B-4DF6-8237-0C7638DF757C} = {13B9DD7F-EB18-4808-B498-5F2F30586B08}
 	EndGlobalSection
 EndGlobal

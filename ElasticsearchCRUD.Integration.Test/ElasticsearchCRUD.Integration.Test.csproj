@@ -104,10 +104,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Damienbod.AnimalProvider\Damienbod.AnimalProvider.csproj">
-      <Project>{B77C46C2-82AB-4871-8ED3-2521512D30C6}</Project>
-      <Name>Damienbod.AnimalProvider</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ElasticsearchCRUD\ElasticsearchCRUD.csproj">
       <Project>{d40fd7b8-3fbc-4f06-88ed-704e60b1a3af}</Project>
       <Name>ElasticsearchCRUD</Name>
