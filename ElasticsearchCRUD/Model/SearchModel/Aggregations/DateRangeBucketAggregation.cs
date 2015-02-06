@@ -4,6 +4,14 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
+	/// <summary>
+	/// A range aggregation that is dedicated for date values. 
+	/// The main difference between this aggregation and the normal range aggregation is that the from and to values can be expressed in Date Math expressions, 
+	/// and it is also possible to specify a date format by which the from and to response fields will be returned. 
+	/// Note that this aggregration includes the from value and excludes the to value for each range.
+	/// 
+	/// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-daterange-aggregation.html	
+	/// </summary>
 	public class DateRangeBucketAggregation : BaseBucketAggregation
 	{
 		private readonly string _field;

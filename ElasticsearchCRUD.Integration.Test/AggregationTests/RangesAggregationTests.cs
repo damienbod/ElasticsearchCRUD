@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel.Buckets;
@@ -195,8 +194,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				{
 					new DateRangeBucketAggregation("testRangesBucketAggregation", "dateofdetails", "MM-yyy", new List<RangeAggregationParameter>
 					{
-						new ToRangeAggregationParameter("now-10M/M"),
-						//new ToFromRangeAggregationParameter("now-10M/M", "now-10M/M"),
+						new ToRangeAggregationParameter("now-8M/M"),
+						new ToFromRangeAggregationParameter("now-8M/M", "now-10M/M"),
 						new FromRangeAggregationParameter("now-10M/M")
 					})
 				}
@@ -207,8 +206,40 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesBucketAggregationsResult>("testRangesBucketAggregation");
-				Assert.AreEqual(6, aggResult.Buckets[2].DocCount);
-				Assert.AreEqual("2.0", aggResult.Buckets[2].FromAsString);
+				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
+			}
+		}
+
+		[Test]
+		public void SearchAggDateRangesBucketAggregationKeyedWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new DateRangeBucketAggregation("testRangesBucketAggregation", "dateofdetails", "MM-yyy", new List<RangeAggregationParameter>
+					{
+						new ToRangeAggregationParameter("now-8M/M"),
+						new ToFromRangeAggregationParameter("now-8M/M", "now-10M/M"),
+						new FromRangeAggregationParameter("now-10M/M")
+						{
+							Key = "keyName"
+						}
+					})
+					{
+						Keyed= true
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesNamedBucketAggregationsResult>("testRangesBucketAggregation");
+				var test = aggResult.Buckets.GetSubAggregationsFromJTokenName<RangeBucket>("keyName");
+
+				Assert.AreEqual(7, test.DocCount);			
 			}
 		}
 
