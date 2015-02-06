@@ -1,6 +1,6 @@
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam
 {
-	public abstract class RangeAggregationParameter
+	public abstract class RangeAggregationParameter<T>
 	{
 		protected string KeyValue;
 		protected bool KeySet;

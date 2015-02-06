@@ -92,11 +92,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 		}
 	}
 
-	public enum DistanceUnitEnum
-	{
-		 miles, yards, feet, inch, km, m, cm, mm, nmi
-	}
-
 	public enum SortModeGeo
 	{
 		/// <summary>

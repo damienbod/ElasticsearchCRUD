@@ -2,11 +2,11 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam
 {
-	public class FromRangeAggregationParameter : RangeAggregationParameter
+	public class FromRangeAggregationParameter<T> : RangeAggregationParameter<T>
 	{
-		private readonly object _value;
+		private readonly T _value;
 
-		public FromRangeAggregationParameter(object value)
+		public FromRangeAggregationParameter(T value)
 		{
 			_value = value;
 		}

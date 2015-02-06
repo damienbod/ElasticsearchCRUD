@@ -97,11 +97,4 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		indexed,
 		none
 	}
-
-	public enum DistanceType
-	{
-		sloppy_arc,
-		arc,
-		plane
-	}
 }

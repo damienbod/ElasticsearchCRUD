@@ -1,22 +1,15 @@
 using System.Collections.Generic;
+using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	/// <summary>
-	/// A range aggregation that is dedicated for date values. 
-	/// The main difference between this aggregation and the normal range aggregation is that the from and to values can be expressed in Date Math expressions, 
-	/// and it is also possible to specify a date format by which the from and to response fields will be returned. 
-	/// Note that this aggregration includes the from value and excludes the to value for each range.
-	/// 
-	/// http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/search-aggregations-bucket-daterange-aggregation.html	
-	/// </summary>
-	public class DateRangeBucketAggregation : BaseBucketAggregation
+	public class GeoDistanceBucketAggregation : BaseBucketAggregation
 	{
 		private readonly string _field;
-		private readonly string _format;
-		private readonly List<RangeAggregationParameter<string>> _ranges;
+		private readonly GeoPoint _origin;
+		private readonly List<RangeAggregationParameter<uint>> _ranges;
 
 		private string _script;
 		private List<ScriptParameter> _params;
@@ -24,12 +17,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _scriptSet;
 		private bool _keyed;
 		private bool _keyedSet;
+		private DistanceUnitEnum _unit;
+		private bool _unitSet;
+		private DistanceType _distanceType;
+		private bool _distanceTypeSet;
 
-		public DateRangeBucketAggregation(string name, string field, string format, List<RangeAggregationParameter<string>> ranges)
-			: base("date_range", name)
+		public GeoDistanceBucketAggregation(string name, string field, GeoPoint origin, List<RangeAggregationParameter<uint>> ranges)
+			: base("geo_distance", name)
 		{
 			_field = field;
-			_format = format;
+			_origin = origin;
 			_ranges = ranges;
 		}
 
@@ -43,6 +40,31 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			{
 				_keyed = value;
 				_keyedSet = true;
+			}
+		}
+
+		public DistanceUnitEnum Unit
+		{
+			get { return _unit; }
+			set
+			{
+				_unit = value;
+				_unitSet = true;
+			}
+		}
+
+		/// <summary>
+		/// distance_type
+		/// How to compute the distance. Can either be sloppy_arc (default), arc (slighly more precise but significantly slower) or plane 
+		/// (faster, but inaccurate on long distances and close to the poles).
+		/// </summary>
+		public DistanceType DistanceType
+		{
+			get { return _distanceType; }
+			set
+			{
+				_distanceType = value;
+				_distanceTypeSet = true;
 			}
 		}
 
@@ -74,7 +96,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("field", _field, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("format", _format, elasticsearchCrudJsonWriter);
+
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("origin");
+			_origin.WriteJson(elasticsearchCrudJsonWriter);
+			
+			JsonHelper.WriteValue("unit", _unit.ToString(), elasticsearchCrudJsonWriter, _unitSet);			
+			JsonHelper.WriteValue("distance_type", _distanceType.ToString(), elasticsearchCrudJsonWriter, _distanceTypeSet);
 			JsonHelper.WriteValue("keyed", _keyed, elasticsearchCrudJsonWriter, _keyedSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("ranges");

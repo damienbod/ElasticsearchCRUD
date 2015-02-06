@@ -2,9 +2,11 @@
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel.Buckets;
+using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam;
+using ElasticsearchCRUD.Model.Units;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
@@ -19,11 +21,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
+					new RangeBucketAggregation<double>("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter<double>>
 					{
-						new ToRangeAggregationParameter(1.5),
-						new ToFromRangeAggregationParameter(1.5,2.0),
-						new FromRangeAggregationParameter(2.0)
+						new ToRangeAggregationParameter<double>(1.5),
+						new ToFromRangeAggregationParameter<double>(1.5,2.0),
+						new FromRangeAggregationParameter<double>(2.0)
 					})
 				}
 			};
@@ -45,11 +47,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
+					new RangeBucketAggregation<double>("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter<double>>
 					{
-						new ToRangeAggregationParameter(1.5),
-						new ToFromRangeAggregationParameter(1.5,2.0),
-						new FromRangeAggregationParameter(2.0)
+						new ToRangeAggregationParameter<double>(1.5),
+						new ToFromRangeAggregationParameter<double>(1.5,2.0),
+						new FromRangeAggregationParameter<double>(2.0)
 					})
 					{
 						Keyed= true
@@ -75,17 +77,17 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
+					new RangeBucketAggregation<double>("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter<double>>
 					{
-						new ToRangeAggregationParameter(1.5)
+						new ToRangeAggregationParameter<double>(1.5)
 						{
 							Key = "one"
 						},
-						new ToFromRangeAggregationParameter(1.5,2.0)
+						new ToFromRangeAggregationParameter<double>(1.5,2.0)
 						{
 							Key = "two"
 						},
-						new FromRangeAggregationParameter(2.0)
+						new FromRangeAggregationParameter<double>(2.0)
 						{
 							Key = "three"
 						}
@@ -110,17 +112,17 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
+					new RangeBucketAggregation<double>("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter<double>>
 					{
-						new ToRangeAggregationParameter(1.5)
+						new ToRangeAggregationParameter<double>(1.5)
 						{
 							Key = "one"
 						},
-						new ToFromRangeAggregationParameter(1.5,2.0)
+						new ToFromRangeAggregationParameter<double>(1.5,2.0)
 						{
 							Key = "two"
 						},
-						new FromRangeAggregationParameter(2.0)
+						new FromRangeAggregationParameter<double>(2.0)
 						{
 							Key = "three"
 						}
@@ -149,17 +151,17 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
+					new RangeBucketAggregation<double>("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter<double>>
 					{
-						new ToRangeAggregationParameter(1.5)
+						new ToRangeAggregationParameter<double>(1.5)
 						{
 							Key = "one"
 						},
-						new ToFromRangeAggregationParameter(1.5,2.0)
+						new ToFromRangeAggregationParameter<double>(1.5,2.0)
 						{
 							Key = "two"
 						},
-						new FromRangeAggregationParameter(2.0)
+						new FromRangeAggregationParameter<double>(2.0)
 						{
 							Key = "three"
 						}
@@ -192,11 +194,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new DateRangeBucketAggregation("testRangesBucketAggregation", "dateofdetails", "MM-yyy", new List<RangeAggregationParameter>
+					new DateRangeBucketAggregation("testRangesBucketAggregation", "dateofdetails", "MM-yyy", new List<RangeAggregationParameter<string>>
 					{
-						new ToRangeAggregationParameter("now-8M/M"),
-						new ToFromRangeAggregationParameter("now-8M/M", "now-10M/M"),
-						new FromRangeAggregationParameter("now-10M/M")
+						new ToRangeAggregationParameter<string>("now-8M/M"),
+						new ToFromRangeAggregationParameter<string>("now-8M/M", "now-10M/M"),
+						new FromRangeAggregationParameter<string>("now-10M/M")
 					})
 				}
 			};
@@ -217,11 +219,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new DateRangeBucketAggregation("testRangesBucketAggregation", "dateofdetails", "MM-yyy", new List<RangeAggregationParameter>
+					new DateRangeBucketAggregation("testRangesBucketAggregation", "dateofdetails", "MM-yyy", new List<RangeAggregationParameter<string>>
 					{
-						new ToRangeAggregationParameter("now-8M/M"),
-						new ToFromRangeAggregationParameter("now-8M/M", "now-10M/M"),
-						new FromRangeAggregationParameter("now-10M/M")
+						new ToRangeAggregationParameter<string>("now-8M/M"),
+						new ToFromRangeAggregationParameter<string>("now-8M/M", "now-10M/M"),
+						new FromRangeAggregationParameter<string>("now-10M/M")
 						{
 							Key = "keyName"
 						}
@@ -240,6 +242,64 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var test = aggResult.Buckets.GetSubAggregationsFromJTokenName<RangeBucket>("keyName");
 
 				Assert.AreEqual(7, test.DocCount);			
+			}
+		}
+
+		[Test]
+		public void SearchAggGeoDistanceBucketAggregationWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new GeoDistanceBucketAggregation("testGeoDistanceBucketAggregation", "location", new GeoPoint(40.0, 40.0), 
+						new List<RangeAggregationParameter<uint>>
+						{
+							new ToRangeAggregationParameter<uint>(100),
+							new ToFromRangeAggregationParameter<uint>(100, 500),
+							new FromRangeAggregationParameter<uint>(500)
+						})
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeoDistanceBucketAggregationsResult>("testGeoDistanceBucketAggregation");
+				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
+				Assert.AreEqual(500, aggResult.Buckets[2].From);
+			}
+		}
+
+		[Test]
+		public void SearchAggGeoDistanceBucketAggregationWithDistanceTypeWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new GeoDistanceBucketAggregation("testGeoDistanceBucketAggregation", "location", new GeoPoint(40.0, 40.0), 
+						new List<RangeAggregationParameter<uint>>
+						{
+							new ToRangeAggregationParameter<uint>(100),
+							new ToFromRangeAggregationParameter<uint>(100, 500),
+							new FromRangeAggregationParameter<uint>(500)
+						})
+					{
+						DistanceType = DistanceType.plane,
+						Unit = DistanceUnitEnum.m
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeoDistanceBucketAggregationsResult>("testGeoDistanceBucketAggregation");
+				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
+				Assert.AreEqual(500, aggResult.Buckets[2].From);
 			}
 		}
 

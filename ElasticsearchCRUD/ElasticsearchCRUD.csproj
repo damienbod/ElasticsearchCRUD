@@ -167,8 +167,10 @@
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Aggregations.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\Bucket.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\GeoDistanceRangeBucket.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\RangeBucket.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\ExtendedStatsMetricAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\GeoDistanceBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\NestedBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\RangesBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\RangesNamedBucketAggregationsResult.cs" />
@@ -227,6 +229,7 @@
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FilterBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FiltersNamedBucketAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\GeoDistanceBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\RangeParam\FromRangeAggregationParameter.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeoBoundsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeohashGridBucketAggregation.cs" />
@@ -260,6 +263,7 @@
     <Compile Include="Model\SearchModel\Filtered.cs" />
     <Compile Include="Model\SearchModel\Filters\AndFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\BoolFilter.cs" />
+    <Compile Include="Model\GeoModel\DistanceType.cs" />
     <Compile Include="Model\SearchModel\Filters\ExistsFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoBoundingBoxFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoDistanceRangeFilter.cs" />
@@ -331,6 +335,7 @@
     <Compile Include="Model\SearchModel\Queries\TopChildrenQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\WildcardQuery.cs" />
     <Compile Include="Model\SearchModel\ScriptParameter.cs" />
+    <Compile Include="Model\GeoModel\DistanceUnitEnum.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortGeoDistance.cs" />
     <Compile Include="Model\SearchModel\Sorting\ISort.cs" />
     <Compile Include="Model\SearchModel\Queries\BoolQuery.cs" />

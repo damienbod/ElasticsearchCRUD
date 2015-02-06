@@ -4,10 +4,10 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	public class RangeBucketAggregation : BaseBucketAggregation
+	public class RangeBucketAggregation<T> : BaseBucketAggregation
 	{
 		private readonly string _field;
-		private readonly List<RangeAggregationParameter> _ranges;
+		private readonly List<RangeAggregationParameter<T>> _ranges;
 
 		private string _script;
 		private List<ScriptParameter> _params;
@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _keyed;
 		private bool _keyedSet;
 
-		public RangeBucketAggregation(string name, string field, List<RangeAggregationParameter> ranges ) : base("range", name)
+		public RangeBucketAggregation(string name, string field, List<RangeAggregationParameter<T>> ranges ) : base("range", name)
 		{
 			_field = field;
 			_ranges = ranges;

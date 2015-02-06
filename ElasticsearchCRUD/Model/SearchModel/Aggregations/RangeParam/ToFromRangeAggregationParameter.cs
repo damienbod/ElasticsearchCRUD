@@ -2,12 +2,12 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam
 {
-	public class ToFromRangeAggregationParameter : RangeAggregationParameter
+	public class ToFromRangeAggregationParameter<T> : RangeAggregationParameter<T>
 	{
-		private readonly object _to;
-		private readonly object _from;
+		private readonly T _to;
+		private readonly T _from;
 
-		public ToFromRangeAggregationParameter(object to, object from)
+		public ToFromRangeAggregationParameter(T to, T from)
 		{
 			_to = to;
 			_from = @from;
