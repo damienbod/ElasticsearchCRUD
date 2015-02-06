@@ -222,10 +222,12 @@
     <Compile Include="Model\SearchModel\Aggregations\BaseMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\CardinalityMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ChidrenBucketAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\DateRangeBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExcludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FilterBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FiltersNamedBucketAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\RangeParam\FromRangeAggregationParameter.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeoBoundsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeohashGridBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GlobalBucketAggregation.cs" />
@@ -238,6 +240,7 @@
     <Compile Include="Model\SearchModel\Aggregations\OrderAgg.cs" />
     <Compile Include="Model\SearchModel\Aggregations\PercentileRanksMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\PercentilesMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\RangeParam\RangeAggregationParameter.cs" />
     <Compile Include="Model\SearchModel\Aggregations\RangeBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ReverseNestedBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ScriptedMetricAggregation.cs" />
@@ -248,7 +251,9 @@
     <Compile Include="Model\SearchModel\Aggregations\SumMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FiltersBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\TermsBucketAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\RangeParam\ToFromRangeAggregationParameter.cs" />
     <Compile Include="Model\SearchModel\Aggregations\TopHitsMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\RangeParam\ToRangeAggregationParameter.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ValueCountMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Document.cs" />
     <Compile Include="Model\SearchModel\Filter.cs" />

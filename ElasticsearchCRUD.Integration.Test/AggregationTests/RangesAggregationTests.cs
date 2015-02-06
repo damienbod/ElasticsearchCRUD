@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel.Buckets;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
+using ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
@@ -18,11 +20,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeBucketAggregation.RangeAggregationParameter>
+					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
 					{
-						new RangeBucketAggregation.ToRangeAggregationParameter(1.5),
-						new RangeBucketAggregation.ToFromRangeAggregationParameter(1.5,2.0),
-						new RangeBucketAggregation.FromRangeAggregationParameter(2.0)
+						new ToRangeAggregationParameter(1.5),
+						new ToFromRangeAggregationParameter(1.5,2.0),
+						new FromRangeAggregationParameter(2.0)
 					})
 				}
 			};
@@ -44,11 +46,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeBucketAggregation.RangeAggregationParameter>
+					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
 					{
-						new RangeBucketAggregation.ToRangeAggregationParameter(1.5),
-						new RangeBucketAggregation.ToFromRangeAggregationParameter(1.5,2.0),
-						new RangeBucketAggregation.FromRangeAggregationParameter(2.0)
+						new ToRangeAggregationParameter(1.5),
+						new ToFromRangeAggregationParameter(1.5,2.0),
+						new FromRangeAggregationParameter(2.0)
 					})
 					{
 						Keyed= true
@@ -74,17 +76,17 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeBucketAggregation.RangeAggregationParameter>
+					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
 					{
-						new RangeBucketAggregation.ToRangeAggregationParameter(1.5)
+						new ToRangeAggregationParameter(1.5)
 						{
 							Key = "one"
 						},
-						new RangeBucketAggregation.ToFromRangeAggregationParameter(1.5,2.0)
+						new ToFromRangeAggregationParameter(1.5,2.0)
 						{
 							Key = "two"
 						},
-						new RangeBucketAggregation.FromRangeAggregationParameter(2.0)
+						new FromRangeAggregationParameter(2.0)
 						{
 							Key = "three"
 						}
@@ -109,17 +111,17 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeBucketAggregation.RangeAggregationParameter>
+					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
 					{
-						new RangeBucketAggregation.ToRangeAggregationParameter(1.5)
+						new ToRangeAggregationParameter(1.5)
 						{
 							Key = "one"
 						},
-						new RangeBucketAggregation.ToFromRangeAggregationParameter(1.5,2.0)
+						new ToFromRangeAggregationParameter(1.5,2.0)
 						{
 							Key = "two"
 						},
-						new RangeBucketAggregation.FromRangeAggregationParameter(2.0)
+						new FromRangeAggregationParameter(2.0)
 						{
 							Key = "three"
 						}
@@ -148,17 +150,17 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			{
 				Aggs = new List<IAggs>
 				{
-					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeBucketAggregation.RangeAggregationParameter>
+					new RangeBucketAggregation("testRangesBucketAggregation", "lift", new List<RangeAggregationParameter>
 					{
-						new RangeBucketAggregation.ToRangeAggregationParameter(1.5)
+						new ToRangeAggregationParameter(1.5)
 						{
 							Key = "one"
 						},
-						new RangeBucketAggregation.ToFromRangeAggregationParameter(1.5,2.0)
+						new ToFromRangeAggregationParameter(1.5,2.0)
 						{
 							Key = "two"
 						},
-						new RangeBucketAggregation.FromRangeAggregationParameter(2.0)
+						new FromRangeAggregationParameter(2.0)
 						{
 							Key = "three"
 						}
@@ -181,6 +183,32 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.AreEqual(6, aggResult.Buckets[2].DocCount);
 				Assert.AreEqual("three", aggResult.Buckets[2].Key);
 				Assert.AreEqual(2.9, max);
+			}
+		}
+
+		[Test]
+		public void SearchAggDateRangesBucketAggregationWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new DateRangeBucketAggregation("testRangesBucketAggregation", "dateofdetails", "MM-yyy", new List<RangeAggregationParameter>
+					{
+						new ToRangeAggregationParameter("now-10M/M"),
+						//new ToFromRangeAggregationParameter("now-10M/M", "now-10M/M"),
+						new FromRangeAggregationParameter("now-10M/M")
+					})
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesBucketAggregationsResult>("testRangesBucketAggregation");
+				Assert.AreEqual(6, aggResult.Buckets[2].DocCount);
+				Assert.AreEqual("2.0", aggResult.Buckets[2].FromAsString);
 			}
 		}
 

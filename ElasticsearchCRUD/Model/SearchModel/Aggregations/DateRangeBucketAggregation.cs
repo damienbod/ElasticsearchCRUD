@@ -4,9 +4,10 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
-	public class RangeBucketAggregation : BaseBucketAggregation
+	public class DateRangeBucketAggregation : BaseBucketAggregation
 	{
 		private readonly string _field;
+		private readonly string _format;
 		private readonly List<RangeAggregationParameter> _ranges;
 
 		private string _script;
@@ -16,9 +17,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _keyed;
 		private bool _keyedSet;
 
-		public RangeBucketAggregation(string name, string field, List<RangeAggregationParameter> ranges ) : base("range", name)
+		public DateRangeBucketAggregation(string name, string field, string format, List<RangeAggregationParameter> ranges)
+			: base("date_range", name)
 		{
 			_field = field;
+			_format = format;
 			_ranges = ranges;
 		}
 
@@ -63,6 +66,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private void WriteValues(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			JsonHelper.WriteValue("field", _field, elasticsearchCrudJsonWriter);
+			JsonHelper.WriteValue("format", _format, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("keyed", _keyed, elasticsearchCrudJsonWriter, _keyedSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("ranges");
