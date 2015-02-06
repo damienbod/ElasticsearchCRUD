@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 {
-	public class FiltersNamedBucketAggregationsResult : AggregationResult<FiltersNamedBucketAggregationsResult>
+	public class HistogramNamedBucketAggregationsResult : AggregationResult<HistogramNamedBucketAggregationsResult>
 	{
 		[JsonProperty("buckets")]
 		public NamedBucket Buckets { get; set; }
@@ -22,9 +22,9 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
 		{
 			return SubAggregations[name]["value"].Value<T>();
 		}
-		public override FiltersNamedBucketAggregationsResult GetValueFromJToken(JToken result)
+		public override HistogramNamedBucketAggregationsResult GetValueFromJToken(JToken result)
 		{
-			return result.ToObject<FiltersNamedBucketAggregationsResult>();
+			return result.ToObject<HistogramNamedBucketAggregationsResult>();
 		}
 	}
 }

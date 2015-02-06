@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
+using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel.Buckets;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Sorting;
@@ -194,6 +195,29 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<HistogramBucketAggregationsResult>("test_min");
 				Assert.AreEqual(1, aggResult.Buckets[0].DocCount);
+			}
+		}
+
+		[Test]
+		public void SearchAggHistogramBucketAggregationKeyedWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new HistogramBucketAggregation("testHistogramBucketAggregation", "lift", 1)
+					{
+						Keyed = true
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<HistogramNamedBucketAggregationsResult>("testHistogramBucketAggregation");
+				Assert.AreEqual(1, aggResult.Buckets.GetSubAggregationsFromJTokenName<Bucket>("1").DocCount);
 			}
 		}
 

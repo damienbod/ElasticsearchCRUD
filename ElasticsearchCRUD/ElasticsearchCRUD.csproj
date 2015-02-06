@@ -175,7 +175,9 @@
     <Compile Include="ContextSearch\SearchModel\AggModel\GeohashGridBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GlobalBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\HistogramBucketAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\HistogramNamedBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\MissingBucketAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\NamedBucket.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentileRanksMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\PercentilesMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\SignificantTermsBucket.cs" />
