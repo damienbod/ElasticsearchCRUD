@@ -4,6 +4,7 @@ using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
+using ElasticsearchCRUD.Model.SearchModel.Queries;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
@@ -62,15 +63,16 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		}
 
 		[Test]
-		public void SearchAggSignificantTermsBucketAggregationPropertiesSetWithNoHits()
+		public void SearchAggSignificantTermsBucketAggregationPropertiesSet()
 		{
 			var search = new Search
 			{
+				Query = new Query(new MatchAllQuery()),
 				Aggs = new List<IAggs>
 				{
 					new SignificantTermsBucketAggregation("testSignificantTermsBucketAggregation", "details")
 					{
-						BackgroundFilter= new TermFilter("name", "one"),
+						BackgroundFilter= new TermFilter("name", "details"),
 						InformationRetrievalRetrieval = new MutualInformation
 						{
 							BackgroundIsSuperset = false,
@@ -87,6 +89,34 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<SignificantTermsBucketAggregationsResult>("testSignificantTermsBucketAggregation");
 				Assert.AreEqual(7, aggResult.DocCount);
+			}
+		}
+
+		[Test]
+		public void SearchAggGeohashGridBucketAggregationWithSubAggSignificantTermsBucketAggregationWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new GeohashGridBucketAggregation("termsDetails", "location")
+					{
+						Aggs = new List<IAggs>
+						{
+							new SignificantTermsBucketAggregation("testSignificantTermsBucketAggregation", "details")
+						},
+						Precision = 2
+					}					
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var termsAggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("termsDetails");
+				var significantAggResult = termsAggResult.Buckets[0].GetSubAggregationsFromJTokenName<SignificantTermsBucketAggregationsResult>("testSignificantTermsBucketAggregation");
+				Assert.AreEqual(3, significantAggResult.Buckets[0].BgCount);
 			}
 		}
 
