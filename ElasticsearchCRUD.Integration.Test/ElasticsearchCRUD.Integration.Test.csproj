@@ -70,7 +70,7 @@
     <Compile Include="MappingChildParentRoutingTests.cs" />
     <Compile Include="MappingTests.cs" />
     <Compile Include="MappingTypeTests.cs" />
-    <Compile Include="OneToN\NestedArraysTestsWithFiltersAndQueries.cs" />
+    <Compile Include="OneToN\NestedArraysTestsWithFiltersAndQueriesAndAggregations.cs" />
     <Compile Include="OneToN\OneToNEntitiesSaveWithChildDocumentsTestWithRouting.cs" />
     <Compile Include="OneToN\OneToNEntitiesSaveWithChildDocumentsTest.cs" />
     <Compile Include="OneToN\OneToNNestedElasticsearchCrudTests.cs" />

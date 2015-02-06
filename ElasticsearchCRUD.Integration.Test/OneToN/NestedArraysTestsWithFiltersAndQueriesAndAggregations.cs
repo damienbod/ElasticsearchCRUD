@@ -5,7 +5,11 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
+using ElasticsearchCRUD.ContextSearch.SearchModel;
+using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
+using ElasticsearchCRUD.Integration.Test.AggregationTests;
 using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
@@ -14,7 +18,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	[TestFixture]
-	public class NestedArraysTestsWithFiltersAndQueries
+	public class NestedArraysTestsWithFiltersAndQueriesAndAggregations
 	{
 		private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
@@ -129,6 +133,97 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Assert.AreEqual(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
+
+		[Test]
+		public void SearchAggNestedBucketAggregationWithNoHits()
+		{
+			var testSkillParentObject = new NestedCollectionTest
+			{
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 8,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.IndexCreate<NestedCollectionTest>();
+				Thread.Sleep(1000);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+
+			Thread.Sleep(1000);
+
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new NestedBucketAggregation("nestedagg", "skillchildren")				
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
+				Assert.AreEqual(3, aggResult.DocCount);
+			}
+		}
+
+		[Test]
+		public void SearchAggNestedBucketAggregationWithSubAggMaxMetricWithNoHits()
+		{
+			var testSkillParentObject = new NestedCollectionTest
+			{
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 8,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.IndexCreate<NestedCollectionTest>();
+				Thread.Sleep(1000);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+
+			Thread.Sleep(1000);
+
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new NestedBucketAggregation("nestedagg", "skillchildren")
+					{
+						Aggs = new List<IAggs>
+						{
+							new MaxMetricAggregation("test", "skillchildren.updatedskillchild")
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
+				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
+				Assert.AreEqual(3, aggResult.DocCount);
+				Assert.Greater(max, 1423210851080);
+			}
+		}
+
 
 		[SetUp]
 		public void SetUp()
