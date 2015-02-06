@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
+using ElasticsearchCRUD.ContextSearch.SearchModel;
+using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
@@ -9,7 +12,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
 	[TestFixture]
-	public class SearchQueryQueryTopChildrenTests
+	public class SearchQueryQueryTopChildrenAndChidrenBucketAggregationTests
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		protected const string ConnectionString = "http://localhost:9200";
@@ -64,6 +67,42 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
+		[Test]
+		public void SearchAggTermsBucketAggregationnWithChildrenSubAggNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new TermsBucketAggregation("test_min", "info")
+					{
+						Aggs = new List<IAggs>
+						{
+							new ChidrenBucketAggregation("childrenAgg", "testobjchildsep")
+							{
+								Aggs = new List<IAggs>
+								{
+									new TermsBucketAggregation("infoAgg", "info")
+								}
+							}
+						} 
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
+				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
+
+				var items = context.Search<TestObjParentSep>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
+
+				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+
+			}
+		}
+
 		[TestFixtureSetUpAttribute]
 		public void Setup()
 		{
@@ -84,7 +123,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var doc2 = new TestObjParentSep
 			{
 				Id = 2,
-				Info = "yes this is great two",
+				Info = "yes this is great two child",
 				ChildObjects = new List<TestObjChildSep>
 				{
 					new TestObjChildSep

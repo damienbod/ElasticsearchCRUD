@@ -218,6 +218,7 @@
     <Compile Include="Model\SearchModel\Aggregations\BaseBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\BaseMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\CardinalityMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\ChidrenBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExcludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FilterBucketAggregation.cs" />

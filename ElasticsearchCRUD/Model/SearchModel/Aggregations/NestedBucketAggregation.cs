@@ -2,6 +2,9 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 {
+	/// <summary>
+	/// A special single bucket aggregation that enables aggregating nested documents.
+	/// </summary>
 	public class NestedBucketAggregation : BaseBucketAggregation
 	{
 		private readonly string _path;
