@@ -285,7 +285,6 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-
 		[SetUp]
 		public void SetUp()
 		{
