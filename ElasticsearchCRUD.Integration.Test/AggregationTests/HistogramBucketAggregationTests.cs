@@ -270,5 +270,45 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
+		[Test]
+		public void SearchAggDateHistogramBucketAggregationWithPropertiesWithTopHitsAggWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new DateHistogramBucketAggregation("testHistogramBucketAggregation", "dateofdetails", new TimeUnitMonth(1))
+					{
+						Aggs =  new List<IAggs>
+						{
+							new TopHitsMetricAggregation("tophits")
+						},
+						MinDocCount=2,
+						Order= new OrderAgg("dateofdetails", OrderEnum.desc),
+						ExtendedBounds= new ExtendedBounds
+						{
+							Max= 1000000,
+							Min =0
+						},
+						PostOffset= "10d",
+						PreOffset= "1d",
+						Format = "yyyy-MM-dd",
+						PostZone = "02:00",
+						PreZone = "-02:00",
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<DateHistogramBucketAggregationsResult>("testHistogramBucketAggregation");
+				var tophits = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("tophits");
+				Assert.AreEqual(2, aggResult.Buckets[0].DocCount);
+				Assert.AreEqual(2, tophits.Hits.Total);
+			}
+		}
+
 	}
 }
