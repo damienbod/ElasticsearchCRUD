@@ -114,5 +114,30 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.AreEqual(7, aggResult.DocCount);
 			}
 		}
+
+		[Test]
+		public void SearchAggFiltersBucketAggregationWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new FiltersBucketAggregation("filtersbucket", new List<IFilter>
+					{
+						new MatchAllFilter(),
+						new TermFilter("details", "document")
+					})				
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<FiltersBucketAggregationsResult>("filtersbucket");
+				Assert.AreEqual(7, aggResult.Buckets[0].DocCount);
+			}
+		}
+
 	}
 }

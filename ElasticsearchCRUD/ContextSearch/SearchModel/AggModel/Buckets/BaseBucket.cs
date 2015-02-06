@@ -2,13 +2,10 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel
+namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel.Buckets
 {
-	public class Buckets
+	public class BaseBucket
 	{
-		[JsonProperty("key")]
-		public object Key { get; set; }
-
 		[JsonProperty("doc_count")]
 		public int DocCount { get; set; }
 
