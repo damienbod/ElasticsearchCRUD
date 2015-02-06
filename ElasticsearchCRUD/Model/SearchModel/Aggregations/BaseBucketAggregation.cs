@@ -26,6 +26,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 				{
 					throw new ElasticsearchCrudException("GlobalBucketAggregation cannot be sub aggregations");
 				}
+				if (value.Exists(l => l.GetType() == typeof(ReverseNestedBucketAggregation)) && GetType() !=typeof(NestedBucketAggregation))
+				{
+					throw new ElasticsearchCrudException("ReverseNestedBucketAggregation can only be defined in a NestedBucketAggregation");
+				}
 				_aggs = value;
 				_aggsSet = true;
 			}

@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 	{
 		private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[Test]
 		public void TestDefaultContextParentWithACollectionOfThreeChildObjectsOfNestedType()
@@ -221,6 +221,67 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
 				Assert.AreEqual(3, aggResult.DocCount);
 				Assert.Greater(max, 1423210851080);
+			}
+		}
+
+		[Test]
+		public void SearchAggNestedBucketAggregationWithSubReverseNestedWithNoHits()
+		{
+			var testSkillParentObject = new NestedCollectionTest
+			{
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 8,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.IndexCreate<NestedCollectionTest>();
+				Thread.Sleep(1000);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+
+			Thread.Sleep(1000);
+
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new NestedBucketAggregation("nestedagg", "skillchildren")
+					{
+						Aggs = new List<IAggs>
+						{
+							new MaxMetricAggregation("test", "skillchildren.updatedskillchild"),
+							new ReverseNestedBucketAggregation("goingUp")
+							{
+								Aggs = new List<IAggs>
+								{
+									new TermsBucketAggregation("termParent", "descriptionskillparent")
+								}
+							}
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
+				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
+				var nesteTestResult = aggResult.GetSubAggregationsFromJTokenName<ReverseNestedBucketAggregationsResult>("goingUp");
+				var termParentAgg = nesteTestResult.GetSubAggregationsFromJTokenName<TermsBucketAggregationsResult>("termParent");
+
+				Assert.AreEqual(3, aggResult.DocCount);
+				Assert.Greater(max, 1423210851080);
+				Assert.AreEqual(1, nesteTestResult.DocCount);
+				Assert.AreEqual("a", termParentAgg.Buckets[0].Key);
 			}
 		}
 
