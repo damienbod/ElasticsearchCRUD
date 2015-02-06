@@ -303,5 +303,43 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
+
+		[Test]
+		public void SearchAggGeoDistanceBucketAggregationWithDistanceTypeWithTopHitsWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new GeoDistanceBucketAggregation("testGeoDistanceBucketAggregation", "location", new GeoPoint(40.0, 40.0), 
+						new List<RangeAggregationParameter<uint>>
+						{
+							new ToRangeAggregationParameter<uint>(100),
+							new ToFromRangeAggregationParameter<uint>(100, 500),
+							new FromRangeAggregationParameter<uint>(500)
+						})
+					{
+						DistanceType = DistanceType.plane,
+						Unit = DistanceUnitEnum.m,
+						Aggs = new List<IAggs>
+						{
+							new TopHitsMetricAggregation("tops")
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeoDistanceBucketAggregationsResult>("testGeoDistanceBucketAggregation");
+				var hits = aggResult.Buckets[2].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("tops");
+				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
+				Assert.AreEqual(500, aggResult.Buckets[2].From);
+				Assert.AreEqual(7, hits.Hits.Total);
+			}
+		}
+
 	}
 }
