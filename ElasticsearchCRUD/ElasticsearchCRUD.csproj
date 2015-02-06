@@ -167,8 +167,11 @@
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Aggregations.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\Bucket.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\RangeBucket.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\ExtendedStatsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\NestedBucketAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\RangesBucketAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\RangesNamedBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\ReverseNestedBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\SingleBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\FiltersBucketAggregationsResult.cs" />
@@ -235,6 +238,7 @@
     <Compile Include="Model\SearchModel\Aggregations\OrderAgg.cs" />
     <Compile Include="Model\SearchModel\Aggregations\PercentileRanksMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\PercentilesMetricAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\RangeBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ReverseNestedBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ScriptedMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\SignificantTermsBucketAggregation.cs" />

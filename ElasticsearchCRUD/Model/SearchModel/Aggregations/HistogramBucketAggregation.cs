@@ -76,7 +76,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		}
 
 		/// <summary>
-		/// If this value is set, the buckets are returned with id classes. You must then implement your own Result class to parse the JToken result
+		/// If this value is set, the buckets are returned with id classes. 
 		/// </summary>
 		public bool Keyed
 		{

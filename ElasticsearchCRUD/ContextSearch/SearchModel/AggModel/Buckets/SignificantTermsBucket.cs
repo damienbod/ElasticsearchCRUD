@@ -20,3 +20,4 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel.AggModel.Buckets
 		public int BgCount { get; set; }
 	}
 }
+

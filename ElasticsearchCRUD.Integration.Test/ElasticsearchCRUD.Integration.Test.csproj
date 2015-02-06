@@ -55,6 +55,7 @@
     <Compile Include="AggregationTests\GeohashGridBucketAggregationTests.cs" />
     <Compile Include="AggregationTests\ScriptedMetricAggregationTests.cs" />
     <Compile Include="AggregationTests\SignificantTermsBucketAggregationTests.cs" />
+    <Compile Include="AggregationTests\RangesAggregationTests.cs" />
     <Compile Include="AggregationTests\TopHitsAggregationTests.cs" />
     <Compile Include="AggregationTests\TermsAggregationTests.cs" />
     <Compile Include="AliasElasticsearchCrudTests.cs" />
