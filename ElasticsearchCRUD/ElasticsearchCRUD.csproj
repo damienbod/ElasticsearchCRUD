@@ -170,6 +170,7 @@
     <Compile Include="ContextSearch\SearchModel\AggModel\ExtendedStatsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\FilterBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\FiltersBucketAggregationsResult.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\FiltersNamedBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GeoBoundsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GeohashGridBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GlobalBucketAggregationsResult.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Model\SearchModel\Aggregations\ExcludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\FilterBucketAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\FiltersNamedBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeoBoundsMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GeohashGridBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\GlobalBucketAggregation.cs" />

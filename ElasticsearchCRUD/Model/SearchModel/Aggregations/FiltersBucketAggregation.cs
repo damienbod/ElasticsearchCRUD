@@ -32,11 +32,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 
-			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
-
-			
-			
-			
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();			
 		}
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
+using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel.Buckets;
 using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
@@ -136,6 +137,96 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<FiltersBucketAggregationsResult>("filtersbucket");
 				Assert.AreEqual(7, aggResult.Buckets[0].DocCount);
+			}
+		}
+
+		[Test]
+		public void SearchAggFiltersBucketAggregationWithTopHitsWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new FiltersBucketAggregation("filtersbucket", 
+						new List<IFilter>
+						{
+							new MatchAllFilter(),
+							new TermFilter("details", "document")
+						})
+					{
+						Aggs = new List<IAggs>
+						{
+							new TopHitsMetricAggregation("data")
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<FiltersBucketAggregationsResult>("filtersbucket");
+				var results = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("data");
+				Assert.AreEqual(7, aggResult.Buckets[0].DocCount);
+				Assert.AreEqual(7, results.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchAggFiltersNamedBucketAggregationWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new FiltersNamedBucketAggregation("filtersbucket", new List<NamedFilter>
+					{
+						new NamedFilter("all", new MatchAllFilter()),
+						new NamedFilter("detailsTerm", new TermFilter("details", "document"))
+					})				
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<FiltersNamedBucketAggregationsResult>("filtersbucket");
+				Assert.AreEqual(7, aggResult.Buckets.GetSubAggregationsFromJTokenName<BaseBucket>("all").DocCount);
+			}
+		}
+
+		[Test]
+		public void SearchAggFiltersNamedBucketAggregationWithTopHitsWithNoHits()
+		{
+			var search = new Search
+			{
+				Aggs = new List<IAggs>
+				{
+					new FiltersNamedBucketAggregation("filtersbucket", new List<NamedFilter>
+					{
+						new NamedFilter("all", new MatchAllFilter()),
+						new NamedFilter("detailsTerm", new TermFilter("details", "document"))
+					})		
+					{
+						Aggs = new List<IAggs>
+						{
+							new TopHitsMetricAggregation("data")
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<FiltersNamedBucketAggregationsResult>("filtersbucket");
+				Assert.AreEqual(7, aggResult.Buckets.GetSubAggregationsFromJTokenName<BaseBucket>("all").DocCount);
+
+				var results = aggResult.Buckets.GetSubAggregationsFromJTokenName<BaseBucket>("all").GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("data");
+				Assert.AreEqual(7, results.Hits.Total);
 			}
 		}
 
