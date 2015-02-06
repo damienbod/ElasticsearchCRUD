@@ -6,7 +6,6 @@ using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam;
-using ElasticsearchCRUD.Model.Units;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
@@ -303,7 +302,6 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-
 		[Test]
 		public void SearchAggGeoDistanceBucketAggregationWithDistanceTypeWithTopHitsWithNoHits()
 		{
@@ -340,6 +338,5 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.AreEqual(7, hits.Hits.Total);
 			}
 		}
-
 	}
 }

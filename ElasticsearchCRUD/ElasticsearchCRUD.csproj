@@ -167,8 +167,10 @@
     <Compile Include="ContextSearch\ScanAndScrollConfiguration.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Aggregations.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\Bucket.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\DateHistogramBucket.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\GeoDistanceRangeBucket.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\Buckets\RangeBucket.cs" />
+    <Compile Include="ContextSearch\SearchModel\AggModel\DateHistogramBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\ExtendedStatsMetricAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\GeoDistanceBucketAggregationsResult.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\NestedBucketAggregationsResult.cs" />
@@ -224,6 +226,7 @@
     <Compile Include="Model\SearchModel\Aggregations\BaseMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\CardinalityMetricAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ChidrenBucketAggregation.cs" />
+    <Compile Include="Model\SearchModel\Aggregations\DateHistogramBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\DateRangeBucketAggregation.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExcludeExpression.cs" />
     <Compile Include="Model\SearchModel\Aggregations\ExtendedStatsMetricAggregation.cs" />
