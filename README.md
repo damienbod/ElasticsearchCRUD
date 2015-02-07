@@ -91,6 +91,11 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.27</strong><em> 2015.02.07</em>
+- support for Aggregations
+Min Aggregation, Max Aggregation, Sum Aggregation, Avg Aggregation, Stats Aggregation, Extended Stats Aggregation, Value Count Aggregation, Percentiles Aggregation, Percentile Ranks Aggregation, Cardinality Aggregation, Geo Bounds Aggregation, Top hits Aggregation, Scripted Metric Aggregation, Global Aggregation, Filter Aggregation, Filters Aggregation, Filters Named Aggregation, Missing Aggregation, Nested Aggregation, Reverse nested Aggregation, Children Aggregation, Terms Aggregation, Significant Terms Aggregation, Range Aggregation, Date Range Aggregation, Histogram Aggregation, Date Histogram Aggregation, Geo Distance Aggregation, GeoHash grid Aggregation
+- Remove string conversion for _id field in bulk insert
+
 <strong>Version 1.0.26</strong><em> 2015.01.24</em>
 - Support for core type geometrycollection
 - Support for nested filter and query
