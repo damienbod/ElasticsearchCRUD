@@ -70,12 +70,12 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchMappingResolver()))
 			{
 				context.IndexCreate<MoreLikeThisTestDto>();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 				context.AddUpdateDocument(doc1, doc1.Id);
 				context.AddUpdateDocument(doc2, doc2.Id);
 				context.AddUpdateDocument(doc3, doc3.Id);
 				context.SaveChanges();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 			}
 		}
 

@@ -7,7 +7,6 @@ using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
-using ElasticsearchCRUD.Integration.Test.AggregationTests;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
@@ -41,7 +40,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
 				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
 				// Save to Elasticsearch
@@ -72,13 +71,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 			}
 
-			Thread.Sleep(1000);
+			Thread.Sleep(1200);
 			var search = new Search
 			{
 				Filter =
@@ -111,13 +110,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 			}
 
-			Thread.Sleep(1000);
+			Thread.Sleep(1200);
 			var search = new Search
 			{
 				Query =
@@ -150,13 +149,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 			}
 
-			Thread.Sleep(1000);
+			Thread.Sleep(1200);
 
 			var search = new Search
 			{
@@ -191,13 +190,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 			}
 
-			Thread.Sleep(1000);
+			Thread.Sleep(1200);
 
 			var search = new Search
 			{
@@ -240,13 +239,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1000);
+				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 			}
 
-			Thread.Sleep(1000);
+			Thread.Sleep(1200);
 
 			var search = new Search
 			{
