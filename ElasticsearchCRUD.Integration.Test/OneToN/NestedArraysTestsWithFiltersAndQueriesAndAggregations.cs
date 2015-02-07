@@ -168,7 +168,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
 				Assert.AreEqual(3, aggResult.DocCount);
@@ -215,7 +215,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
 				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
@@ -271,7 +271,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
 				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
