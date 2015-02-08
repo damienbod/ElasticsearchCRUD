@@ -43,6 +43,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="https://damienbod.wordpress.com/2015/01/28/elasticsearch-bulk-insert/">Part 15: Elasticsearch Bulk Insert</a>
 
+<a href="https://damienbod.wordpress.com/2015/02/08/elasticsearch-aggregations-with-elasticsearchcrud/">Part 16: Elasticsearch Aggregations With ElasticsearchCRUD</a>
+
 ========================
 
 <strong>Examples:</strong>
