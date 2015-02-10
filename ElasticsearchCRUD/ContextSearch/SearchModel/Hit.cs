@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD.ContextSearch.SearchModel
 {
@@ -30,5 +31,11 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 
 		[JsonProperty(PropertyName = "highlight", NullValueHandling = NullValueHandling.Ignore)]
 		public Dictionary<string, IEnumerable<string>> Highlights { get; set; }
+
+		public T1 GetSourceFromJToken<T1>()
+		{
+			var token = Source as JToken;
+			return token.ToObject<T1>();
+		}
 	}
 }

@@ -273,6 +273,9 @@
     <Compile Include="Model\SearchModel\Filters\GeoDistanceFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeohashCellFilter.cs" />
     <Compile Include="Model\SearchModel\Filters\GeoPolygonFilter.cs" />
+    <Compile Include="Model\SearchModel\Filters\IndicesFilter.cs" />
+    <Compile Include="Model\SearchModel\Queries\IndicesQuery.cs" />
+    <Compile Include="Model\SearchModel\Filters\TypeFilter.cs" />
     <Compile Include="Model\SearchModel\IAggs.cs" />
     <Compile Include="Model\SearchModel\Queries\CommonTermsQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\FunctionQuery\BaseScoreFunction.cs" />
@@ -391,6 +394,7 @@
     <Compile Include="Model\Units\TimeUnitSecond.cs" />
     <Compile Include="Model\Units\TimeUnitWeek.cs" />
     <Compile Include="Model\Units\TimeUnitYear.cs" />
+    <Compile Include="Utils\GlobalElasticsearchMapping.cs" />
     <Compile Include="Utils\JsonHelper.cs" />
     <Compile Include="Utils\MappingUtils.cs" />
     <Compile Include="Tracing\ConsoleTraceProvider.cs" />

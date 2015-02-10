@@ -61,6 +61,7 @@
     <Compile Include="AliasElasticsearchCrudTests.cs" />
     <Compile Include="AnalysisSettingsTests.cs" />
     <Compile Include="AnalysisTests.cs" />
+    <Compile Include="GlobalApiTestsSearchCountTests.cs" />
     <Compile Include="OneToN\ComplexRelationsTests.cs" />
     <Compile Include="CoreTypeMappingTests.cs" />
     <Compile Include="CreateIndexTest.cs" />

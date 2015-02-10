@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using ElasticsearchCRUD.Model;
 
 namespace ElasticsearchCRUD.Utils
