@@ -160,13 +160,14 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		public void SearchQueryAndFilter()
 		{
 			var search = new Search { Filter = new Filter(
-					new AndFilter
-					{
-						And = new List<IFilter>
+					new AndFilter(
+						new List<IFilter>
 						{
 							new ExistsFilter("name"),
 							new TermFilter("name", "one")
-						},
+						}
+					)
+					{
 						Cache = false
 					}
 				) 
@@ -187,13 +188,14 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			var search = new Search
 			{
 				Filter = new Filter(
-					new OrFilter
-					{
-						Or = new List<IFilter>
+					new OrFilter(
+						new List<IFilter>
 						{
 							new TermFilter("name", "one"),
 							new TermFilter("name", "two")
-						},
+						}
+					)
+					{
 						Cache = false
 					}
 				)

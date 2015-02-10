@@ -8,19 +8,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	/// </summary>
 	public class AndFilter : IFilter
 	{
-		private List<IFilter> _and;
-		private bool _andSet;
+		private readonly List<IFilter> _and;
 		private bool _cache;
 		private bool _cacheSet;
 
-		public List<IFilter> And
+		public AndFilter(List<IFilter> and)
 		{
-			get { return _and; }
-			set
-			{
-				_and = value;
-				_andSet = true;
-			}
+			_and = and;
 		}
 
 		public bool Cache
@@ -47,20 +41,17 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 		private void WriteAndFilterList(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			if (_andSet)
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filters");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
+
+			foreach (var and in _and)
 			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filters");
-				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
-
-				foreach (var and in _and)
-				{
-					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-					and.WriteJson(elasticsearchCrudJsonWriter);
-					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-				}
-
-				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				and.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
+
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
 		}
 	}
 }

@@ -8,19 +8,13 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	/// </summary>
 	public class OrFilter : IFilter
 	{
-		private List<IFilter> _or;
-		private bool _orSet;
+		private readonly List<IFilter> _or;
 		private bool _cache;
 		private bool _cacheSet;
 
-		public List<IFilter> Or
+		public OrFilter(List<IFilter> or)
 		{
-			get { return _or; }
-			set
-			{
-				_or = value;
-				_orSet = true;
-			}
+			_or = or;
 		}
 
 		public bool Cache
@@ -47,20 +41,17 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 		private void WriteOrFilterList(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
-			if (_orSet)
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filters");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
+
+			foreach (var or in _or)
 			{
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("filters");
-				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
-
-				foreach (var or in _or)
-				{
-					elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-					or.WriteJson(elasticsearchCrudJsonWriter);
-					elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-				}
-
-				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				or.WriteJson(elasticsearchCrudJsonWriter);
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
+
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
 		}
 	}
 }

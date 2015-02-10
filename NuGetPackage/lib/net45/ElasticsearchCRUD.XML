@@ -3151,6 +3151,33 @@
             or none which disables bounding box optimization. 
             </summary>
         </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.IndicesFilter">
+            <summary>
+            The indices query can be used when executed across multiple indices, 
+            allowing to have a query that executes only when executed on an index that matches a specific list of indices, 
+            and another filter that executes when it is executed on an index that does not match the listed indices.
+            
+            The fields order is important: if the indices are provided before filter or no_match_query, 
+            the related filters get parsed only against the indices that they are going to be executed on. 
+            This is useful to avoid parsing queries when it is not necessary and prevent potential mapping errors.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.IndicesFilter.NoMatchFilter">
+            <summary>
+            no_match_filter
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.IndicesQuery.NoMatchQuery">
+            <summary>
+            no_match_query
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.TypeFilter">
+            <summary>
+            Filters documents matching the provided document / mapping type. 
+            Note, this filter can work even when the _type field is not indexed (using the _uid field).
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.CommonTermsQuery">
             <summary>
             The common terms query is a modern alternative to stopwords which improves the precision and recall of search results (by taking stopwords into account), without sacrificing performance.
@@ -4876,6 +4903,11 @@
             date
             binary
             </returns>
+        </member>
+        <member name="T:ElasticsearchCRUD.Utils.GlobalElasticsearchMapping">
+            <summary>
+            This mapping can be used if you require a search accross all indices and all types.
+            </summary>
         </member>
         <member name="T:ElasticsearchCRUD.ElasticsearchContext">
             <summary>

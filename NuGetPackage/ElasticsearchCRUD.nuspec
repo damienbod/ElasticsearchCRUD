@@ -3,7 +3,7 @@
   <metadata>
     <id>ElasticsearchCRUD</id>
     <title>ElasticsearchCRUD</title>
-    <version>1.0.27</version>
+    <version>1.0.28</version>
     <authors>damienbod</authors>
     <owners>damienbod</owners>
     <projectUrl>http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/</projectUrl>
