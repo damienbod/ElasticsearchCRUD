@@ -99,9 +99,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Sort = new SortHolder(
 					new List<ISort>
 					{
-						new SortGeoDistance("location", DistanceUnitEnum.km)
+						new SortGeoDistance("location", DistanceUnitEnum.km, new GeoPoint(46, 46))
 						{
-							GeoPoint = new GeoPoint(46, 46),
+							
 							Order=OrderEnum.asc, Mode = SortModeGeo.max				
 						}
 					}
@@ -125,13 +125,14 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Sort = new SortHolder(
 					new List<ISort>
 					{
-						new SortGeoDistance("location", DistanceUnitEnum.km)
-						{
-							GeoPoints = new List<GeoPoint>
+						new SortGeoDistance("location", DistanceUnitEnum.km, 
+							new List<GeoPoint>
 							{
 								new GeoPoint(46, 46),
 								new GeoPoint(49, 46),
-							},
+							})
+						{
+							
 							Order=OrderEnum.asc, Mode = SortModeGeo.max				
 						}
 					}

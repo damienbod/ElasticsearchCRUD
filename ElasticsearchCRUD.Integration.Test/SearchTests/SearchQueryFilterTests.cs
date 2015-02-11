@@ -3,6 +3,7 @@ using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
+using ElasticsearchCRUD.Model.SearchModel.Sorting;
 using ElasticsearchCRUD.Model.Units;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
@@ -243,6 +244,63 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
 				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryGeoDistanceFilter0Range()
+		{
+			var search = new Search { Filter = 
+				new Filter(
+					new GeoDistanceFilter( 
+						"location", 
+						new GeoPoint(43, 43), 
+						new DistanceUnitMeter(0)
+					)
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(0, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchQueryGeoDistanceFilter0SortTest()
+		{
+			var search = new Search
+			{
+				Filter =
+					new Filter(
+					new GeoDistanceFilter(
+					"location",
+					new GeoPoint(43, 43),
+					new DistanceUnitMeter(0)
+					)
+				),
+				Sort = new SortHolder(
+					new List<ISort>
+					{
+						new SortGeoDistance("location", DistanceUnitEnum.m, new GeoPoint(46,46))
+						{						
+							Order = OrderEnum.asc,
+							Mode = SortModeGeo.max	
+						},
+					}
+
+				)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				var items = context.Search<SearchTest>(search);
+				Assert.AreEqual(0, items.PayloadResult.Hits.Total);
 			}
 		}
 

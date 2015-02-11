@@ -15,11 +15,20 @@ namespace ElasticsearchCRUD.Model.SearchModel.Sorting
 		private List<GeoPoint> _geoPoints;
 		private bool _geoPointsSet;
 
-		public SortGeoDistance(string field, DistanceUnitEnum distanceUnit)
+		public SortGeoDistance(string field, DistanceUnitEnum distanceUnit, GeoPoint geoPoint)
 		{
 			_field = field;
 			Order = OrderEnum.asc;
 			Unit = distanceUnit;
+			GeoPoint = geoPoint;
+		}
+
+		public SortGeoDistance(string field, DistanceUnitEnum distanceUnit, List<GeoPoint> geoPoints)
+		{
+			_field = field;
+			Order = OrderEnum.asc;
+			Unit = distanceUnit;
+			GeoPoints = geoPoints;
 		}
 
 		public OrderEnum Order { get; set; }
