@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class SearchHighlightResultTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[Test]
 		public void SearchForDataWithHightlightResult()
@@ -259,8 +259,10 @@ namespace ElasticsearchCRUD.Integration.Test
 						new HighlightField("_all")
 					})
 				{
-					PreTags = new List<string> { "<h1>", "<h2>", "<h3>" },
-					PostTags =  new List<string> { "</h1>", "</h2>", "</h3>" }, BoundaryMaxScan = 3
+					PreTags = new List<string> { "<h1>" },
+					PostTags =  new List<string> { "</h1>" }, 
+					BoundaryMaxScan = 3,
+					PhraseLimit = 200
 					
 				}
 			};
