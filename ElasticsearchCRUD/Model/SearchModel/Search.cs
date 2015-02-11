@@ -26,6 +26,8 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		private ISortHolder _sortHolder;
 		private List<IAggs> _aggs;
 		private bool _aggsSet;
+		private Highlight _highlight;
+		private bool _highlightSet;
 
 		/// <summary>
 		/// timeout
@@ -115,6 +117,16 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			}
 		}
 
+		public Highlight Highlight
+		{
+			get { return _highlight; }
+			set
+			{
+				_highlight = value;
+				_highlightSet = true;
+			}
+		}
+
 		/// <summary>
 		/// aggregations request
 		/// </summary>
@@ -166,6 +178,12 @@ namespace ElasticsearchCRUD.Model.SearchModel
 				
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();	
 			}
+
+			if (_highlightSet)
+			{
+				_highlight.WriteJson(elasticsearchCrudJsonWriter);
+			}
+
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 
