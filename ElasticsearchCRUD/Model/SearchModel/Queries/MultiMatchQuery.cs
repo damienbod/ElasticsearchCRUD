@@ -3,7 +3,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries
 {
-	public class MultiMatch : MatchBase, IQuery
+	public class MultiMatchQuery : MatchBase, IQuery
 	{
 		private readonly string _text;
 		private List<string> _fields;
@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private double _tieBreaker;
 		private bool _tieBreakerSet;
 
-		public MultiMatch(string text) : base(text)
+		public MultiMatchQuery(string text) : base(text)
 		{
 			_text = text;
 		}

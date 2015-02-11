@@ -357,7 +357,7 @@
     <Compile Include="Model\SearchModel\Queries\MatchBase.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhaseQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchPhasePrefixQuery.cs" />
-    <Compile Include="Model\SearchModel\Queries\MultiMatch.cs" />
+    <Compile Include="Model\SearchModel\Queries\MultiMatchQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\RangeQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\TermQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\TermsQuery.cs" />

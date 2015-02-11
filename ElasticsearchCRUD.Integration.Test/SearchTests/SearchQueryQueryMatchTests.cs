@@ -64,7 +64,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryMultiMatchAllTest()
 		{
-			var search = new Search { Query = new Query(new MultiMatch("document") { MultiMatchType = MultiMatchType.most_fields, TieBreaker = 0.5, Fields = new List<string> { "name", "details" } }) };
+			var search = new Search { Query = new Query(new MultiMatchQuery("document") { MultiMatchType = MultiMatchType.most_fields, TieBreaker = 0.5, Fields = new List<string> { "name", "details" } }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
