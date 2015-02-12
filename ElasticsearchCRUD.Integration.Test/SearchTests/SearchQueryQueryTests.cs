@@ -215,7 +215,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Query = new Query(new RegExpQuery("name", "o.*")
 				{
 					Boost=1.7,
-					Flags = RegExpFlags.INTERSECTION
+					Flags = RegExpFlags.INTERSECTION,
+					MaxDeterminizedStates = 10000
 				})
 			};
 

@@ -575,7 +575,8 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Filter = new Filter(new RegExpFilter("name", "o.*")
 				{
-					Cache = false
+					Cache = false,
+					MaxDeterminizedStates = 10000
 				})
 			};
 

@@ -59,6 +59,9 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 				}
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
+
+			JsonHelper.WriteValue("lang", "groovy", elasticsearchCrudJsonWriter);
+
 			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ElasticsearchCRUD.Model.SearchModel.Filters;
+﻿using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries
@@ -27,6 +22,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private bool _flagsSet;
 		private double _boost;
 		private bool _boostSet;
+		private uint _maxDeterminizedStates;
+		private bool _maxDeterminizedStatesSet;
 
 		public RegExpQuery(string field, string regularExpression)
 		{
@@ -54,7 +51,19 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
-
+		/// <summary>
+		/// max_determinized_states
+		/// </summary>
+		public uint MaxDeterminizedStates
+		{
+			get { return _maxDeterminizedStates; }
+			set
+			{
+				_maxDeterminizedStates = value;
+				_maxDeterminizedStatesSet = true;
+			}
+		}
+		 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("regexp");
@@ -65,6 +74,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			JsonHelper.WriteValue("value", _regularExpression, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("flags", _flags.ToString(), elasticsearchCrudJsonWriter, _flagsSet);
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
+			JsonHelper.WriteValue("max_determinized_states", _maxDeterminizedStates, elasticsearchCrudJsonWriter, _maxDeterminizedStatesSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
