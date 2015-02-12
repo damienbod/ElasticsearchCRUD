@@ -78,7 +78,7 @@
     <Compile Include="OneToN\OneToNNestedElasticsearchCrudTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchCreateScanAndScrollTests.cs" />
-    <Compile Include="SearchHighlightResultTests.cs" />
+    <Compile Include="SearchHighlightAndRescoreTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterFilteredStructureTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTests.cs" />
     <Compile Include="AggregationTests\SearchAggStructureTests.cs" />

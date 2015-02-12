@@ -11,10 +11,10 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test
 {
 	[TestFixture]
-	public class SearchHighlightResultTests
+	public class SearchHighlightAndRescoreTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[Test]
 		public void SearchForDataWithHightlightResult()
@@ -305,7 +305,31 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.AreEqual("60.0 <em class=\"hlt1\">mph</em>", value);
 			}
 		}
-		
+
+		[Test]
+		public void SearchForDataWithRescore()
+		{
+			var search = new Search
+			{
+				Query = new Query(new MatchQuery("_all", "mph")),
+				Rescore = new List<Rescore>
+				{
+					new Rescore(new MatchQuery("speedmph", "50 mph"), 20 )
+					{
+						QueryWeight = 0.5, RescoreQueryWeight = 2.0
+					}
+				
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				var hits = context.Search<FastestAnimal>(search, new SearchUrlParameters { Pretty = true });
+
+				var results = hits.PayloadResult.Hits;
+				Assert.AreEqual("60.0 <em>mph</em>", results.Total);
+			}
+		}
 		[TestFixtureTearDown]
 		public void TearDownFixture()
 		{
@@ -354,7 +378,7 @@ namespace ElasticsearchCRUD.Integration.Test
 					new FastestAnimal {Id = 2, AnimalName = "Free-tailed bat", Speed = "96.6 km/h (60.0 mph)",  SpeedMph="60.0 mph", SpeedKmh="96.6 km/h",Data = "Some attribute such flying capabilities specifically to the Mexican free-tailed bat. Tail wind is what allows free-tailed bats to reach such high speeds."},
 					new FastestAnimal {Id = 3, AnimalName = "Pronghorn", Speed = "96.6 km/h (60.0 mph)",  SpeedMph="60.0 mph", SpeedKmh="96.6 km/h",Data = "The pronghorn (American antelope) is the fastest animal over long distances; it can run 56 km/h for 6 km (35 mph for 4 mi), 67 km/h for 1.6 km (42 mph for 1 mi), and 88.5 km/h for .8 km (55 mph for .5 mi)."},
 					new FastestAnimal {Id = 4, AnimalName = "Springbok", Speed = "88 km/h (55 mph)",  SpeedMph="55 mph", SpeedKmh="88 km/h",Data = "The springbok, an antelope of the gazelle tribe in southern Africa, can make long jumps and sharp turns while running. Unlike pronghorns, springboks are poor long-distance runners."},
-					new FastestAnimal {Id = 5, AnimalName = "Wildebeest", Speed = "80.5 km/h (50.0 mph)",  SpeedMph="50.0 mph", SpeedKmh="80.5 km/h",Data = "The wildebeest, an antelope, exists as two species: the blue wildebeest and the black wildebeest. Both are extremely fast runners, which allows them to flee from predators. They are better at endurance running than at sprinting."},
+					new FastestAnimal {Id = 5, AnimalName = "Wildebeest", Speed = "80.5 km/h (50.0 mph)",  SpeedMph="50 mph", SpeedKmh="80.5 km/h",Data = "The wildebeest, an antelope, exists as two species: the blue wildebeest and the black wildebeest. Both are extremely fast runners, which allows them to flee from predators. They are better at endurance running than at sprinting."},
 					new FastestAnimal {Id = 6, AnimalName = "Blackbuck", Speed = "80 km/h (50 mph)",  SpeedMph="50 mph", SpeedKmh="80 km/h",Data = "The blackbuck antelope can sustain speeds of 80 km/h (50 mph) for over 1.5 km (0.93 mi) at a time. Each of its strides (i.e., the distance between its hoofprints) is 5.8–6.7 m (19–22 ft)."},
 					new FastestAnimal {Id = 7, AnimalName = "Lion", Speed = "80 km/h (50 mph)",  SpeedMph="50 mph", SpeedKmh="80 km/h",Data = "Lionesses are faster than males and can reach maximum speeds of 35 mph (57 km/h) in short distances of approximately 90 meters, and a top speed of 50 mph (80 km/h) for about 20 meters. Lions are very agile and have fast reflexes. Like other predators, they hunt sick prey. Their rate of success in hunting is greatest at night. Lions hunt buffalos, giraffes, warthogs, wildebeests and zebras, and sometimes various antelopes as opportunities present themselves."},
 					new FastestAnimal {Id = 8, AnimalName = "Greyhound", Speed = "74 km/h (46 mph)",  SpeedMph="46 mph", SpeedKmh="74 km/h",Data = "Greyhounds are the fastest dogs, and have primarily been bred for coursing game and racing."},

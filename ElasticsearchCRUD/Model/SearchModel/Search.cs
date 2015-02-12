@@ -199,16 +199,15 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			if (_rescoreSet)
 			{
 				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("rescore");
-				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartArray();
 
 				foreach (var rescore in _rescore)
 				{
 					rescore.WriteJson(elasticsearchCrudJsonWriter);
 				}
 
-				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			}
-			
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndArray();
+			}			
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
