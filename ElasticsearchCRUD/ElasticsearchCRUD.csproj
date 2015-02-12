@@ -342,6 +342,7 @@
     <Compile Include="Model\SearchModel\Queries\SpanTermQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\TopChildrenQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\WildcardQuery.cs" />
+    <Compile Include="Model\SearchModel\Rescore.cs" />
     <Compile Include="Model\SearchModel\ScriptParameter.cs" />
     <Compile Include="Model\GeoModel\DistanceUnitEnum.cs" />
     <Compile Include="Model\SearchModel\Sorting\SortGeoDistance.cs" />

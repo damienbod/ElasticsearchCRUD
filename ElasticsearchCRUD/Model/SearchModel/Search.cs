@@ -28,6 +28,8 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		private bool _aggsSet;
 		private Highlight _highlight;
 		private bool _highlightSet;
+		private List<Rescore> _rescore;
+		private bool _rescoreSet;
 
 		/// <summary>
 		/// timeout
@@ -127,6 +129,16 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			}
 		}
 
+		public List<Rescore> Rescore
+		{
+			get { return _rescore; }
+			set
+			{
+				_rescore = value;
+				_rescoreSet = true;
+			}
+		}
+
 		/// <summary>
 		/// aggregations request
 		/// </summary>
@@ -183,6 +195,20 @@ namespace ElasticsearchCRUD.Model.SearchModel
 			{
 				_highlight.WriteJson(elasticsearchCrudJsonWriter);
 			}
+
+			if (_rescoreSet)
+			{
+				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("rescore");
+				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
+				foreach (var rescore in _rescore)
+				{
+					rescore.WriteJson(elasticsearchCrudJsonWriter);
+				}
+
+				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+			}
+			
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
