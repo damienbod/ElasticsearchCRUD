@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class SearchHighlightAndRescoreTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[Test]
 		public void SearchForDataWithHightlightResult()
@@ -327,7 +327,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var hits = context.Search<FastestAnimal>(search, new SearchUrlParameters { Pretty = true });
 
 				var results = hits.PayloadResult.Hits;
-				Assert.AreEqual("60.0 <em>mph</em>", results.Total);
+				Assert.AreEqual(14, results.Total);
 			}
 		}
 		[TestFixtureTearDown]

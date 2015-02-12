@@ -75,14 +75,20 @@ namespace ElasticsearchCRUD.Model.SearchModel
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
+			JsonHelper.WriteValue("window_size", _windowSize, elasticsearchCrudJsonWriter);
+
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("query");
+			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
+
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("rescore_query");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			_query.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
-			JsonHelper.WriteValue("window_size", _windowSize, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("query_weight", _windowSize, elasticsearchCrudJsonWriter, _queryWeightSet);
-			JsonHelper.WriteValue("rescore_query_weight", _queryWeight, elasticsearchCrudJsonWriter, _rescoreQueryWeightSet);
+			JsonHelper.WriteValue("query_weight", _queryWeight, elasticsearchCrudJsonWriter, _queryWeightSet);
+			JsonHelper.WriteValue("rescore_query_weight", _rescoreQueryWeight, elasticsearchCrudJsonWriter, _rescoreQueryWeightSet);
+
+			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
