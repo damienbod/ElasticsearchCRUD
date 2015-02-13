@@ -73,7 +73,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				var found = context.WarmerCreate(warmer);
 				Assert.IsTrue(found);
 
-				var ok = context.WarmerDelete(warmerName);
+				var ok = context.WarmerDelete(warmerName, "");
 				Assert.IsTrue(ok);
 			}
 		}

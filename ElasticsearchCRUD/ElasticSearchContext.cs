@@ -919,21 +919,47 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
 		}
 
+		/// <summary>
+		/// Create a new warmer
+		/// </summary>
+		/// <param name="warmer">Wamrer with Query or Agg</param>
+		/// <param name="index">index if required</param>
+		/// <param name="type">type if required</param>
+		/// <returns>true if created</returns>
 		public bool WarmerCreate(Warmer warmer, string index="", string type = "")
 		{
 			return _elasticsearchContextWarmer.SendWarmerCommand(warmer, index, type);
 		}
 
+		/// <summary>
+		/// Create a new warmer async
+		/// </summary>
+		/// <param name="warmer">Wamrer with Query or Agg</param>
+		/// <param name="index">index if required</param>
+		/// <param name="type">type if required</param>
+		/// <returns>true if created</returns>
 		public async Task<ResultDetails<bool>> WarmerCreateAsync(Warmer warmer, string index ="", string type = "")
 		{
 			return await _elasticsearchContextWarmer.SendWarmerCommandAsync(warmer, index, type);
 		}
 
-		public bool WarmerDelete(string warmerName, string index= "")
+		/// <summary>
+		/// deletes a warmer
+		/// </summary>
+		/// <param name="warmerName">name of the warmer</param>
+		/// <param name="index">index</param>
+		/// <returns>true if ok</returns>
+		public bool WarmerDelete(string warmerName, string index)
 		{
 			return _elasticsearchContextWarmer.SendWarmerDeleteCommand(warmerName, index);
 		}
 
+		/// <summary>
+		/// deletes a warmer async
+		/// </summary>
+		/// <param name="warmerName">name of the warmer</param>
+		/// <param name="index">index</param>
+		/// <returns>true if ok</returns>
 		public async Task<ResultDetails<bool>> WarmerDeleteAsync(string warmerName, string index = "")
 		{
 			return await _elasticsearchContextWarmer.SendWarmerDeleteCommandAsync(warmerName, index);
