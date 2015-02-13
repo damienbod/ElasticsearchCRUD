@@ -203,6 +203,8 @@
     <Compile Include="ContextSearch\SearchModel\SearchResult.cs" />
     <Compile Include="ContextSearch\SearchModel\SearchUrlParameters.cs" />
     <Compile Include="ContextSearch\SearchModel\AggModel\StdDeviationBounds.cs" />
+    <Compile Include="ContextWarmers\ElasticsearchContextWarmer.cs" />
+    <Compile Include="ContextWarmers\Warmer.cs" />
     <Compile Include="Model\DateTimeFormats.cs" />
     <Compile Include="Model\DefaultAnalyzers.cs" />
     <Compile Include="Model\DefaultCharFilters.cs" />
