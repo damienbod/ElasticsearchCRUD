@@ -1844,6 +1844,11 @@
             </summary>
             <param name="name">name of the custom tokenizer (ToLower()</param>
         </member>
+        <member name="P:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexWarmer.Aggs">
+            <summary>
+            aggregations request
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.ContextAlias.AliasModel.AliasAddParameters">
             <summary>
             APIs in elasticsearch accept an index name when working against a specific index, and several indices when applicable. 
@@ -1964,6 +1969,16 @@
             query_cache
             [1.4.0.Beta1] Added in 1.4.0.Beta1. Set to true or false to enable or disable the caching of search results for requests where ?search_type=count, 
             ie aggregations and suggestions. See Shard query cache. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextWarmers.Warmer.QueryCache">
+            <summary>
+            query_cache
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.ContextWarmers.Warmer.Aggs">
+            <summary>
+            aggregations request
             </summary>
         </member>
         <member name="F:ElasticsearchCRUD.Model.DateTimeFormats.BasicDate">
@@ -3167,6 +3182,140 @@
             no_match_filter
             </summary>
         </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Highlight">
+            <summary>
+            Allows to highlight search results on one or more fields. The implementation uses either the lucene highlighter, fast-vector-highlighter or postings-highlighter.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Highlight.PreTags">
+            <summary>
+            pre_tags
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Highlight.PostTags">
+            <summary>
+            post_tags
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Highlight.TagsSchemaStyled">
+            <summary>
+            tags_schema : styled
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Highlight.RequireFieldMatch">
+            <summary>
+            require_field_match
+            can be set to true which will cause a field to be highlighted only if a query matched that field. 
+            false means that terms are highlighted on all requested fields regardless if the query matches specifically on them.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Highlight.BoundaryChars">
+            <summary>
+            boundary_chars
+            When highlighting a field using the fast vector highlighter, 
+            boundary_chars can be configured to define what constitutes a boundary for highlighting. 
+            It’s a single string with each boundary character defined in it. It defaults to .,!? \t\n.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Highlight.BoundaryMaxScan">
+            <summary>
+            boundary_max_scan 
+            The boundary_max_scan allows to control how far to look for boundary characters, and defaults to 20.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Highlight.PhraseLimit">
+            <summary>
+            phrase_limit
+            The fast-vector-highlighter has a phrase_limit parameter that prevents it from analyzing too many phrases and eating tons of memory. 
+            It defaults to 256 so only the first 256 matching phrases in the document scored considered. You can raise the limit with the phrase_limit parameter 
+            but keep in mind that scoring more phrases consumes more time and memory.
+            
+            If using matched_fields keep in mind that phrase_limit phrases per matched field are considered
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.FragmentSize">
+            <summary>
+            fragment_size 
+            Each field highlighted can control the size of the highlighted fragment in characters (defaults to 100), and the maximum number of fragments to return (defaults to 5).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.NumberOfFragments">
+            <summary>
+            number_of_fragments
+            Each field highlighted can control the size of the highlighted fragment in characters (defaults to 100), and the maximum number of fragments to return (defaults to 5).
+            If the number_of_fragments value is set to 0 then no fragments are produced, instead the whole content of the field is returned, 
+            and of course it is highlighted. This can be very handy if short texts (like document title or address) need to be highlighted but no fragmentation is required. 
+            Note that fragment_size is ignored in this case.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.Encoder">
+            <summary>
+            An encoder parameter can be used to define how highlighted text will be encoded. 
+            It can be either default (no encoding) or html (will escape html, if you use html highlighting tags).
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.HighlightQuery">
+            <summary>
+            highlight_query
+            It is also possible to highlight against a query other than the search query by setting highlight_query. 
+            This is especially useful if you use a rescore query because those are not taken into account by highlighting by default. 
+            Elasticsearch does not validate that highlight_query contains the search query in any way so it is possible to define it so legitimate query results aren’t highlighted at all. 
+            Generally it is better to include the search query in the highlight_query. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.PreTags">
+            <summary>
+            pre_tags
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.PostTags">
+            <summary>
+            post_tags
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.MatchedFields">
+            <summary>
+            matched_fields
+            The Fast Vector Highlighter can combine matches on multiple fields to highlight a single field using matched_fields. 
+            This is most intuitive for multifields that analyze the same string in different ways. 
+            All matched_fields must have term_vector set to with_positions_offsets but only the field to which the matches are combined is loaded 
+            so only that field would benefit from having store set to yes.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.FieldType">
+            <summary>
+            The type field allows to force a specific highlighter type. 
+            This is useful for instance when needing to use the plain highlighter on a field that has term_vectors enabled. 
+            The allowed values are: plain, postings and fvh. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.OrderByScore">
+            <summary>
+            order" : "score",
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.ForceSource">
+            <summary>
+            force_source 
+            Forces the highlighting to highlight fields based on the source even if fields are stored separately. Defaults to false.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.NoMatchSize">
+            <summary>
+            no_match_size
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.HighlightField.FragmentOffset">
+            <summary>
+            When using fast-vector-highlighter one can use fragment_offset parameter to control the margin to start highlighting from.
+            
+            In the case where there is no matching fragment to highlight, the default is to not return anything.
+             Instead, we can return a snippet of text from the beginning of the field by setting no_match_size (default 0) to the length of the text that you want returned. 
+            The actual length may be shorter than specified as it tries to break on a word boundary. 
+            When using the postings highlighter it is not possible to control the actual size of the snippet, 
+            therefore the first sentence gets returned whenever no_match_size is greater than 0.
+            </summary>
+        </member>
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.IndicesQuery.NoMatchQuery">
             <summary>
             no_match_query
@@ -3720,6 +3869,11 @@
             http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html
             </summary>
         </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Filters.RegExpFilter.MaxDeterminizedStates">
+            <summary>
+            max_determinized_states
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Filters.ScriptFilter">
             <summary>
             Scripts are compiled and cached for faster execution. 
@@ -3932,6 +4086,11 @@
             http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-regexp-query.html
             </summary>
         </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.RegExpQuery.MaxDeterminizedStates">
+            <summary>
+            max_determinized_states
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.SimpleQueryStringQuery">
              <summary>
              A query that uses the SimpleQueryParser to parse its context. Unlike the regular query_string query, 
@@ -4079,6 +4238,57 @@
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.TopChildrenQuery.IncrementalFactor">
             <summary>
             incremental_factor
+            </summary>
+        </member>
+        <member name="T:ElasticsearchCRUD.Model.SearchModel.Rescore">
+            <summary>
+            A rescore request is executed on each shard before it returns its results to be sorted by the node handling the overall search request.
+            
+            Currently the rescore API has only one implementation: the query rescorer, which uses a query to tweak the scoring. 
+            In the future, alternative rescorers may be made available, for example, a pair-wise rescorer.
+            
+            Note: the rescore phase is not executed when search_type is set to scan or count.
+            
+            The query rescorer executes a second query only on the Top-K results returned by the query and post_filter phases. 
+            The number of docs which will be examined on each shard can be controlled by the window_size parameter, which defaults to from and size.
+            
+            By default the scores from the original query and the rescore query are combined linearly to produce the final _score for each document. 
+            The relative importance of the original query and of the rescore query can be controlled with the query_weight and rescore_query_weight respectively. Both default to 1.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Rescore.RescoreQueryWeight">
+            <summary>
+            rescore_query_weight
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Rescore.ScoreMode">
+            <summary>
+            score_mode
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.ScoreModeRescore.avg">
+            <summary>
+            Average the original score and the rescore query score.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.ScoreModeRescore.max">
+            <summary>
+            Take the max of original score and the rescore query score.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.ScoreModeRescore.min">
+            <summary>
+            Take the min of the original score and the rescore query score.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.ScoreModeRescore.total">
+            <summary>
+            Add the original score and the rescore query score. The default.
+            </summary>
+        </member>
+        <member name="F:ElasticsearchCRUD.Model.SearchModel.ScoreModeRescore.multiply">
+            <summary>
+            Multiply the original score by the rescore query score. Useful for function query rescores.
             </summary>
         </member>
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Sorting.SortGeoDistance.Mode">
@@ -4500,13 +4710,13 @@
             It is highly recommended to set it to an acceptable value to control the execution time of the query.
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatch.MultiMatchType">
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatchQuery.MultiMatchType">
             <summary>
             type 
             see MultiMatchType for possible values
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatch.TieBreaker">
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MultiMatchQuery.TieBreaker">
             <summary>
             tie_breaker
             By default, each per-term blended query will use the best score returned by any field in a group, then these scores are added together to give the final score. 
@@ -5048,22 +5258,24 @@
             <param name="index">index to be updated, if null, updatesa all indices</param>
             <returns>string with details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAliases)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAliases,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexWarmers)">
             <summary>
             Creates a new index
             </summary>
             <param name="index">index name to lower string!</param>
             <param name="indexSettings">settings for the new index</param>
             <param name="indexAliases">Define aliases for the index at creation time</param>
+            <param name="indexWarmers">Warmers for index or type</param>
             <returns>details</returns>
         </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAliases)">
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreateAsync(System.String,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexSettings,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexAliases,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexWarmers)">
             <summary>
             Async Creates a new index
             </summary>
             <param name="index">index name to lower string!</param>
             <param name="indexSettings">settings for the new index</param>
             <param name="indexAliases">Define aliases for the index at creation time</param>
+            <param name="indexWarmers">Warmers for index or type</param>
             <returns>details</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.IndexCreate``1(ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.IndexDefinition)">
@@ -5465,6 +5677,40 @@
             </summary>
             <param name="jsonContent">content for the _aliases, see Elasticsearch documentation</param>
             <returns>returns true if the alias command was completed successfully</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.WarmerCreate(ElasticsearchCRUD.ContextWarmers.Warmer,System.String,System.String)">
+            <summary>
+            Create a new warmer
+            </summary>
+            <param name="warmer">Wamrer with Query or Agg</param>
+            <param name="index">index if required</param>
+            <param name="type">type if required</param>
+            <returns>true if created</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.WarmerCreateAsync(ElasticsearchCRUD.ContextWarmers.Warmer,System.String,System.String)">
+            <summary>
+            Create a new warmer async
+            </summary>
+            <param name="warmer">Wamrer with Query or Agg</param>
+            <param name="index">index if required</param>
+            <param name="type">type if required</param>
+            <returns>true if created</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.WarmerDelete(System.String,System.String)">
+            <summary>
+            deletes a warmer
+            </summary>
+            <param name="warmerName">name of the warmer</param>
+            <param name="index">index</param>
+            <returns>true if ok</returns>
+        </member>
+        <member name="M:ElasticsearchCRUD.ElasticsearchContext.WarmerDeleteAsync(System.String,System.String)">
+            <summary>
+            deletes a warmer async
+            </summary>
+            <param name="warmerName">name of the warmer</param>
+            <param name="index">index</param>
+            <returns>true if ok</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.AliasAsync(ElasticsearchCRUD.ContextAlias.AliasModel.AliasParameters)">
             <summary>
