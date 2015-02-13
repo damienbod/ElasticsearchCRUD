@@ -929,6 +929,16 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextWarmer.SendWarmerCommandAsync(warmer, index, type);
 		}
 
+		public bool WarmerDelete(string warmerName, string index= "")
+		{
+			return _elasticsearchContextWarmer.SendWarmerDeleteCommand(warmerName, index);
+		}
+
+		public async Task<ResultDetails<bool>> WarmerDeleteAsync(string warmerName, string index = "")
+		{
+			return await _elasticsearchContextWarmer.SendWarmerDeleteCommandAsync(warmerName, index);
+		}
+
 		/// <summary>
 		/// Async Creates any alias command depending on the json content
 		/// </summary>

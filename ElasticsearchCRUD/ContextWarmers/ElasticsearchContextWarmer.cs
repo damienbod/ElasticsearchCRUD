@@ -51,8 +51,35 @@ namespace ElasticsearchCRUD.ContextWarmers
 				return resultDetails;
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextWarmer: Cound Not Execute Alias {0}", warmer));
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextWarmer: Cound Not Execute Alias  {0}", warmer));
+			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Create  {0}", warmer));
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Create  {0}", warmer));
+		}
+
+		public bool SendWarmerDeleteCommand(string warmerName, string index)
+		{
+			var syncExecutor = new SyncExecute(_traceProvider);
+			return syncExecutor.Execute(() => SendWarmerDeleteCommandAsync(warmerName, index));
+		}
+
+		public async Task<ResultDetails<bool>> SendWarmerDeleteCommandAsync(string warmerName, string index)
+		{
+			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextWarmer: Deleting Warmer {0}", warmerName));
+
+			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
+			var elasticsearchUrl = string.Format("{0}/{1}/_warmer/{2}", _connectionString, index, warmerName);
+			var uri = new Uri(elasticsearchUrl);
+			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP DELETE uri: {0}", uri.AbsoluteUri, "ElasticsearchContextWarmer");
+
+			var response = await _client.DeleteAsync(uri, _cancellationTokenSource.Token).ConfigureAwait(false);
+
+			if (response.StatusCode == HttpStatusCode.OK)
+			{
+				resultDetails.PayloadResult = true;
+				return resultDetails;
+			}
+
+			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Delete {0}", warmerName));
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Delete  {0}", warmerName));
 		}
 	}
 }
