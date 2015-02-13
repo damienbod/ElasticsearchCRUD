@@ -4,7 +4,7 @@ using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
-	public class Warmer
+	public class IndexWarmer
 	{
 		private readonly string _name;
 		private IQueryHolder _query;
@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 		private List<string> _indexTypes;
 		private bool _indexTypesSet;
 
-		public Warmer(string name)
+		public IndexWarmer(string name)
 		{
 			_name = name;
 		}

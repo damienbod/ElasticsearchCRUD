@@ -153,8 +153,8 @@
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\PatternTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\StandardTokenizer.cs" />
     <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Tokenizers\UaxUrlEmailTokenizer.cs" />
-    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Warmer.cs" />
-    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\Warmers.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexWarmer.cs" />
+    <Compile Include="ContextAddDeleteUpdate\IndexModel\SettingsModel\IndexWarmers.cs" />
     <Compile Include="ContextAlias\AliasModel\AliasAction.cs" />
     <Compile Include="ContextAlias\AliasModel\AliasAddParameters.cs" />
     <Compile Include="ContextAlias\AliasModel\AliasBaseParameters.cs" />

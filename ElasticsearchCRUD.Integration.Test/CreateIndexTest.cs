@@ -102,11 +102,11 @@ namespace ElasticsearchCRUD.Integration.Test
 								}
 							}					
 						},
-						IndexWarmers = new Warmers
+						IndexWarmers = new IndexWarmers
 						{
-							WarmersList = new List<Warmer>
+							Warmers = new List<IndexWarmer>
 							{
-								new Warmer("warmer_one")
+								new IndexWarmer("warmer_one")
 								{
 									Query= new Query(new MatchAllQuery()),
 									Aggs = new List<IAggs>
@@ -140,11 +140,11 @@ namespace ElasticsearchCRUD.Integration.Test
 						}
 					}
 				},
-				IndexWarmers = new Warmers
+				IndexWarmers = new IndexWarmers
 				{
-					WarmersList = new List<Warmer>
+					Warmers = new List<IndexWarmer>
 					{
-						new Warmer("warmer_one")
+						new IndexWarmer("warmer_one")
 						{
 							Query = new Query(new MatchAllQuery()),
 							Aggs = new List<IAggs>
@@ -152,7 +152,7 @@ namespace ElasticsearchCRUD.Integration.Test
 								new SumMetricAggregation("sum", "id")
 							}
 						},
-						new Warmer("warmer_two")
+						new IndexWarmer("warmer_two")
 						{
 							Query = new Query(new MatchAllQuery()),
 							IndexTypes = new List<string>

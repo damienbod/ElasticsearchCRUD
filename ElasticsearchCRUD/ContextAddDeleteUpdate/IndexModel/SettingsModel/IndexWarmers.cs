@@ -2,24 +2,20 @@
 
 namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel
 {
-	public class Warmers
+	public class IndexWarmers
 	{
-		public Warmers()
+		public IndexWarmers()
 		{
-			WarmersList = new List<Warmer>();
+			Warmers = new List<IndexWarmer>();
 		}
 
-		public List<Warmer> WarmersList { get; set; }
+		public List<IndexWarmer> Warmers { get; set; }
 
-		//"aliases" : { 
-		//  "april_2014" : {},
-		//  "year_2014" : {}
-		//}, 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("warmers");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
-			foreach (var warmer in WarmersList)
+			foreach (var warmer in Warmers)
 			{
 				warmer.WriteJson(elasticsearchCrudJsonWriter);
 			}

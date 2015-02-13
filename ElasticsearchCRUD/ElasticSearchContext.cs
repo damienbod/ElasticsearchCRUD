@@ -264,11 +264,11 @@ namespace ElasticsearchCRUD
 		/// <param name="index">index name to lower string!</param>
 		/// <param name="indexSettings">settings for the new index</param>
 		/// <param name="indexAliases">Define aliases for the index at creation time</param>
-		/// <param name="warmers">Warmers for index or type</param>
+		/// <param name="indexWarmers">Warmers for index or type</param>
 		/// <returns>details</returns>
-		public ResultDetails<string> IndexCreate(string index, IndexSettings indexSettings = null, IndexAliases indexAliases = null, Warmers warmers = null)
+		public ResultDetails<string> IndexCreate(string index, IndexSettings indexSettings = null, IndexAliases indexAliases = null, IndexWarmers indexWarmers = null)
 		{
-			return _elasticsearchContextIndexMapping.CreateIndex(index, indexSettings, indexAliases, warmers);
+			return _elasticsearchContextIndexMapping.CreateIndex(index, indexSettings, indexAliases, indexWarmers);
 		}
 
 		/// <summary>
@@ -277,11 +277,11 @@ namespace ElasticsearchCRUD
 		/// <param name="index">index name to lower string!</param>
 		/// <param name="indexSettings">settings for the new index</param>
 		/// <param name="indexAliases">Define aliases for the index at creation time</param>
-		/// <param name="warmers">Warmers for index or type</param>
+		/// <param name="indexWarmers">Warmers for index or type</param>
 		/// <returns>details</returns>
-		public async Task<ResultDetails<string>> IndexCreateAsync(string index, IndexSettings indexSettings = null, IndexAliases indexAliases = null, Warmers warmers = null)
+		public async Task<ResultDetails<string>> IndexCreateAsync(string index, IndexSettings indexSettings = null, IndexAliases indexAliases = null, IndexWarmers indexWarmers = null)
 		{
-			return await _elasticsearchContextIndexMapping.CreateIndexAsync(index, indexSettings, indexAliases, warmers);
+			return await _elasticsearchContextIndexMapping.CreateIndexAsync(index, indexSettings, indexAliases, indexWarmers);
 		}
 
 		/// <summary>
