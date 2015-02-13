@@ -84,7 +84,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			_traceProvider = traceProvider;
 		}
 
-		public void CreateIndexSettingsForDocument(string index, IndexSettings indexSettings, IndexAliases indexAliases)
+		public void CreateIndexSettingsForDocument(string index, IndexSettings indexSettings, IndexAliases indexAliases, Warmers warmers)
 		{
 			if (_processedItems.Contains("_index" + index))
 			{
@@ -95,6 +95,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			CreateIndexSettings(elasticsearchCrudJsonWriter, indexSettings);
 			indexAliases.WriteJson(elasticsearchCrudJsonWriter);
+			warmers.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			CreateIndexCommand(elasticsearchCrudJsonWriter.GetJsonString(), index);

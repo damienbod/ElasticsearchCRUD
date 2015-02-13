@@ -1,5 +1,4 @@
-﻿using ElasticsearchCRUD.Model.SearchModel.Queries;
-using ElasticsearchCRUD.Utils;
+﻿using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel
 {
@@ -87,6 +86,7 @@ namespace ElasticsearchCRUD.Model.SearchModel
 
 			JsonHelper.WriteValue("query_weight", _queryWeight, elasticsearchCrudJsonWriter, _queryWeightSet);
 			JsonHelper.WriteValue("rescore_query_weight", _rescoreQueryWeight, elasticsearchCrudJsonWriter, _rescoreQueryWeightSet);
+			JsonHelper.WriteValue("score_mode", _scoreMode.ToString(), elasticsearchCrudJsonWriter, _scoreModeSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 

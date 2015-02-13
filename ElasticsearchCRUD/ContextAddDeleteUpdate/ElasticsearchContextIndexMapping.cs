@@ -64,7 +64,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				MappingUtils.GuardAgainstBadIndexName(index);
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
-				indexMappings.CreateIndexSettingsForDocument(index, indexDefinition.IndexSettings, indexDefinition.IndexAliases);
+				indexMappings.CreateIndexSettingsForDocument(index, indexDefinition.IndexSettings, indexDefinition.IndexAliases, indexDefinition.IndexWarmers);
 				indexDefinition.Mapping.Index = index;
 				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, indexDefinition.Mapping);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
@@ -80,13 +80,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			}
 		}
 
-		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings, IndexAliases indexAliases)
+		public ResultDetails<string> CreateIndex(string index, IndexSettings indexSettings, IndexAliases indexAliases, Warmers warmers)
 		{
 			var syncExecutor = new SyncExecute(_traceProvider);
-			return syncExecutor.ExecuteResultDetails(() => CreateIndexAsync(index, indexSettings, indexAliases));
+			return syncExecutor.ExecuteResultDetails(() => CreateIndexAsync(index, indexSettings, indexAliases, warmers));
 		}
 
-		public async Task<ResultDetails<string>> CreateIndexAsync(string index, IndexSettings indexSettings, IndexAliases indexAliases)
+		public async Task<ResultDetails<string>> CreateIndexAsync(string index, IndexSettings indexSettings, IndexAliases indexAliases, Warmers warmers)
 		{
 			if (string.IsNullOrEmpty(index))
 			{
@@ -101,6 +101,11 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				indexAliases = new IndexAliases();
 			}
 
+			if (warmers == null)
+			{
+				warmers = new Warmers();
+			}
+
 			_traceProvider.Trace(TraceEventType.Verbose, "{0}: CreateIndexAsync Elasticsearch started", "ElasticsearchContextIndexMapping");
 			var resultDetails = new ResultDetails<string> { Status = HttpStatusCode.InternalServerError };
 
@@ -109,7 +114,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				MappingUtils.GuardAgainstBadIndexName(index);
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
-				indexMappings.CreateIndexSettingsForDocument(index, indexSettings, indexAliases);
+				indexMappings.CreateIndexSettingsForDocument(index, indexSettings, indexAliases, warmers);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
 				return resultDetails;

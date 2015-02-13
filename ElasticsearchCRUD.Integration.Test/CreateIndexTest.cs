@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
+using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Model.SearchModel.Aggregations;
+using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
 using NUnit.Framework;
 
@@ -10,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class CreateIndexTest
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -58,13 +61,121 @@ namespace ElasticsearchCRUD.Integration.Test
 			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				context.IndexCreate<AliasCreateIndexOne>(new IndexDefinition { IndexAliases = new IndexAliases { Aliases = new List<IndexAlias> { new IndexAlias("testnew"), new IndexAlias("testnewroute") { Routing = "ddd" } } } });
+				context.IndexCreate<AliasCreateIndexOne>(
+					new IndexDefinition
+					{
+						IndexAliases = new IndexAliases
+						{
+							Aliases = new List<IndexAlias>
+							{
+								new IndexAlias("testnew"), new IndexAlias("testnewroute")
+								{
+									Routing = "ddd"
+								}
+							}
+						}
+					});
 
 				Thread.Sleep(1500);
 				var result = context.IndexExists<AliasCreateIndexOne>();
 				Assert.IsTrue(result);
 			}
 		}
+
+		// http://localhost:9200/aliascreateindexones/_warmers
+		[Test]
+		public void CreateNewIndexAndMappingWithSimpleNullListAndNullArrayListAndAliasAndWarmer()
+		{
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<AliasCreateIndexOne>(
+					new IndexDefinition
+					{
+						IndexAliases = new IndexAliases
+						{
+							Aliases = new List<IndexAlias>
+							{
+								new IndexAlias("testnew"), new IndexAlias("testnewroute")
+								{
+									Routing = "ddd"
+								}
+							}					
+						},
+						IndexWarmers = new Warmers
+						{
+							WarmersList = new List<Warmer>
+							{
+								new Warmer("warmer_one")
+								{
+									Query= new Query(new MatchAllQuery()),
+									Aggs = new List<IAggs>
+									{
+										new SumMetricAggregation("sum", "id")
+									}
+								}
+							}
+						}
+					});
+
+				Thread.Sleep(1500);
+				var result = context.IndexExists<AliasCreateIndexOne>();
+				Assert.IsTrue(result);
+			}
+		}
+
+		[Test]
+		public void CreateNewIndexAndMappingWithSimpleNullListAndNullArrayListAndAliasAnd2Warmers()
+		{
+			var indexDefinition = new IndexDefinition
+			{
+				IndexAliases = new IndexAliases
+				{
+					Aliases = new List<IndexAlias>
+					{
+						new IndexAlias("testnew"),
+						new IndexAlias("testnewroute")
+						{
+							Routing = "ddd"
+						}
+					}
+				},
+				IndexWarmers = new Warmers
+				{
+					WarmersList = new List<Warmer>
+					{
+						new Warmer("warmer_one")
+						{
+							Query = new Query(new MatchAllQuery()),
+							Aggs = new List<IAggs>
+							{
+								new SumMetricAggregation("sum", "id")
+							}
+						},
+						new Warmer("warmer_two")
+						{
+							Query = new Query(new MatchAllQuery()),
+							IndexTypes = new List<string>
+							{
+								"dd",
+								"ee"
+							}
+						}
+					}
+				}
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+			{
+				context.TraceProvider = new ConsoleTraceProvider();
+				context.IndexCreate<AliasCreateIndexOne>(indexDefinition);
+
+				Thread.Sleep(1500);
+				var result = context.IndexExists<AliasCreateIndexOne>();
+				Assert.IsTrue(result);
+			}
+		}
+
 
 		[Test]
 		public void CreateNewIndexAndMappingWithSimpleNullListAndNullArrayListAndAlias2()

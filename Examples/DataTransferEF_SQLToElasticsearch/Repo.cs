@@ -82,7 +82,7 @@ namespace DataTransferSQLToEl
 		{
 
 			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-			using (var elasticSearchContext = new ElasticsearchContext("http://localhost.fiddler:9200/", elasticsearchMappingResolver))
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
 			{
 				if (elasticSearchContext.IndexExists<Person>())
 				{
