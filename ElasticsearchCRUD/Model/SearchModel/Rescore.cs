@@ -15,7 +15,6 @@ namespace ElasticsearchCRUD.Model.SearchModel
 	/// 
 	/// By default the scores from the original query and the rescore query are combined linearly to produce the final _score for each document. 
 	/// The relative importance of the original query and of the rescore query can be controlled with the query_weight and rescore_query_weight respectively. Both default to 1.
-
 	/// </summary>
 	public class Rescore
 	{

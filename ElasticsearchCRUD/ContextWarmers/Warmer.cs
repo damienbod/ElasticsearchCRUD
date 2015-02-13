@@ -1,14 +1,23 @@
 ﻿using System.Collections.Generic;
 using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.ContextWarmers
 {
 	public class Warmer
 	{
+		public string Name { get; private set; }
 		private IQueryHolder _query;
 		private bool _querySet;
 		private List<IAggs> _aggs;
 		private bool _aggsSet;
+		private bool _queryCache;
+		private bool _queryCacheSet;
+
+		public Warmer(string name)
+		{
+			Name = name;
+		}
 
 		public IQueryHolder Query
 		{
@@ -20,6 +29,19 @@ namespace ElasticsearchCRUD.ContextWarmers
 			}
 		}
 
+		/// <summary>
+		/// query_cache
+		/// </summary>
+		public bool QueryCache
+		{
+			get { return _queryCache; }
+			set
+			{
+				_queryCache = value;
+				_queryCacheSet = true;
+			}
+		}
+		
 		/// <summary>
 		/// aggregations request
 		/// </summary>
@@ -54,7 +76,15 @@ namespace ElasticsearchCRUD.ContextWarmers
 				elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			}
 
+			JsonHelper.WriteValue("query_cache", _queryCache, elasticsearchCrudJsonWriter, _queryCacheSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+		}
+
+		public override string ToString()
+		{
+			var elasticsearchCrudJsonWriter = new ElasticsearchCrudJsonWriter();
+			WriteJson(elasticsearchCrudJsonWriter);
+			return elasticsearchCrudJsonWriter.GetJsonString();
 		}
 	}
 }

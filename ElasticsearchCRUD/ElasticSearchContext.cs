@@ -17,6 +17,7 @@ using ElasticsearchCRUD.ContextDeleteByQuery;
 using ElasticsearchCRUD.ContextGet;
 using ElasticsearchCRUD.ContextSearch;
 using ElasticsearchCRUD.ContextSearch.SearchModel;
+using ElasticsearchCRUD.ContextWarmers;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Tracing;
@@ -44,6 +45,7 @@ namespace ElasticsearchCRUD
 		private ElasticsearchContextDeleteByQuery _elasticsearchContextDeleteByQuery;
 		private ElasticsearchContextClearCache _elasticsearchContextClearCache;
 		private ElasticsearchContextAlias _elasticsearchContextAlias;
+		private ElasticsearchContextWarmer _elasticsearchContextWarmer;
 
 		/// <summary>
 		/// TraceProvider for all logs, trace etc. This can be replaced with any TraceProvider implementation.
@@ -917,6 +919,16 @@ namespace ElasticsearchCRUD
 			return await _elasticsearchContextAlias.SendAliasCommandAsync(jsonContent);
 		}
 
+		public bool WarmerCreate(Warmer warmer, string index="", string type = "")
+		{
+			return _elasticsearchContextWarmer.SendWarmerCommand(warmer, index, type);
+		}
+
+		public async Task<ResultDetails<bool>> WarmerCreateAsync(Warmer warmer, string index ="", string type = "")
+		{
+			return await _elasticsearchContextWarmer.SendWarmerCommandAsync(warmer, index, type);
+		}
+
 		/// <summary>
 		/// Async Creates any alias command depending on the json content
 		/// </summary>
@@ -1124,6 +1136,14 @@ namespace ElasticsearchCRUD
 				);
 
 			_elasticsearchContextAlias = new ElasticsearchContextAlias(
+				TraceProvider,
+				_cancellationTokenSource,
+				_elasticsearchSerializerConfiguration,
+				_client,
+				_connectionString
+				);
+
+			_elasticsearchContextWarmer = new ElasticsearchContextWarmer(
 				TraceProvider,
 				_cancellationTokenSource,
 				_elasticsearchSerializerConfiguration,
