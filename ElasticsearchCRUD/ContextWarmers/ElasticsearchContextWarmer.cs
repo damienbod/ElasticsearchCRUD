@@ -35,10 +35,10 @@ namespace ElasticsearchCRUD.ContextWarmers
 
 		public async Task<ResultDetails<bool>> SendWarmerCommandAsync(Warmer warmer, string index, string type)
 		{
-			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextWarmer: Creating Warmer {0}", warmer));
+			_traceProvider.Trace(TraceEventType.Verbose, string.Format("ElasticsearchContextWarmer: Creating Warmer {0}", warmer.Name));
 
 			var resultDetails = new ResultDetails<bool> { Status = HttpStatusCode.InternalServerError };
-			var elasticsearchUrl = string.Format("{0}/_warmer/{1}/{2}/{3}", _connectionString, index, type, warmer.Name);
+			var elasticsearchUrl = CreateWarmerUriParameter(index, type, warmer.Name);
 			var uri = new Uri(elasticsearchUrl);
 			_traceProvider.Trace(TraceEventType.Verbose, "{1}: Request HTTP PUT uri: {0}", uri.AbsoluteUri, "ElasticsearchContextWarmer");
 
@@ -51,8 +51,23 @@ namespace ElasticsearchCRUD.ContextWarmers
 				return resultDetails;
 			}
 
-			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Create  {0}", warmer));
-			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Create  {0}", warmer));
+			_traceProvider.Trace(TraceEventType.Error, string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Create  {0}", warmer.Name));
+			throw new ElasticsearchCrudException(string.Format("ElasticsearchContextWarmer: Cound Not Execute Warmer Create  {0}", warmer.Name));
+		}
+
+		private string CreateWarmerUriParameter(string index, string type, string warmerName)
+		{
+			if (string.IsNullOrEmpty(index))
+			{
+				return string.Format("{0}/_warmer/{1}", _connectionString, warmerName);
+			}
+
+			if (string.IsNullOrEmpty(type))
+			{
+				return string.Format("{0}/{1}/_warmer/{2}", _connectionString, index, warmerName);
+			}
+
+			return string.Format("{0}/{1}/{2}/_warmer/{3}", _connectionString, index, type, warmerName);
 		}
 
 		public bool SendWarmerDeleteCommand(string warmerName, string index)

@@ -15,7 +15,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[TestFixtureTearDown]
+		[TearDown]
 		public void FixtureTearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
