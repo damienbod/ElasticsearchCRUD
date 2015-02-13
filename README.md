@@ -95,6 +95,14 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.29</strong><em> 2015.02.13</em>
+- support search highlighting requests in search model 
+- support for search rescore
+- support for the _warmer API, PUT and DELETE
+- support warmers in Create Index
+- regexp filter, query max_determinized_states support version 1.4.3 
+- bug fix, GeoDistanceSort GeoPoint field or array of geo_points is required and not optional 
+
 <strong>Version 1.0.28</strong><em> 2015.02.10</em>
 - Indices Filter, Type Filter, Indices Query
 - bug fix Terms Aggregation Result properties not set
