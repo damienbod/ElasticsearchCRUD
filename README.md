@@ -49,6 +49,8 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <a href="https://damienbod.wordpress.com/2015/02/18/mvc-searching-with-elasticsearch-highlighting/">Part 18: MVC searching with Elasticsearch Highlighting</a>
 
+<a href="https://damienbod.wordpress.com/2015/03/01/index-warmers-with-elasticsearchcrud/">Part 19: Index Warmers with ElasticsearchCRUD</a>
+
 ========================
 
 <strong>Examples:</strong>
