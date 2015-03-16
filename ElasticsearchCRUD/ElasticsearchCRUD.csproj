@@ -162,7 +162,9 @@
     <Compile Include="ContextAlias\AliasModel\AliasRemoveParameters.cs" />
     <Compile Include="ContextAlias\ElasticsearchContextAlias.cs" />
     <Compile Include="ContextClearCache\ElasticsearchContextClearCache.cs" />
+    <Compile Include="ContextGet\InternalGet.cs" />
     <Compile Include="ContextGet\ElasticsearchContextGet.cs" />
+    <Compile Include="Model\GetResult.cs" />
     <Compile Include="ContextSearch\ElasticsearchContextSearch.cs" />
     <Compile Include="ContextCount\ElasticsearchContextCount.cs" />
     <Compile Include="ContextDeleteByQuery\ElasticsearchContextDeleteByQuery.cs" />

@@ -5,6 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.ContextAlias.AliasModel;
+using ElasticsearchCRUD.ContextGet;
+using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
@@ -81,6 +83,11 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				var result = context.AliasCreateForIndex("test", "indexaliasdtotests");
 				Assert.IsTrue(result);
+
+				Thread.Sleep(1200);
+
+				GetResult resultGet = context.Get(new Uri("http://localhost:9200/_alias/test"));
+				Console.WriteLine(resultGet);
 			}
 		}
 

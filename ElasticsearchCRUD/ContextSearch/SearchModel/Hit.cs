@@ -21,7 +21,7 @@ namespace ElasticsearchCRUD.ContextSearch.SearchModel
 		public string TypeInIndex { get; set; }
 
 		[JsonProperty(PropertyName = "_id")]
-		public int Id { get; set; }
+		public object Id { get; set; }
 
 		[JsonProperty(PropertyName = "_score", NullValueHandling = NullValueHandling.Ignore)]
 		public double Score { get; set; }

@@ -354,6 +354,11 @@ namespace ElasticsearchCRUD
 			return _elasticsearchContextSearch.SearchById<T>(documentId, searchUrlParameters);
 		}
 
+		public GetResult Get(Uri uri)
+		{
+			return _elasticsearchContextGet.Get(uri);
+		}
+
 		/// <summary>
 		/// async Uses Elasticsearch search API to get the document per id
 		/// </summary>
