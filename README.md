@@ -99,6 +99,9 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 1.0.29.2</strong><em> 2015.03.16</em>
+- bug fix, Id in Hit result should not be an int 
+
 <strong>Version 1.0.29</strong><em> 2015.02.13</em>
 - support search highlighting requests in search model 
 - support for search rescore
