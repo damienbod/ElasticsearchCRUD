@@ -11,11 +11,23 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private readonly string _type;
 		private readonly IFilter _filter;
+		private InnerHits _innerHits;
+		private bool _innerHitsSet;
 
 		public HasParentFilter(string type, IFilter filter)
 		{
 			_type = type;
 			_filter = filter;
+		}
+
+		public InnerHits InnerHits
+		{
+			get { return _innerHits; }
+			set
+			{
+				_innerHits = value;
+				_innerHitsSet = true;
+			}
 		}
 
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
@@ -28,6 +40,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			_filter.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+
+			if (_innerHitsSet)
+			{
+				_innerHits.WriteJson(elasticsearchCrudJsonWriter);
+			}
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

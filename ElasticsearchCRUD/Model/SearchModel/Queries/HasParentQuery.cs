@@ -18,6 +18,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private readonly IQuery _query;
 		private ScoreModeHasParentQuery _scoreMode;
 		private bool _scoreModeSet;
+		private InnerHits _innerHits;
+		private bool _innerHitsSet;
 
 		public HasParentQuery(string type, IQuery query)
 		{
@@ -39,6 +41,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
+		public InnerHits InnerHits
+		{
+			get { return _innerHits; }
+			set
+			{
+				_innerHits = value;
+				_innerHitsSet = true;
+			}
+		}
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("has_parent");
@@ -50,6 +62,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			_query.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
+
+			if (_innerHitsSet)
+			{
+				_innerHits.WriteJson(elasticsearchCrudJsonWriter);
+			}
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

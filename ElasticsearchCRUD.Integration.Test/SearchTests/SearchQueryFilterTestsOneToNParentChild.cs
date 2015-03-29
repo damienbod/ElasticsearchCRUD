@@ -39,6 +39,30 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
+		public void SearchFilterHasChildFilterInnerHits()
+		{
+			var search = new Search
+			{
+				Filter =
+					new Filter(
+					new HasChildFilter("testobjchildsep", new MatchAllFilter())
+					{
+						MaxChildren = 10,
+						MinChildren = 2,
+						InnerHits = new InnerHits()
+					}
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
+				var items = context.Search<TestObjParentSep>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
 		public void SearchFilterHasParentFilter()
 		{
 			var search = new Search
@@ -46,6 +70,28 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 				Filter =
 					new Filter(
 					new HasParentFilter("testobjparentsep", new MatchAllFilter())
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
+				var items = context.Search<TestObjChildSep>(search);
+				Assert.AreEqual(4, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchFilterHasParentFilterInnerHits()
+		{
+			var search = new Search
+			{
+				Filter =
+					new Filter(
+					new HasParentFilter("testobjparentsep", new MatchAllFilter())
+						{
+							InnerHits= new InnerHits()
+						}
 					)
 			};
 
@@ -82,6 +128,31 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 		[Test]
+		public void SearchFilterHasChildQueryInnerHits()
+		{
+			var search = new Search
+			{
+				Query =
+					new Query(
+						new HasChildQuery("testobjchildsep", new MatchAllQuery())
+						{
+							MaxChildren = 10,
+							MinChildren = 2,
+							ScoreMode = ScoreMode.none,
+							InnerHits= new InnerHits()
+						}
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
+				var items = context.Search<TestObjParentSep>(search);
+				Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
 		public void SearchFilterHasParentQuery()
 		{
 			var search = new Search
@@ -91,6 +162,29 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 					new HasParentQuery("testobjparentsep", new MatchAllQuery())
 					{
 						ScoreMode= ScoreModeHasParentQuery.none
+					}
+					)
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
+				var items = context.Search<TestObjChildSep>(search);
+				Assert.AreEqual(4, items.PayloadResult.Hits.Total);
+			}
+		}
+
+		[Test]
+		public void SearchFilterHasParentQueryInnerHits()
+		{
+			var search = new Search
+			{
+				Query =
+					new Query(
+					new HasParentQuery("testobjparentsep", new MatchAllQuery())
+					{
+						ScoreMode = ScoreModeHasParentQuery.none,
+						InnerHits = new InnerHits()
 					}
 					)
 			};

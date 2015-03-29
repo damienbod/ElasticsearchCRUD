@@ -282,6 +282,7 @@
     <Compile Include="Model\SearchModel\Filters\IndicesFilter.cs" />
     <Compile Include="Model\SearchModel\Highlight.cs" />
     <Compile Include="Model\SearchModel\HighlightField.cs" />
+    <Compile Include="Model\SearchModel\InnerHits.cs" />
     <Compile Include="Model\SearchModel\Queries\IndicesQuery.cs" />
     <Compile Include="Model\SearchModel\Filters\TypeFilter.cs" />
     <Compile Include="Model\SearchModel\IAggs.cs" />

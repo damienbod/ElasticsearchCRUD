@@ -95,6 +95,48 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 		}
 
 		[Test]
+		public void SearchFilterNestedFilterWithInnerHitsDefault()
+		{
+			var testSkillParentObject = new NestedCollectionTest
+			{
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 8,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.IndexCreate<NestedCollectionTest>();
+				Thread.Sleep(1200);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+
+			Thread.Sleep(1200);
+			var search = new Search
+			{
+				Filter =
+					new Filter(
+					new NestedFilter(
+					new MatchAllFilter(), "skillchildren")
+						{
+							InnerHits= new InnerHits()
+						})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				var items = context.Search<NestedCollectionTest>(search);
+				Assert.AreEqual(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
+
+		[Test]
 		public void SearchFilterNestedQuery()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -133,6 +175,47 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
+		[Test]
+		public void SearchFilterNestedQueryInnerHits()
+		{
+			var testSkillParentObject = new NestedCollectionTest
+			{
+				CreatedSkillParent = DateTime.UtcNow,
+				UpdatedSkillParent = DateTime.UtcNow,
+				DescriptionSkillParent = "A test entity description",
+				Id = 8,
+				NameSkillParent = "cool",
+				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				context.IndexCreate<NestedCollectionTest>();
+				Thread.Sleep(1200);
+				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+				var ret = context.SaveChanges();
+				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+			}
+
+			Thread.Sleep(1200);
+			var search = new Search
+			{
+				Query =
+					new Query(
+					new NestedQuery(
+					new MatchAllQuery(), "skillchildren")
+					{
+						InnerHits = new InnerHits()
+					})
+			};
+
+			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+			{
+				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				var items = context.Search<NestedCollectionTest>(search);
+				Assert.AreEqual(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+			}
+		}
 		[Test]
 		public void SearchAggNestedBucketAggregationWithNoHits()
 		{

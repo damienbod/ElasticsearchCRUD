@@ -19,6 +19,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private bool _minChildrenSet;
 		private uint _maxChildren;
 		private bool _maxChildrenSet;
+		private InnerHits _innerHits;
+		private bool _innerHitsSet;
 
 		public HasChildFilter(string type, IFilter filter)
 		{
@@ -53,6 +55,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 		}
 
+		public InnerHits InnerHits
+		{
+			get { return _innerHits; }
+			set
+			{
+				_innerHits = value;
+				_innerHitsSet = true;
+			}
+		}
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("has_child");
@@ -66,6 +78,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 			JsonHelper.WriteValue("min_children", _minChildren, elasticsearchCrudJsonWriter, _minChildrenSet);
 			JsonHelper.WriteValue("max_children", _maxChildren, elasticsearchCrudJsonWriter, _maxChildrenSet);
+
+			if (_innerHitsSet)
+			{
+				_innerHits.WriteJson(elasticsearchCrudJsonWriter);
+			}
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

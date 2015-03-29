@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ElasticsearchCRUD.Utils;
+﻿using ElasticsearchCRUD.Utils;
 
 namespace ElasticsearchCRUD.Model.SearchModel.Queries
 {
@@ -18,6 +13,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private readonly string _path;
 		private ScoreMode _scoreMode;
 		private bool _scoreModeSet;
+		private InnerHits _innerHits;
+		private bool _innerHitsSet;
 
 		public NestedQuery(IQuery query, string path)
 		{
@@ -39,6 +36,16 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			}
 		}
 
+		public InnerHits InnerHits
+		{
+			get { return _innerHits; }
+			set
+			{
+				_innerHits = value;
+				_innerHitsSet = true;
+			}
+		}
+
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("nested");
@@ -51,6 +58,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			JsonHelper.WriteValue("score_mode", _scoreMode.ToString(), elasticsearchCrudJsonWriter, _scoreModeSet);
+
+			if (_innerHitsSet)
+			{
+				_innerHits.WriteJson(elasticsearchCrudJsonWriter);
+			}
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
