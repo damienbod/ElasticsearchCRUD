@@ -288,7 +288,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 						ExtendedBounds= new ExtendedBounds
 						{
 							Max= 1000000,
-							Min =0
+							Min = 0
 						},
 						PostOffset= "10d",
 						PreOffset= "1d",
@@ -305,8 +305,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<DateHistogramBucketAggregationsResult>("testHistogramBucketAggregation");
 				var tophits = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("tophits");
-				Assert.AreEqual(2, aggResult.Buckets[0].DocCount);
-				Assert.AreEqual(2, tophits.Hits.Total);
+				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+				Assert.AreEqual(3, tophits.Hits.Total);
 			}
 		}
 
