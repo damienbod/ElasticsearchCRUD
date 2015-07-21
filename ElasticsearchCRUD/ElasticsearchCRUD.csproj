@@ -421,6 +421,7 @@
     <Compile Include="Model\ResultDetails.cs" />
     <Compile Include="Tracing\TraceProvider.cs" />
     <Compile Include="Utils\ParameterCollection.cs" />
+    <Compile Include="Utils\StringExtensions.cs" />
     <Compile Include="Utils\SyncExecute.cs" />
   </ItemGroup>
   <ItemGroup>
