@@ -52,7 +52,7 @@ namespace ElasticsearchCRUD
 					{
 						if (Attribute.IsDefined(prop, typeof (ElasticsearchGeoTypeAttribute))) 
 						{
-							var obj = prop.Name.ToLower(MapToLowerCase);
+							var obj = prop.Name().ToLower(MapToLowerCase);
 							// process GeoTypes
 							if (createPropertyMappings)
 							{
@@ -86,11 +86,11 @@ namespace ElasticsearchCRUD
 							{
 								if (!ProcessChildDocumentsAsSeparateChildIndex || ProcessChildDocumentsAsSeparateChildIndex && beginMappingTree)
 								{
-									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}, {1}", prop.Name.ToLower(MapToLowerCase), prop.PropertyType.FullName);
+									TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: Property is a simple Type: {0}, {1}", prop.Name().ToLower(MapToLowerCase), prop.PropertyType.FullName);
 
 									if (createPropertyMappings)
 									{
-										var obj = prop.Name.ToLower(MapToLowerCase);
+										var obj = prop.Name().ToLower(MapToLowerCase);
 										if (Attribute.IsDefined(prop, typeof (ElasticsearchCoreTypes)))
 										{									
 											object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
@@ -119,7 +119,8 @@ namespace ElasticsearchCRUD
 									}
 									else
 									{
-										MapValue(prop.Name.ToLower(MapToLowerCase), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
+
+									    MapValue(prop.Name().ToLower(MapToLowerCase), prop.GetValue(entityInfo.Document), elasticsearchCrudJsonWriter.JsonWriter);
 									}
 
 								}
@@ -175,7 +176,7 @@ namespace ElasticsearchCRUD
 
 		private void ProcessArrayOrCollection(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop, bool createPropertyMappings)
 		{
-			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: IsPropertyACollection: {0}", prop.Name.ToLower(MapToLowerCase));
+			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: IsPropertyACollection: {0}", prop.Name().ToLower(MapToLowerCase));
 
 			if (createPropertyMappings && prop.GetValue(entityInfo.Document) == null)
 			{
@@ -204,7 +205,7 @@ namespace ElasticsearchCRUD
 
 		private void ProcessSingleObjectAsNestedObject(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop, bool createPropertyMappings)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower(MapToLowerCase));
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name().ToLower(MapToLowerCase));
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			if (createPropertyMappings)
@@ -281,8 +282,8 @@ namespace ElasticsearchCRUD
 
 		private void ProcessArrayOrCollectionAsNestedObject(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop, bool createPropertyMappings)
 		{
-			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name.ToLower(MapToLowerCase));
-			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}", prop.Name.ToLower(MapToLowerCase), elasticsearchCrudJsonWriter.JsonWriter.Path);
+			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(prop.Name().ToLower(MapToLowerCase));
+			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}", prop.Name().ToLower(MapToLowerCase), elasticsearchCrudJsonWriter.JsonWriter.Path);
 			var typeOfEntity = prop.GetValue(entityInfo.Document).GetType().GetGenericArguments();
 			if (typeOfEntity.Length > 0)
 			{
@@ -306,7 +307,7 @@ namespace ElasticsearchCRUD
 			else
 			{
 				TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: BEGIN ARRAY or COLLECTION NOT A GENERIC: {0}",
-					prop.Name.ToLower(MapToLowerCase));
+					prop.Name().ToLower(MapToLowerCase));
 				// Not a generic
 				MapCollectionOrArray(prop, entityInfo, elasticsearchCrudJsonWriter, createPropertyMappings);
 			}
@@ -314,7 +315,7 @@ namespace ElasticsearchCRUD
 
 		private void ProcessArrayOrCollectionAsChildDocument(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, PropertyInfo prop, bool createPropertyMappings)
 		{
-			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}", prop.Name.ToLower(MapToLowerCase), elasticsearchCrudJsonWriter.JsonWriter.Path);
+			TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: BEGIN ARRAY or COLLECTION: {0} {1}", prop.Name().ToLower(MapToLowerCase), elasticsearchCrudJsonWriter.JsonWriter.Path);
 			var typeOfEntity = prop.GetValue(entityInfo.Document).GetType().GetGenericArguments();
 			if (typeOfEntity.Length > 0)
 			{
@@ -335,7 +336,7 @@ namespace ElasticsearchCRUD
 			else
 			{
 				TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: BEGIN ARRAY or COLLECTION NOT A GENERIC: {0}",
-					prop.Name.ToLower(MapToLowerCase));
+					prop.Name().ToLower(MapToLowerCase));
 				// Not a generic
 				MapCollectionOrArray(prop, entityInfo, elasticsearchCrudJsonWriter, createPropertyMappings);
 			}
