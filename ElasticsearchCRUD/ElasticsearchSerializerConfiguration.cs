@@ -10,12 +10,13 @@
 		private readonly bool _processChildDocumentsAsSeparateChildIndex;
 		private readonly bool _userDefinedRouting;
 
-		public ElasticsearchSerializerConfiguration(IElasticsearchMappingResolver elasticsearchMappingResolver, bool saveChildObjectsAsWellAsParent = true, bool processChildDocumentsAsSeparateChildIndex = false, bool userDefinedRouting=false)
+	    public ElasticsearchSerializerConfiguration(IElasticsearchMappingResolver elasticsearchMappingResolver, bool saveChildObjectsAsWellAsParent = true, bool processChildDocumentsAsSeparateChildIndex = false, bool userDefinedRouting=false, bool mapToLowerCase = false)
 		{
 			_elasticsearchMappingResolver = elasticsearchMappingResolver;
 			_saveChildObjectsAsWellAsParent = saveChildObjectsAsWellAsParent;
 			_processChildDocumentsAsSeparateChildIndex = processChildDocumentsAsSeparateChildIndex;
 			_userDefinedRouting = userDefinedRouting;
+		    MapToLowerCase = mapToLowerCase;
 		}
 
 		/// <summary>
@@ -52,5 +53,7 @@
 		{
 			get { return _userDefinedRouting; }
 		}
+
+        public bool MapToLowerCase { get; }
 	}
 }
