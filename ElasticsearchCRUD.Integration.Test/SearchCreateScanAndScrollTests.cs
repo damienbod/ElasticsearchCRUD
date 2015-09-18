@@ -68,7 +68,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				context.TraceProvider = new ConsoleTraceProvider();
+				//context.TraceProvider = new ConsoleTraceProvider();
 				for (int i = 0; i < 1000; i++)
 				{
 					context.AddUpdateDocument(_entitiesForTests[i], i);
@@ -101,7 +101,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				context.TraceProvider = new ConsoleTraceProvider();
+				//context.TraceProvider = new ConsoleTraceProvider();
 				var scanScrollConfig = new ScanAndScrollConfiguration(new TimeUnitSecond(1), 100);
 				var result = context.SearchCreateScanAndScroll<ScanScrollTypeV1>(BuildSearchMatchAll(), scanScrollConfig);
 

@@ -95,8 +95,11 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				Assert.IsNotNull(doc);
 
+				Thread.Sleep(1500);
 				context.IndexClose("mappingtestsparentwithsimplenullandnullarraylists");
+				Thread.Sleep(1500);
 				context.IndexOpen("mappingtestsparentwithsimplenullandnullarraylists");
+				Thread.Sleep(1500);
 				var result = context.IndexOptimize("mappingtestsparentwithsimplenullandnullarraylists", new OptimizeParameters{NumberOfShards=3, Flush=true});
 
 				Assert.GreaterOrEqual(result.PayloadResult.Shards.Successful, 1);
