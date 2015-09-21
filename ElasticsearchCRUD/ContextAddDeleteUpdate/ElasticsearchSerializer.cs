@@ -72,6 +72,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticSearchMapping.TraceProvider = _traceProvider;
 			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
+		    elasticSearchMapping.MapToLowerCase = _elasticsearchSerializerConfiguration.MapToLowerCase;
 			_elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			_elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("delete");
@@ -103,6 +104,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 			elasticSearchMapping.TraceProvider = _traceProvider;
 			elasticSearchMapping.SaveChildObjectsAsWellAsParent = _elasticsearchSerializerConfiguration.SaveChildObjectsAsWellAsParent;
 			elasticSearchMapping.ProcessChildDocumentsAsSeparateChildIndex = _elasticsearchSerializerConfiguration.ProcessChildDocumentsAsSeparateChildIndex;
+		    elasticSearchMapping.MapToLowerCase = _elasticsearchSerializerConfiguration.MapToLowerCase;
 
 			CreateBulkContentForParentDocument(entityInfo, elasticSearchMapping);
 
