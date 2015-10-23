@@ -465,8 +465,10 @@ namespace ElasticsearchCRUD.Integration.Test
                 context.TraceProvider = new ConsoleTraceProvider();
                 context.IndexCreate(index, new IndexSettings { BlocksWrite = true, NumberOfShards = 7 });
 
+                Thread.Sleep(1500);
                 context.IndexClose(index);
-                context.IndexUpdateSettings(new IndexUpdateSettings { NumberOfReplicas = 2 }, index);
+                Thread.Sleep(1500);
+                
                 context.IndexOpen(index);
 
                 Thread.Sleep(1500);
