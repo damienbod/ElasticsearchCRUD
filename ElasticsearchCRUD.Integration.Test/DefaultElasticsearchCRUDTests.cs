@@ -549,6 +549,11 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+
+        /// <summary>
+        /// https://www.elastic.co/guide/en/elasticsearch/plugins/2.0/plugins-delete-by-query.html
+        /// bin/plugin install delete-by-query
+        /// </summary>
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
 		public void TestDefaultContextDeleteByQuerySingleDocumentWithId()
@@ -568,27 +573,14 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Wait for Elasticsearch to update
 				long foundBefore = 0;
 
-				Task.Run(() =>
-				{
-					while (true)
-					{
-						Thread.Sleep(300);
-						foundBefore = context.Count<SkillTestEntity>();
-						if (foundBefore > 9)
-						{
-							_resetEvent.Set();
-						}
-					}
-				});
+                Thread.Sleep(1500);
+                foundBefore = context.Count<SkillTestEntity>();
 
-				// allow elasticsearch time to update...
-				WaitForDataOrFail();
 							
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
-				// Clear thecache so count or get returns the latest value
-				context.IndexClearCache<SkillTestEntity>();
+                Thread.Sleep(1500);
 				long foundAfter = context.Count<SkillTestEntity>();
 
 				Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
@@ -597,6 +589,10 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+        /// <summary>
+        /// https://www.elastic.co/guide/en/elasticsearch/plugins/2.0/plugins-delete-by-query.html
+        /// bin/plugin install delete-by-query
+        /// </summary>
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
 		public void TestDefaultContextDeleteByQueryForTwoDocumentsWithIdQuery()
@@ -615,30 +611,13 @@ namespace ElasticsearchCRUD.Integration.Test
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
 
-				// Wait for Elasticsearch to update
-				long foundBefore = 0;
-
-				Task.Run(() =>
-				{
-					while (true)
-					{
-						Thread.Sleep(300);
-						foundBefore = context.Count<SkillTestEntity>();
-						if (foundBefore > 9)
-						{
-							_resetEvent.Set();
-						}
-					}
-				});
-
-				// allow elasticsearch time to update...
-				WaitForDataOrFail();
+                Thread.Sleep(1500);
+                var foundBefore = context.Count<SkillTestEntity>();
 
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 				context.DeleteByQuery<SkillTestEntity>(deleteJson);
 
-				// Clear thecache so count or get returns the latest value
-				context.IndexClearCache<SkillTestEntity>();
+                Thread.Sleep(1500);
 				var foundAfter = context.Count<SkillTestEntity>();
 
 				Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
@@ -674,6 +653,11 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
+
+        /// <summary>
+        /// https://www.elastic.co/guide/en/elasticsearch/plugins/2.0/plugins-delete-by-query.html
+        /// bin/plugin install delete-by-query
+        /// </summary>
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
 		public void TestDefaultContextDeleteByQuerySingleDocumentWithNonExistingId()
@@ -690,8 +674,10 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
+                Thread.Sleep(1500);
 				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
 				context.DeleteByQuery<SkillTestEntity>(deleteJson);
+                Thread.Sleep(1500);
 				context.GetDocument<SkillTestEntity>(documentId);
 			}
 		}
