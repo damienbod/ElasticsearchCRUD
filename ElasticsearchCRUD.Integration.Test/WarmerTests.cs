@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class WarmerTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[Test]
 		public void CreateGlobalWarmer()

@@ -18,7 +18,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		private void WaitForDataOrFail()
 		{
@@ -86,7 +86,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				Thread.Sleep(1200);
 
-				GetResult resultGet = context.Get(new Uri("http://localhost:9200/_alias/test"));
+				GetResult resultGet = context.Get(new Uri("http://localhost.fiddler:9200/_alias/test"));
 				Console.WriteLine(resultGet);
 			}
 		}

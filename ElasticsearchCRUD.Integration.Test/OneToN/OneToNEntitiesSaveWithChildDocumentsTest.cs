@@ -14,30 +14,30 @@ using NUnit.Framework;
 /*		----------- EXAMPLE -------------
  *      Only works if the index has already been mapped
 
-POST http:/localhost:9200/parentdocuments/parentdocument/7?_index 
+POST http:/localhost.fiddler:9200/parentdocuments/parentdocument/7?_index 
 {"id":7,"d1":"p7"}
 
-PUT http://localhost:9200/parentdocuments/childdocumentlevelone/_mapping 
+PUT http://localhost.fiddler:9200/parentdocuments/childdocumentlevelone/_mapping 
 {
   "childdocumentlevelone":{
 	"_parent": {"type": "parentdocument"}
   }
 }
 
-POST http://localhost:9200/parentdocuments/childdocumentlevelone/21?parent=7
+POST http://localhost.fiddler:9200/parentdocuments/childdocumentlevelone/21?parent=7
 {"id":21,"d2":"p21"}
 
-PUT http://localhost:9200/parentdocuments/childdocumentleveltwo/_mapping
+PUT http://localhost.fiddler:9200/parentdocuments/childdocumentleveltwo/_mapping
 {
   "childdocumentleveltwo":{
 	"_parent": {"type": "childdocumentlevelone"}
   }
 }
 
-POST http://localhost:9200/parentdocuments/childdocumentleveltwo/31?parent=21 
+POST http://localhost.fiddler:9200/parentdocuments/childdocumentleveltwo/31?parent=21 
 {"id":31,"d3":"p31"}
  
-http://localhost:9200/parentdocuments/parentdocument/_search
+http://localhost.fiddler:9200/parentdocuments/parentdocument/_search
 {
   "query": {
 	"has_child": {
@@ -52,7 +52,7 @@ http://localhost:9200/parentdocuments/parentdocument/_search
   }
 }
 
-http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
+http://localhost.fiddler:9200/parentdocuments/childdocumentleveltwo/_search
 {
   "query": {
 	"has_parent": {
@@ -68,7 +68,7 @@ http://localhost:9200/parentdocuments/childdocumentleveltwo/_search
 }
 
 // Search for a + to n relationship
-http://localhost:9200/parentdocuments/childdocumentlevelone/_search
+http://localhost.fiddler:9200/parentdocuments/childdocumentlevelone/_search
 {
   "query": {
 	"filtered": {
@@ -90,7 +90,7 @@ http://localhost:9200/parentdocuments/childdocumentlevelone/_search
   }
 }
 
-http://localhost:9200/parentdocuments/22/_search
+http://localhost.fiddler:9200/parentdocuments/22/_search
 {
   "query": {
 	"filtered": {
@@ -139,7 +139,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const bool SaveChildObjectsAsWellAsParent = true;
 		private const bool ProcessChildDocumentsAsSeparateChildIndex = true;
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureSetUp]
 		public void FixtureSetup()

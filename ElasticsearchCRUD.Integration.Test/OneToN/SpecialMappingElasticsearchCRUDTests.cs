@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 		private List<SkillTestEntity> _entitiesForTests;
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[SetUp]
 		public void SetUp()

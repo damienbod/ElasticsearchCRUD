@@ -15,7 +15,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	public class SearchQueryQueryTopChildrenAndChidrenBucketAggregationTests
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		protected const string ConnectionString = "http://localhost:9200";
+		protected const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[Test]
 		public void SearchQueryTopChildrenQueryMatchAll()
