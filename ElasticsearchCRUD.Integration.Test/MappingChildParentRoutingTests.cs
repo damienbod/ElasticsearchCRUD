@@ -38,32 +38,7 @@ namespace ElasticsearchCRUD.Integration.Test
             }
         }
 
-        [Test]
-        public void DeleteNonExistingChildTypeFromExistingIndex()
-        {
-            CreateIndex();
-
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-            {
-                var doc1 = context.GetDocument<MappingChildParentRoutingTestsLevel1>(1);
-                Assert.IsNotNull(doc1);
-
-                var doc2 = context.GetDocument<MappingChildParentRoutingTestsLevel2>(2, new RoutingDefinition { ParentId = 1, RoutingId = 1 });
-                Assert.IsNotNull(doc2);
-
-                var doc3 = context.GetDocument<MappingChildParentRoutingTestsLevel3>(3, new RoutingDefinition { ParentId = 2, RoutingId = 1 });
-                Assert.IsNotNull(doc3);
-
-            //    context.AllowDeleteForIndex = true;
-            //    var result = context.DeleteIndexType<MappingChildParentRoutingTestsLevel3>();
-            //    Assert.IsTrue(result);
-
-            //    Thread.Sleep(1000);
-            //    result = context.DeleteIndexType<MappingChildParentRoutingTestsLevel3>();
-            //    Assert.IsFalse(result);
-            }
-        }
-
+      
         [Test]
         public void DeleteNonExistingChildTypeFromExistingIndexWithList()
         {
