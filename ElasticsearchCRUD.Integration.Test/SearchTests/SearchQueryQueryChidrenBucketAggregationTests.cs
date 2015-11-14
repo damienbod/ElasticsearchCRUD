@@ -10,7 +10,7 @@ using NUnit.Framework;
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
 	[TestFixture]
-	public class SearchQueryQueryTopChildrenAndChidrenBucketAggregationTests
+	public class SearchQueryQueryChidrenBucketAggregationTests
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		protected const string ConnectionString = "http://localhost.fiddler:9200";
