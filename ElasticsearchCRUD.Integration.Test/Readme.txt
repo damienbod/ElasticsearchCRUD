@@ -6,8 +6,7 @@ bin/plugin install delete-by-query
 plugin install lmenezes/elasticsearch-kopf
 http://localhost:9200/_plugin/kopf
 
-NOT working yet in 2.0.0
--------------------------
+
 plugin install mobz/elasticsearch-head
 
 
