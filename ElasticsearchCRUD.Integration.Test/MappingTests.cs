@@ -412,8 +412,6 @@ namespace ElasticsearchCRUD.Integration.Test
 
                 context.DeleteIndex(index);
 
-                // DeleteIndexType does not work with version 2 with using routing
-                //context.DeleteIndexType<MappingTestsParent>();
                 Thread.Sleep(1500);
 
                 Assert.IsFalse(context.IndexTypeExists<MappingTestsParent>());
