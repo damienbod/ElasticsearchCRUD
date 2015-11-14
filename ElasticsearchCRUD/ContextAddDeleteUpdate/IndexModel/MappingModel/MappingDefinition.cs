@@ -7,7 +7,6 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 			RoutingDefinition = new RoutingDefinition();
 			All = new MappingAll();
 			Source = new MappingSource();
-			Analyzer = new MappingAnalyzer();
 		}
 
 		public string Index { get; set; }
@@ -18,6 +17,5 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel
 
 		public MappingSource Source { get; set; }
 
-		public MappingAnalyzer Analyzer { get; set; }
 	}
 }
