@@ -284,17 +284,15 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 							new TopHitsMetricAggregation("tophits")
 						},
 						MinDocCount=2,
-						Order= new OrderAgg("dateofdetails", OrderEnum.desc),
+						//Order= new OrderAgg("dateofdetails", OrderEnum.desc), // TODO Order not working in EL 2.0 ???
 						ExtendedBounds= new ExtendedBounds
 						{
 							Max= 1000000,
 							Min = 0
 						},
-						PostOffset= "10d",
-						PreOffset= "1d",
+						Offset= "1d",
 						Format = "yyyy-MM-dd",
-						PostZone = "02:00",
-						PreZone = "-02:00",
+						TimeZone = "+02:00"
 					}
 				}
 			};

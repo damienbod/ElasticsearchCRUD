@@ -27,16 +27,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private List<ScriptParameter> _params;
 		private bool _paramsSet;
 		private bool _scriptSet;
-		private string _preOffset;
-		private bool _preOffsetSet;
-		private string _postOffset;
-		private bool _postOffsetSet;
+		private string _offset;
+		private bool _offsetSet;
 		private bool _preZoneAdjustLargeInterval;
 		private bool _preZoneAdjustLargeIntervalSet;
-		private string _postZone;
-		private bool _postZoneSet;
-		private string _preZone;
-		private bool _preZoneSet;
 		private string _timeZone;
 		private bool _timeZoneSet;
 
@@ -118,34 +112,20 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		}
 
 		/// <summary>
-		/// pre_offset
-		/// Specific offsets can be provided for pre rounding and post rounding. 
-		/// The pre_offset for pre rounding, and post_offset for post rounding. The format is the date time format (1h, 1d, etc…).
+		/// offset
+		/// offset for pre rounding, and post_offset for post rounding. The format is the date time format (1h, 1d, etc…).
 		/// </summary>
-		public string PreOffset
+		public string Offset
 		{
-			get { return _preOffset; }
+			get { return _offset; }
 			set
 			{
-				_preOffset = value;
-				_preOffsetSet = true;
+				_offset = value;
+				_offsetSet = true;
 			}
 		}
 
-		/// <summary>
-		/// post_offset
-		/// Specific offsets can be provided for pre rounding and post rounding. 
-		/// The pre_offset for pre rounding, and post_offset for post rounding. The format is the date time format (1h, 1d, etc…).
-		/// </summary>
-		public string PostOffset
-		{
-			get { return _postOffset; }
-			set
-			{
-				_postOffset = value;
-				_postOffsetSet = true;
-			}
-		}
+	
 
 		/// <summary>
 		/// pre_zone_adjust_large_interval
@@ -160,32 +140,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			{
 				_preZoneAdjustLargeInterval = value;
 				_preZoneAdjustLargeIntervalSet = true;
-			}
-		}
-		
-		/// <summary>
-		/// post_zone
-		/// </summary>
-		public string PostZone
-		{
-			get { return _postZone; }
-			set
-			{
-				_postZone = value;
-				_postZoneSet = true;
-			}
-		}
-
-		/// <summary>
-		/// pre_zone
-		/// </summary>
-		public string PreZone
-		{
-			get { return _preZone; }
-			set
-			{
-				_preZone = value;
-				_preZoneSet = true;
 			}
 		}
 
@@ -212,11 +166,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			JsonHelper.WriteValue("field", _field, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("interval", _interval.GetTimeUnit(), elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("format", _format, elasticsearchCrudJsonWriter, _formatSet);
-			JsonHelper.WriteValue("pre_offset", _preOffset, elasticsearchCrudJsonWriter, _preOffsetSet);
-			JsonHelper.WriteValue("post_offset", _postOffset, elasticsearchCrudJsonWriter, _postOffsetSet);
+			JsonHelper.WriteValue("offset", _offset, elasticsearchCrudJsonWriter, _offsetSet);
 			JsonHelper.WriteValue("pre_zone_adjust_large_interval", _preZoneAdjustLargeInterval, elasticsearchCrudJsonWriter, _preZoneAdjustLargeIntervalSet);
-			JsonHelper.WriteValue("post_zone", _preZone, elasticsearchCrudJsonWriter, _preZoneSet);
-			JsonHelper.WriteValue("pre_zone", _postZone, elasticsearchCrudJsonWriter, _postZoneSet);
 			JsonHelper.WriteValue("time_zone", _timeZone, elasticsearchCrudJsonWriter, _timeZoneSet);
 
 			if (_orderSet)
