@@ -86,7 +86,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 				Thread.Sleep(1200);
 
-				GetResult resultGet = context.Get(new Uri("http://localhost.fiddler:9200/_alias/test"));
+				GetResult resultGet = context.Get(new Uri("http://localhost:9200/_alias/test"));
 				Console.WriteLine(resultGet);
 			}
 		}
