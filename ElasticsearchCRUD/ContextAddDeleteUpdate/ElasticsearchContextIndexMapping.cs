@@ -64,9 +64,13 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate
 				MappingUtils.GuardAgainstBadIndexName(index);
 
 				var indexMappings = new IndexMappings(_traceProvider, _elasticsearchSerializerConfiguration);
-				indexMappings.CreateIndexSettingsForDocument(index, indexDefinition.IndexSettings, indexDefinition.IndexAliases, indexDefinition.IndexWarmers);
+                indexMappings.CreateIndexSettingsAndMappingsForDocument(
+                    index, 
+                    indexDefinition.IndexSettings, 
+                    indexDefinition.IndexAliases,
+                    indexDefinition.IndexWarmers, entityContextInfo, indexDefinition.Mapping);
 				indexDefinition.Mapping.Index = index;
-				indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, indexDefinition.Mapping);
+				//indexMappings.CreatePropertyMappingForTopDocument(entityContextInfo, indexDefinition.Mapping);
 				await indexMappings.Execute(_client, _connectionString, _traceProvider, _cancellationTokenSource);
 
 				return resultDetails;

@@ -52,7 +52,7 @@ namespace ElasticsearchCRUD.Integration.Test
         //  }
         //}  
         [Test]
-        public void DeleteNonExistingChildTypeFromExistingIndexWithList()
+        public void CreateIndexWithParentChildMappings()
         {
             CreateIndexList();
 
@@ -67,13 +67,7 @@ namespace ElasticsearchCRUD.Integration.Test
                 var doc3 = context.GetDocument<ListMappingChildParentRoutingTestsLevel3>(3, new RoutingDefinition { ParentId = 2, RoutingId = 1 });
                 Assert.IsNotNull(doc3);
 
-                //context.AllowDeleteForIndex = true;
-                //var result = context.DeleteIndexType<ListMappingChildParentRoutingTestsLevel3>();
-                //Assert.IsTrue(result);
-
-                //Thread.Sleep(1000);
-                //result = context.DeleteIndexType<ListMappingChildParentRoutingTestsLevel3>();
-                //Assert.IsFalse(result);
+                
             }
         }
 
