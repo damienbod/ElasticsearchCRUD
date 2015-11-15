@@ -38,7 +38,19 @@ namespace ElasticsearchCRUD.Integration.Test
             }
         }
 
-      
+        //PUT http://localhost:9200/masterindexlist HTTP/1.1
+        //User-Agent: Fiddler
+        //Content-Type: application/json
+        //Host: localhost:9200
+        //Content-Length: 379
+
+        //{
+        //  "mappings": {
+        //   "listmappingchildparentroutingtestslevel1":{"properties":{"mappingchildparentroutingtestslevel1id":{ "type" : "short" }}},
+        //   "listmappingchildparentroutingtestslevel2":{"_parent":{"type":"listmappingchildparentroutingtestslevel1"},"_routing":{"required":"true"},"properties":{"mappingchildparentroutingtestslevel2id":{ "type" : "short" }}}
+
+        //  }
+        //}  
         [Test]
         public void DeleteNonExistingChildTypeFromExistingIndexWithList()
         {
