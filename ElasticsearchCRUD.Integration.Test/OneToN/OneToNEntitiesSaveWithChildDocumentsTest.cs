@@ -428,7 +428,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
         }
 
         [Test]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "HttpStatusCode.BadRequest: RoutingMissingException, adding the parent Id if this is a child item...")]
+        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
         public void TestCreateIndexNewChildItemExceptionMissingParentIdTest()
         {
             const int parentId = 21;
@@ -584,7 +584,6 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
     public class ParentDocument
     {
         [Key]
-        [ElasticsearchLong(Boost=1.2)]
         public long Id { get; set; }
     
         public string D1 { get; set; }
