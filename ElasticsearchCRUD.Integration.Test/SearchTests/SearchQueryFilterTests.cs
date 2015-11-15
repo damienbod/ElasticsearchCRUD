@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -361,7 +361,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
