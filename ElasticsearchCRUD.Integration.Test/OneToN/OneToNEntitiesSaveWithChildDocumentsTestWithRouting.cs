@@ -20,7 +20,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
         private const bool ProcessChildDocumentsAsSeparateChildIndex = true;
         private const bool UserDefinedRouting = true;
 
-        private const string ConnectionString = "http://localhost.fiddler:9200";
+        private const string ConnectionString = "http://localhost:9200";
 
         [TestFixtureSetUp]
         public void FixtureSetup()

@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 	public class DocumentsWithChildDocumentsTestNotAllowed
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[Test]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "InitMappings: Not supported, child documents can only have one parent")]

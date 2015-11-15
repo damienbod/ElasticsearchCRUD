@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test
     public class GlobalApiTestsSearchCountTests
     {
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-        private const string ConnectionString = "http://localhost.fiddler:9200";
+        private const string ConnectionString = "http://localhost:9200";
 
         [Test]
         public void GlobalElasticsearchMappingCountTest()

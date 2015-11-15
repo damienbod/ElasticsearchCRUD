@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class GeoPointAndGeoShapeTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost.fiddler:9200";
+		private const string ConnectionString = "http://localhost:9200";
 
 		[TearDown]
 		public void TestTearDown()
