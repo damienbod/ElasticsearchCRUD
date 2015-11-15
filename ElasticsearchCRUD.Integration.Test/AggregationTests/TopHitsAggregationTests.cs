@@ -31,7 +31,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TopHitsMetricAggregationsResult<SearchAggTest>>("topHits");
 				Assert.AreEqual(7, aggResult.Hits.Total);
-				Assert.AreEqual(2.1, aggResult.Hits.HitsResult[0].Source.Lift);
+				Assert.AreEqual(1.7, aggResult.Hits.HitsResult[0].Source.Lift);
 			}
 		}
 

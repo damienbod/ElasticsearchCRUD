@@ -449,7 +449,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetSingleMetricAggregationValue<double>("testCardinalityMetricAggregation");
-				Assert.AreEqual(2, Math.Round(aggResult, 2));
+				Assert.AreEqual(4, Math.Round(aggResult, 2));
 			}
 		}
 

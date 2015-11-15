@@ -17,12 +17,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private readonly string _field;
 		private readonly string _regularExpression;
-		private bool _cache;
-		private bool _cacheSet;
 		private RegExpFlags _flags;
 		private bool _flagsSet;
-		private string _cacheKey;
-		private bool _cacheKeySet;
 		private string _name;
 		private bool _nameSet;
 		private uint _maxDeterminizedStates;
@@ -46,7 +42,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 				_maxDeterminizedStatesSet = true;
 			}
 		}
-		 
 
 		public RegExpFlags Flags
 		{
@@ -55,26 +50,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			{
 				_flags = value;
 				_flagsSet = true;
-			}
-		}
-
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
-		public string CacheKey
-		{
-			get { return _cacheKey; }
-			set
-			{
-				_cacheKey = value;
-				_cacheKeySet = true;
 			}
 		}
 
@@ -99,8 +74,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			JsonHelper.WriteValue("flags", _flags.ToString(), elasticsearchCrudJsonWriter, _flagsSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
-			JsonHelper.WriteValue("_cache_key", _cacheKey, elasticsearchCrudJsonWriter, _cacheKeySet);
 			JsonHelper.WriteValue("_name", _name, elasticsearchCrudJsonWriter, _nameSet);
 			JsonHelper.WriteValue("max_determinized_states", _maxDeterminizedStates, elasticsearchCrudJsonWriter, _maxDeterminizedStatesSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

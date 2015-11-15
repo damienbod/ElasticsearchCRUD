@@ -11,199 +11,180 @@ using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
-	[TestFixture]
-	public class MappingChildParentRoutingTests
-	{
-		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+    [TestFixture]
+    public class MappingChildParentRoutingTests
+    {
+        private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+        private const string ConnectionString = "http://localhost.fiddler:9200";
 
-		[TestFixtureTearDown]
-		public void FixtureTearDown()
-		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				if (context.IndexExists<MappingChildParentRoutingTestsLevel1>())
-				{
-					context.AllowDeleteForIndex = true;
-					context.DeleteIndex<MappingChildParentRoutingTestsLevel1>();
-				}
+        [TestFixtureTearDown]
+        public void FixtureTearDown()
+        {
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                if (context.IndexExists<MappingChildParentRoutingTestsLevel1>())
+                {
+                    context.AllowDeleteForIndex = true;
+                    context.DeleteIndex<MappingChildParentRoutingTestsLevel1>();
+                }
 
-				if (context.IndexExists<ListMappingChildParentRoutingTestsLevel1>())
-				{
-					context.AllowDeleteForIndex = true;
-					context.DeleteIndex<ListMappingChildParentRoutingTestsLevel1>();
-				}
+                if (context.IndexExists<ListMappingChildParentRoutingTestsLevel1>())
+                {
+                    context.AllowDeleteForIndex = true;
+                    context.DeleteIndex<ListMappingChildParentRoutingTestsLevel1>();
+                }
 
-				
-			}
-		}
+                
+            }
+        }
 
-		[Test]
-		public void DeleteNonExistingChildTypeFromExistingIndex()
-		{
-			CreateIndex();
+        //PUT http://localhost:9200/masterindexlist HTTP/1.1
+        //User-Agent: Fiddler
+        //Content-Type: application/json
+        //Host: localhost:9200
+        //Content-Length: 379
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				var doc1 = context.GetDocument<MappingChildParentRoutingTestsLevel1>(1);
-				Assert.IsNotNull(doc1);
+        //{
+        //  "mappings": {
+        //   "listmappingchildparentroutingtestslevel1":{"properties":{"mappingchildparentroutingtestslevel1id":{ "type" : "short" }}},
+        //   "listmappingchildparentroutingtestslevel2":{"_parent":{"type":"listmappingchildparentroutingtestslevel1"},"_routing":{"required":"true"},"properties":{"mappingchildparentroutingtestslevel2id":{ "type" : "short" }}}
 
-				var doc2 = context.GetDocument<MappingChildParentRoutingTestsLevel2>(2, new RoutingDefinition { ParentId = 1, RoutingId = 1 });
-				Assert.IsNotNull(doc2);
+        //  }
+        //}  
+        [Test]
+        public void CreateIndexWithParentChildMappings()
+        {
+            CreateIndexList();
 
-				var doc3 = context.GetDocument<MappingChildParentRoutingTestsLevel3>(3, new RoutingDefinition { ParentId = 2, RoutingId = 1 });
-				Assert.IsNotNull(doc3);
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                var doc1 = context.GetDocument<ListMappingChildParentRoutingTestsLevel1>(1);
+                Assert.IsNotNull(doc1);
 
-				context.AllowDeleteForIndex = true;
-				var result = context.DeleteIndexType<MappingChildParentRoutingTestsLevel3>();
-				Assert.IsTrue(result);
+                var doc2 = context.GetDocument<ListMappingChildParentRoutingTestsLevel2>(2, new RoutingDefinition { ParentId = 1, RoutingId = 1 });
+                Assert.IsNotNull(doc2);
 
-				Thread.Sleep(1000);
-				result = context.DeleteIndexType<MappingChildParentRoutingTestsLevel3>();
-				Assert.IsFalse(result);
-			}
-		}
+                var doc3 = context.GetDocument<ListMappingChildParentRoutingTestsLevel3>(3, new RoutingDefinition { ParentId = 2, RoutingId = 1 });
+                Assert.IsNotNull(doc3);
 
-		[Test]
-		public void DeleteNonExistingChildTypeFromExistingIndexWithList()
-		{
-			CreateIndexList();
+                
+            }
+        }
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				var doc1 = context.GetDocument<ListMappingChildParentRoutingTestsLevel1>(1);
-				Assert.IsNotNull(doc1);
+        private void CreateIndex()
+        {
+            var doc = new MappingChildParentRoutingTestsLevel1
+            {
+                MappingChildParentRoutingTestsLevel1Id = 1,
+                Level2 = new MappingChildParentRoutingTestsLevel2()
+                {
+                    MappingChildParentRoutingTestsLevel2Id = 2,
+                    Level3 = new MappingChildParentRoutingTestsLevel3()
+                    {
+                        MappingChildParentRoutingTestsLevel3Id = 3
+                    }
+                }
+            };
 
-				var doc2 = context.GetDocument<ListMappingChildParentRoutingTestsLevel2>(2, new RoutingDefinition { ParentId = 1, RoutingId = 1 });
-				Assert.IsNotNull(doc2);
+            _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel1),
+            MappingUtils.GetElasticsearchMapping<MappingChildParentRoutingTestsLevel1>(new IndexTypeDescription("masterindex", "level1")));
+            _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel2),
+                MappingUtils.GetElasticsearchMapping <MappingChildParentRoutingTestsLevel2>(new IndexTypeDescription("masterindex", "level2")));
+            _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel3),
+                MappingUtils.GetElasticsearchMapping <MappingChildParentRoutingTestsLevel3>(new IndexTypeDescription("masterindex", "level3")));
 
-				var doc3 = context.GetDocument<ListMappingChildParentRoutingTestsLevel3>(3, new RoutingDefinition { ParentId = 2, RoutingId = 1 });
-				Assert.IsNotNull(doc3);
+            using ( var context = new ElasticsearchContext(ConnectionString,
+                    new ElasticsearchSerializerConfiguration( _elasticsearchMappingResolver,true,true,true)))
+            {
+                context.TraceProvider = new ConsoleTraceProvider();
+                context.AddUpdateDocument(doc, doc.MappingChildParentRoutingTestsLevel1Id);
 
-				context.AllowDeleteForIndex = true;
-				var result = context.DeleteIndexType<ListMappingChildParentRoutingTestsLevel3>();
-				Assert.IsTrue(result);
+                var ret = context.SaveChangesAndInitMappings();
+                // Save to Elasticsearch
+                Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+            }
+        }
 
-				Thread.Sleep(1000);
-				result = context.DeleteIndexType<ListMappingChildParentRoutingTestsLevel3>();
-				Assert.IsFalse(result);
-			}
-		}
+        private void CreateIndexList()
+        {
+            var doc = new ListMappingChildParentRoutingTestsLevel1
+            {
+                MappingChildParentRoutingTestsLevel1Id = 1,
+                Level2 = new List<ListMappingChildParentRoutingTestsLevel2>
+                {
+                    new ListMappingChildParentRoutingTestsLevel2
+                    {
+                        MappingChildParentRoutingTestsLevel2Id = 2,
+                        Level3 = new List<ListMappingChildParentRoutingTestsLevel3>
+                        {
+                            new ListMappingChildParentRoutingTestsLevel3
+                            {
+                                MappingChildParentRoutingTestsLevel3Id = 3
+                            }
+                        }
+                    }
+                }
+            };
 
-		private void CreateIndex()
-		{
-			var doc = new MappingChildParentRoutingTestsLevel1
-			{
-				MappingChildParentRoutingTestsLevel1Id = 1,
-				Level2 = new MappingChildParentRoutingTestsLevel2()
-				{
-					MappingChildParentRoutingTestsLevel2Id = 2,
-					Level3 = new MappingChildParentRoutingTestsLevel3()
-					{
-						MappingChildParentRoutingTestsLevel3Id = 3
-					}
-				}
-			};
+            _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ListMappingChildParentRoutingTestsLevel1),
+            MappingUtils.GetElasticsearchMapping("masterindexlist"));
+            _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ListMappingChildParentRoutingTestsLevel2),
+                MappingUtils.GetElasticsearchMapping("masterindexlist"));
+            _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ListMappingChildParentRoutingTestsLevel3),
+                MappingUtils.GetElasticsearchMapping("masterindexlist"));
 
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel1),
-			MappingUtils.GetElasticsearchMapping<MappingChildParentRoutingTestsLevel1>(new IndexTypeDescription("masterindex", "level1")));
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel2),
-				MappingUtils.GetElasticsearchMapping <MappingChildParentRoutingTestsLevel2>(new IndexTypeDescription("masterindex", "level2")));
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(MappingChildParentRoutingTestsLevel3),
-				MappingUtils.GetElasticsearchMapping <MappingChildParentRoutingTestsLevel3>(new IndexTypeDescription("masterindex", "level3")));
+            using (var context = new ElasticsearchContext(ConnectionString,
+                    new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true, true)))
+            {
+                context.TraceProvider = new ConsoleTraceProvider();
+                context.AddUpdateDocument(doc, doc.MappingChildParentRoutingTestsLevel1Id);
 
-			using ( var context = new ElasticsearchContext(ConnectionString,
-					new ElasticsearchSerializerConfiguration( _elasticsearchMappingResolver,true,true,true)))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(doc, doc.MappingChildParentRoutingTestsLevel1Id);
+                var ret = context.SaveChangesAndInitMappings();
+                // Save to Elasticsearch
+                Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+            }
+        }
+    }
 
-				var ret = context.SaveChangesAndInitMappings();
-				// Save to Elasticsearch
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-			}
-		}
+    public class MappingChildParentRoutingTestsLevel1
+    {
+        public short MappingChildParentRoutingTestsLevel1Id { get; set; }
 
-		private void CreateIndexList()
-		{
-			var doc = new ListMappingChildParentRoutingTestsLevel1
-			{
-				MappingChildParentRoutingTestsLevel1Id = 1,
-				Level2 = new List<ListMappingChildParentRoutingTestsLevel2>
-				{
-					new ListMappingChildParentRoutingTestsLevel2
-					{
-						MappingChildParentRoutingTestsLevel2Id = 2,
-						Level3 = new List<ListMappingChildParentRoutingTestsLevel3>
-					    {
-							new ListMappingChildParentRoutingTestsLevel3
-							{
-								MappingChildParentRoutingTestsLevel3Id = 3
-							}
-						}
-					}
-				}
-			};
+        public MappingChildParentRoutingTestsLevel2 Level2 { get; set; }
+    }
 
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ListMappingChildParentRoutingTestsLevel1),
-			MappingUtils.GetElasticsearchMapping("masterindexlist"));
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ListMappingChildParentRoutingTestsLevel2),
-				MappingUtils.GetElasticsearchMapping("masterindexlist"));
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ListMappingChildParentRoutingTestsLevel3),
-				MappingUtils.GetElasticsearchMapping("masterindexlist"));
+    public class MappingChildParentRoutingTestsLevel2
+    {
+        [Key]
+        public short MappingChildParentRoutingTestsLevel2Id { get; set; }
 
-			using (var context = new ElasticsearchContext(ConnectionString,
-					new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true, true)))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(doc, doc.MappingChildParentRoutingTestsLevel1Id);
+        public MappingChildParentRoutingTestsLevel3 Level3 { get; set; }
+    }
 
-				var ret = context.SaveChangesAndInitMappings();
-				// Save to Elasticsearch
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
-			}
-		}
-	}
+    public class MappingChildParentRoutingTestsLevel3
+    {
+        [Key]
+        public short MappingChildParentRoutingTestsLevel3Id { get; set; }
+    }
 
-	public class MappingChildParentRoutingTestsLevel1
-	{
-		public short MappingChildParentRoutingTestsLevel1Id { get; set; }
+    public class ListMappingChildParentRoutingTestsLevel1
+    {
+        public short MappingChildParentRoutingTestsLevel1Id { get; set; }
 
-		public MappingChildParentRoutingTestsLevel2 Level2 { get; set; }
-	}
+        public List<ListMappingChildParentRoutingTestsLevel2> Level2 { get; set; }
+    }
 
-	public class MappingChildParentRoutingTestsLevel2
-	{
-		[Key]
-		public short MappingChildParentRoutingTestsLevel2Id { get; set; }
+    public class ListMappingChildParentRoutingTestsLevel2
+    {
+        [Key]
+        public short MappingChildParentRoutingTestsLevel2Id { get; set; }
 
-		public MappingChildParentRoutingTestsLevel3 Level3 { get; set; }
-	}
+        public List<ListMappingChildParentRoutingTestsLevel3> Level3 { get; set; }
+    }
 
-	public class MappingChildParentRoutingTestsLevel3
-	{
-		[Key]
-		public short MappingChildParentRoutingTestsLevel3Id { get; set; }
-	}
-
-	public class ListMappingChildParentRoutingTestsLevel1
-	{
-		public short MappingChildParentRoutingTestsLevel1Id { get; set; }
-
-		public List<ListMappingChildParentRoutingTestsLevel2> Level2 { get; set; }
-	}
-
-	public class ListMappingChildParentRoutingTestsLevel2
-	{
-		[Key]
-		public short MappingChildParentRoutingTestsLevel2Id { get; set; }
-
-		public List<ListMappingChildParentRoutingTestsLevel3> Level3 { get; set; }
-	}
-
-	public class ListMappingChildParentRoutingTestsLevel3
-	{
-		[Key]
-		public short MappingChildParentRoutingTestsLevel3Id { get; set; }
-	}
+    public class ListMappingChildParentRoutingTestsLevel3
+    {
+        [Key]
+        public short MappingChildParentRoutingTestsLevel3Id { get; set; }
+    }
 }

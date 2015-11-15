@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test
 	public class MappingTypeTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+		private const string ConnectionString = "http://localhost.fiddler:9200";
 
 		[TestFixtureTearDown]
 		public void FixtureTearDown()
@@ -123,7 +123,6 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			var indexDefinition = new IndexDefinition { IndexSettings = { NumberOfShards = 3, NumberOfReplicas = 1 } };
 			indexDefinition.Mapping.All.Enabled = false;
-			indexDefinition.Mapping.Analyzer = new MappingAnalyzer { Path = "myanalyzer" };
 
 			var mappingTypeAll = new MappingTypeAnalyzerTest
 			{

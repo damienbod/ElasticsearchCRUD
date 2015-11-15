@@ -17,16 +17,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			_or = or;
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("or");

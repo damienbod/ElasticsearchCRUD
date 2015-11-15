@@ -7,8 +7,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private readonly string _term;
 		private readonly List<object> _termValues;
-		private bool _cache;
-		private bool _cacheSet;
 		private ExecutionMode _execution;
 		private bool _executionSet;
 
@@ -16,17 +14,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		{
 			_term = term;
 			_termValues = termValues;
-		}
-
-		
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
 		}
 
 		/// <summary>
@@ -50,7 +37,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			JsonHelper.WriteListValue(_term, _termValues, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			JsonHelper.WriteValue("execution", _execution.ToString(), elasticsearchCrudJsonWriter, _executionSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();

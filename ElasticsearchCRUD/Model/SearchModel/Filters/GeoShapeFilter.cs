@@ -16,16 +16,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			_geoType = geoType;
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("geo_shape");

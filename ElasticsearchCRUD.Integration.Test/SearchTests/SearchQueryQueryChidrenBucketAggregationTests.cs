@@ -4,69 +4,18 @@ using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
-using ElasticsearchCRUD.Model.SearchModel.Queries;
-using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
 	[TestFixture]
-	public class SearchQueryQueryTopChildrenAndChidrenBucketAggregationTests
+	public class SearchQueryQueryChidrenBucketAggregationTests
 	{
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		protected const string ConnectionString = "http://localhost:9200";
+		protected const string ConnectionString = "http://localhost.fiddler:9200";
 
-		[Test]
-		public void SearchQueryTopChildrenQueryMatchAll()
-		{
-			var search = new Search
-			{
-				Query = new Query(new TopChildrenQuery("testobjchildsep",
-					new MatchAllQuery())
-					{
-						Factor=5,
-						IncrementalFactor= 2,
-						Score= Score.sum
-					}	
-				)
-			};
-
-			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
-				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
-				var items = context.Search<TestObjParentSep>(search);
-				Assert.AreEqual(3, items.PayloadResult.Hits.Total);
-			}
-		}
-
-		[Test]
-		public void SearchQueryTopChildrenQueryMatchOne()
-		{
-			var search = new Search
-			{
-				Query = new Query(new TopChildrenQuery("testobjchildsep",
-					new MatchQuery("details", "three"))
-				{
-					Factor = 5,
-					IncrementalFactor = 2,
-					Score = Score.sum
-				}
-				)
-			};
-
-			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
-				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
-				var items = context.Search<TestObjParentSep>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
-			}
-		}
-
+	
 		[Test]
 		public void SearchAggTermsBucketAggregationnWithChildrenSubAggNoHits()
 		{

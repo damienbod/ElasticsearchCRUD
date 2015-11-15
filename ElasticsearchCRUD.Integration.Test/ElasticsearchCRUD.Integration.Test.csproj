@@ -87,7 +87,7 @@
     <Compile Include="SearchTests\SearchQueryQueryFuzzyTests.cs" />
     <Compile Include="SearchTests\SearchQueryQueryCommonTermsTests.cs" />
     <Compile Include="SearchTests\SearchQueryQueryMatchTests.cs" />
-    <Compile Include="SearchTests\SearchQueryQueryTopChildrenAndChidrenBucketAggregationTests.cs" />
+    <Compile Include="SearchTests\SearchQueryQueryChidrenBucketAggregationTests.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTestsMoreLikeThis.cs" />
     <Compile Include="SearchTests\SearchQueryFilterTestsOneToNParentChild.cs" />
     <Compile Include="SearchTests\SearchQueryQuerySpanTests.cs" />

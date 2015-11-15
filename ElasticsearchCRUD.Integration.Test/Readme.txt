@@ -1,7 +1,26 @@
-﻿The script tests now require the following configuration in the elasticsearch.yml file. 
-------------------------------------
-script.groovy.sandbox.enabled: true
+﻿plugin install elasticsearch/elasticsearch-lang-groovy/2.0.0
 
+https://www.elastic.co/guide/en/elasticsearch/plugins/2.0/plugins-delete-by-query.html
+bin/plugin install delete-by-query
+
+plugin install lmenezes/elasticsearch-kopf
+http://localhost:9200/_plugin/kopf
+
+
+plugin install mobz/elasticsearch-head
+
+
+plugin install royrusso/elasticsearch-HQ
+http://localhost:9200/_plugin/HQ/
+
+The script tests now require the following configuration in the elasticsearch.yml file. 
+------------------------------------
+
+plugin install elasticsearch/elasticsearch-lang-groovy/2.0.0
+
+script.groovy.sandbox.enabled: true
+script.inline: on
+https://www.elastic.co/guide/en/elasticsearch/reference/1.4/modules-scripting.html
 
 ------------------------------------
 other cluster settings which can be used for testing:

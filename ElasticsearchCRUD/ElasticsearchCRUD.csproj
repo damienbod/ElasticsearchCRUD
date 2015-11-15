@@ -347,7 +347,6 @@
     <Compile Include="Model\SearchModel\Queries\SpanNotQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanOrQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\SpanTermQuery.cs" />
-    <Compile Include="Model\SearchModel\Queries\TopChildrenQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\WildcardQuery.cs" />
     <Compile Include="Model\SearchModel\Rescore.cs" />
     <Compile Include="Model\SearchModel\ScriptParameter.cs" />
@@ -358,8 +357,6 @@
     <Compile Include="Model\SearchModel\Queries\BoostingQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\ConstantScoreQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\DisMaxQuery.cs" />
-    <Compile Include="Model\SearchModel\Queries\FuzzyLikeThisFieldQuery.cs" />
-    <Compile Include="Model\SearchModel\Queries\FuzzyLikeThisQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\FuzzyQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchQuery.cs" />
     <Compile Include="Model\SearchModel\Queries\MatchBase.cs" />

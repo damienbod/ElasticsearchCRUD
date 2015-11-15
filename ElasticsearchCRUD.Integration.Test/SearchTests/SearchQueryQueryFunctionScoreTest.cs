@@ -59,7 +59,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 							{
 								Decay=0.3,
 								Filter = new MatchAllFilter(),
-								Offset= 3,
+								Offset= new TimeUnitDay(3),
 								Weight= 3.0,
 								Origin = DateTime.UtcNow
 							}
@@ -153,7 +153,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 							{
 								Decay=0.3,
 								Filter = new MatchAllFilter(),
-								Offset= 3,
+								Offset= new TimeUnitDay(3),
 								Weight= 3.0,
 								Origin = DateTime.UtcNow
 							}
@@ -247,7 +247,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 							{
 								Decay=0.3,
 								Filter = new MatchAllFilter(),
-								Offset= 3,
+								Offset= new TimeUnitDay(3),
 								Weight= 3.0,
 								Origin = DateTime.UtcNow
 							}

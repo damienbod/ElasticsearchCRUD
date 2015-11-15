@@ -41,14 +41,14 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		[Test]
 		public void SearchQueryTermsQueryTwoResults()
 		{
-			var search = new Search { Query = new Query(new TermsQuery("name", new List<object> { "one", "two" }) { Boost = 2.0, MinimumShouldMatch = "1" }) };
+			var search = new Search { Query = new Query(new TermsQuery("name", new List<object> { "one", "two" }) { Boost = 2.0 }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[1].Source.Id);
+				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[1].Source.Id);
 			}
 		}
 
