@@ -97,7 +97,7 @@ namespace ElasticsearchCRUD.Integration.Test
         {
             var search = new Search
             {
-                Query = new Query(new MatchQuery("_all", "mph")),
+                Query = new Query(new MatchQuery("speedmph", "mph")),
                 Highlight = new Highlight(
                     new List<HighlightField>
                     {
@@ -117,7 +117,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
                 //"speedmph" : [ "60.0 <em>mph</em>"]
                 string value = hits.PayloadResult.Hits.HitsResult[0].Highlights["speedmph"].FirstOrDefault();
-                Assert.AreEqual("60.0 <em>mph</em>", value);
+                Assert.AreEqual("50.0 <em>mph</em>", value);
             }
         }
 
