@@ -126,7 +126,7 @@ namespace ElasticsearchCRUD.Integration.Test
         {
             var search = new Search
             {
-                Query = new Query(new MatchQuery("_all", "mph")),
+                Query = new Query(new MultiMatchQuery("mph") { Fields = new List<string> { "data", "speed", "speedmph", "speedkmh" } }),
                 Highlight = new Highlight(
                     new List<HighlightField>
                     {
@@ -145,7 +145,7 @@ namespace ElasticsearchCRUD.Integration.Test
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
             {
                 var hits = context.Search<FastestAnimalPostings>(search, new SearchUrlParameters { Pretty = true });
-                var highlightResults = hits.PayloadResult.Hits.HitsResult[2].Highlights;
+                var highlightResults = hits.PayloadResult.Hits.HitsResult[0].Highlights;
 
                 var highlightResultsSpeedmph = highlightResults["speedmph"];
                 var highlightResultsData = highlightResults["data"];
@@ -202,7 +202,7 @@ namespace ElasticsearchCRUD.Integration.Test
         {
             var search = new Search
             {
-                Query = new Query(new MatchQuery("_all", "mph")),
+                Query = new Query(new MultiMatchQuery("mph") { Fields = new List<string> { "data", "speed", "speedmph", "speedkmh" } }),
                 Highlight = new Highlight(
                     new List<HighlightField>
                     {
@@ -220,7 +220,7 @@ namespace ElasticsearchCRUD.Integration.Test
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
             {
                 var hits = context.Search<FastestAnimalFastVectorHighlighter>(search, new SearchUrlParameters { Pretty = true });
-                var highlightResults = hits.PayloadResult.Hits.HitsResult[2].Highlights;
+                var highlightResults = hits.PayloadResult.Hits.HitsResult[0].Highlights;
 
                 var highlightResultsSpeedmph = highlightResults["speedmph"];
                 var highlightResultsData = highlightResults["data"];
