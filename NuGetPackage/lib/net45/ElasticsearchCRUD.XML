@@ -465,6 +465,23 @@
             You can define all the Elasticsearch properties here
             </summary>
         </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.IndexCreateCreatePropertyMappingForEntityForParentDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingDefinition,ElasticsearchCRUD.ElasticsearchCrudJsonWriter)">
+            <summary>
+            Create a new index for the parent document
+            </summary>
+            <param name="entityInfo"></param>
+            <param name="elasticsearchMapping"></param>
+            <param name="mappingDefinition">mapping definitions for the index type</param>
+        </member>
+        <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.IndexCreateCreatePropertyMappingForChildDocument(ElasticsearchCRUD.ElasticsearchCrudJsonWriter,ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingDefinition)">
+            <summary>
+            Create a new mapping for the child type in the parent document index
+            </summary>
+            <param name="entityInfo"></param>
+            <param name="elasticsearchMapping"></param>
+            <param name="item"></param>
+            <param name="mappingDefinition">definition for the type mappings</param>
+        </member>
         <member name="M:ElasticsearchCRUD.ContextAddDeleteUpdate.IndexMappings.CreatePropertyMappingForEntityForParentDocument(ElasticsearchCRUD.Model.EntityContextInfo,ElasticsearchCRUD.ElasticsearchMapping,ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel.MappingDefinition)">
             <summary>
             Create a new index for the parent document
@@ -1907,6 +1924,11 @@
             sum_other_doc_count
             </summary>
         </member>
+        <member name="P:ElasticsearchCRUD.ContextSearch.SearchModel.Hit`1.ExtensionData">
+            <summary>
+            This can be used for inner_hits or nested data which is added to the hit result
+            </summary>
+        </member>
         <member name="T:ElasticsearchCRUD.ContextSearch.SearchModel.SeachType">
              <summary>
              There are different execution paths that can be done when executing a distributed search. The distributed search operation needs to be scattered to all the relevant shards and 
@@ -2372,18 +2394,10 @@
             To avoid this, the shard_size parameter can be increased to allow more candidate terms on the shards. However, this increases memory consumption and network traffic.
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Aggregations.DateHistogramBucketAggregation.PreOffset">
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Aggregations.DateHistogramBucketAggregation.Offset">
             <summary>
-            pre_offset
-            Specific offsets can be provided for pre rounding and post rounding. 
-            The pre_offset for pre rounding, and post_offset for post rounding. The format is the date time format (1h, 1d, etc…).
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Aggregations.DateHistogramBucketAggregation.PostOffset">
-            <summary>
-            post_offset
-            Specific offsets can be provided for pre rounding and post rounding. 
-            The pre_offset for pre rounding, and post_offset for post rounding. The format is the date time format (1h, 1d, etc…).
+            offset
+            offset for pre rounding, and post_offset for post rounding. The format is the date time format (1h, 1d, etc…).
             </summary>
         </member>
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Aggregations.DateHistogramBucketAggregation.PreZoneAdjustLargeInterval">
@@ -2392,16 +2406,6 @@
             Sometimes, we want to apply the same conversion to UTC we did above for hour also for day (and up) intervals. 
             We can set pre_zone_adjust_large_interval to true, which will apply the same conversion done for hour interval in the example, 
             to day and above intervals (it can be set regardless of the interval, but only kick in when using day and higher intervals).
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Aggregations.DateHistogramBucketAggregation.PostZone">
-            <summary>
-            post_zone
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Aggregations.DateHistogramBucketAggregation.PreZone">
-            <summary>
-            pre_zone
             </summary>
         </member>
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Aggregations.DateHistogramBucketAggregation.TimeZone">
@@ -3316,6 +3320,31 @@
             therefore the first sentence gets returned whenever no_match_size is greater than 0.
             </summary>
         </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.InnerHits.Name">
+            <summary>
+            name
+            The name to be used for the particular inner hit definition in the response. Useful when multiple inner hits have been defined in a single search request. 
+            The default depends in which query the inner hit is defined. For has_child query and filter this is the child type, 
+            has_parent query and filter this is the parent type and the nested query and filter this is the nested path. 
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.InnerHits.Sort">
+            <summary>
+            How the inner hits should be sorted per inner_hits. By default the hits are sorted by the score.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.InnerHits.From">
+            <summary>
+            from
+            The offset from where the first hit to fetch for each inner_hits in the returned regular search hits.
+            </summary>
+        </member>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.InnerHits.Size">
+            <summary>
+            size
+            The maximum number of hits to return per inner_hits. By default the top three matching hits are returned.
+            </summary>
+        </member>
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.IndicesQuery.NoMatchQuery">
             <summary>
             no_match_query
@@ -3738,11 +3767,33 @@
             When using ids or docs, specifies whether the documents should be excluded from the search. Defaults to true.
             </summary>
         </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.PercentTermsToMatch">
-            <summary>
-            percent_terms_to_match
-            From the generated query, the percentage of terms that must match (float value between 0 and 1). Defaults to 0.3 (30 percent).
-            </summary>
+        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MinimumShouldMatch">
+             <summary>
+             minimum_should_match
+             The minimum_should_match parameter possible values:
+             
+             Integer : Indicates a fixed value regardless of the number of optional clauses.
+             Negative integer : Indicates that the total number of optional clauses, minus this number should be mandatory.
+             Percentage 75% : Indicates that this percent of the total number of optional clauses are necessary. The number computed from the percentage is rounded down and used as the minimum.
+             Negative percentage -25% Indicates that this percent of the total number of optional clauses can be missing.
+              The number computed from the percentage is rounded down, before being subtracted from the total to determine the minimum.
+             Combination : A positive integer, followed by the less-than symbol, followed by any of the previously mentioned specifiers is a conditional specification.
+              It indicates that if the number of optional clauses is equal to (or less than) the integer, they are all required, but if it’s greater than the integer,
+              the specification applies. In this example: if there are 1 to 3 clauses they are all required, but for 4 or more clauses only 90% are required.
+             Multiple combinations :  Multiple conditional specifications can be separated by spaces, each one only being valid for numbers greater than the one before it.
+              In this example: if there are 1 or 2 clauses both are required, if there are 3-9 clauses all but 25% are required, and if there are more than 9 clauses,
+              all but three are required.
+            
+             NOTE:
+             When dealing with percentages, negative values can be used to get different behavior in edge cases. 75% and -25% mean the same thing when dealing with 4 clauses, 
+             but when dealing with 5 clauses 75% means 3 are required, but -25% means 4 are required.
+            
+             If the calculations based on the specification determine that no optional clauses are needed, 
+             the usual rules about BooleanQueries still apply at search time (a BooleanQuery containing no required clauses must still match at least one optional clause)
+            
+             No matter what number the calculation arrives at, a value greater than the number of optional clauses, or a value less than 1 will never be used. 
+             (ie: no matter how low or how high the result of the calculation result is, the minimum number of required matches will never be lower than 1 or greater than the number of clauses.
+             </summary>
         </member>
         <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.MoreLikeThisQuery.MinTermFreq">
             <summary>
@@ -4213,33 +4264,6 @@
             Matches spans containing a term. The span term query maps to Lucene SpanTermQuery. 
             </summary>
         </member>
-        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.TopChildrenQuery">
-            <summary>
-            The top_children query runs the child query with an estimated hits size, and out of the hit docs, aggregates it into parent docs. 
-            If there aren’t enough parent docs matching the requested from/size search request, then it is run again with a wider (more hits) search.
-            
-            The top_children also provide scoring capabilities, with the ability to specify max, sum or avg as the score type.
-            
-            One downside of using the top_children is that if there are more child docs matching the required hits when executing the child query, 
-            then the total_hits result of the search response will be incorrect.
-            
-            How many hits are asked for in the first child query run is controlled using the factor parameter (defaults to 5). For example, when asking for 10 parent docs (with from set to 0), 
-            then the child query will execute with 50 hits expected. If not enough parents are found (in our example 10), 
-            and there are still more child docs to query, then the child search hits are expanded by multiplying by the incremental_factor (defaults to 2).
-            
-            The required parameters are the query and type (the child type to execute the query on).
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.TopChildrenQuery.Factor">
-            <summary>
-            _factor
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.TopChildrenQuery.IncrementalFactor">
-            <summary>
-            incremental_factor
-            </summary>
-        </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Rescore">
             <summary>
             A rescore request is executed on each shard before it returns its results to be sorted by the node handling the overall search request.
@@ -4472,90 +4496,6 @@
             0.0 Take the single best score out of (eg) first_name:will and last_name:will (default)
             1.0 Add together the scores for (eg) first_name:will and last_name:will
             0.0 between 1.0 Take the single best score plus tie_breaker multiplied by each of the scores from other matching fields. 
-            </summary>
-        </member>
-        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery">
-            <summary>
-            The fuzzy_like_this_field query is the same as the fuzzy_like_this query, except that it runs against a single field. 
-            It provides nicer query DSL over the generic fuzzy_like_this query, and support typed fields query 
-            (automatically wraps typed fields with type filter to match only on the specific type).
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.IgnoreTf">
-            <summary>
-            ignore_tf
-            Should term frequency be ignored. Defaults to false.
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.MaxQueryTerms">
-            <summary>
-            max_query_terms
-            The maximum number of query terms that will be included in any generated query. Defaults to 25.
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.Fuzziness">
-            <summary>
-            fuzziness
-            The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.PrefixLength">
-            <summary>
-            prefix_length
-            Length of required common prefix on variant terms. Defaults to 0.
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisFieldQuery.Analyzer">
-            <summary>
-            analyzer
-            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
-            It default to the field explicit mapping definition, or the default search analyzer, for example:
-            </summary>
-        </member>
-        <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery">
-            <summary>
-            Fuzzy like this query find documents that are "like" provided text by running it against one or more fields
-            
-            Fuzzifies ALL terms provided as strings and then picks the best n differentiating terms. 
-            In effect this mixes the behaviour of FuzzyQuery and MoreLikeThis but with special consideration of fuzzy scoring factors. 
-            This generally produces good results for queries where users may provide details in a number of fields and have no knowledge of boolean query syntax 
-            and also want a degree of fuzzy matching and a fast query.
-            
-            For each source term the fuzzy variants are held in a BooleanQuery with no coord factor (because we are not looking for matches on multiple variants in any one doc). 
-            Additionally, a specialized TermQuery is used for variants and does not use that variant term’s IDF because this would favor rarer terms, such as misspellings. 
-            Instead, all variants use the same IDF ranking (the one for the source query term) and this is factored into the variant’s boost. 
-            If the source query term does not exist in the index the average IDF of the variants is used.
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.IgnoreTf">
-            <summary>
-            ignore_tf
-            Should term frequency be ignored. Defaults to false.
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.MaxQueryTerms">
-            <summary>
-            max_query_terms
-            The maximum number of query terms that will be included in any generated query. Defaults to 25.
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.Fuzziness">
-            <summary>
-            fuzziness
-            The minimum similarity of the term variants. Defaults to 0.5. See the section called Fuzziness
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.PrefixLength">
-            <summary>
-            prefix_length
-            Length of required common prefix on variant terms. Defaults to 0.
-            </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyLikeThisQuery.Analyzer">
-            <summary>
-            analyzer
-            The analyzer can be set to control which analyzer will perform the analysis process on the text. 
-            It default to the field explicit mapping definition, or the default search analyzer, for example:
             </summary>
         </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Queries.FuzzyQuery">
@@ -4830,34 +4770,6 @@
             <summary>
             Matches documents that have fields that contain a term (not analyzed). The term query maps to Lucene TermQuery.
             </summary>
-        </member>
-        <member name="P:ElasticsearchCRUD.Model.SearchModel.Queries.TermsQuery.MinimumShouldMatch">
-             <summary>
-             minimum_should_match
-             The minimum_should_match parameter possible values:
-             
-             Integer : Indicates a fixed value regardless of the number of optional clauses.
-             Negative integer : Indicates that the total number of optional clauses, minus this number should be mandatory.
-             Percentage 75% : Indicates that this percent of the total number of optional clauses are necessary. The number computed from the percentage is rounded down and used as the minimum.
-             Negative percentage -25% Indicates that this percent of the total number of optional clauses can be missing.
-              The number computed from the percentage is rounded down, before being subtracted from the total to determine the minimum.
-             Combination : A positive integer, followed by the less-than symbol, followed by any of the previously mentioned specifiers is a conditional specification.
-              It indicates that if the number of optional clauses is equal to (or less than) the integer, they are all required, but if it’s greater than the integer,
-              the specification applies. In this example: if there are 1 to 3 clauses they are all required, but for 4 or more clauses only 90% are required.
-             Multiple combinations :  Multiple conditional specifications can be separated by spaces, each one only being valid for numbers greater than the one before it.
-              In this example: if there are 1 or 2 clauses both are required, if there are 3-9 clauses all but 25% are required, and if there are more than 9 clauses,
-              all but three are required.
-            
-             NOTE:
-             When dealing with percentages, negative values can be used to get different behavior in edge cases. 75% and -25% mean the same thing when dealing with 4 clauses, 
-             but when dealing with 5 clauses 75% means 3 are required, but -25% means 4 are required.
-            
-             If the calculations based on the specification determine that no optional clauses are needed, 
-             the usual rules about BooleanQueries still apply at search time (a BooleanQuery containing no required clauses must still match at least one optional clause)
-            
-             No matter what number the calculation arrives at, a value greater than the number of optional clauses, or a value less than 1 will never be used. 
-             (ie: no matter how low or how high the result of the calculation result is, the minimum number of required matches will never be lower than 1 or greater than the number of clauses.
-             </summary>
         </member>
         <member name="T:ElasticsearchCRUD.Model.SearchModel.Query">
             <summary>
@@ -5775,22 +5687,6 @@
             Property AllowDeleteForIndex must also be set to true.
             </summary>
             <returns>Result details in a , true if ok</returns>
-        </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndexTypeAsync``1">
-            <summary>
-            Async Delete the whole index type if it exists and Elasticsearch allows delete index. This can be used for deleting child types in an existing index.
-            Property AllowDeleteForIndex must also be set to true.
-            </summary>
-            <typeparam name="T">Type used to get the index to delete.</typeparam>
-            <returns>Result details in a task</returns>
-        </member>
-        <member name="M:ElasticsearchCRUD.ElasticsearchContext.DeleteIndexType``1">
-            <summary>
-            Delete the whole index type if it exists and Elasticsearch allows delete index. This can be used for deleting child types in an existing index.
-            Property AllowDeleteForIndex must also be set to true.
-            </summary>
-            <typeparam name="T">Type used to get the index to delete.</typeparam>
-            <returns>Result details in a true if ok</returns>
         </member>
         <member name="M:ElasticsearchCRUD.ElasticsearchContext.Dispose">
             <summary>
