@@ -23,16 +23,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			_bottomRight = bottomRight;
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
 		/// <summary>
 		/// type
 		/// The type of the bounding box execution by default is set to memory, which means in memory checks if the doc falls within the bounding box range. 

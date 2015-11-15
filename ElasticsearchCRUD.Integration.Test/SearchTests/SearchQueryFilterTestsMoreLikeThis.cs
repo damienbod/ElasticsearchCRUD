@@ -27,7 +27,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 						MinTermFreq = 1,
 						Boost = 50,
 						MinDocFreq = 1,
-						PercentTermsToMatch = 0.01
+                        MinimumShouldMatch = "20%"
 
 					}
 				)
