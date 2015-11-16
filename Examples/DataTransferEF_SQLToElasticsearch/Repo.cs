@@ -82,20 +82,22 @@ namespace DataTransferSQLToEl
 		{
 
 			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-			using (var elasticSearchContext = new ElasticsearchContext("http://localhost:9200/", elasticsearchMappingResolver))
+			using (var elasticSearchContext = new ElasticsearchContext("http://localhost.fiddler:9200/", elasticsearchMappingResolver))
 			{
 				if (elasticSearchContext.IndexExists<Person>())
 				{
 					elasticSearchContext.DeleteIndex<Person>();
 					Thread.Sleep(1200);
 				}
+
 				elasticSearchContext.IndexCreate<Person>(new IndexDefinition
 				{
 					IndexSettings = new IndexSettings
 					{
-						NumberOfReplicas = 2
+						NumberOfReplicas = 1
 					}
 				});
+
 				//elasticSearchContext.TraceProvider = new ConsoleTraceProvider();
 				using (var databaseEfModel = new SQLDataModel())
 				{
