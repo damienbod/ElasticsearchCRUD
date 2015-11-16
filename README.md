@@ -99,6 +99,9 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 2.0.0</strong><em> 2015.03.16</em>
+- Support for Elasticsearch 2.0.0
+
 <strong>Version 1.0.29.2</strong><em> 2015.03.16</em>
 - bug fix, Id in Hit result should not be an int 
 
