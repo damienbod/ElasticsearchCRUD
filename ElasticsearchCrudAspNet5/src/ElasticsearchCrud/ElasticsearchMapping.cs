@@ -650,7 +650,7 @@ namespace ElasticsearchCRUD
 		}
 
 		/// <summary>
-		/// Override this if you require a special type definitoin for your document type.
+		/// Override this if you require a special type definition for your document type.
 		/// </summary>
 		/// <param name="type"></param>
 		/// <returns>The type used in Elasticsearch for this type</returns>
