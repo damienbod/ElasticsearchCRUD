@@ -99,7 +99,10 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
-<strong>Version 2.0.0</strong><em> 2015.03.16</em>
+<strong>Version 2.0.0-beta8</strong><em> 2015.11.17</em>
+- Support for ASP.NET 5 dnxcore50 and dnx451
+
+<strong>Version 2.0.0</strong><em> 2015.11.16</em>
 - Support for Elasticsearch 2.0.0
 
 <strong>Version 1.0.29.2</strong><em> 2015.03.16</em>
