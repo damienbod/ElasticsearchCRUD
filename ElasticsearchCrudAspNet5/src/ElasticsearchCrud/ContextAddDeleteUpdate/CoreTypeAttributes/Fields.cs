@@ -33,8 +33,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 						elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
 					}
 				} 
-#else
-                
+#else          
                 if (property.GetCustomAttribute(typeof(ElasticsearchCoreTypes)) != null)
 			    {
                     var propertyName = property.Name.ToLower();

@@ -15,6 +15,8 @@ using Newtonsoft.Json.Linq;
 
 namespace ElasticsearchCRUD
 {
+    using System.Linq;
+
     /// <summary>
 	/// Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
 	/// Everything is lowercase and the index is pluralized
@@ -45,13 +47,9 @@ namespace ElasticsearchCRUD
 				TraceProvider.Trace(TraceEventType.Verbose, "ElasticsearchMapping: SerializedTypes new Type added: {0}", GetDocumentType(entityInfo.Document.GetType()));
 				var propertyInfo = entityInfo.Document.GetType().GetProperties();
 				foreach (var prop in propertyInfo)
-				{
+                {
 #if DNX451
-
-#else
- // TODO
-#endif
-                    if (!Attribute.IsDefined(prop, typeof (JsonIgnoreAttribute)))
+                     if (!Attribute.IsDefined(prop, typeof (JsonIgnoreAttribute)))
 					{
 						if (Attribute.IsDefined(prop, typeof (ElasticsearchGeoTypeAttribute))) 
 						{
@@ -67,7 +65,25 @@ namespace ElasticsearchCRUD
 									elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
 								}
 							}
-							else
+#else
+                    if (prop.GetCustomAttribute(typeof(JsonIgnoreAttribute)) == null)
+                    {
+                        if (prop.GetCustomAttribute(typeof(ElasticsearchGeoTypeAttribute)) != null)
+                        {
+                            var obj = prop.Name.ToLower();
+                            // process GeoTypes
+                            if (createPropertyMappings)
+                            {
+                                IEnumerable<Attribute> attrs = prop.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
+
+                                if ((attrs.FirstOrDefault() as ElasticsearchCoreTypes) != null)
+                                {
+                                    elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+                                    elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs.FirstOrDefault() as ElasticsearchCoreTypes).JsonString());
+                                }
+                            }
+#endif
+                            else
 							{
 								var data = prop.GetValue(entityInfo.Document) as IGeoType;
 								elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);							
@@ -96,11 +112,7 @@ namespace ElasticsearchCRUD
 										var obj = prop.Name.ToLower();
 
 #if DNX451
-
-#else
- // TODO
-#endif                                      
-										if (Attribute.IsDefined(prop, typeof (ElasticsearchCoreTypes)))
+                                        if (Attribute.IsDefined(prop, typeof (ElasticsearchCoreTypes)))
 										{									
 											object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
 
@@ -111,7 +123,20 @@ namespace ElasticsearchCRUD
 											}
 											
 										}
-										else
+#else
+                                        if (prop.GetCustomAttribute(typeof(ElasticsearchCoreTypes)) != null)
+                                        {
+                                            IEnumerable<Attribute> attrs = prop.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
+
+                                            if ((attrs.FirstOrDefault() as ElasticsearchCoreTypes) != null)
+                                            {
+                                                elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
+                                                elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs.FirstOrDefault() as ElasticsearchCoreTypes).JsonString());
+                                            }
+
+                                        }
+#endif
+                                        else
 										{
 											// no elasticsearch property defined
 											elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
@@ -249,13 +274,13 @@ namespace ElasticsearchCRUD
 			foreach (var property in propertyInfo)
 			{
 #if DNX451
-
-#else
-                // TODO
-#endif
                 if (Attribute.IsDefined(property, typeof(KeyAttribute)) || Attribute.IsDefined(property, typeof(ElasticsearchIdAttribute)))
 				{
-					var obj = property.GetValue(entity);
+#else
+                if (property.GetCustomAttribute(typeof(KeyAttribute)) != null  || property.GetCustomAttribute(typeof(ElasticsearchIdAttribute)) != null )
+                {
+#endif
+                    var obj = property.GetValue(entity);
 
 					if (obj == null && createPropertyMappings)
 					{
@@ -461,10 +486,6 @@ namespace ElasticsearchCRUD
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 #if DNX451
-
-#else
-                // TODO
-#endif
                 if (Attribute.IsDefined(prop, typeof(ElasticsearchNestedAttribute)))
 				{
 					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
@@ -477,9 +498,37 @@ namespace ElasticsearchCRUD
 						(attrs[0] as ElasticsearchNestedAttribute).WriteJson(elasticsearchCrudJsonWriter);
 					}
 				}
+#else
+                //if (property.GetCustomAttribute(typeof(ElasticsearchCoreTypes)) != null)
+                //{
+                //    var propertyName = property.Name.ToLower();
 
-				// "properties": {
-				elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
+                //    IEnumerable<Attribute> attrs = property.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
+
+                //    if ((attrs.FirstOrDefault() as ElasticsearchCoreTypes) != null)
+                //    {
+                //        elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(propertyName);
+                //        elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs.FirstOrDefault() as ElasticsearchCoreTypes).JsonString());
+                //    }
+                //}
+
+                if (prop.GetCustomAttribute(typeof(ElasticsearchNestedAttribute)) != null )
+                {
+                    elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
+                    elasticsearchCrudJsonWriter.JsonWriter.WriteValue("nested");
+
+                    IEnumerable<Attribute> attrs = prop.GetCustomAttributes(typeof(ElasticsearchNestedAttribute), true);
+                    
+                    if ((attrs.FirstOrDefault() as ElasticsearchNestedAttribute) != null)
+                    {
+                        (attrs.FirstOrDefault() as ElasticsearchNestedAttribute).WriteJson(elasticsearchCrudJsonWriter);
+                    }
+                }
+#endif
+
+
+                // "properties": {
+                elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 	
@@ -587,12 +636,12 @@ namespace ElasticsearchCRUD
 				return false;
 			}
 #if DNX451
-
-#else
-            // TODO
-#endif
             return property.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null;
-		} 
+#else
+            return property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable<>));
+#endif
+
+        } 
 
 
 		public virtual object ParseEntity(JToken source, Type type)
