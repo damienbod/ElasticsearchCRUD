@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C0949240-3C43-4AB4-9C79-E8E515D14D91}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4ABB33C4-D394-4795-9A18-2EB1DD4DF875}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+		NuGet.Config = NuGet.Config
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ElasticsearchCrud", "src\ElasticsearchCrud\ElasticsearchCrud.xproj", "{89350F47-9F41-4E99-8C3D-D6C1DCC80E2F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{89350F47-9F41-4E99-8C3D-D6C1DCC80E2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89350F47-9F41-4E99-8C3D-D6C1DCC80E2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89350F47-9F41-4E99-8C3D-D6C1DCC80E2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89350F47-9F41-4E99-8C3D-D6C1DCC80E2F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{89350F47-9F41-4E99-8C3D-D6C1DCC80E2F} = {C0949240-3C43-4AB4-9C79-E8E515D14D91}
+	EndGlobalSection
+EndGlobal

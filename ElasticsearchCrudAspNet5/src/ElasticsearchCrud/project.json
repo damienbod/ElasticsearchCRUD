@@ -1,0 +1,40 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Elasticsearch .NET API",
+  "authors": [ "damienbod" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+    "dependencies": {
+        "Microsoft.AspNet.Diagnostics": "1.0.0-beta8",
+        "Microsoft.AspNet.IISPlatformHandler": "1.0.0-beta8",
+        "Microsoft.AspNet.Mvc": "6.0.0-beta8",
+        "Microsoft.AspNet.Mvc.TagHelpers": "6.0.0-beta8",
+        "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta8",
+        "Microsoft.AspNet.StaticFiles": "1.0.0-beta8",
+        "Microsoft.Framework.Logging": "1.0.0-beta8",
+        "Microsoft.Framework.Logging.Console": "1.0.0-beta8",
+        "Microsoft.Framework.Logging.Debug": "1.0.0-beta8",
+        "Newtonsoft.Json": "8.0.1-beta2",
+        "Microsoft.Net.Http.Client": "1.0.0-beta8-15501"
+
+        
+
+    },
+
+    "frameworks": {
+        "dnxcore50": {
+            "dependencies": {
+                "System.Net.Http": "4.0.1-beta8",
+                "System.Runtime": "4.0.20-beta-23109",
+                "System.Reflection.TypeExtensions": "4.0.1-beta-23409"
+            }
+        },
+        "dnx451": {
+            "dependencies": {
+                
+            }
+        }
+    }
+}
