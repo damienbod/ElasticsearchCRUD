@@ -33,3 +33,14 @@ Examples/Damienbod.AnimalProvider/obj
 Examples/DataTransferEF_SQLToElasticsearch/bin
 Examples/WebApiElasticsearchCrudExample/bin
 Examples/WebApiElasticsearchCrudExample/obj
+ElasticsearchCrudAspNet5/src/ElasticsearchCrud/obj
+ElasticsearchCrudAspNet5/src/ElasticsearchGermanAnalyzer/ElasticsearchGermanAnalyzer.xproj.user
+ElasticsearchCrudAspNet5/.vs/ElasticsearchCrud/v14/.suo
+ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnx451/ElasticsearchCrud.dll
+ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnx451/ElasticsearchCrud.pdb
+ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnx451/ElasticsearchCrud.xml
+ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnxcore50/ElasticsearchCrud.dll
+ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnxcore50/ElasticsearchCrud.pdb
+ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnxcore50/ElasticsearchCrud.xml
+ElasticsearchCrudAspNet5/src/ElasticsearchCrud/project.lock.json
+ElasticsearchCrudAspNet5/src/ElasticsearchGermanAnalyzer/project.lock.json
