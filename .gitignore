@@ -34,3 +34,4 @@ Examples/DataTransferEF_SQLToElasticsearch/bin
 Examples/WebApiElasticsearchCrudExample/bin
 Examples/WebApiElasticsearchCrudExample/obj
 ElasticsearchCrudAspNet5/src/ElasticsearchCrud/obj
+ElasticsearchCrudAspNet5/src/ElasticsearchGermanAnalyzer/ElasticsearchGermanAnalyzer.xproj.user
