@@ -29,7 +29,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
         [Test]
         public void SearchQueryTermFilter()
         {
-            var search = new Search { Filter = new Filter(new TermFilter("name", "three") { Cache = false }) };
+            var search = new Search { Filter = new Filter(new TermFilter("name", "three") ) };
 
             using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
             {
@@ -42,21 +42,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
         [Test]
         public void SearchQueryTermsFilter()
         {
-            var search = new Search { Filter = new Filter(new TermsFilter("name", new List<object> { "one", "three" }) { Execution = ExecutionMode.@bool }) };
-
-            using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
-            {
-                Assert.IsTrue(context.IndexTypeExists<SearchTest>());
-                var items = context.Search<SearchTest>(search);
-                Assert.AreEqual(3, items.PayloadResult.Hits.HitsResult[1].Source.Id);
-                Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-            }
-        }
-
-        [Test]
-        public void SearchQueryTermsFilterExecutionModeAnd()
-        {
-            //var search = new Search { Filter = new Filter(new TermsFilter("name", new List<object> { "one", "three" }) { Execution = ExecutionMode.and }) };
             var search = new Search { Filter = new Filter(new TermsFilter("name", new List<object> { "one", "three" }) ) };
 
             using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
@@ -570,8 +555,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             {
                 Filter = new Filter(new RegExpFilter("name", "o.*")
                 {
-                // EL 2.0 bug, query not work when set
-                  //MaxDeterminizedStates = 20000
+                  MaxDeterminizedStates = 20000
                 })
             };
 

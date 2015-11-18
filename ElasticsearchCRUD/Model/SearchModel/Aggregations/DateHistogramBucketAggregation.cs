@@ -19,8 +19,8 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 		private bool _formatSet;
 		private uint _minDocCount;
 		private bool _minDocCountSet;
-		private OrderAgg _order;
-		private bool _orderSet;
+		//private OrderAgg _order;
+		//private bool _orderSet;
 		private ExtendedBounds _extendedBounds;
 		private bool _extendedBoundsSet;
 		private string _script;
@@ -50,15 +50,15 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			}
 		}
 
-		public OrderAgg Order
-		{
-			get { return _order; }
-			set
-			{
-				_order = value;
-				_orderSet = true;
-			}
-		}
+		//public OrderAgg Order
+		//{
+		//	get { return _order; }
+		//	set
+		//	{
+		//		_order = value;
+		//		_orderSet = true;
+		//	}
+		//}
 
 		/// <summary>
 		/// min_doc_count
@@ -170,10 +170,10 @@ namespace ElasticsearchCRUD.Model.SearchModel.Aggregations
 			JsonHelper.WriteValue("pre_zone_adjust_large_interval", _preZoneAdjustLargeInterval, elasticsearchCrudJsonWriter, _preZoneAdjustLargeIntervalSet);
 			JsonHelper.WriteValue("time_zone", _timeZone, elasticsearchCrudJsonWriter, _timeZoneSet);
 
-			if (_orderSet)
-			{
-				_order.WriteJson(elasticsearchCrudJsonWriter);
-			}
+			//if (_orderSet)
+			//{
+			//	_order.WriteJson(elasticsearchCrudJsonWriter);
+			//}
 			JsonHelper.WriteValue("min_doc_count", _minDocCount, elasticsearchCrudJsonWriter, _minDocCountSet);
 
 			if (_extendedBoundsSet)

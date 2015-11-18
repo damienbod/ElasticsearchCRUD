@@ -72,10 +72,11 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 			JsonHelper.WriteValue("value", _regularExpression, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("flags", _flags.ToString(), elasticsearchCrudJsonWriter, _flagsSet);
+
+			JsonHelper.WriteValue("max_determinized_states", _maxDeterminizedStates, elasticsearchCrudJsonWriter, _maxDeterminizedStatesSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
 			JsonHelper.WriteValue("_name", _name, elasticsearchCrudJsonWriter, _nameSet);
-			JsonHelper.WriteValue("max_determinized_states", _maxDeterminizedStates, elasticsearchCrudJsonWriter, _maxDeterminizedStatesSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}
