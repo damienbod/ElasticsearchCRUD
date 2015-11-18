@@ -1,7 +1,7 @@
 ElasticsearchCRUD [![NuGet Status](http://img.shields.io/nuget/v/ElasticsearchCRUD.svg?style=flat-square)](https://www.nuget.org/packages/ElasticsearchCRUD/)
 ========================
 <strong>Documentation:</strong>
- http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/
+ http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/
 
 <strong>Code:</strong> 
 https://github.com/damienbod/ElasticsearchCRUD
