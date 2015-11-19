@@ -7,8 +7,7 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private IFilter _not;
 		private bool _notSet;
-		private bool _cache;
-		private bool _cacheSet;
+
 
 		public NotFilter(IFilter not)
 		{
@@ -25,24 +24,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("not");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			WriteNotFilter(elasticsearchCrudJsonWriter);
-
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

@@ -15,8 +15,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	public class GeoShapePreIndexedFilter : IFilter
 	{
 		private readonly string _field;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public GeoShapePreIndexedFilter(string field)
 		{
@@ -43,16 +41,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		/// </summary>
 		public string Path { get; set; }
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("geo_shape");
@@ -71,7 +59,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}

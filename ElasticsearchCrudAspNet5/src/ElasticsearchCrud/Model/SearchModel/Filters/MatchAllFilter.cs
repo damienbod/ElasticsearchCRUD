@@ -6,8 +6,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private double _boost;
 		private bool _boostSet;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public double Boost
 		{
@@ -16,16 +14,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			{
 				_boost = value;
 				_boostSet = true;
-			}
-		}
-
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
 			}
 		}
 
@@ -40,7 +28,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

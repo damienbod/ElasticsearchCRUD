@@ -14,23 +14,12 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	public class QueryFilter : IFilter
 	{
 		private readonly IQuery _query;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public QueryFilter(IQuery query)
 		{
 			_query = query;
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("fquery");
@@ -41,7 +30,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 
 			_query.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}

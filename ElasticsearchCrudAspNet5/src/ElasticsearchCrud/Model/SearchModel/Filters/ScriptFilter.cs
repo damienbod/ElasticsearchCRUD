@@ -12,8 +12,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private readonly string _script;
 		private List<ScriptParameter> _params;
 		private bool _paramsSet;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public ScriptFilter(string script)
 		{
@@ -27,16 +25,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			{
 				_params = value;
 				_paramsSet = true;
-			}
-		}
-
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
 			}
 		}
 
@@ -61,8 +49,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 
 			JsonHelper.WriteValue("lang", "groovy", elasticsearchCrudJsonWriter);
-
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

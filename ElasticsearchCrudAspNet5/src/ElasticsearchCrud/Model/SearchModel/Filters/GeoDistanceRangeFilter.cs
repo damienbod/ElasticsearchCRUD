@@ -21,8 +21,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private bool _lessThanOrEqualToSet;
 		private string _lessThan;
 		private bool _lessThanSet;
-		private bool _cache;
-		private bool _cacheSet;
 		private bool _includeLower;
 		private bool _includeLowerSet;
 		private bool _includeUpper;
@@ -99,16 +97,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
 		/// <summary>
 		/// include_lower
 		/// </summary>
@@ -148,7 +136,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			JsonHelper.WriteValue("gt", _greaterThan, elasticsearchCrudJsonWriter, _greaterThanSet);
 			JsonHelper.WriteValue("lte", _lessThanOrEqualTo, elasticsearchCrudJsonWriter, _lessThanOrEqualToSet);
 			JsonHelper.WriteValue("lt", _lessThan, elasticsearchCrudJsonWriter, _lessThanSet);
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			JsonHelper.WriteValue("include_lower", _includeLower, elasticsearchCrudJsonWriter, _includeLowerSet);
 			JsonHelper.WriteValue("include_upper", _includeUpper, elasticsearchCrudJsonWriter, _includeUpperSet);
 
