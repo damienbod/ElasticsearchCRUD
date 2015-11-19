@@ -6,8 +6,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private readonly IFilter _filter;
 		private readonly string _path;
-		private bool _cache;
-		private bool _cacheSet;
 		private bool _join;
 		private bool _joinSet;
 		private InnerHits _innerHits;
@@ -17,16 +15,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		{
 			_filter = filter;
 			_path = path;
-		}
-
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
 		}
 
 		public bool Join
@@ -60,7 +48,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			_filter.WriteJson(elasticsearchCrudJsonWriter);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			JsonHelper.WriteValue("join", _join, elasticsearchCrudJsonWriter, _joinSet);
 
 			if (_innerHitsSet)

@@ -201,9 +201,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             {
                 Filter = new Filter(
                     new NotFilter(new TermFilter("name", "one"))
-                    {
-                        Cache = false
-                    }
                 )
             };
 
@@ -292,7 +289,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
         {
             var search = new Search { Filter = new Filter(new GeoDistanceFilter("location", new GeoPoint(43, 43), new DistanceUnitKilometer(1))
             {
-                Cache= false,
                 DistanceType= DistanceType.plane,
                 OptimizeBbox = OptimizeBbox.none
             }) };
@@ -353,10 +349,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
         {
             var search = new Search
             {
-                Filter = new Filter(new QueryFilter(new MatchAllQuery())
-                {
-                    Cache=true
-                })
+                Filter = new Filter(new QueryFilter(new MatchAllQuery()))
             };
 
             using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
@@ -373,10 +366,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
         {
             var search = new Search
             {
-                Filter = new Filter(new PrefixFilter("name", "on")
-                {
-                    Cache = false
-                })
+                Filter = new Filter(new PrefixFilter("name", "on"))
             };
 
             using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
@@ -439,8 +429,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
                     Params = new List<ScriptParameter>
                     {
                         new ScriptParameter("factor", 1.5)
-                    },
-                    Cache=false
+                    }
                 })
             };
 
@@ -470,7 +459,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
                         GreaterThanOrEqualTo = "2km",
                         LessThan = "1000km",
                         LessThanOrEqualTo = "1000km",
-                        Cache=false,
                         IncludeLower = false,
                         IncludeUpper = true
                     }

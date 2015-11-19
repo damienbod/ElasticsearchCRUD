@@ -9,8 +9,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private readonly GeoPoint _location;
 		private readonly int _precision;
 		private readonly bool _neighbors;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public GeohashCellFilter(string field, GeoPoint location, int precision, bool neighbors)
 		{
@@ -20,15 +18,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			_neighbors = neighbors;
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("geohash_cell");
@@ -37,7 +26,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			_location.WriteJson(elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("precision", _precision, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("neighbors", _neighbors, elasticsearchCrudJsonWriter);
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}

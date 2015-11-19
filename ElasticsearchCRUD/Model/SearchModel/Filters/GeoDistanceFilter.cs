@@ -16,8 +16,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private bool _distanceTypeSet;
 		private OptimizeBbox _optimizeBbox;
 		private bool _optimizeBboxSet;
-		private bool _cache;
-		private bool _cacheSet;
 
 		/// <summary>
 		/// Filters documents that include only hits that exists within a specific distance from a geo point. 
@@ -64,16 +62,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			}
 		}
 
-		public bool Cache
-		{
-			get { return _cache; }
-			set
-			{
-				_cache = value;
-				_cacheSet = true;
-			}
-		}
-
 		public void WriteJson(ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter)
 		{
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("geo_distance");
@@ -85,7 +73,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			JsonHelper.WriteValue("distance", _distance.GetDistanceUnit(), elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("distance_type", _distanceType.ToString(), elasticsearchCrudJsonWriter, _distanceTypeSet);
 			JsonHelper.WriteValue("optimize_bbox", _optimizeBbox.ToString(), elasticsearchCrudJsonWriter, _optimizeBboxSet);
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

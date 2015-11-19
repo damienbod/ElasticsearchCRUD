@@ -11,8 +11,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 		private readonly string _field;
 		private readonly GeoPoint _topLeft;
 		private readonly GeoPoint _bottomRight;
-		private bool _cache;
-		private bool _cacheSet;
 		private GeoBoundingBoxFilterType _type;
 		private bool _typeSet;
 
@@ -44,7 +42,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("geo_bounding_box");
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			JsonHelper.WriteValue("type", _type.ToString(), elasticsearchCrudJsonWriter, _typeSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(_field);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();

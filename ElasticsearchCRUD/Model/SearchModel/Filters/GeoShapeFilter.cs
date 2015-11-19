@@ -7,8 +7,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	{
 		private readonly string _field;
 		private readonly IGeoType _geoType;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public GeoShapeFilter(string field, IGeoType geoType)
 		{
@@ -28,7 +26,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			_geoType.WriteJson(elasticsearchCrudJsonWriter);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
 	}

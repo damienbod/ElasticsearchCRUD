@@ -9,8 +9,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 	public class OrFilter : IFilter
 	{
 		private readonly List<IFilter> _or;
-		private bool _cache;
-		private bool _cacheSet;
 
 		public OrFilter(List<IFilter> or)
 		{
@@ -23,8 +21,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Filters
 			elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
 			WriteOrFilterList(elasticsearchCrudJsonWriter);
-
-			JsonHelper.WriteValue("_cache", _cache, elasticsearchCrudJsonWriter, _cacheSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}
