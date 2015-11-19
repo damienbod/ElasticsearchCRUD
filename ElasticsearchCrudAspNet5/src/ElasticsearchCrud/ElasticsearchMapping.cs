@@ -48,7 +48,7 @@ namespace ElasticsearchCRUD
 				var propertyInfo = entityInfo.Document.GetType().GetProperties();
 				foreach (var prop in propertyInfo)
                 {
-#if DNX451
+#if DNX451 || NET451
                      if (!Attribute.IsDefined(prop, typeof (JsonIgnoreAttribute)))
 					{
 						if (Attribute.IsDefined(prop, typeof (ElasticsearchGeoTypeAttribute))) 
@@ -111,7 +111,7 @@ namespace ElasticsearchCRUD
 									{
 										var obj = prop.Name.ToLower();
 
-#if DNX451
+#if DNX451 || NET451
                                         if (Attribute.IsDefined(prop, typeof (ElasticsearchCoreTypes)))
 										{									
 											object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
@@ -485,7 +485,7 @@ namespace ElasticsearchCRUD
 				// collection of Objects
 				elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-#if DNX451
+#if DNX451 || NET451
                 if (Attribute.IsDefined(prop, typeof(ElasticsearchNestedAttribute)))
 				{
 					elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");

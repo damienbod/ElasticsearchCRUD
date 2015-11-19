@@ -9,8 +9,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 		private readonly List<object> _termValues;
 		private double _boost;
 		private bool _boostSet;
-		private string _minimumShouldMatch;
-		private bool _minimumShouldMatchSet;
 
 		public TermsQuery(string term, List<object> termValues)
 		{
@@ -35,7 +33,6 @@ namespace ElasticsearchCRUD.Model.SearchModel.Queries
 
 			JsonHelper.WriteListValue(_term, _termValues, elasticsearchCrudJsonWriter);
 			JsonHelper.WriteValue("boost", _boost, elasticsearchCrudJsonWriter, _boostSet);
-			JsonHelper.WriteValue("minimum_should_match", _minimumShouldMatch, elasticsearchCrudJsonWriter, _minimumShouldMatchSet);
 
 			elasticsearchCrudJsonWriter.JsonWriter.WriteEndObject();
 		}

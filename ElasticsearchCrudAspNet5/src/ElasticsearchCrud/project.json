@@ -1,22 +1,24 @@
 ﻿{
-  "version": "2.0.0-beta8",
-  "description": "Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easy usage KISS",
-  "authors": [ "damienbod" ],
-  "tags": [ "Elasticseach", "HttpClient" ],
-  "projectUrl": "http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/",
+    "version": "2.0.1-rc1",
+    "description": "Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easy usage KISS",
+    "authors": [ "damienbod" ],
+    "tags": [ "Elasticseach", "HttpClient" ],
+    "projectUrl": "http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/",
     "licenseUrl": "",
-    "owners": ["damienbod"],
+    "owners": [ "damienbod" ],
     "requireLicenseAcceptance": false,
     "iconUrl": "http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png",
     "language": "en-US",
-    "releaseNotes": "Release Notes: Version 2.0.0-beta8 - Version for Elasticsearch 2.0.0-beta8, Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
+    "releaseNotes": "Release Notes: Version 2.0.1-rc1 - for Elasticsearch 2.0.0, ASP.NET 5 rc1, Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
+    "title": "ElasticsearchCRUD",
+    "summary": "Elasticsearch HTTP client",
 
     "dependencies": {
-        "Microsoft.AspNet.Diagnostics": "1.0.0-beta8",
-        "Microsoft.AspNet.IISPlatformHandler": "1.0.0-beta8",
-        "Microsoft.AspNet.Mvc": "6.0.0-beta8",
-        "Microsoft.AspNet.Server.Kestrel": "1.0.0-beta8",
-        "Microsoft.AspNet.StaticFiles": "1.0.0-beta8",
+        "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
+        "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
+        "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+        "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
+        "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
         "Newtonsoft.Json": "8.0.1-beta2",
         "Microsoft.Net.Http.Client": "1.0.0-beta8-15501"
     },
@@ -24,15 +26,23 @@
     "frameworks": {
         "dnxcore50": {
             "dependencies": {
-                "System.Net.Http": "4.0.1-beta8",
+                "System.Net.Http": "4.0.1-rc2-23513",
+
+                "Microsoft.CSharp": "4.0.1-beta-23516",
+                "System.Collections": "4.0.11-beta-23516",
+                "System.Console": "4.0.0-beta-23516",
+                "System.Linq": "4.0.1-beta-23516",
+                "System.Threading": "4.0.11-beta-23516",
+
                 "System.Runtime": "4.0.20-beta-23109",
                 "System.Reflection.TypeExtensions": "4.0.1-beta-23409"
             }
         },
         "dnx451": {
             "dependencies": {
-                
+
             }
-        }
+        },
+        "net451": { }
     }
 }

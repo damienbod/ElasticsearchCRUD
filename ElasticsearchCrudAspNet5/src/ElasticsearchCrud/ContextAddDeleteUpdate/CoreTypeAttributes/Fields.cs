@@ -21,7 +21,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
 			var propertyInfo = FieldClass.GetProperties();
 			foreach (var property in propertyInfo)
 			{
-#if DNX451
+#if DNX451 || NET451
                 if (Attribute.IsDefined(property, typeof(ElasticsearchCoreTypes)))
 				{
 					var propertyName = property.Name.ToLower(); 
