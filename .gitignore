@@ -44,3 +44,5 @@ ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnxcore50/Elast
 ElasticsearchCrudAspNet5/artifacts/bin/ElasticsearchCrud/Release/dnxcore50/ElasticsearchCrud.xml
 ElasticsearchCrudAspNet5/src/ElasticsearchCrud/project.lock.json
 ElasticsearchCrudAspNet5/src/ElasticsearchGermanAnalyzer/project.lock.json
+ElasticsearchCrudAspNet5/src/ElasticsearchCRUD.Integration.Test/ElasticsearchCRUD.Integration.Test.xproj.user
+ElasticsearchCrudAspNet5/src/ElasticsearchCRUD.Integration.Test/project.lock.json
