@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
     [TestFixture]
     public class SearchQueryFilterTests : SetupSearch
     {
-        [Test]
+        [Fact]
         public void SearchFilterMatchAllTest()
         {
             var search = new Search { Filter = new Filter(new MatchAllFilter { Boost = 1.1 }) };
@@ -26,7 +26,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryTermFilter()
         {
             var search = new Search { Filter = new Filter(new TermFilter("name", "three") ) };
@@ -39,7 +39,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryTermsFilter()
         {
             var search = new Search { Filter = new Filter(new TermsFilter("name", new List<object> { "one", "three" }) ) };
@@ -52,7 +52,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryRangeFilter()
         {
             var search = new Search { Filter = new Filter(
@@ -76,7 +76,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryBoolFilter()
         {
             var search = new Search
@@ -95,7 +95,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryBoolFilterTwo()
         {
             var search = new Search
@@ -129,7 +129,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryExistsFilter()
         {
             var search = new Search { Filter = new Filter(new ExistsFilter("name")) };
@@ -143,7 +143,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryAndFilter()
         {
             var search = new Search { Filter = new Filter(
@@ -169,7 +169,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryOrFilter()
         {
             var search = new Search
@@ -194,7 +194,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryNotFilter()
         {
             var search = new Search
@@ -213,7 +213,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoDistanceFilter()
         {
             var search = new Search { Filter = new Filter(new GeoDistanceFilter("location", new GeoPoint(43,43), new DistanceUnitKilometer(1000) )) };
@@ -227,7 +227,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoDistanceFilter0Range()
         {
             var search = new Search { Filter = 
@@ -249,7 +249,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoDistanceFilter0SortTest()
         {
             var search = new Search
@@ -284,7 +284,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoDistanceFilterSmallRange()
         {
             var search = new Search { Filter = new Filter(new GeoDistanceFilter("location", new GeoPoint(43, 43), new DistanceUnitKilometer(1))
@@ -302,7 +302,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryIdsFilter()
         {
             var search = new Search
@@ -322,7 +322,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchFilteredQueryFilterLimit()
         {
             var search = new Search
@@ -344,7 +344,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryQueryFilter()
         {
             var search = new Search
@@ -361,7 +361,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryPrefixFilter()
         {
             var search = new Search
@@ -378,7 +378,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryMissingFilter()
         {
             var search = new Search
@@ -399,7 +399,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoBoundingBoxFilter()
         {
             var search = new Search
@@ -419,7 +419,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryScriptFilter()
         {
             var search = new Search
@@ -442,7 +442,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoDistanceRangeFilter()
         {
             var search = new Search
@@ -474,7 +474,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoPolygonFilter()
         {
             var search = new Search
@@ -502,7 +502,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoShapeFilter()
         {
             var search = new Search
@@ -536,7 +536,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryRegExpFilter()
         {
             var search = new Search
@@ -556,7 +556,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryRegExpFilterTwo()
         {
             var search = new Search
@@ -576,7 +576,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             }
         }
 
-        [Test]
+        [Fact]
         public void SearchQueryGeoHashFilter()
         {
             var search = new Search { Filter = new Filter(

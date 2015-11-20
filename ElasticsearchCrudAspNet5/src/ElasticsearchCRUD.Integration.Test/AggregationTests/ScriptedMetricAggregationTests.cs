@@ -9,7 +9,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 	[TestFixture]
 	public class ScriptedMetricAggregationTests : SetupSearchAgg
 	{
-		[Test]
+		[Fact]
 		public void SearchAggScriptedMetricAggregationWithNoHits()
 		{
 			var search = new Search
@@ -35,7 +35,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggScriptedMetricAggregationWithParamsWithNoHits()
 		{
 			var search = new Search

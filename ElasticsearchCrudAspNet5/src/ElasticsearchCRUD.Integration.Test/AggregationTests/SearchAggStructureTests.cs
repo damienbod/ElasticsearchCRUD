@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 	[TestFixture]
 	public class SearchAggStructureTests : SetupSearchAgg
 	{
-		[Test]
+		[Fact]
 		public void SearchAggMinAggregationWithHits()
 		{
 			var search = new Search { Aggs = new List<IAggs>{ new MinMetricAggregation("test_min", "lift")}};
@@ -26,7 +26,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggMinAggregationNoHits()
 		{
 			var search = new Search { Aggs = new List<IAggs>{ new MinMetricAggregation("test_min", "lift") }};
@@ -40,7 +40,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggMinAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -65,7 +65,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggMaxAggregationNoHits()
 		{
 			var search = new Search { Aggs = new List<IAggs>{ new MaxMetricAggregation("test_max", "lift") }};
@@ -79,7 +79,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggMaxAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -104,7 +104,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggSumAggregationNoHits()
 		{
 			var search = new Search { Aggs = new List<IAggs>{ new SumMetricAggregation("test_sum", "lift") }};
@@ -118,7 +118,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggSumAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -143,7 +143,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggAvgAggregationNoHits()
 		{
 			var search = new Search { Aggs = new List<IAggs>{ new AvgMetricAggregation("test_avg", "lift") }};
@@ -157,7 +157,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggAvgAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -183,7 +183,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggStatsAggregationNoHits()
 		{
 			var search = new Search { Aggs = new List<IAggs>{ new StatsMetricAggregation("test_StatsAggregation", "lift") }};
@@ -201,7 +201,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggStatsAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -230,7 +230,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggExtendedStatsAggregationNoHits()
 		{
 			var search = new Search
@@ -257,7 +257,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggExtendedStatsAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -282,7 +282,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggValueCountAggregationNoHits()
 		{
 			var search = new Search { Aggs = new List<IAggs>{ new ValueCountMetricAggregation("test_ValueCountAggregation", "lift") }};
@@ -296,7 +296,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggValueCountAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -321,7 +321,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggValueCountAggregationWithAvgChildNoHits()
 		{
 			var search = new Search
@@ -344,7 +344,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggListAggregationNoHits()
 		{
 			var search = new Search
@@ -367,7 +367,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggPercentilesMetricAggregationNoHits()
 		{
 			var search = new Search { Aggs = new List<IAggs> { new PercentilesMetricAggregation("test_PercentilesMetricAggregation", "lift") } };
@@ -381,7 +381,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggPercentilesMetricAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -406,7 +406,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggPercentilesMetricAggregationPrecentsNoHits()
 		{
 			var search = new Search
@@ -429,7 +429,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggCardinalityMetricAggregationNoHits()
 		{
 			var search = new Search
@@ -453,7 +453,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggCardinalityMetricAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -478,7 +478,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggPercentileRanksMetricAggregationNoHits()
 		{
 			var search = new Search
@@ -498,7 +498,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggPercentileRanksMetricAggregationScriptNoHits()
 		{
 			var search = new Search
@@ -523,7 +523,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggGeoBoundsMetricAggregationNoHits()
 		{
 			var search = new Search

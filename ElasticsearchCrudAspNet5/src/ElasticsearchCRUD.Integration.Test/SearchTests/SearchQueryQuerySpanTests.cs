@@ -9,7 +9,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryQuerySpanTests : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchQuerySpanFirstQueryWithSpanTermQuery()
 		{
 			var search = new Search
@@ -26,7 +26,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanTermQuery()
 		{
 			var search = new Search
@@ -46,7 +46,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanFirstQueryWithSpanMultiQuery()
 		{
 			var search = new Search
@@ -67,7 +67,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanMultiQueryWithPrefixQuery()
 		{
 			var search = new Search
@@ -87,7 +87,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanMultiQueryWithFuzzyQuery()
 		{
 			var search = new Search
@@ -107,7 +107,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanMultiQueryWithRegExpQuery()
 		{
 			var search = new Search
@@ -127,7 +127,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanMultiQueryWithRangeQuery()
 		{
 			var search = new Search
@@ -150,7 +150,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanMultiQueryWithWildcardQuery()
 		{
 			var search = new Search
@@ -170,7 +170,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanOrQuery()
 		{
 			var search = new Search
@@ -193,7 +193,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanNotQueryPostPre()
 		{
 			var search = new Search
@@ -219,7 +219,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanNotQueryDist()
 		{
 			var search = new Search
@@ -244,7 +244,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQuerySpanNearQuery()
 		{
 			var search = new Search

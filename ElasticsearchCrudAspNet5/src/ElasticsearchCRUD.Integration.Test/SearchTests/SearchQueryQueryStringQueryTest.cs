@@ -10,7 +10,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryQueryStringQueryTest : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchQueryQueryStringQuery()
 		{
 			var search = new Search { Query = new Query(new QueryStringQuery("one document")) };
@@ -23,7 +23,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryQueryStringQueryAllProperties()
 		{
 			var search = new Search
@@ -54,7 +54,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryQueryStringQueryMultipleFields()
 		{
 			var search = new Search
@@ -76,7 +76,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 
-		[Test]
+		[Fact]
 		public void SearchQuerySimpleQueryStringQuery()
 		{
 			var search = new Search

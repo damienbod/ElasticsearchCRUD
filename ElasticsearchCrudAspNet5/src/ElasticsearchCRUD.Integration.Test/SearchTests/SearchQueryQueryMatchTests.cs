@@ -9,7 +9,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryQueryMatchTests : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchQueryMatchAllTest()
 		{
 			var search = new Search { Query = new Query(new MatchAllQuery { Boost = 1.1 }) };
@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchTest()
 		{
 			var search = new Search { Query = new Query(new MatchQuery("name", "document one") { Boost = 1.1, Fuzziness = 1 }) };
@@ -35,7 +35,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchPhaseTest()
 		{
 			var search = new Search { Query = new Query(new MatchPhaseQuery("name", "one") { Analyzer = LanguageAnalyzers.German, Slop = 1, Operator = Operator.and, CutoffFrequency = 0.2, ZeroTermsQuery = ZeroTermsQuery.none, Boost = 1.1, Fuzziness = 1 }) };
@@ -48,7 +48,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchPhasePrefixTest()
 		{
 			var search = new Search { Query = new Query(new MatchPhasePrefixQuery("name", "one") { MaxExpansions = 500, Boost = 1.1, MinimumShouldMatch = "50%", Fuzziness = 1 }) };
@@ -61,7 +61,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMultiMatchAllTest()
 		{
 			var search = new Search { Query = new Query(new MultiMatchQuery("document") { MultiMatchType = MultiMatchType.most_fields, TieBreaker = 0.5, Fields = new List<string> { "name", "details" } }) };

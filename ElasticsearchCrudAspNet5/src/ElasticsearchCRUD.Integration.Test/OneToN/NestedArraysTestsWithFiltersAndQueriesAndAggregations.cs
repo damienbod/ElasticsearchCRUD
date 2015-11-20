@@ -12,18 +12,18 @@ using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
-using NUnit.Framework;
 
-namespace ElasticsearchCRUD.Integration.Test.OneToN
+using Xunit;
+
+namespace ElasticsearchCRUD.Integration.Test.OneToN 
 {
-	[TestFixture]
-	public class NestedArraysTestsWithFiltersAndQueriesAndAggregations
+	public class NestedArraysTestsWithFiltersAndQueriesAndAggregations : IDisposable
 	{
 		private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithACollectionOfThreeChildObjectsOfNestedType()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -55,7 +55,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterNestedFilter()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -94,7 +94,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterNestedFilterWithInnerHitsDefault()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -136,7 +136,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterNestedQuery()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -175,7 +175,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterNestedQueryInnerHits()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -211,12 +211,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search);
-				Assert.AreEqual(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
-		[Test]
+
+		[Fact]
 		public void SearchAggNestedBucketAggregationWithNoHits()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -257,7 +258,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggNestedBucketAggregationWithSubAggMaxMetricWithNoHits()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -306,7 +307,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggNestedBucketAggregationWithSubReverseNestedWithNoHits()
 		{
 			var testSkillParentObject = new NestedCollectionTest
@@ -396,6 +397,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				var entityResult14 = context.DeleteIndexAsync<NestedCollectionTest>(); entityResult14.Wait();
 			}
 		}
+
+	    public void Dispose()
+	    {
+	        throw new NotImplementedException();
+	    }
 	}
 
 	public class NestedCollectionTest

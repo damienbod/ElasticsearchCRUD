@@ -26,7 +26,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void Test1_to_n_1_m_Array()
 		{
 			var data = new TestNestedDocumentLevelOneArray
@@ -105,7 +105,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void Test1_to_n_1_m_Collection()
 		{
 			var data = new TestNestedDocumentLevelOneCollection
@@ -183,7 +183,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void Test1_to_n_1_m_HashSet()
 		{
 			var data = new TestNestedDocumentLevelOneHashSet
@@ -267,7 +267,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWith2LevelsOfNestedObjects()
 		{
 			var testSkillParentObject = new SkillDocument

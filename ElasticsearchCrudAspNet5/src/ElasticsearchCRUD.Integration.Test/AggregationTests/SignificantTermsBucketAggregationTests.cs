@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 	[TestFixture]
 	public class SignificantTermsBucketAggregationTests : SetupSearchAgg
 	{
-		[Test]
+		[Fact]
 		public void SearchAggSignificantTermsBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -32,7 +32,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationWithSubAggSignificantTermsBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -62,7 +62,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggSignificantTermsBucketAggregationPropertiesSet()
 		{
 			var search = new Search
@@ -92,7 +92,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggGeohashGridBucketAggregationWithSubAggSignificantTermsBucketAggregationWithNoHits()
 		{
 			var search = new Search

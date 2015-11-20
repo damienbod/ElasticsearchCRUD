@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 	[TestFixture]
 	public class TermsAggregationTests : SetupSearchAgg
 	{
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -32,7 +32,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationWithOrderCountNoHits()
 		{
 			var search = new Search 
@@ -55,7 +55,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationnWithOrderSumSubSumAggNoHits()
 		{
 			var search = new Search
@@ -87,7 +87,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationnWithOrderSumStatsAggNoHits()
 		{
 			var search = new Search
@@ -117,7 +117,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationAndOrderSumSubSumAggNoHits()
 		{
 			var search = new Search
@@ -143,7 +143,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationAllPropertiesWithNoHits()
 		{
 			var search = new Search
@@ -188,7 +188,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationScriptWithNoHits()
 		{
 			var search = new Search

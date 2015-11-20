@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryQueryFunctionScoreTest : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryLinearNumber()
 		{
 			var search = new Search
@@ -45,7 +45,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryLinearDateTime()
 		{
 			var search = new Search
@@ -77,7 +77,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryLinearGeoPoint()
 		{
 			var search = new Search
@@ -108,7 +108,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryGaussNumber()
 		{
 			var search = new Search
@@ -139,7 +139,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryGaussDateTime()
 		{
 			var search = new Search
@@ -171,7 +171,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryGaussGeoPoint()
 		{
 			var search = new Search
@@ -202,7 +202,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryExpNumber()
 		{
 			var search = new Search
@@ -233,7 +233,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryExpDateTime()
 		{
 			var search = new Search
@@ -265,7 +265,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryExpGeoPoint()
 		{
 			var search = new Search
@@ -296,7 +296,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryScriptScoreFunction()
 		{
 			var search = new Search
@@ -328,7 +328,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryRandomFunctionString()
 		{
 			var search = new Search
@@ -353,7 +353,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryRandomFunctionLong()
 		{
 			var search = new Search
@@ -378,7 +378,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFunctionScoreQueryFieldValueFactorFunction()
 		{
 			var search = new Search

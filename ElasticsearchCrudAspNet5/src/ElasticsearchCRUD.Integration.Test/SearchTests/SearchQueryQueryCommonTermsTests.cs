@@ -8,7 +8,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryQueryCommonTermsTests : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchQueryCommonTermsQueryLikeBoolMatch()
 		{
 			var search = new Search
@@ -30,7 +30,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryCommonTermsQueryLikeBoolMatchTwo()
 		{
 			var search = new Search
@@ -53,7 +53,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryCommonTermsQueryLikeBoolMatchHighLowMin()
 		{
 			var search = new Search

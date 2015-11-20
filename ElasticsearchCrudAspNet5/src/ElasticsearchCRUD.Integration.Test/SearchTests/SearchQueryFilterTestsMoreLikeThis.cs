@@ -14,7 +14,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		protected const string ConnectionString = "http://localhost:9200";
 
-		[Test]
+		[Fact]
 		public void SearchQueryMoreLikeThisQuery()
 		{
 			var search = new Search

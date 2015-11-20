@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryFilterFilteredStructureTests : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchFilteredQueryFilterMatchAll()
 		{
 			var search = new Search
@@ -33,7 +33,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilteredQueryFilterMatchAllQueryMatchAll()
 		{
 			var search = new Search
@@ -52,7 +52,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryConstantScoreQueryWithFilter()
 		{
 			var search = new Search { Query = new Query(new ConstantScoreQuery(new RangeFilter("id"){GreaterThan = "1"}) { Boost = 2.0 }) };
@@ -65,7 +65,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchAllSortFieldIdDesc()
 		{
 			var search = new Search
@@ -90,7 +90,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchAllGeoSortFieldAsc()
 		{
 			var search = new Search
@@ -116,7 +116,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchAllGeoSortMultipleFieldsAsc()
 		{
 			var search = new Search
@@ -147,7 +147,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchAllSortScript()
 		{
 			var search = new Search
@@ -173,7 +173,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		}
 
 
-		[Test]
+		[Fact]
 		public void SearchQueryMatchAllSortFieldIdDescNestedFilter()
 		{
 			var search = new Search

@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 	[TestFixture]
 	public class RangessAggregationTests : SetupSearchAgg
 	{
-		[Test]
+		[Fact]
 		public void SearchAggRangesBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -39,7 +39,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggRangesBucketAggregationKeyedWithNoHits()
 		{
 			var search = new Search
@@ -69,7 +69,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggRangesBucketAggregationWithRangeKeysWithNoHits()
 		{
 			var search = new Search
@@ -104,7 +104,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggRangesBucketAggregationKeyedWithRangeKeysWithNoHits()
 		{
 			var search = new Search
@@ -143,7 +143,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggRangesBucketAggregationWithRangeKeysWithMaxMetricSubAggWithNoHits()
 		{
 			var search = new Search
@@ -186,7 +186,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggDateRangesBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -211,7 +211,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggDateRangesBucketAggregationKeyedWithNoHits()
 		{
 			var search = new Search
@@ -244,7 +244,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggGeoDistanceBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -271,7 +271,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggGeoDistanceBucketAggregationWithDistanceTypeWithNoHits()
 		{
 			var search = new Search
@@ -302,7 +302,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggGeoDistanceBucketAggregationWithDistanceTypeWithTopHitsWithNoHits()
 		{
 			var search = new Search

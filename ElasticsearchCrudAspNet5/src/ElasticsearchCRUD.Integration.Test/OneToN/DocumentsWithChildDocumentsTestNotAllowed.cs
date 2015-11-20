@@ -13,7 +13,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[Test]
+		[Fact]
 		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "InitMappings: Not supported, child documents can only have one parent")]
 		public void TestCreateCompletelyNewIndexExpectException()
 		{

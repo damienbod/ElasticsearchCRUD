@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		protected const string ConnectionString = "http://localhost:9200";
 
 	
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationnWithChildrenSubAggNoHits()
 		{
 			var search = new Search

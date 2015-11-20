@@ -60,7 +60,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextAdd100Entities()
 		{
 			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(SkillTestEntity), new SkillTestEntityElasticsearchMapping());

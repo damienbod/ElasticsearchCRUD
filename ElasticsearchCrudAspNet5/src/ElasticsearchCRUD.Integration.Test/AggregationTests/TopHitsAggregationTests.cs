@@ -11,7 +11,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 	[TestFixture]
 	public class TopHitsAggregationTests : SetupSearchAgg
 	{
-		[Test]
+		[Fact]
 		public void SearchAggTopHitsMetricAggregationWithNoHits()
 		{
 			var search = new Search
@@ -35,7 +35,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationWithSubTopHitsMetricAggregationWithNoHits()
 		{
 			var search = new Search
@@ -67,7 +67,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationWithSubTopHitsMetricAggregationSortWithNoHits()
 		{
 			var search = new Search

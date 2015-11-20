@@ -60,7 +60,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 		#region NESTED COLLECTION 1 to N
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithACollectionOfOneChildObjectNested()
 		{
 			var testSkillParentObject = new SkillParentCollection
@@ -88,7 +88,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithACollectionOfOneChildObjectNestedIgnoreChildren()
 		{
 			var testSkillParentObject = new SkillParentCollection
@@ -117,7 +117,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithACollectionOfThreeChildObjectsNested()
 		{
 			var testSkillParentObject = new SkillParentCollection
@@ -147,7 +147,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithACollectionOfNoChildObjectNested()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -173,7 +173,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithNullCollectionNested()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -204,7 +204,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 		#region NESTED HashSet 1 to N
 		//SkillDocumentHastSet
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithAHashSetOfOneChildObjectNested()
 		{
 			var testSkillParentObject = new SkillDocumentHastSet
@@ -229,7 +229,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithAHashSetOfTwoChildObjectNested()
 		{
 			var testSkillParentObject = new SkillDocumentHastSet
@@ -255,7 +255,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithAHashSetOfNoChildObjectNested()
 		{
 			var testSkillParentObject = new SkillDocumentHastSet
@@ -279,7 +279,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithANullHashSetOfChildObjectNested()
 		{
 			var testSkillParentObject = new SkillDocumentHastSet
@@ -306,7 +306,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 		#region NESTED Array 1 to N
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithAnArrayOfOneChildObjectNested()
 		{
 			var testSkillParentObject = new SkillParentArray
@@ -335,7 +335,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithAnArrayOfThreeChildObjectsNested()
 		{
 			var testSkillParentObject = new SkillParentArray
@@ -367,7 +367,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 		}
 
 		// Note, Object arrays with null values are not supported
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithNullArrayNested()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -396,7 +396,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 		#region NESTED Simple collections
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentNestedIntCollection()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -419,7 +419,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentNestedIntCollectionEqualsNull()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -440,7 +440,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentNestedSkillWithStringAndLongCollection()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -475,7 +475,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 		#region NESTED Simple Arrays
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentNestedIntArray()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -498,7 +498,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 	
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentNestedIntArrayEqualsNull()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -517,7 +517,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentNestedSkillWithStringAndLongArray()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -551,7 +551,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 		#region NESTED Object
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithSingleChild()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -574,7 +574,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void TestDefaultContextParentWithSingleChildEqualsNull()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))

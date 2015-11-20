@@ -17,7 +17,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		protected const string ConnectionString = "http://localhost:9200";
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasChildFilter()
 		{
 			var search = new Search { Filter = 
@@ -38,7 +38,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasChildFilterInnerHits()
 		{
 			var search = new Search
@@ -62,7 +62,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasParentFilter()
 		{
 			var search = new Search
@@ -81,7 +81,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasParentFilterInnerHits()
 		{
 			var search = new Search
@@ -103,7 +103,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasChildQuery()
 		{
 			var search = new Search
@@ -127,7 +127,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasChildQueryInnerHits()
 		{
 			var search = new Search
@@ -152,7 +152,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasParentQuery()
 		{
 			var search = new Search
@@ -174,7 +174,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchFilterHasParentQueryInnerHits()
 		{
 			var search = new Search

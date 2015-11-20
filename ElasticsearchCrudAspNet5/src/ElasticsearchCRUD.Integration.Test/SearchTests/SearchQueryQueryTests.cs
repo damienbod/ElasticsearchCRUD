@@ -12,7 +12,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryQueryTests : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchQueryTermQuery()
 		{
 			var search = new Search { Query = new Query(new TermQuery("name", "one") { Boost = 2.0 }) };
@@ -25,7 +25,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryTermsQuery()
 		{
 			var search = new Search { Query = new Query(new TermsQuery("name", new List<object> { "one" }) { Boost = 2.0 }) };
@@ -38,7 +38,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryTermsQueryTwoResults()
 		{
 			var search = new Search { Query = new Query(new TermsQuery("name", new List<object> { "one", "two" }) { Boost = 2.0 }) };
@@ -52,7 +52,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryRangeQuery()
 		{
 			var search = new Search { Query = new Query(
@@ -75,7 +75,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryBoolQuery()
 		{
 			var search = new Search
@@ -111,7 +111,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryBoostingQuery()
 		{
 			var search = new Search { Query = new Query(new BoostingQuery(new MatchAllQuery(), new TermQuery("name", "two"), 3.0 )) };
@@ -124,7 +124,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryDisMaxQueryQuery()
 		{
 			var search = new Search { Query = new Query(
@@ -154,7 +154,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 		
-		[Test]
+		[Fact]
 		public void SearchQueryConstantScoreQueryWithQuery()
 		{
 			var search = new Search { Query = new Query(new ConstantScoreQuery(new TermQuery("name", "two")){Boost = 2.0}) };
@@ -167,7 +167,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 		
-		[Test]
+		[Fact]
 		public void SearchQueryIdsQuery()
 		{
 			var search = new Search
@@ -187,7 +187,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryPrefixQuery()
 		{
 			var search = new Search
@@ -207,7 +207,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryRegExpQuery()
 		{
 			var search = new Search
@@ -229,7 +229,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryWildcardQuery()
 		{
 			var search = new Search
@@ -249,7 +249,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryGeoShapeQuery()
 		{
 			var search = new Search

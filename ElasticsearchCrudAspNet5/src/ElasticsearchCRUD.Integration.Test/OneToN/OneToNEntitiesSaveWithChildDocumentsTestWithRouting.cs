@@ -39,7 +39,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestGetChildItemTestParentDoesNotExist()
         {
             const int parentId = 22;
@@ -73,7 +73,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             return buildJson.ToString();
         }
 
-        [Test]
+        [Fact]
         public void TestAddUpdateWithExistingMappingsTest()
         {
             var parentDocument2 = ParentDocument2();
@@ -141,7 +141,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestCreateIndexNewChildItemTest()
         {
             const int parentId = 21;
@@ -171,7 +171,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestCreateIndexNewChildItemTestParentDoesNotExist()
         {
             const int parentId = 332;
@@ -202,7 +202,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestSearchById()
         {
             using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex, UserDefinedRouting)))
@@ -215,7 +215,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestParentSearchById()
         {
             using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex, UserDefinedRouting)))
@@ -228,7 +228,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestDocumentExists()
         {
             using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex, UserDefinedRouting)))
@@ -240,7 +240,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestDocumentExistsChildDoc()
         {
             using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex, UserDefinedRouting)))
@@ -252,7 +252,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         [ExpectedException(typeof(ElasticsearchCrudException))]
         public void TestDocumentExistsChildDocBadRoute()
         {
@@ -263,7 +263,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         public void TestDocumentCountChildDocument()
         {
             using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex, UserDefinedRouting)))
@@ -275,7 +275,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
     
-        [Test]
+        [Fact]
         public void TestDocumentCountChildDocumentWithQuery()
         {
             using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex, UserDefinedRouting)))
@@ -287,7 +287,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
         
-        [Test]
+        [Fact]
         [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
         public void TestParentSearchByIdNotFoundWrongType()
         {
@@ -301,7 +301,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
         public void TestParentSearchByIdNotFoundWrongTypeChildDoc()
         {
@@ -316,7 +316,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
         }
 
 
-        [Test]
+        [Fact]
         [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
         public void TestsearchByIdNotFound()
         {
@@ -329,7 +329,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
             }
         }
 
-        [Test]
+        [Fact]
         [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
         public void TestCreateIndexNewChildItemExceptionMissingParentIdTest()
         {

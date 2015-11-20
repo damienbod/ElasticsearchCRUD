@@ -9,7 +9,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 	[TestFixture]
 	public class SearchQueryQueryFuzzyTests : SetupSearch
 	{
-		[Test]
+		[Fact]
 		public void SearchQueryFuzzyQuery()
 		{
 			var search = new Search { Query = new Query(new FuzzyQuery("details", "dsta")) };
@@ -22,7 +22,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchQueryFuzzyQueryTwo()
 		{
 			var search = new Search { Query = new Query(new FuzzyQuery("details", "doxcument") { Fuzziness = 4, MaxExpansions = 50, Boost = 3 }) };

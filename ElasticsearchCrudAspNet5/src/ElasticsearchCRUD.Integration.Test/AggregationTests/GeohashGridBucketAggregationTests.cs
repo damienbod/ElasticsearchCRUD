@@ -3,14 +3,16 @@ using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
-using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-	[TestFixture]
-	public class GeohashGridBucketAggregationTests : SetupSearchAgg
+    using System;
+
+    using Xunit;
+
+    public class GeohashGridBucketAggregationTests : SetupSearchAgg, IDisposable
 	{
-		[Test]
+		[Fact]
 		public void SearchAggGeohashGridBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -23,14 +25,14 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeohashGridBucketAggregationsResult>("testGeohashGridBucketAggregation");
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+				Assert.Equal(3, aggResult.Buckets[0].DocCount);
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggGeohashGridBucketAggregationWithTopHitsSubWithNoHits()
 		{
 			var search = new Search
@@ -49,16 +51,16 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeohashGridBucketAggregationsResult>("testGeohashGridBucketAggregation");
 				var topHits = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("tophits");
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
-				Assert.AreEqual(3, topHits.Hits.Total);
+				Assert.Equal(3, aggResult.Buckets[0].DocCount);
+				Assert.Equal(3, topHits.Hits.Total);
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggGeohashGridBucketAggregationPrecisionWithNoHits()
 		{
 			var search = new Search
@@ -76,14 +78,14 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeohashGridBucketAggregationsResult>("testGeohashGridBucketAggregation");
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+				Assert.Equal(3, aggResult.Buckets[0].DocCount);
 			}
 		}
 
-		[Test]
+		[Fact]
 		public void SearchAggTermsBucketAggregationScriptWithNoHits()
 		{
 			var search = new Search
@@ -104,11 +106,16 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeohashGridBucketAggregationsResult>("testGeohashGridBucketAggregation");
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+				Assert.Equal(3, aggResult.Buckets[0].DocCount);
 			}
 		}
-	}
+
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
