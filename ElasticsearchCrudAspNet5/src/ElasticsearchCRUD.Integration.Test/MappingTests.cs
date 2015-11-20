@@ -55,37 +55,47 @@ namespace ElasticsearchCRUD.Integration.Test
 
         [Fact]
         public void OpenIndexWhichDoesNotExist()
-        {
-            // "CloseOpenIndexAsync: HttpStatusCode.NotFound index does not exist", ex.Exception.Message
-
-            using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+        {            
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.IndexClose("help");
-            }
-                 
+                using (
+                    var context = new ElasticsearchContext(ConnectionString,
+                        new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+                {
+                    context.IndexClose("help");
+                }
+            });
+
+            Assert.Equal("CloseOpenIndexAsync: HttpStatusCode.NotFound index does not exist", ex.Message);
         }
 
-        //[Fact]
-        //[ExpectedException(ExpectedMessage = "CloseOpenIndexAsync: HttpStatusCode.NotFound index does not exist")]
-        //public void CloseIndexWhichDoesNotExist()
-        //{
+        [Fact]
+        public void CloseIndexWhichDoesNotExist()
+        {
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+                {
+                    context.IndexClose("help");
+                }
+            });
 
-        //    using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
-        //    {
-        //        context.IndexClose("help");
-        //    }
-        //}
+            Assert.Equal("CloseOpenIndexAsync: HttpStatusCode.NotFound index does not exist", ex.Message);
+        }
 
-        //[Fact]
-        //[ExpectedException(ExpectedMessage = "IndexOptimizeAsync: HttpStatusCode.NotFound index does not exist")]
-        //public void OptimizeIndexWhichDoesNotExist()
-        //{
+        [Fact]
+        public void OptimizeIndexWhichDoesNotExist()
+        {
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
+                {
+                    var result = context.IndexOptimize("help", new OptimizeParameters { NumberOfShards = 3, Flush = true });
+                }
+            });
 
-        //    using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver)))
-        //    {
-        //        var result = context.IndexOptimize("help", new OptimizeParameters { NumberOfShards = 3, Flush = true });
-        //    }
-        //}
+            Assert.Equal("IndexOptimizeAsync: HttpStatusCode.NotFound index does not exist", ex.Message);            
+        }
 
         [Fact]
         public void CreateNewIndexAndMappingWithSimpleList()
