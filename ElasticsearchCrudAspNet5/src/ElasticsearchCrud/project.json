@@ -1,5 +1,5 @@
 ﻿{
-    "version": "2.0.2-rc1",
+    "version": "2.0.2.1-rc1",
     "description": "Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easy usage KISS",
     "authors": [ "damienbod" ],
     "tags": [ "Elasticseach", "HttpClient" ],
@@ -14,8 +14,8 @@
     "summary": "Elasticsearch HTTP client",
 
     "dependencies": {
-        "Newtonsoft.Json": "8.0.1-beta2",
-        "System.Net.Http": "4.0.1-rc2-23513"
+        "Newtonsoft.Json": "8.0.1-beta2"
+        
     },
 
     "frameworks": {
@@ -26,12 +26,14 @@
                 "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
                 "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
                 "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
-                
+
                 "Microsoft.CSharp": "4.0.1-beta-23516",
                 "System.Collections": "4.0.11-beta-23516",
                 "System.Console": "4.0.0-beta-23516",
                 "System.Linq": "4.0.1-beta-23516",
                 "System.Threading": "4.0.11-beta-23516",
+
+                "System.Net.Http": "4.0.1-rc2-23513",
 
                 "System.Runtime": "4.0.20-beta-23109",
                 "System.Reflection.TypeExtensions": "4.0.1-beta-23409"
@@ -43,15 +45,15 @@
                 "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
                 "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
                 "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
-                "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final"
-            },
-            "frameworkAssemblies": {
-                "System.ComponentModel.DataAnnotations": "4.0.0.0"
+                "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
+
+                "System.Net.Http": "4.0.1-rc2-23513"
             }
         },
         "net451": {
             "frameworkAssemblies": {
-                "System.ComponentModel.DataAnnotations": "4.0.0.0"
+                "System.ComponentModel.DataAnnotations": "4.0.0.0",
+                "System.Net.Http": "4.0.0.0"
             }
         }
     }
