@@ -7,7 +7,7 @@
   "licenseUrl": "",
 
     "dependencies": {
-        "ElasticsearchCrud": "2.0.1-rc1"
+        "ElasticsearchCrud": "2.0.2-rc1"
     },
 
   "commands": {

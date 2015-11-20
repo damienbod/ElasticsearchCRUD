@@ -14,19 +14,19 @@
     "summary": "Elasticsearch HTTP client",
 
     "dependencies": {
-        "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
-        "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
-        "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-        "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
-        "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
         "Newtonsoft.Json": "8.0.1-beta2",
         "System.Net.Http": "4.0.1-rc2-23513"
-
     },
 
     "frameworks": {
         "dnxcore50": {
             "dependencies": {
+                "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
+                "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
+                "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+                "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
+                "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
+                
                 "Microsoft.CSharp": "4.0.1-beta-23516",
                 "System.Collections": "4.0.11-beta-23516",
                 "System.Console": "4.0.0-beta-23516",
@@ -39,9 +39,20 @@
         },
         "dnx451": {
             "dependencies": {
-
+                "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
+                "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
+                "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
+                "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
+                "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final"
+            },
+            "frameworkAssemblies": {
+                "System.ComponentModel.DataAnnotations": "4.0.0.0"
             }
         },
-        "net451": { }
+        "net451": {
+            "frameworkAssemblies": {
+                "System.ComponentModel.DataAnnotations": "4.0.0.0"
+            }
+        }
     }
 }
