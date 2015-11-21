@@ -15,6 +15,11 @@ namespace ElasticsearchCRUD.Integration.Test
 
     public class GlobalApiTestsSearchCountTests : IDisposable
     {
+        public GlobalApiTestsSearchCountTests()
+        {
+            Setup();
+        }
+
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
         private const string ConnectionString = "http://localhost:9200";
 
@@ -209,7 +214,6 @@ namespace ElasticsearchCRUD.Integration.Test
             }
         }
 
-        [TestFixtureTearDown]
         public void FixtureTearDown()
         {
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -227,7 +231,6 @@ namespace ElasticsearchCRUD.Integration.Test
             }
         }
 
-        [TestFixtureSetUp]
         public void Setup()
         {
             _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(object), new GlobalElasticsearchMapping());
@@ -262,7 +265,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            FixtureTearDown();
         }
     }
 

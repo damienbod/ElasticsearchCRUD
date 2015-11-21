@@ -15,7 +15,17 @@ namespace ElasticsearchCRUD.Integration.Test
 
     public class SearchCreateScanAndScrollTests : IDisposable
     {
-		private List<ScanScrollTypeV1> _entitiesForTests;
+        public SearchCreateScanAndScrollTests()
+        {
+            SetUp();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        private List<ScanScrollTypeV1> _entitiesForTests;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
 		private const string ConnectionString = "http://localhost:9200";
@@ -28,7 +38,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		[SetUp]
 		public void SetUp()
 		{
 			_entitiesForTests = new List<ScanScrollTypeV1>();
@@ -48,7 +57,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		[TearDown]
 		public void TearDown()
 		{
 			_entitiesForTests = null;
@@ -171,11 +179,6 @@ namespace ElasticsearchCRUD.Integration.Test
 
 			return buildJson.ToString();
 		}
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 
 	public class ScanScrollTypeV1

@@ -14,10 +14,14 @@ namespace ElasticsearchCRUD.Integration.Test
 
     public class MappingTypeTests : IDisposable
     {
-		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+        public void Dispose()
+        {
+            FixtureTearDown();
+        }
+
+        private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[TestFixtureTearDown]
 		public void FixtureTearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -39,7 +43,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 		}
 
-		 [Fact]
+		[Fact]
 		public void CreateNewIndexAndMappingWithAllDisabled()
 		{
 			var indexDefinition = new IndexDefinition {IndexSettings = {NumberOfShards = 3, NumberOfReplicas = 1}};
@@ -149,11 +153,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id.ToString(), "1");
 			}
 		}
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 
 	public class MappingTypeAllTest

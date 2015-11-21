@@ -13,6 +13,16 @@ namespace ElasticsearchCRUD.Integration.Test
 
     public class DefaultElasticsearchCrudTests : IDisposable
     {
+        public DefaultElasticsearchCrudTests()
+        {
+            SetUp();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
         private List<SkillTestEntity> _entitiesForTests;
         private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
@@ -27,7 +37,6 @@ namespace ElasticsearchCRUD.Integration.Test
             }
         }
 
-        [SetUp]
         public void SetUp()
         {
             _entitiesForTests = new List<SkillTestEntity>();
@@ -59,7 +68,6 @@ namespace ElasticsearchCRUD.Integration.Test
             }
         }
 
-        [TearDown]
         public void TearDown()
         {
             _entitiesForTests = null;
@@ -713,11 +721,6 @@ namespace ElasticsearchCRUD.Integration.Test
                 Assert.Equal(ret.BlahBlah, "sss");
                 Assert.Equal(ret.Id, 3);
             }
-        }
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
         }
     }
 }
