@@ -134,7 +134,6 @@ http://localhost.fiddler:9200/parentdocuments/22/_search
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 
-
     public class OneToNEntitiesWithChildDocumentsTest : IDisposable
     {
         public OneToNEntitiesWithChildDocumentsTest()
@@ -503,6 +502,8 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
                 // Save to Elasticsearch
                 var ret = context.SaveChangesAndInitMappings();
+
+                Thread.Sleep(1500);
                 Assert.Equal(ret.Status, HttpStatusCode.OK);
 
                 context.GetDocument<ParentDocument>(parentDocument.Id);

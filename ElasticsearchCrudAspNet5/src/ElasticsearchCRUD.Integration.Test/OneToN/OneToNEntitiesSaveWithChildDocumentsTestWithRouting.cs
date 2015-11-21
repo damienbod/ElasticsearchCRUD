@@ -394,6 +394,8 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
                 // Save to Elasticsearch
                 var ret = context.SaveChangesAndInitMappings();
+
+                Thread.Sleep(1500);
                 Assert.Equal(ret.Status, HttpStatusCode.OK);
 
                 context.GetDocument<ParentDocumentUserDefinedRouting>(parentDocument.Id);
