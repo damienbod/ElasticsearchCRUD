@@ -107,7 +107,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
                     context.AddUpdateDocument(doc6, doc6.Id);
                     context.AddUpdateDocument(doc7, doc7.Id);
                     context.SaveChanges();
-                    Thread.Sleep(1200);
+                    Thread.Sleep(1500);
                 }			
 			}
 		}

@@ -44,13 +44,16 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				context.IndexCreate<SearchTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(doc1, doc1.Id);
-				context.AddUpdateDocument(doc2, doc2.Id);
-				context.AddUpdateDocument(doc3, doc3.Id);
-				context.SaveChanges();
-				Thread.Sleep(1200);
+			    if (!context.IndexExists<SearchTest>())
+			    {
+                    context.IndexCreate<SearchTest>();
+                    Thread.Sleep(1500);
+                    context.AddUpdateDocument(doc1, doc1.Id);
+                    context.AddUpdateDocument(doc2, doc2.Id);
+                    context.AddUpdateDocument(doc3, doc3.Id);
+                    context.SaveChanges();
+                    Thread.Sleep(1500);
+                }				
 			}
 		}
 
