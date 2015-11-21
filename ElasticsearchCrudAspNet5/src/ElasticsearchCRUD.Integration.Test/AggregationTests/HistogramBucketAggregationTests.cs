@@ -7,13 +7,17 @@ using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Sorting;
 using ElasticsearchCRUD.Model.Units;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-    using Xunit;
-
     public class HistogramBucketAggregationTests : SetupSearchAgg, IDisposable
     {
+        public HistogramBucketAggregationTests()
+        {
+            Setup();
+        }
+
 		[Fact]
 		public void SearchAggHistogramBucketAggregationWithNoHits()
 		{
@@ -310,7 +314,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            TearDown();
         }
     }
 }

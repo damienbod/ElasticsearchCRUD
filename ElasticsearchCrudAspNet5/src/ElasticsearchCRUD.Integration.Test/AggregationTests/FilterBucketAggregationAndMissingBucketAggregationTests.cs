@@ -7,15 +7,18 @@ using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.Units;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-    using System;
-
-    using Xunit;
-
     public class FilterBucketAggregationAndMissingBucketAggregationTests : SetupSearchAgg, IDisposable
     {
+        public FilterBucketAggregationAndMissingBucketAggregationTests()
+        {
+            Setup();
+        }
+
 		[Fact]
 		public void SearchAggFilterBucketAggregationWithNoHits()
 		{
@@ -234,7 +237,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            TearDown();
         }
     }
 }

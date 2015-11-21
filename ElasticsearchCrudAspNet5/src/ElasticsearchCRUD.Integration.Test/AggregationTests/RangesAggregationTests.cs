@@ -6,13 +6,18 @@ using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations.RangeParam;
-using NUnit.Framework;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-	[TestFixture]
-	public class RangessAggregationTests : SetupSearchAgg
-	{
+    public class RangessAggregationTests : SetupSearchAgg, IDisposable
+    {
+        public RangessAggregationTests()
+        {
+            Setup();
+        }
+
 		[Fact]
 		public void SearchAggRangesBucketAggregationWithNoHits()
 		{
@@ -31,11 +36,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesBucketAggregationsResult>("testRangesBucketAggregation");
-				Assert.AreEqual(6, aggResult.Buckets[2].DocCount);
-				Assert.AreEqual("2.0", aggResult.Buckets[2].FromAsString);
+				Assert.Equal(6, aggResult.Buckets[2].DocCount);
+				Assert.Equal("2.0", aggResult.Buckets[2].FromAsString);
 			}
 		}
 
@@ -60,12 +65,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesNamedBucketAggregationsResult>("testRangesBucketAggregation");
 				var test = aggResult.Buckets.GetSubAggregationsFromJTokenName<RangeBucket>("2.0-*");
 
-				Assert.AreEqual("2.0", test.FromAsString);
+				Assert.Equal("2.0", test.FromAsString);
 			}
 		}
 
@@ -96,11 +101,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesBucketAggregationsResult>("testRangesBucketAggregation");
-				Assert.AreEqual(6, aggResult.Buckets[2].DocCount);
-				Assert.AreEqual("three", aggResult.Buckets[2].Key);
+				Assert.Equal(6, aggResult.Buckets[2].DocCount);
+				Assert.Equal("three", aggResult.Buckets[2].Key);
 			}
 		}
 
@@ -134,12 +139,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesNamedBucketAggregationsResult>("testRangesBucketAggregation");
 				var test = aggResult.Buckets.GetSubAggregationsFromJTokenName<RangeBucket>("three");
 
-				Assert.AreEqual("2.0", test.FromAsString);
+				Assert.Equal("2.0", test.FromAsString);
 			}
 		}
 
@@ -176,13 +181,13 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesBucketAggregationsResult>("testRangesBucketAggregation");
 				var max = aggResult.Buckets[2].GetSingleMetricSubAggregationValue<double>("maxi");
-				Assert.AreEqual(6, aggResult.Buckets[2].DocCount);
-				Assert.AreEqual("three", aggResult.Buckets[2].Key);
-				Assert.AreEqual(2.9, max);
+				Assert.Equal(6, aggResult.Buckets[2].DocCount);
+				Assert.Equal("three", aggResult.Buckets[2].Key);
+				Assert.Equal(2.9, max);
 			}
 		}
 
@@ -204,10 +209,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesBucketAggregationsResult>("testRangesBucketAggregation");
-				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
+				Assert.Equal(7, aggResult.Buckets[2].DocCount);
 			}
 		}
 
@@ -235,12 +240,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<RangesNamedBucketAggregationsResult>("testRangesBucketAggregation");
 				var test = aggResult.Buckets.GetSubAggregationsFromJTokenName<RangeBucket>("keyName");
 
-				Assert.AreEqual(7, test.DocCount);			
+				Assert.Equal(7, test.DocCount);			
 			}
 		}
 
@@ -263,11 +268,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeoDistanceBucketAggregationsResult>("testGeoDistanceBucketAggregation");
-				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
-				Assert.AreEqual(500, aggResult.Buckets[2].From);
+				Assert.Equal(7, aggResult.Buckets[2].DocCount);
+				Assert.Equal<uint>(500, aggResult.Buckets[2].From);
 			}
 		}
 
@@ -294,11 +299,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeoDistanceBucketAggregationsResult>("testGeoDistanceBucketAggregation");
-				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
-				Assert.AreEqual(500, aggResult.Buckets[2].From);
+				Assert.Equal(7, aggResult.Buckets[2].DocCount);
+				Assert.Equal<uint>(500, aggResult.Buckets[2].From);
 			}
 		}
 
@@ -329,14 +334,19 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GeoDistanceBucketAggregationsResult>("testGeoDistanceBucketAggregation");
 				var hits = aggResult.Buckets[2].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("tops");
-				Assert.AreEqual(7, aggResult.Buckets[2].DocCount);
-				Assert.AreEqual(500, aggResult.Buckets[2].From);
-				Assert.AreEqual(7, hits.Hits.Total);
+				Assert.Equal(7, aggResult.Buckets[2].DocCount);
+				Assert.Equal<uint>(500, aggResult.Buckets[2].From);
+				Assert.Equal(7, hits.Hits.Total);
 			}
 		}
-	}
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+    }
 }

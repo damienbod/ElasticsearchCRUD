@@ -4,15 +4,18 @@ using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Sorting;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-    using System;
-
-    using Xunit;
-
     public class GlobalBucketAggregationTests : SetupSearchAgg, IDisposable
     {
+        public GlobalBucketAggregationTests()
+        {
+            Setup();
+        }
+
 		[Fact]
 		public void SearchAggGlobalBucketAggregationWithNoHits()
 		{
@@ -98,7 +101,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            TearDown();
         }
     }
 }
