@@ -33,7 +33,7 @@ namespace ElasticsearchCRUD.Integration.Test
         {
             if (!_resetEvent.WaitOne(5000))
             {
-                Assert.Fail("No data received within specified time");
+                throw new Exception("No data received within specified time");
             }
         }
 
@@ -139,38 +139,46 @@ namespace ElasticsearchCRUD.Integration.Test
         }
         
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextCount: Index not found")]
         public void TestDefaultContextCountWithNoIndex()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                 context.Count<SkillTestEntityNoIndex>();
-            }
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.Count<SkillTestEntityNoIndex>();
+                }
+            });
+
+            Assert.Equal("ElasticsearchContextCount: Index not found", ex.Message);   
         }
 
         [Fact]
-        [ExpectedException(typeof(AggregateException))]
         public void TestDefaultContextAddEntitySaveChangesAsyncBadUrl()
         {
-            using (var context = new ElasticsearchContext("http://locaghghghlhost:9200/", _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                context.AddUpdateDocument(_entitiesForTests[1], 1);
-                var ret = context.SaveChangesAsync();
-                Console.WriteLine(ret.Result.Status);
-            }
+                using (var context = new ElasticsearchContext("http://locaghghghlhost:9200/", _elasticsearchMappingResolver))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    context.AddUpdateDocument(_entitiesForTests[1], 1);
+                    var ret = context.SaveChangesAsync();
+                    Console.WriteLine(ret.Result.Status);
+                }
+            });
         }
 
         [Fact]
-        [ExpectedException(typeof(HttpRequestException))]
         public void TestDefaultContextAddEntitySaveChangesBadUrl()
         {
-            using (var context = new ElasticsearchContext("http://locaghghghlhost:9200/", _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                context.AddUpdateDocument(_entitiesForTests[1], 1);
-                context.SaveChanges();
-            }
+                using (var context = new ElasticsearchContext("http://locaghghghlhost:9200/", _elasticsearchMappingResolver))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    context.AddUpdateDocument(_entitiesForTests[1], 1);
+                    context.SaveChanges();
+                }
+            });
         }
 
         [Fact]
@@ -307,43 +315,54 @@ namespace ElasticsearchCRUD.Integration.Test
         }
 
         [Fact]
-        [ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
         public void TestDefaultContextGetEntityNotFound()
         {
             const int entityId = 39994;
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                // Get the entity
-                var entityResult = context.GetDocument<SkillTestEntity>(entityId);
-                Assert.Equal(entityResult.Id, entityId);
-            }
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    // Get the entity
+                    var entityResult = context.GetDocument<SkillTestEntity>(entityId);
+                    Assert.Equal(entityResult.Id, entityId);
+                }
+            });
+
+            Assert.Equal("ElasticSearchContextGet: HttpStatusCode.NotFound", ex.Message);
         }
 
         [Fact]
-        [ExpectedException(typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
         public void TestDefaultContextGetEntityIndexNotFound()
         {
             const int entityId = 39994;
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                // Get the entity
-                var entityResult = context.GetDocument<SkillTestEntityNoIndex>(entityId);
-                Assert.Equal(entityResult.Id, entityId);
-            }
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    // Get the entity
+                    var entityResult = context.GetDocument<SkillTestEntityNoIndex>(entityId);
+                    Assert.Equal(entityResult.Id, entityId);
+                }
+            });
+
+            Assert.Equal("ElasticSearchContextGet: HttpStatusCode.NotFound", ex.Message);
         }
 
         [Fact]
-        [ExpectedException(typeof(HttpRequestException))]
         public void TestDefaultContextGetEntityBadUrl()
         {
             const int entityId = 34;
-            using (var context = new ElasticsearchContext("http://localghghghhost:9200/", _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                context.GetDocument<SkillTestEntity>(entityId);
-            }
+                using (var context = new ElasticsearchContext("http://localghghghhost:9200/", _elasticsearchMappingResolver))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    context.GetDocument<SkillTestEntity>(entityId);
+                }
+            }); 
         }
 
         [Fact]
@@ -414,35 +433,37 @@ namespace ElasticsearchCRUD.Integration.Test
 
 
         [Fact]
-        [ExpectedException(typeof(ElasticsearchCrudException))]
         public void TestDefaultContextDeleteEntityWhichDoesNotExist()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                // Delete the entity
-                context.DeleteDocument<SkillTestEntity>(6433);
-                context.DeleteDocument<SkillTestEntity>(22222);
-
-                var task = Task.Run(() => context.SaveChangesAsync());
-
-            try
-            {
-                task.Wait();
-                }
-                catch (AggregateException ae)
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
                 {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    // Delete the entity
+                    context.DeleteDocument<SkillTestEntity>(6433);
+                    context.DeleteDocument<SkillTestEntity>(22222);
 
-                    ae.Handle(x =>
+                    var task = Task.Run(() => context.SaveChangesAsync());
+
+                    try
                     {
-                        if (x is ElasticsearchCrudException) // This is what we expect.
+                        task.Wait();
+                    }
+                    catch (AggregateException ae)
+                    {
+
+                        ae.Handle(x =>
                         {
-                            throw x;
-                        }
-                        return false; // stop.
-                    });
+                            if (x is ElasticsearchCrudException) // This is what we expect.
+                            {
+                                throw x;
+                            }
+                            return false; // stop.
+                        });
+                    }
                 }
-            }
+            });
         }
 
         [Fact]
@@ -510,33 +531,35 @@ namespace ElasticsearchCRUD.Integration.Test
         }
 
         [Fact]
-        [ExpectedException(typeof(ElasticsearchCrudException))]
         public void TestDefaultContextDeleteIndexNotActivated()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                var entityResult = context.DeleteIndexAsync<SkillTestEntity>();
-
-                try
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
                 {
-                    entityResult.Wait();
-                }
-                catch (AggregateException ae)
-                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    var entityResult = context.DeleteIndexAsync<SkillTestEntity>();
 
-                    ae.Handle(x =>
+                    try
                     {
-                        if (x is ElasticsearchCrudException) // This is what we expect.
-                        {
-                            throw x;
-                        }
-                        return false; // stop.
-                    });
-                }
+                        entityResult.Wait();
+                    }
+                    catch (AggregateException ae)
+                    {
 
-                Assert.Equal(entityResult.Result.Status, HttpStatusCode.OK);
-            }
+                        ae.Handle(x =>
+                        {
+                            if (x is ElasticsearchCrudException) // This is what we expect.
+                            {
+                                throw x;
+                            }
+                            return false; // stop.
+                        });
+                    }
+
+                    Assert.Equal(entityResult.Result.Status, HttpStatusCode.OK);
+                }
+            });
         }
 
         [Fact]
@@ -563,38 +586,44 @@ namespace ElasticsearchCRUD.Integration.Test
         /// bin/plugin install delete-by-query
         /// </summary>
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
         public void TestDefaultContextDeleteByQuerySingleDocumentWithId()
         {
             const int documentId = 153;
             string deleteJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                for (int i = 150; i < 160; i++)
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
                 {
-                    context.AddUpdateDocument(_entitiesForTests[i-150], i);
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    for (int i = 150; i < 160; i++)
+                    {
+                        context.AddUpdateDocument(_entitiesForTests[i - 150], i);
+                    }
+                    // Save to Elasticsearch
+                    var ret = context.SaveChanges();
+
+                    // Wait for Elasticsearch to update
+                    long foundBefore = 0;
+
+                    Thread.Sleep(1500);
+                    foundBefore = context.Count<SkillTestEntity>();
+
+
+                    Assert.Equal(ret.Status, HttpStatusCode.OK);
+                    context.DeleteByQuery<SkillTestEntity>(deleteJson);
+
+                    Thread.Sleep(1500);
+                    long foundAfter = context.Count<SkillTestEntity>();
+
+                    Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
+                    Assert.InRange(foundAfter, foundBefore, 1000000);
+                    context.GetDocument<SkillTestEntity>(documentId);
                 }
-                // Save to Elasticsearch
-                var ret = context.SaveChanges();
+            });
 
-                // Wait for Elasticsearch to update
-                long foundBefore = 0;
+            Assert.Equal("ElasticSearchContextGet: HttpStatusCode.NotFound", ex.Message);
 
-                Thread.Sleep(1500);
-                foundBefore = context.Count<SkillTestEntity>();
-
-                            
-                Assert.Equal(ret.Status, HttpStatusCode.OK);
-                context.DeleteByQuery<SkillTestEntity>(deleteJson);
-
-                Thread.Sleep(1500);
-                long foundAfter = context.Count<SkillTestEntity>();
-
-                Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
-                Assert.Greater(foundBefore, foundAfter);
-                context.GetDocument<SkillTestEntity>(documentId);
-            }
         }
 
         /// <summary>
@@ -602,36 +631,41 @@ namespace ElasticsearchCRUD.Integration.Test
         /// bin/plugin install delete-by-query
         /// </summary>
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
         public void TestDefaultContextDeleteByQueryForTwoDocumentsWithIdQuery()
         {
             const int documentId153 = 153;
             const int documentId155 = 155;
 
             string deleteJson = "{\"query\": { \"ids\": { \"values\":  [\"" + documentId153 + "\", \"" + documentId155 + "\"]  }}}";
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                for (int i = 150; i < 160; i++)
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
                 {
-                    context.AddUpdateDocument(_entitiesForTests[i - 150], i);
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    for (int i = 150; i < 160; i++)
+                    {
+                        context.AddUpdateDocument(_entitiesForTests[i - 150], i);
+                    }
+                    // Save to Elasticsearch
+                    var ret = context.SaveChanges();
+
+                    Thread.Sleep(1500);
+                    var foundBefore = context.Count<SkillTestEntity>();
+
+                    Assert.Equal(ret.Status, HttpStatusCode.OK);
+                    context.DeleteByQuery<SkillTestEntity>(deleteJson);
+
+                    Thread.Sleep(1500);
+                    var foundAfter = context.Count<SkillTestEntity>();
+
+                    Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
+                    Assert.InRange(foundAfter, foundBefore - 1,100000 );
+                    context.GetDocument<SkillTestEntity>(documentId153);
                 }
-                // Save to Elasticsearch
-                var ret = context.SaveChanges();
+            });
 
-                Thread.Sleep(1500);
-                var foundBefore = context.Count<SkillTestEntity>();
-
-                Assert.Equal(ret.Status, HttpStatusCode.OK);
-                context.DeleteByQuery<SkillTestEntity>(deleteJson);
-
-                Thread.Sleep(1500);
-                var foundAfter = context.Count<SkillTestEntity>();
-
-                Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
-                Assert.Greater(foundBefore -1, foundAfter);
-                context.GetDocument<SkillTestEntity>(documentId153);
-            }
+            Assert.Equal("ElasticSearchContextGet: HttpStatusCode.NotFound", ex.Message);
         }
         [Fact]
         public void TestDefaultContextClearCache()
@@ -652,42 +686,52 @@ namespace ElasticsearchCRUD.Integration.Test
         }
 
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextClearCache: Could nor clear cache for index skilltestentitynoindexs")]
         public void TestDefaultContextClearCacheForNoIndex()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                Assert.True(context.IndexClearCache<SkillTestEntityNoIndex>());
-            }
-        }
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    Assert.True(context.IndexClearCache<SkillTestEntityNoIndex>());
+                }
+            });
 
+            Assert.Equal("ElasticsearchContextClearCache: Could nor clear cache for index skilltestentitynoindexs", ex.Message);
+        }
 
         /// <summary>
         /// https://www.elastic.co/guide/en/elasticsearch/plugins/2.0/plugins-delete-by-query.html
         /// bin/plugin install delete-by-query
         /// </summary>
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticSearchContextGet: HttpStatusCode.NotFound")]
         public void TestDefaultContextDeleteByQuerySingleDocumentWithNonExistingId()
         {
             const int documentId = 965428;
             string deleteJson = "{\"query\": { \"term\": { \"_id\": \"" + documentId + "\" }}}";
-            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-            {
-                context.TraceProvider = new ConsoleTraceProvider();
-                for (int i = 150; i < 160; i++)
-                {
-                    context.AddUpdateDocument(_entitiesForTests[i - 150], i);
-                }
 
-                // Save to Elasticsearch
-                var ret = context.SaveChanges();
-                Thread.Sleep(1500);
-                Assert.Equal(ret.Status, HttpStatusCode.OK);
-                context.DeleteByQuery<SkillTestEntity>(deleteJson);
-                Thread.Sleep(1500);
-                context.GetDocument<SkillTestEntity>(documentId);
-            }
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    for (int i = 150; i < 160; i++)
+                    {
+                        context.AddUpdateDocument(_entitiesForTests[i - 150], i);
+                    }
+
+                    // Save to Elasticsearch
+                    var ret = context.SaveChanges();
+                    Thread.Sleep(1500);
+                    Assert.Equal(ret.Status, HttpStatusCode.OK);
+                    context.DeleteByQuery<SkillTestEntity>(deleteJson);
+                    Thread.Sleep(1500);
+                    context.GetDocument<SkillTestEntity>(documentId);
+                }
+            });
+
+            Assert.Equal("ElasticSearchContextGet: HttpStatusCode.NotFound", ex.Message);
+
+            
         }
 
         [Fact]
