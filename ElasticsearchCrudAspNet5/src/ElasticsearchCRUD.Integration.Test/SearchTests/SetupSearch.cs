@@ -1,7 +1,6 @@
 using System;
 using System.Threading;
 using ElasticsearchCRUD.Model.GeoModel;
-using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
@@ -10,7 +9,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		protected const string ConnectionString = "http://localhost:9200";
 
-		[TestFixtureSetUp]
 		public void Setup()
 		{
 			var doc1 = new SearchTest
@@ -56,7 +54,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[TestFixtureTearDown]
 		public void TearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))

@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void OptimizeParametersPefaultTest()
 		{
 			var optimizeParameters = new OptimizeParameters();
-			Assert.IsNullOrEmpty(optimizeParameters.GetOptimizeParameters());
+			Assert.NullOrEmpty(optimizeParameters.GetOptimizeParameters());
 		}
 
 		 [Fact]

@@ -5,7 +5,9 @@ using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-	[TestFixture]
+    using Xunit;
+
+    [TestFixture]
 	public class SpecialMappingElasticsearchCrudTests
 	{
 		private List<SkillTestEntity> _entitiesForTests;
@@ -74,7 +76,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChangesAsync();
-				Assert.AreEqual(ret.Result.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Result.Status, HttpStatusCode.OK);
 			}
 		}
 	}

@@ -7,7 +7,9 @@ using NUnit.Framework;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-	[TestFixture]
+    using Xunit;
+
+    [TestFixture]
 	public class ComplexRelationsTests
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
@@ -89,16 +91,16 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneArray>(data.Id);
-				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
-				Assert.AreEqual(
+				Assert.Equal(data.DescriptionOne, roundTripData.DescriptionOne);
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoArray.First().DescriptionTwo,
 					roundTripData.TestNestedDocumentLevelTwoArray.First().DescriptionTwo
 					);
-				Assert.AreEqual(
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.DescriptionThree,
 					roundTripData.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.DescriptionThree
 					);
-				Assert.AreEqual(
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.TestNestedDocumentLevelFourArray.First().DescriptionFour,
 					roundTripData.TestNestedDocumentLevelTwoArray.First().TestNestedDocumentLevelThreeArray.TestNestedDocumentLevelFourArray.First().DescriptionFour
 					);
@@ -167,16 +169,16 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneCollection>(data.Id);
-				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
-				Assert.AreEqual(
+				Assert.Equal(data.DescriptionOne, roundTripData.DescriptionOne);
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoCollection.First().DescriptionTwo,
 					roundTripData.TestNestedDocumentLevelTwoCollection.First().DescriptionTwo
 					);
-				Assert.AreEqual(
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.DescriptionThree,
 					roundTripData.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.DescriptionThree
 					);
-				Assert.AreEqual(
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.TestNestedDocumentLevelFourCollection.First().DescriptionFour,
 					roundTripData.TestNestedDocumentLevelTwoCollection.First().TestNestedDocumentLevelThreeCollection.TestNestedDocumentLevelFourCollection.First().DescriptionFour
 					);
@@ -251,16 +253,16 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
 				var roundTripData = context.GetDocument<TestNestedDocumentLevelOneHashSet>(data.Id);
-				Assert.AreEqual(data.DescriptionOne, roundTripData.DescriptionOne);
-				Assert.AreEqual(
+				Assert.Equal(data.DescriptionOne, roundTripData.DescriptionOne);
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoHashSet.First().DescriptionTwo, 
 					roundTripData.TestNestedDocumentLevelTwoHashSet.First().DescriptionTwo
 					);
-				Assert.AreEqual(
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoHashSet.First().TestNestedDocumentLevelThreeHashSet.DescriptionThree,
 					roundTripData.TestNestedDocumentLevelTwoHashSet.First().TestNestedDocumentLevelThreeHashSet.DescriptionThree
 					);
-				Assert.AreEqual(
+				Assert.Equal(
 					data.TestNestedDocumentLevelTwoHashSet.First().TestNestedDocumentLevelThreeHashSet.TestNestedDocumentLevelFour.First().DescriptionFour,
 					roundTripData.TestNestedDocumentLevelTwoHashSet.First().TestNestedDocumentLevelThreeHashSet.TestNestedDocumentLevelFour.First().DescriptionFour
 					);
@@ -299,12 +301,12 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillDocument>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
-				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelOne.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelOne.First().NameSkillParent);
-				Assert.AreEqual(
+				Assert.Equal(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.Equal(roundTripResult.SkillNestedDocumentLevelOne.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelOne.First().NameSkillParent);
+				Assert.Equal(
 					roundTripResult.SkillNestedDocumentLevelOne.First().SkillNestedDocumentLevelTwo.First().NameSkillParent,
 					testSkillParentObject.SkillNestedDocumentLevelOne.First().SkillNestedDocumentLevelTwo.First().NameSkillParent);
 			}

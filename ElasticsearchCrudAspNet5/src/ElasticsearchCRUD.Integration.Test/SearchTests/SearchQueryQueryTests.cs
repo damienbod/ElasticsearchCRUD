@@ -5,23 +5,33 @@ using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
-using NUnit.Framework;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
-	[TestFixture]
-	public class SearchQueryQueryTests : SetupSearch
-	{
-		[Fact]
+	public class SearchQueryQueryTests : SetupSearch, IDisposable
+    {
+        public SearchQueryQueryTests()
+        {
+            Setup();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchQueryTermQuery()
 		{
 			var search = new Search { Query = new Query(new TermQuery("name", "one") { Boost = 2.0 }) };
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -32,9 +42,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -45,10 +55,10 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[1].Source.Id);
+				Assert.Equal(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(1, items.PayloadResult.Hits.HitsResult[1].Source.Id);
 			}
 		}
 
@@ -69,9 +79,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -105,9 +115,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -118,9 +128,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -148,9 +158,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(1, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 		
@@ -161,9 +171,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(2, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 		
@@ -181,9 +191,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+				Assert.Equal(2, items.PayloadResult.Hits.Total);
 			}
 		}
 
@@ -201,9 +211,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+				Assert.Equal(1, items.PayloadResult.Hits.Total);
 			}
 		}
 
@@ -223,9 +233,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+				Assert.Equal(1, items.PayloadResult.Hits.Total);
 			}
 		}
 
@@ -243,9 +253,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(1, items.PayloadResult.Hits.Total);
+				Assert.Equal(1, items.PayloadResult.Hits.Total);
 			}
 		}
 
@@ -277,9 +287,9 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
 				context.TraceProvider = new ConsoleTraceProvider();
-				Assert.IsTrue(context.IndexTypeExists<SearchTest>());
+				Assert.True(context.IndexTypeExists<SearchTest>());
 				var items = context.Search<SearchTest>(search);
-				Assert.AreEqual(2, items.PayloadResult.Hits.Total);
+				Assert.Equal(2, items.PayloadResult.Hits.Total);
 			}
 		}
 

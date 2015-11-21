@@ -45,13 +45,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<NestedCollectionTest>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
-				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
-				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
-				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
+				Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
 			}
 		}
 
@@ -74,7 +74,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 			}
 
 			Thread.Sleep(1200);
@@ -88,9 +88,9 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search);
-				Assert.AreEqual(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -113,7 +113,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 			}
 
 			Thread.Sleep(1200);
@@ -130,9 +130,9 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search);
-				Assert.AreEqual(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -155,7 +155,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 			}
 
 			Thread.Sleep(1200);
@@ -169,9 +169,9 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search);
-				Assert.AreEqual(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
 			}
 		}
 
@@ -194,7 +194,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 			}
 
 			Thread.Sleep(1200);
@@ -236,7 +236,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 			}
 
 			Thread.Sleep(1200);
@@ -251,10 +251,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
-				Assert.AreEqual(3, aggResult.DocCount);
+				Assert.Equal(3, aggResult.DocCount);
 			}
 		}
 
@@ -277,7 +277,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 			}
 
 			Thread.Sleep(1200);
@@ -298,11 +298,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
 				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
-				Assert.AreEqual(3, aggResult.DocCount);
+				Assert.Equal(3, aggResult.DocCount);
 				Assert.Greater(max, 1423210851080);
 			}
 		}
@@ -326,7 +326,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				Thread.Sleep(1200);
 				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 			}
 
 			Thread.Sleep(1200);
@@ -354,17 +354,17 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<NestedCollectionTest>());
+				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
 				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
 				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
 				var nesteTestResult = aggResult.GetSubAggregationsFromJTokenName<ReverseNestedBucketAggregationsResult>("goingUp");
 				var termParentAgg = nesteTestResult.GetSubAggregationsFromJTokenName<TermsBucketAggregationsResult>("termParent");
 
-				Assert.AreEqual(3, aggResult.DocCount);
+				Assert.Equal(3, aggResult.DocCount);
 				Assert.Greater(max, 1423210851080);
-				Assert.AreEqual(1, nesteTestResult.DocCount);
-				Assert.AreEqual("a", termParentAgg.Buckets[0].Key);
+				Assert.Equal(1, nesteTestResult.DocCount);
+				Assert.Equal("a", termParentAgg.Buckets[0].Key);
 			}
 		}
 

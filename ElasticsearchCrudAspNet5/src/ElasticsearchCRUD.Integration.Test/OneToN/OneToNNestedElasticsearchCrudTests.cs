@@ -4,18 +4,25 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using ElasticsearchCRUD.Tracing;
-using NUnit.Framework;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-	[TestFixture]
-	public class OneToNNestedElasticsearchCrudTests
+	public class OneToNNestedElasticsearchCrudTests : IDisposable
 	{
-		private List<SkillChild> _entitiesForSkillChild;
+	    public OneToNNestedElasticsearchCrudTests()
+	    {
+	        SetUp();
+	    }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+        private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[SetUp]
 		public void SetUp()
 		{
 			_entitiesForSkillChild = new List<SkillChild>();
@@ -35,7 +42,6 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[TearDown]
 		public void TearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -80,11 +86,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentCollection>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
-				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
 			}
 		}
 
@@ -109,11 +115,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentCollection>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
-				Assert.AreEqual(roundTripResult.SkillChildren, null);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.SkillChildren, null);
 			}
 		}
 
@@ -137,13 +143,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentCollection>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
-				Assert.AreEqual(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
-				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
-				Assert.AreEqual(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
+				Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
 			}
 		}
 
@@ -166,10 +172,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentCollection>(skill.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
 
@@ -191,10 +197,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentCollection>(skill.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
 
@@ -221,11 +227,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
-				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
+				Assert.Equal(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.Equal(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
 			}
 		}
 
@@ -246,12 +252,12 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
-				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
-				Assert.AreEqual(roundTripResult.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent);
+				Assert.Equal(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.Equal(roundTripResult.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.First().NameSkillParent);
+				Assert.Equal(roundTripResult.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent, testSkillParentObject.SkillNestedDocumentLevelTwoHashSet.Single(t => t.Id == 2).NameSkillParent);
 			}
 		}
 
@@ -272,10 +278,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.Equal(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
 			}
 		}
 
@@ -295,10 +301,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillDocumentHastSet>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
+				Assert.Equal(roundTripResult.NameSkillParent, testSkillParentObject.NameSkillParent);
 			}
 		}
 
@@ -327,11 +333,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentArray>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
-				Assert.AreEqual(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
 			}
 		}
 
@@ -356,13 +362,13 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentArray>(testSkillParentObject.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
-				Assert.AreEqual(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
-				Assert.AreEqual(roundTripResult.SkillChildren[1].DescriptionSkillChild, testSkillParentObject.SkillChildren[1].DescriptionSkillChild);
-				Assert.AreEqual(roundTripResult.SkillChildren[2].DescriptionSkillChild, testSkillParentObject.SkillChildren[2].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.SkillChildren[0].DescriptionSkillChild, testSkillParentObject.SkillChildren[0].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.SkillChildren[1].DescriptionSkillChild, testSkillParentObject.SkillChildren[1].DescriptionSkillChild);
+				Assert.Equal(roundTripResult.SkillChildren[2].DescriptionSkillChild, testSkillParentObject.SkillChildren[2].DescriptionSkillChild);
 			}
 		}
 
@@ -385,10 +391,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillParentArray>(skill.Id);
-				Assert.AreEqual(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
+				Assert.Equal(roundTripResult.DescriptionSkillParent, skill.DescriptionSkillParent);
 			}
 		}
 
@@ -412,10 +418,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var returned = context.GetDocument<SkillWithIntCollection>(2);
-				Assert.AreEqual(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
+				Assert.Equal(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
 			}
 		}
 
@@ -431,12 +437,12 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 
 				var returned = context.GetDocument<SkillWithIntCollection>(3);
-				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
-				Assert.IsNull(returned.MyIntArray);
+				Assert.Equal(skillWithIntArray.BlahBlah, returned.BlahBlah);
+				Assert.Null(returned.MyIntArray);
 			}
 		}
 
@@ -461,12 +467,12 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var returned = context.GetDocument<SkillWithStringLongAndDoubleCollection>(2);
-				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
-				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
-				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
+				Assert.Equal(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
+				Assert.Equal(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
+				Assert.Equal(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
 			}
 		}
 
@@ -491,10 +497,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var returned = context.GetDocument<SkillWithIntArray>(2);
-				Assert.AreEqual(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
+				Assert.Equal(skillWithIntArray.MyIntArray[2], returned.MyIntArray[2]);
 			}
 		}
 	
@@ -509,11 +515,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var returned = context.GetDocument<SkillWithIntArray>(3);
-				Assert.AreEqual(skillWithIntArray.BlahBlah, returned.BlahBlah, "Round Trip not the same");
-				Assert.IsNull(returned.MyIntArray);
+				Assert.Equal(skillWithIntArray.BlahBlah, returned.BlahBlah);
+				Assert.Null(returned.MyIntArray);
 			}
 		}
 
@@ -538,12 +544,12 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var returned = context.GetDocument<SkillWithStringLongAndDoubleArray>(2);
-				Assert.AreEqual(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
-				Assert.AreEqual(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
-				Assert.AreEqual(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
+				Assert.Equal(skillWithIntArray.MyStringArray[2], returned.MyStringArray[2]);
+				Assert.Equal(skillWithIntArray.MyDoubleArray[1], returned.MyDoubleArray[1]);
+				Assert.Equal(skillWithIntArray.MyLongArray[1], returned.MyLongArray[1]);
 			}
 		}
 
@@ -567,10 +573,10 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillWithSingleChild>(skillWithSingleChild.Id);
-				Assert.AreEqual(roundTripResult.MySkillSingleChildElement.Details, skillWithSingleChild.MySkillSingleChildElement.Details);
+				Assert.Equal(roundTripResult.MySkillSingleChildElement.Details, skillWithSingleChild.MySkillSingleChildElement.Details);
 			}
 		}
 
@@ -585,14 +591,14 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 				// Save to Elasticsearch
 				var ret = context.SaveChanges();
-				Assert.AreEqual(ret.Status, HttpStatusCode.OK);
+				Assert.Equal(ret.Status, HttpStatusCode.OK);
 
 				var roundTripResult = context.GetDocument<SkillWithSingleChild>(skillWithSingleChild.Id);
-				Assert.AreEqual(roundTripResult.BlahBlah, skillWithSingleChild.BlahBlah);
+				Assert.Equal(roundTripResult.BlahBlah, skillWithSingleChild.BlahBlah);
 			}
 		}
 
-		#endregion NESTED Object
+        #endregion NESTED Object
 
-	}
+    }
 }

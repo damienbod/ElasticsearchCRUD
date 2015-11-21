@@ -5,17 +5,26 @@ using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Utils;
-using NUnit.Framework;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.SearchTests
 {
-	[TestFixture]
-	public class SearchQueryQueryChidrenBucketAggregationTests
-	{
-		protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
+	public class SearchQueryQueryChidrenBucketAggregationTests : IDisposable
+    {
+        public SearchQueryQueryChidrenBucketAggregationTests()
+        {
+            Setup();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		protected const string ConnectionString = "http://localhost:9200";
 
-	
 		[Fact]
 		public void SearchAggTermsBucketAggregationnWithChildrenSubAggNoHits()
 		{
@@ -41,18 +50,17 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<TestObjParentSep>());
-				Assert.IsTrue(context.IndexTypeExists<TestObjChildSep>());
+				Assert.True(context.IndexTypeExists<TestObjParentSep>());
+				Assert.True(context.IndexTypeExists<TestObjChildSep>());
 
 				var items = context.Search<TestObjParentSep>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
 
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
+				Assert.Equal(3, aggResult.Buckets[0].DocCount);
 
 			}
 		}
 
-		[TestFixtureSetUpAttribute]
 		public void Setup()
 		{
 			var doc1 = new TestObjParentSep
@@ -117,7 +125,6 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
 			}
 		}
 
-		[TestFixtureTearDown]
 		public void TearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
