@@ -49,7 +49,7 @@ namespace ElasticsearchCRUD.Integration.Test
                 Thread.Sleep(1500);
                 var result = context.IndexOptimize("mappingtestsparentwithsimplenullandnullarraylists", new OptimizeParameters{NumberOfShards=3, Flush=true});
 
-                Assert.InRange(result.PayloadResult.Shards.Successful, 1, 1000000);
+                Assert.InRange(result.PayloadResult.Shards.Successful, 2, 1000000);
             }
         }
 
