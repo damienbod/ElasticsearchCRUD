@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void OptimizeParametersPefaultTest()
 		{
 			var optimizeParameters = new OptimizeParameters();
-			Assert.Null(optimizeParameters.GetOptimizeParameters());
+			Assert.Empty(optimizeParameters.GetOptimizeParameters());         
 		}
 
 		 [Fact]
@@ -87,7 +87,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+           
         }
     }
 

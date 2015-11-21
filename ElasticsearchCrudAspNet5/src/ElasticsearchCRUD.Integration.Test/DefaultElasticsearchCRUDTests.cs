@@ -660,7 +660,7 @@ namespace ElasticsearchCRUD.Integration.Test
                     var foundAfter = context.Count<SkillTestEntity>();
 
                     Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
-                    Assert.InRange(foundAfter, foundBefore - 1,100000 );
+                    Assert.InRange(foundAfter, foundBefore - 2,100000 );
                     context.GetDocument<SkillTestEntity>(documentId153);
                 }
             });
