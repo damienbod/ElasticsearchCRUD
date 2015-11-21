@@ -55,6 +55,10 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <strong>Examples:</strong>
 
+<a href="http://damienbod.com/2015/11/17/using-elasticsearch-with-asp-net-5-dnxcore50/">Using Elasticsearch with ASP.NET 5 dnxcore50</a>
+
+This examples shows how to do a simple search using ASP.NET 5 dnxcore
+
 <a href="https://github.com/damienbod/WebSearchWithElasticsearch">Simple autocomplete search </a>
 
 This examples shows how to do a simple search using an MVC application with jQuery autocomplete and Elasticsearch simple documents . 
@@ -98,6 +102,10 @@ Example showing mapping configuration.
 
 ========================
 <strong>History</strong>
+
+<strong>Version 2.0.2.1-rc1</strong><em> 2015.11.20</em>
+- Support for ASP.NET 5 rc1, dnxcore50, and net451
+- Elasticsearch client bug fixes
 
 <strong>Version 2.0.0-beta8</strong><em> 2015.11.17</em>
 - Support for ASP.NET 5 dnxcore50 and dnx451
