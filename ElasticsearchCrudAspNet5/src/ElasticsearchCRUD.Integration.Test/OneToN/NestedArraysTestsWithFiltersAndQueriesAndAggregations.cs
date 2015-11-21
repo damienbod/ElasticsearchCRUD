@@ -308,7 +308,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
 				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
 				Assert.Equal(3, aggResult.DocCount);
-				Assert.InRange(max, 1, 1423210851080);
+				Assert.InRange(max, 1, 1553210851080);
 			}
 		}
 
@@ -367,7 +367,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 				var termParentAgg = nesteTestResult.GetSubAggregationsFromJTokenName<TermsBucketAggregationsResult>("termParent");
 
 				Assert.Equal(3, aggResult.DocCount);
-				Assert.InRange(max, 1, 1423210851080);
+				Assert.InRange(max, 1, 1773210851080);
 				Assert.Equal(1, nesteTestResult.DocCount);
 				Assert.Equal("a", termParentAgg.Buckets[0].Key);
 			}

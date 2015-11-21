@@ -293,7 +293,6 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 							new TopHitsMetricAggregation("tophits")
 						},
 						MinDocCount=2,
-						//Order= new OrderAgg("dateofdetails", OrderEnum.desc), // TODO Order not working in EL 2.0 ???
 						ExtendedBounds= new ExtendedBounds
 						{
 							Max= 1000000,
@@ -312,8 +311,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<DateHistogramBucketAggregationsResult>("testHistogramBucketAggregation");
 				var tophits = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("tophits");
-				Assert.Equal(3, aggResult.Buckets[0].DocCount);
-				Assert.Equal(3, tophits.Hits.Total);
+				Assert.Equal(6, aggResult.Buckets[0].DocCount);
+				Assert.Equal(6, tophits.Hits.Total);
 			}
 		}
     }
