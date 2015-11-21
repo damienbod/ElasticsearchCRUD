@@ -29,14 +29,6 @@ namespace ElasticsearchCRUD.Integration.Test
         private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
         private const string ConnectionString = "http://localhost:9200";
 
-        private void WaitForDataOrFail()
-        {
-            if (!_resetEvent.WaitOne(5000))
-            {
-                throw new Exception("No data received within specified time");
-            }
-        }
-
         public void SetUp()
         {
             _entitiesForTests = new List<SkillTestEntity>();
@@ -117,23 +109,8 @@ namespace ElasticsearchCRUD.Integration.Test
                 // Save to Elasticsearch
                 var ret = context.SaveChanges();
                 Assert.Equal(ret.Status, HttpStatusCode.OK);
-                long found = 0;
-                Task.Run(() =>
-                {
-                    while (true)
-                    {
-                        Thread.Sleep(300);
-                        found = context.Count<SkillTestEntity>();
-                        if (found == 7)
-                        {
-                            _resetEvent.Set();
-                        }	
-                    }					
-                });
-
-                // allow elasticsearch time to update...
-                WaitForDataOrFail();
-
+                Thread.Sleep(2000);
+                var found = context.Count<SkillTestEntity>();
                 Assert.Equal(7, found);
             }
         }
@@ -155,7 +132,7 @@ namespace ElasticsearchCRUD.Integration.Test
         [Fact]
         public void TestDefaultContextAddEntitySaveChangesAsyncBadUrl()
         {
-            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            var ex = Assert.Throws<AggregateException>(() =>
             {
                 using (var context = new ElasticsearchContext("http://locaghghghlhost:9200/", _elasticsearchMappingResolver))
                 {
@@ -165,6 +142,9 @@ namespace ElasticsearchCRUD.Integration.Test
                     Console.WriteLine(ret.Result.Status);
                 }
             });
+
+            Assert.Equal(ex.InnerExceptions[0].Message, "An error occurred while sending the request.");
+
         }
 
         [Fact]
@@ -235,27 +215,15 @@ namespace ElasticsearchCRUD.Integration.Test
                 // Save to Elasticsearch
                 var ret = context.SaveChanges();
                 Assert.Equal(ret.Status, HttpStatusCode.OK);
-    
+
             }
 
-            Task.Run(() =>
-            {
-                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-                {
-                    while (true)
-                    {
-                        Thread.Sleep(300);
-                        var exists = context.SearchExists<SkillTestEntity>(searchJson);
-                        if (exists)
-                        {
-                            _resetEvent.Set();
-                        }
-                    }
-                }
-            });
+            Thread.Sleep(2000);
 
-            // allow elasticsearch time to update...
-            WaitForDataOrFail();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.SearchExists<SkillTestEntity>(searchJson));
+            }
         }
 
         [Fact]
@@ -283,23 +251,12 @@ namespace ElasticsearchCRUD.Integration.Test
                 context.SaveChanges();
             }
 
-            Task.Run(() =>
-            {
-                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-                {
-                    while (true)
-                    {
-                        Thread.Sleep(300);
-                        var exists = context.SearchExists<SkillTestEntity>(BuildSearchMatchAll());
-                        if (exists)
-                        {
-                            _resetEvent.Set();
-                        }
-                    }
-                }
-            });
+            Thread.Sleep(2000);
 
-            WaitForDataOrFail();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.SearchExists<SkillTestEntity>(BuildSearchMatchAll()));
+            }
         }
 
         private string BuildSearchMatchAll()
@@ -355,7 +312,7 @@ namespace ElasticsearchCRUD.Integration.Test
         public void TestDefaultContextGetEntityBadUrl()
         {
             const int entityId = 34;
-            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            var ex = Assert.Throws<HttpRequestException>(() =>
             {
                 using (var context = new ElasticsearchContext("http://localghghghhost:9200/", _elasticsearchMappingResolver))
                 {
@@ -617,7 +574,7 @@ namespace ElasticsearchCRUD.Integration.Test
                     long foundAfter = context.Count<SkillTestEntity>();
 
                     Console.WriteLine("found before {0}, after {1}", foundBefore, foundAfter);
-                    Assert.InRange(foundAfter, foundBefore, 1000000);
+                    Assert.InRange(foundAfter, foundBefore -1, 1000000);
                     context.GetDocument<SkillTestEntity>(documentId);
                 }
             });
