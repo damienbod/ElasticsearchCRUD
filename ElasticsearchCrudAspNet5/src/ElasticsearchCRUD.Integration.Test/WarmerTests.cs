@@ -3,16 +3,23 @@ using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
 using ElasticsearchCRUD.Tracing;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
-    using System;
-
-    using Xunit;
-
     public class WarmerTests : IDisposable
     {
-		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+        public WarmerTests()
+        {
+            TestFixtureSetUp();
+        }
+        public void Dispose()
+        {
+            TestFixtureTearDown();
+        }
+
+        private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
 		 [Fact]
@@ -118,7 +125,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		[TestFixtureTearDown]
 		public void TestFixtureTearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -129,7 +135,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		[TestFixtureSetUp]
 		public void TestFixtureSetUp()
 		{
 			var existsDtoForTests = new ExistsDtoForTests { Id = 1, Description = "Test index for exist tests" };
@@ -144,10 +149,5 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.True(result);
 			}
 		}
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

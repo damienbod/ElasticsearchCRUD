@@ -8,15 +8,22 @@ using System.Text;
 using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
-using NUnit.Framework;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-    using Xunit;
-
-    [TestFixture]
-    public class OneToNEntitiesWithChildDocumentsTestUserDefinedRouting
+    public class OneToNEntitiesWithChildDocumentsTestUserDefinedRouting : IDisposable
     {
+        public OneToNEntitiesWithChildDocumentsTestUserDefinedRouting()
+        {
+            FixtureSetup();
+        }
+
+        public void Dispose()
+        {
+            FixtureTearDown();
+        }
+
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
         private const bool SaveChildObjectsAsWellAsParent = true;
         private const bool ProcessChildDocumentsAsSeparateChildIndex = true;
@@ -24,13 +31,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
         private const string ConnectionString = "http://localhost:9200";
 
-        [TestFixtureSetUp]
         public void FixtureSetup()
         {
             TestCreateCompletelyNewIndex(new ConsoleTraceProvider());
         }
 
-        [TestFixtureTearDown]
         public void FixtureTearDown()
         {
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))

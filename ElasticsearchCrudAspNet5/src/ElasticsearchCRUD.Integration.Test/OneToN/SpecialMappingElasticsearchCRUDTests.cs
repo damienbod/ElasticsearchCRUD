@@ -1,21 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using NUnit.Framework;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-    using Xunit;
 
-    [TestFixture]
-	public class SpecialMappingElasticsearchCrudTests
+	public class SpecialMappingElasticsearchCrudTests : IDisposable
 	{
-		private List<SkillTestEntity> _entitiesForTests;
+	    public SpecialMappingElasticsearchCrudTests()
+	    {
+	        SetUp();
+	    }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        private List<SkillTestEntity> _entitiesForTests;
 		private List<SkillTestEntityTwo> _entitiesForTestsTypeTwo;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[SetUp]
 		public void SetUp()
 		{
 			_entitiesForTests = new List<SkillTestEntity>();
@@ -47,7 +54,6 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[TearDown]
 		public void TearDown()
 		{
 			_entitiesForTests = null;

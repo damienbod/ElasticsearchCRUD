@@ -19,6 +19,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
         {
             TearDown();
         }
+
         private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";

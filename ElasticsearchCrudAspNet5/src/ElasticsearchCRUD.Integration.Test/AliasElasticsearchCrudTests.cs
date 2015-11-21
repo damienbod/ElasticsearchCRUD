@@ -27,7 +27,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.Fail("No data received within specified time");
 			}
 		}
-		[TearDown]
+
 		public void TearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -374,7 +374,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            TearDown();
         }
     }
 

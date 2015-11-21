@@ -19,6 +19,11 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
 	public class NestedArraysTestsWithFiltersAndQueriesAndAggregations : IDisposable
 	{
+	    public NestedArraysTestsWithFiltersAndQueriesAndAggregations()
+	    {
+	        SetUp();
+	    }
+
 		private List<SkillChild> _entitiesForSkillChild;
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
@@ -368,7 +373,6 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[SetUp]
 		public void SetUp()
 		{
 			_entitiesForSkillChild = new List<SkillChild>();
@@ -388,7 +392,6 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-		[TearDown]
 		public void TearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -400,7 +403,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 
 	    public void Dispose()
 	    {
-	        throw new NotImplementedException();
+	        TearDown();
 	    }
 	}
 

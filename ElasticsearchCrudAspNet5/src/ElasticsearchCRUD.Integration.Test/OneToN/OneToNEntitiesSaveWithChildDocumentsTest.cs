@@ -9,7 +9,7 @@ using System.Threading;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel;
 using ElasticsearchCRUD.Tracing;
-using NUnit.Framework;
+using Xunit;
 
 /*		----------- EXAMPLE -------------
  *      Only works if the index has already been mapped
@@ -133,23 +133,30 @@ http://localhost.fiddler:9200/parentdocuments/22/_search
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-    using Xunit;
 
-    [TestFixture]
-    public class OneToNEntitiesWithChildDocumentsTest
+
+    public class OneToNEntitiesWithChildDocumentsTest : IDisposable
     {
+        public OneToNEntitiesWithChildDocumentsTest()
+        {
+            FixtureSetup();
+        }
+
+        public void Dispose()
+        {
+            FixtureTearDown();
+        }
+
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
         private const bool SaveChildObjectsAsWellAsParent = true;
         private const bool ProcessChildDocumentsAsSeparateChildIndex = true;
         private const string ConnectionString = "http://localhost:9200";
 
-        [TestFixtureSetUp]
         public void FixtureSetup()
         {
             TestCreateCompletelyNewIndex(new ConsoleTraceProvider());
         }
 
-        [TestFixtureTearDown]
         public void FixtureTearDown()
         {
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))

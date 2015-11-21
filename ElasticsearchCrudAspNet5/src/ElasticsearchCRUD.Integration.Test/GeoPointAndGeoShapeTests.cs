@@ -11,10 +11,14 @@ namespace ElasticsearchCRUD.Integration.Test
 
     public class GeoPointAndGeoShapeTests : IDisposable
     {
-		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+        public void Dispose()
+        {
+            TestTearDown();
+        }
+
+        private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[TearDown]
 		public void TestTearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -447,11 +451,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.Equal(geoShapeGeometryCollectionDto.Coordinates.Geometries.Count, result.Coordinates.Geometries.Count);
 			}
 		}
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 
 	public class GeoPointDto

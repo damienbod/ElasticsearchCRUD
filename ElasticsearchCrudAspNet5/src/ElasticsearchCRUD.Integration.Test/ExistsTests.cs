@@ -9,10 +9,19 @@ namespace ElasticsearchCRUD.Integration.Test
 
     public class ExistsTests : IDisposable
     {
-		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+        public ExistsTests()
+        {
+            TestFixtureSetUp();
+        }
+
+        public void Dispose()
+        {
+            TestFixtureTearDown();
+        }
+
+        private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
 
-		[TestFixtureTearDown]
 		public void TestFixtureTearDown()
 		{
 			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -23,7 +32,6 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		[TestFixtureSetUp]
 		public void TestFixtureSetUp()
 		{
 			var existsDtoForTests = new ExistsDtoForTests { Id = 1, Description = "Test index for exist tests" };
@@ -149,11 +157,6 @@ namespace ElasticsearchCRUD.Integration.Test
 				Assert.False(found);
 			}
 		}
-
-        public void Dispose()
-        {
-            throw new NotImplementedException();
-        }
     }
 
 	public class ExistsDtoForTests

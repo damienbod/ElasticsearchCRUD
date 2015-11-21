@@ -3,11 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using ElasticsearchCRUD.Tracing;
-using NUnit.Framework;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-	[TestFixture]
 	public class DocumentsWithChildDocumentsTestNotAllowed
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();

@@ -3,30 +3,16 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using ElasticsearchCRUD.Tracing;
-using NUnit.Framework;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-    using Xunit;
+    using System;
 
-    [TestFixture]
-	public class ComplexRelationsTests
+    public class ComplexRelationsTests : IDisposable
 	{
 		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 		private const string ConnectionString = "http://localhost:9200";
-
-		[TearDown]
-		public void TearDown()
-		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<TestNestedDocumentLevelOneHashSet>(); entityResult.Wait();
-				var secondDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneCollection>(); secondDelete.Wait();
-				var thirdDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneArray>(); thirdDelete.Wait();
-				var fourthDelete = context.DeleteIndexAsync<SkillDocument>(); fourthDelete.Wait();	
-			}
-		}
 
 		[Fact]
 		public void Test1_to_n_1_m_Array()
@@ -312,7 +298,23 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 			}
 		}
 
-	}
+        public void TearDown()
+        {
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AllowDeleteForIndex = true;
+                var entityResult = context.DeleteIndexAsync<TestNestedDocumentLevelOneHashSet>(); entityResult.Wait();
+                var secondDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneCollection>(); secondDelete.Wait();
+                var thirdDelete = context.DeleteIndexAsync<TestNestedDocumentLevelOneArray>(); thirdDelete.Wait();
+                var fourthDelete = context.DeleteIndexAsync<SkillDocument>(); fourthDelete.Wait();
+            }
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+    }
 
 	#region test classes HastSet
 
