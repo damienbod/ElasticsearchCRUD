@@ -914,7 +914,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            
         }
     }
 

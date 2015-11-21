@@ -31,7 +31,7 @@ namespace ElasticsearchCRUD.Integration.Test
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
             {
                 var count = context.Count<object>();
-                Assert.InRange(count, 4, 100000);
+                Assert.InRange(count, 3, 100000);
             }
         }
 

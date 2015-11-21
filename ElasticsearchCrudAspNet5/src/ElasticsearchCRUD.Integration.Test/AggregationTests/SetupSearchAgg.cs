@@ -95,17 +95,20 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 			};
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				context.IndexCreate<SearchAggTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(doc1, doc1.Id);
-				context.AddUpdateDocument(doc2, doc2.Id);
-				context.AddUpdateDocument(doc3, doc3.Id);
-				context.AddUpdateDocument(doc4, doc4.Id);
-				context.AddUpdateDocument(doc5, doc5.Id);
-				context.AddUpdateDocument(doc6, doc6.Id);
-				context.AddUpdateDocument(doc7, doc7.Id);
-				context.SaveChanges();
-				Thread.Sleep(1200);
+			    if (!context.IndexExists<SearchAggTest>())
+			    { 
+                    context.IndexCreate<SearchAggTest>();
+                    Thread.Sleep(1200);
+                    context.AddUpdateDocument(doc1, doc1.Id);
+                    context.AddUpdateDocument(doc2, doc2.Id);
+                    context.AddUpdateDocument(doc3, doc3.Id);
+                    context.AddUpdateDocument(doc4, doc4.Id);
+                    context.AddUpdateDocument(doc5, doc5.Id);
+                    context.AddUpdateDocument(doc6, doc6.Id);
+                    context.AddUpdateDocument(doc7, doc7.Id);
+                    context.SaveChanges();
+                    Thread.Sleep(1200);
+                }			
 			}
 		}
 
