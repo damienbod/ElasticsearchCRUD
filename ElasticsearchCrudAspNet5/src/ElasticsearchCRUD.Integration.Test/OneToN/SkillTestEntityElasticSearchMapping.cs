@@ -3,7 +3,9 @@ using ElasticsearchCRUD.Model;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN
 {
-	public class SkillTestEntityElasticsearchMapping : ElasticsearchMapping
+    using System.Reflection;
+
+    public class SkillTestEntityElasticsearchMapping : ElasticsearchMapping
 	{
 		public override void MapEntityValues(EntityContextInfo entityInfo, ElasticsearchCrudJsonWriter elasticsearchCrudJsonWriter, bool beginMappingTree = false, bool createPropertyMappings = false)
 		{

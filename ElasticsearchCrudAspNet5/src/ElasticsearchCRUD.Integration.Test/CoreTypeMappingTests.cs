@@ -16,7 +16,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		public void OptimizeParametersPefaultTest()
 		{
 			var optimizeParameters = new OptimizeParameters();
-			Assert.NullOrEmpty(optimizeParameters.GetOptimizeParameters());
+			Assert.Null(optimizeParameters.GetOptimizeParameters());
 		}
 
 		 [Fact]
@@ -33,32 +33,33 @@ namespace ElasticsearchCRUD.Integration.Test
 			Assert.Equal(optimizeParameters.GetOptimizeParameters(), "?max_num_segments=4&only_expunge_deletes=true&flush=false&wait_for_merge=false");
 		}
 
+        // TODO 21.11.2015
+		//[Fact]
+		//public void ReflectionAttributeElasticsearchMappings()
+		//{
+		//	var testSkillParentObject = new MappingTypeTestEntity
+		//	{
+		//		CreatedSkillParent = DateTime.UtcNow,
+		//		UpdatedSkillParent = DateTime.UtcNow,
+		//		DescriptionSkillParent = "A test entity description",
+		//		Id = 7,
+		//		NameSkillParent = "cool",
+		//	};
+
+		//	var propertyInfo = testSkillParentObject.GetType().GetProperties();
+		//	foreach (var property in propertyInfo)
+		//	{
+		//		if (Attribute.IsDefined(property, typeof(ElasticsearchCoreTypes)))
+		//		{
+		//			var obj = property.Name.ToLower(); 
+		//			object[] attrs = property.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
+
+		//			Console.WriteLine(obj + " : " + (attrs[0] as ElasticsearchCoreTypes).JsonString());
+		//		}
+		//	}
+		//}
+
 		[Fact]
-		public void ReflectionAttributeElasticsearchMappings()
-		{
-			var testSkillParentObject = new MappingTypeTestEntity
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 7,
-				NameSkillParent = "cool",
-			};
-
-			var propertyInfo = testSkillParentObject.GetType().GetProperties();
-			foreach (var property in propertyInfo)
-			{
-				if (Attribute.IsDefined(property, typeof(ElasticsearchCoreTypes)))
-				{
-					var obj = property.Name.ToLower(); 
-					object[] attrs = property.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
-
-					Console.WriteLine(obj + " : " + (attrs[0] as ElasticsearchCoreTypes).JsonString());
-				}
-			}
-		}
-
-		 [Fact]
 		public void JsonDeserializeObjectSearchResultNullArrayOfHits()
 		{
 

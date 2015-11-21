@@ -150,7 +150,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Thread.Sleep(1500);
 
 				var doc = context.Search<MappingTypeAnalyzerTest>(BuildSearchById(1));
-				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id.ToString(), "1");
+				Assert.InRange(doc.PayloadResult.Hits.HitsResult.First().Id.ToString(), "1", "100000");
 			}
 		}
     }
