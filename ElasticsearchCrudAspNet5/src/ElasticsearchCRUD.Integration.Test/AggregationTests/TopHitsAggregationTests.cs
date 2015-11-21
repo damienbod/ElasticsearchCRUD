@@ -4,14 +4,24 @@ using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Sorting;
-using NUnit.Framework;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-	[TestFixture]
-	public class TopHitsAggregationTests : SetupSearchAgg
-	{
-		[Fact]
+	public class TopHitsAggregationTests : SetupSearchAgg, IDisposable
+    {
+        public TopHitsAggregationTests()
+        {
+            Setup();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchAggTopHitsMetricAggregationWithNoHits()
 		{
 			var search = new Search
@@ -27,11 +37,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TopHitsMetricAggregationsResult<SearchAggTest>>("topHits");
-				Assert.AreEqual(7, aggResult.Hits.Total);
-				Assert.AreEqual(1.7, aggResult.Hits.HitsResult[0].Source.Lift);
+				Assert.Equal(7, aggResult.Hits.Total);
+				Assert.Equal(1.7, aggResult.Hits.HitsResult[0].Source.Lift);
 			}
 		}
 
@@ -57,13 +67,13 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
 				var hitsForBucket = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("topHits");
 				
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
-				Assert.AreEqual(2.1, hitsForBucket.Hits.HitsResult[0].Source.Lift);
+				Assert.Equal(3, aggResult.Buckets[0].DocCount);
+				Assert.Equal(2.1, hitsForBucket.Hits.HitsResult[0].Source.Lift);
 			}
 		}
 
@@ -103,13 +113,13 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
 				var hitsForBucket = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("topHits");
 
-				Assert.AreEqual(3, aggResult.Buckets[0].DocCount);
-				Assert.AreEqual(2.1, hitsForBucket.Hits.HitsResult[0].Source.Lift);
+				Assert.Equal(3, aggResult.Buckets[0].DocCount);
+				Assert.Equal(2.1, hitsForBucket.Hits.HitsResult[0].Source.Lift);
 			}
 		}
 	}

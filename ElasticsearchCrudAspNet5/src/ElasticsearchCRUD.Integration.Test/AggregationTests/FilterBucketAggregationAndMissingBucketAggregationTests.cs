@@ -19,7 +19,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
             Setup();
         }
 
-		[Fact]
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchAggFilterBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -234,10 +239,5 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.Equal(7, results.Hits.Total);
 			}
 		}
-
-        public void Dispose()
-        {
-            TearDown();
-        }
     }
 }

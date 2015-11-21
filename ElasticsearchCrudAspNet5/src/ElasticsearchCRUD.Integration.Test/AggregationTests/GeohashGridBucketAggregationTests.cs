@@ -15,7 +15,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
             Setup();
         }
 
-		[Fact]
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchAggGeohashGridBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -115,10 +120,5 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.Equal(3, aggResult.Buckets[0].DocCount);
 			}
 		}
-
-        public void Dispose()
-        {
-            TearDown();
-        }
     }
 }

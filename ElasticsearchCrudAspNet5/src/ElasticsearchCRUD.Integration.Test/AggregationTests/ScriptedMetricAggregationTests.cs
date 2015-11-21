@@ -2,14 +2,24 @@
 using ElasticsearchCRUD.ContextSearch.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
-using NUnit.Framework;
+using Xunit;
+using System;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-	[TestFixture]
-	public class ScriptedMetricAggregationTests : SetupSearchAgg
+    public class ScriptedMetricAggregationTests : SetupSearchAgg, IDisposable
 	{
-		[Fact]
+        public ScriptedMetricAggregationTests()
+        {
+            Setup();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchAggScriptedMetricAggregationWithNoHits()
 		{
 			var search = new Search
@@ -27,10 +37,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetSingleMetricAggregationValue<double>("topScriptedMetricAggregation");
-				Assert.AreEqual(16.3, aggResult);
+				Assert.Equal(16.3, aggResult);
 
 			}
 		}
@@ -60,10 +70,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetSingleMetricAggregationValue<double>("topScriptedMetricAggregation");
-				Assert.AreEqual(22.82, aggResult);
+				Assert.Equal(22.82, aggResult);
 
 			}
 		}

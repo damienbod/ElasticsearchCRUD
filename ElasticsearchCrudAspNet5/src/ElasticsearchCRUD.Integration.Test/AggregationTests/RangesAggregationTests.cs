@@ -18,7 +18,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
             Setup();
         }
 
-		[Fact]
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchAggRangesBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -343,10 +348,5 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.Equal(7, hits.Hits.Total);
 			}
 		}
-
-        public void Dispose()
-        {
-            TearDown();
-        }
     }
 }

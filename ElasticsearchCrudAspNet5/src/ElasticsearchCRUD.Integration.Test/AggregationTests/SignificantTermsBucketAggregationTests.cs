@@ -5,14 +5,24 @@ using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Model.SearchModel.Aggregations;
 using ElasticsearchCRUD.Model.SearchModel.Filters;
 using ElasticsearchCRUD.Model.SearchModel.Queries;
-using NUnit.Framework;
+using System;
+using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 {
-	[TestFixture]
-	public class SignificantTermsBucketAggregationTests : SetupSearchAgg
-	{
-		[Fact]
+    public class SignificantTermsBucketAggregationTests : SetupSearchAgg, IDisposable
+    {
+        public SignificantTermsBucketAggregationTests()
+        {
+            Setup();
+        }
+
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchAggSignificantTermsBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -25,10 +35,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<SignificantTermsBucketAggregationsResult>("testSignificantTermsBucketAggregation");
-				Assert.AreEqual(7, aggResult.DocCount);
+				Assert.Equal(7, aggResult.DocCount);
 			}
 		}
 
@@ -54,11 +64,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var termsAggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("termsDetails");
 				var significantAggResult = termsAggResult.Buckets[0].GetSubAggregationsFromJTokenName<SignificantTermsBucketAggregationsResult>("testSignificantTermsBucketAggregation");
-				Assert.AreEqual(4, significantAggResult.Buckets[0].BgCount);
+				Assert.Equal(4, significantAggResult.Buckets[0].BgCount);
 			}
 		}
 
@@ -85,10 +95,10 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<SignificantTermsBucketAggregationsResult>("testSignificantTermsBucketAggregation");
-				Assert.AreEqual(7, aggResult.DocCount);
+				Assert.Equal(7, aggResult.DocCount);
 			}
 		}
 
@@ -112,11 +122,11 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 
 			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
 			{
-				Assert.IsTrue(context.IndexTypeExists<SearchAggTest>());
+				Assert.True(context.IndexTypeExists<SearchAggTest>());
 				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
 				var termsAggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("termsDetails");
 				var significantAggResult = termsAggResult.Buckets[0].GetSubAggregationsFromJTokenName<SignificantTermsBucketAggregationsResult>("testSignificantTermsBucketAggregation");
-				Assert.AreEqual(3, significantAggResult.Buckets[0].BgCount);
+				Assert.Equal(3, significantAggResult.Buckets[0].BgCount);
 			}
 		}
 

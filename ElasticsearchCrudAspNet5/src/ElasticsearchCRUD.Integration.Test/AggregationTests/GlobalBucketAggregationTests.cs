@@ -16,7 +16,12 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
             Setup();
         }
 
-		[Fact]
+        public void Dispose()
+        {
+            TearDown();
+        }
+
+        [Fact]
 		public void SearchAggGlobalBucketAggregationWithNoHits()
 		{
 			var search = new Search
@@ -98,10 +103,5 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 				Assert.Equal(1.7, bucketchildAggAvg);
 			}
 		}
-
-        public void Dispose()
-        {
-            TearDown();
-        }
     }
 }
