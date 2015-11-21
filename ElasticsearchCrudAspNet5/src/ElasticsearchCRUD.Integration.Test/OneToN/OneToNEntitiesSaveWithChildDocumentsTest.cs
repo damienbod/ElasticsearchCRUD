@@ -360,14 +360,16 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
         }
 
         [Fact]
-        [ExpectedException(typeof(ElasticsearchCrudException))]
         public void TestDocumentExistsChildDocBadRoute()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
-                context.DocumentExists<ChildDocumentLevelTwo>(71);
-            }
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    context.DocumentExists<ChildDocumentLevelTwo>(71);
+                }
+            }); 
         }
 
         [Fact]
@@ -378,7 +380,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
                 context.TraceProvider = new ConsoleTraceProvider();
 
                 var found = context.Count<ChildDocumentLevelTwo>();
-                Assert.Greater(found, 0);
+                Assert.InRange(found, 2, 100000);
             }
         }
 
@@ -390,76 +392,95 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
                 context.TraceProvider = new ConsoleTraceProvider();
 
                 var found = context.Count<ChildDocumentLevelTwo>(BuildSearchForChildDocumentsWithIdAndParentType(22, "childdocumentlevelone"));
-                Assert.Greater(found, 0);
+                Assert.InRange(found, 0, 100000);
             }
         }
 
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
         public void TestParentSearchByIdNotFoundWrongType()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
 
-                var childDoc = context.SearchById<ParentDocument>(71);
-                Assert.NotNull(childDoc);
-                Assert.Equal(7, childDoc.Id);
-            }
+                    var childDoc = context.SearchById<ParentDocument>(71);
+                    Assert.NotNull(childDoc);
+                    Assert.Equal(7, childDoc.Id);
+                }
+            });
+
+            Assert.Equal("ElasticsearchContextSearch: HttpStatusCode.NotFound", ex.Message);
         }
 
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
         public void TestParentSearchByIdNotFoundWrongTypeChildDoc()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
 
-                var childDoc = context.SearchById<ChildDocumentLevelOne>(71);
-                Assert.NotNull(childDoc);
-                Assert.Equal(7, childDoc.Id);
-            }
+                    var childDoc = context.SearchById<ChildDocumentLevelOne>(71);
+                    Assert.NotNull(childDoc);
+                    Assert.Equal(7, childDoc.Id);
+                }
+            });
+
+            Assert.Equal("ElasticsearchContextSearch: HttpStatusCode.NotFound", ex.Message);
+
+            
         }
 
 
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
         public void TestsearchByIdNotFound()
         {
-            using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                context.TraceProvider = new ConsoleTraceProvider();
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
 
-                var childDoc = context.SearchById<ChildDocumentLevelTwo>(767761);
-                Assert.Null(childDoc);
-            }
+                    var childDoc = context.SearchById<ChildDocumentLevelTwo>(767761);
+                    Assert.Null(childDoc);
+                }
+            });
+
+            Assert.Equal("ElasticsearchContextSearch: HttpStatusCode.NotFound", ex.Message);
+
+           
         }
 
         [Fact]
-        [ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
         public void TestCreateIndexNewChildItemExceptionMissingParentIdTest()
         {
             const int parentId = 21;
-            using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
+
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
-                var testObject = new ChildDocumentLevelTwo
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, SaveChildObjectsAsWellAsParent, ProcessChildDocumentsAsSeparateChildIndex)))
                 {
-                    Id = 46,
-                    D3 = "p7.p21.p46"
-                };
+                    var testObject = new ChildDocumentLevelTwo
+                    {
+                        Id = 46,
+                        D3 = "p7.p21.p46"
+                    };
 
-                context.TraceProvider = new ConsoleTraceProvider();
-                context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId });
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    context.AddUpdateDocument(testObject, testObject.Id, new RoutingDefinition { ParentId = parentId });
 
-                // Save to Elasticsearch
-                var ret = context.SaveChanges();
-                Assert.Equal(ret.Status, HttpStatusCode.OK);
+                    // Save to Elasticsearch
+                    var ret = context.SaveChanges();
+                    Assert.Equal(ret.Status, HttpStatusCode.OK);
 
-                var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id);
+                    var roundTripResult = context.GetDocument<ChildDocumentLevelTwo>(testObject.Id);
 
-                Assert.Equal(testObject.Id, roundTripResult.Id);
-            }
+                    Assert.Equal(testObject.Id, roundTripResult.Id);
+                }
+            });
         }
 
         private void TestCreateCompletelyNewIndex(ITraceProvider trace)

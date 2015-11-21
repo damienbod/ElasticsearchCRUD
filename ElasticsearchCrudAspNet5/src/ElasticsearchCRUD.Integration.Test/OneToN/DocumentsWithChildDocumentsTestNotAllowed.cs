@@ -13,24 +13,28 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
 		private const string ConnectionString = "http://localhost:9200";
 
 		[Fact]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "InitMappings: Not supported, child documents can only have one parent")]
 		public void TestCreateCompletelyNewIndexExpectException()
 		{
-			var parentDocument = GetParentDocumentEx();
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                var parentDocument = GetParentDocumentEx();
 
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOneEx),
-				new ElasticsearchMappingChildDocumentForParentEx());
-			_elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelTwoEx),
-				new ElasticsearchMappingChildDocumentForParentEx());
+                _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelOneEx),
+                    new ElasticsearchMappingChildDocumentForParentEx());
+                _elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(typeof(ChildDocumentLevelTwoEx),
+                    new ElasticsearchMappingChildDocumentForParentEx());
 
-			using (var context = new ElasticsearchContext(ConnectionString,new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true)))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				context.AddUpdateDocument(parentDocument, parentDocument.Id);
+                using (var context = new ElasticsearchContext(ConnectionString, new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver, true, true)))
+                {
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    context.AddUpdateDocument(parentDocument, parentDocument.Id);
 
-				// Save to Elasticsearch
-				context.SaveChangesAndInitMappings();
-			}
+                    // Save to Elasticsearch
+                    context.SaveChangesAndInitMappings();
+                }
+            });
+
+            Assert.Equal("InitMappings: Not supported, child documents can only have one parent", ex.Message);
 		}
 
 		private static ParentDocumentEx GetParentDocumentEx()

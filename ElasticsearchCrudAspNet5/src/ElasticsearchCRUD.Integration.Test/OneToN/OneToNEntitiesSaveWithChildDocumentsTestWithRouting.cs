@@ -280,7 +280,7 @@ namespace ElasticsearchCRUD.Integration.Test.OneToN
                 context.TraceProvider = new ConsoleTraceProvider();
 
                 var found = context.Count<ChildDocumentLevelTwoUserDefinedRouting>();
-                Assert.InRange(found,0, 100000);
+                Assert.InRange(found, 2, 100000);
             }
         }
     

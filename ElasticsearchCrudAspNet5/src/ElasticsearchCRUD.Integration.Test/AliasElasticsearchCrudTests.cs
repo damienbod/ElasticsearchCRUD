@@ -24,7 +24,7 @@ namespace ElasticsearchCRUD.Integration.Test
 		{
 			if (!_resetEvent.WaitOne(5000))
 			{
-				Assert.Fail("No data received within specified time");
+				throw new Exception("No data received within specified time");
 			}
 		}
 
@@ -41,34 +41,46 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		 [Fact]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
+	    [Fact]
 		public void CreateAliasForNoExistingIndex()
 		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AliasCreateForIndex("test", "doesnotexistindex");
-			}
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.AliasCreateForIndex("test", "doesnotexistindex");
+                }
+            });
 		}
 
-		 [Fact]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: doeGGGtindex")]
+		[Fact]
 		public void CreateAliasForIndexBadIndex()
 		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AliasCreateForIndex("test", "doeGGGtindex");
-			}
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.AliasCreateForIndex("test", "doeGGGtindex");
+                }
+            });
+
+            Assert.Equal("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: doeGGGtindex", ex.Message);
+
+           
 		}
 
-		 [Fact]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: tesHHHt")]
+		[Fact]
 		public void CreateAliasForIndexBadAlias()
 		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AliasCreateForIndex("tesHHHt", "doendex");
-			}
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.AliasCreateForIndex("tesHHHt", "doendex");
+                }
+            });
+
+            Assert.Equal("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: tesHHHt", ex.Message);
 		}
 
 		 [Fact]
@@ -120,67 +132,74 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		 [Fact]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException), ExpectedMessage = "ElasticsearchContextSearch: HttpStatusCode.NotFound")]
+	    [Fact]
 		public void CreateAliasForIndex3()
 		{
-			var indexAliasDtoTest3 = new IndexAliasDtoTest { Id = 3, Description = "no" };
-			var indexAliasDtoTest4 = new IndexAliasDtoTest { Id = 4, Description = "boo" };
-			var indexAliasDtoTest5 = new IndexAliasDtoTest { Id = 5, Description = "boo" };
 
-			var aliasParameters = new AliasParameters
-			{
-				Actions = new List<AliasBaseParameters>
-				{
-					new AliasAddParameters("test4", "indexaliasdtotests")
-					{
-						Routing="newroute",
-						Filter= new TermFilter("description", "boo") // "{ \"term\" : { \"description\" : \"boo\" } }"
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                var indexAliasDtoTest3 = new IndexAliasDtoTest { Id = 3, Description = "no" };
+                var indexAliasDtoTest4 = new IndexAliasDtoTest { Id = 4, Description = "boo" };
+                var indexAliasDtoTest5 = new IndexAliasDtoTest { Id = 5, Description = "boo" };
+
+                var aliasParameters = new AliasParameters
+                {
+                    Actions = new List<AliasBaseParameters>
+                {
+                    new AliasAddParameters("test4", "indexaliasdtotests")
+                    {
+                        Routing="newroute",
+                        Filter= new TermFilter("description", "boo") // "{ \"term\" : { \"description\" : \"boo\" } }"
 					}
-				}
-			};
+                }
+                };
 
-			const bool userDefinedRouting = true;
-			var elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver,
-				true, false, userDefinedRouting);
+                const bool userDefinedRouting = true;
+                var elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(_elasticsearchMappingResolver,
+                    true, false, userDefinedRouting);
 
-			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchSerializerConfiguration))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest3, indexAliasDtoTest3.Id, new RoutingDefinition { RoutingId = "newroute" });
-				context.AddUpdateDocument(indexAliasDtoTest4, indexAliasDtoTest4.Id, new RoutingDefinition { RoutingId = "newroute" });
-				context.AddUpdateDocument(indexAliasDtoTest5, indexAliasDtoTest5.Id, new RoutingDefinition { RoutingId = "newroute" });
-				context.SaveChanges();
+                using (var context = new ElasticsearchContext(ConnectionString, elasticsearchSerializerConfiguration))
+                {
+                    context.AddUpdateDocument(indexAliasDtoTest3, indexAliasDtoTest3.Id, new RoutingDefinition { RoutingId = "newroute" });
+                    context.AddUpdateDocument(indexAliasDtoTest4, indexAliasDtoTest4.Id, new RoutingDefinition { RoutingId = "newroute" });
+                    context.AddUpdateDocument(indexAliasDtoTest5, indexAliasDtoTest5.Id, new RoutingDefinition { RoutingId = "newroute" });
+                    context.SaveChanges();
 
-				var result = context.Alias(aliasParameters.ToString());
-				Assert.True(result);
+                    var result = context.Alias(aliasParameters.ToString());
+                    Assert.True(result);
 
-				Assert.True(context.AliasExists("test4"));
+                    Assert.True(context.AliasExists("test4"));
 
-				// using the index
-				var doc3 = context.GetDocument<IndexAliasDtoTest>(3, new RoutingDefinition {RoutingId = "newroute"});
-				Assert.True(doc3.Id == 3);
-				var doc4 = context.GetDocument<IndexAliasDtoTest>(4, new RoutingDefinition { RoutingId = "newroute" });
-				Assert.True(doc4.Id == 4);
+                    // using the index
+                    var doc3 = context.GetDocument<IndexAliasDtoTest>(3, new RoutingDefinition { RoutingId = "newroute" });
+                    Assert.True(doc3.Id == 3);
+                    var doc4 = context.GetDocument<IndexAliasDtoTest>(4, new RoutingDefinition { RoutingId = "newroute" });
+                    Assert.True(doc4.Id == 4);
 
-			}
+                }
 
-			IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+                IElasticsearchMappingResolver elasticsearchMappingResolver = new ElasticsearchMappingResolver();
 
-			elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(
-				typeof(IndexAliasDtoTest), 
-				MappingUtils.GetElasticsearchMapping<IndexAliasDtoTest>("test4", "indexaliasdtotest")
-			);
+                elasticsearchMappingResolver.AddElasticSearchMappingForEntityType(
+                    typeof(IndexAliasDtoTest),
+                    MappingUtils.GetElasticsearchMapping<IndexAliasDtoTest>("test4", "indexaliasdtotest")
+                );
 
-			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolver))
-			{
-				// using the alias
-				var xx = context.GetDocument<IndexAliasDtoTest>(4);
-				Assert.True(xx.Id == 4);
+                using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolver))
+                {
+                    // using the alias
+                    var xx = context.GetDocument<IndexAliasDtoTest>(4);
+                    Assert.True(xx.Id == 4);
 
-				// should not be found due to filter
-				var result = context.SearchById<IndexAliasDtoTest>(3);
-				Assert.Null(result);
-			}
+                    // should not be found due to filter
+                    var result = context.SearchById<IndexAliasDtoTest>(3);
+                    Assert.Null(result);
+                }
+            });
+
+            Assert.Equal("ElasticsearchContextSearch: HttpStatusCode.NotFound", ex.Message);
+
+          
 		}
 
 		 [Fact]
@@ -227,23 +246,25 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		 [Fact]
-		[ExpectedException(ExpectedException = typeof(ElasticsearchCrudException))]
+		[Fact]
 		public void RemoveAliasthatDoesNotExistForIndex()
 		{
-			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
-				context.SaveChanges();
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+                    context.SaveChanges();
 
-				var result = context.AliasRemoveForIndex("tefdfdfdsfst", "indexaliasdtotests");
-				Assert.True(result);
-			}
+                    var result = context.AliasRemoveForIndex("tefdfdfdsfst", "indexaliasdtotests");
+                    Assert.True(result);
+                }
+            });
 		}
 
-		 [Fact]
+		[Fact]
 		public void ReplaceIndexForAlias()
 		{
 			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };

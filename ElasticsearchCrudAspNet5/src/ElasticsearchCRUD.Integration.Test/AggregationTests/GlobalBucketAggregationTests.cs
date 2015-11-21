@@ -71,37 +71,44 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
 		}
 
 		[Fact]
-		[ExpectedException(ExpectedMessage = "GlobalBucketAggregation cannot be sub aggregations")]
 		public void SearchAggTermsBucketAggregationWithOrderSumSubSumAggNoHits()
 		{
-			var search = new Search
-			{
-				Aggs = new List<IAggs>
-				{
-					new TermsBucketAggregation("test_min", "lift")
-					{
-						Order= new OrderAgg("childAggSum", OrderEnum.asc),
-						Aggs = new List<IAggs>
-						{
-							new SumMetricAggregation("childAggSum", "lift"),
-							new AvgMetricAggregation("childAggAvg", "lift"),
-							new GlobalBucketAggregation("test")
-						} 
-					}
-				}
-			};
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                var search = new Search
+                {
+                    Aggs = new List<IAggs>
+                {
+                    new TermsBucketAggregation("test_min", "lift")
+                    {
+                        Order= new OrderAgg("childAggSum", OrderEnum.asc),
+                        Aggs = new List<IAggs>
+                        {
+                            new SumMetricAggregation("childAggSum", "lift"),
+                            new AvgMetricAggregation("childAggAvg", "lift"),
+                            new GlobalBucketAggregation("test")
+                        }
+                    }
+                }
+                };
 
-			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<SearchAggTest>());
-				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
-				var bucketchildAggSum = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggSum");
-				var bucketchildAggAvg = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggAvg");
-				Assert.Equal(1, aggResult.Buckets[0].DocCount);
-				Assert.Equal(1.7, bucketchildAggSum);
-				Assert.Equal(1.7, bucketchildAggAvg);
-			}
+                using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+                {
+                    Assert.True(context.IndexTypeExists<SearchAggTest>());
+                    var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+                    var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
+                    var bucketchildAggSum = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggSum");
+                    var bucketchildAggAvg = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggAvg");
+                    Assert.Equal(1, aggResult.Buckets[0].DocCount);
+                    Assert.Equal(1.7, bucketchildAggSum);
+                    Assert.Equal(1.7, bucketchildAggAvg);
+                }
+
+            });
+
+            Assert.Equal("GlobalBucketAggregation cannot be sub aggregations", ex.Message);
+
+            
 		}
     }
 }

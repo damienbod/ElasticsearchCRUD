@@ -71,7 +71,7 @@ namespace ElasticsearchCRUD.Integration.Test
 
 
 				var doc = context.Search<MappingTypeAllTest>(BuildSearchById(1));
-				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id.ToString(), "1");
+				Assert.InRange(doc.PayloadResult.Hits.HitsResult.First().Id.ToString(), "1", "100000");
 			}
 		}
 
@@ -102,7 +102,7 @@ namespace ElasticsearchCRUD.Integration.Test
 				Thread.Sleep(1500);
 
 				var doc = context.Search<MappingTypeSourceTest>(BuildSearchById(1));
-				Assert.GreaterOrEqual(doc.PayloadResult.Hits.HitsResult.First().Id.ToString(), "1");
+				Assert.InRange(doc.PayloadResult.Hits.HitsResult.First().Id.ToString(), "1", "100000");
 				Assert.Null(doc.PayloadResult.Hits.HitsResult.First().Source);
 			}
 		}

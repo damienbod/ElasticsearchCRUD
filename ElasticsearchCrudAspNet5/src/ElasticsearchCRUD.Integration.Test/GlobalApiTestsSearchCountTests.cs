@@ -31,7 +31,7 @@ namespace ElasticsearchCRUD.Integration.Test
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
             {
                 var count = context.Count<object>();
-                Assert.GreaterOrEqual(count, 3);
+                Assert.InRange(count, 4, 100000);
             }
         }
 
@@ -43,7 +43,7 @@ namespace ElasticsearchCRUD.Integration.Test
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
             {
                 var results = context.Search<object>(new Search());
-                Assert.GreaterOrEqual(results.PayloadResult.Hits.Total, 3);
+                Assert.InRange(results.PayloadResult.Hits.Total, 2, 100000);
             }
         }
 
@@ -210,7 +210,7 @@ namespace ElasticsearchCRUD.Integration.Test
                         }
                     });
                 var stats = results.PayloadResult.Aggregations.GetComplexValue<StatsMetricAggregationsResult>("stats");
-                Assert.GreaterOrEqual(2, stats.Count);
+                Assert.InRange(stats.Count, 2, 10000);
             }
         }
 

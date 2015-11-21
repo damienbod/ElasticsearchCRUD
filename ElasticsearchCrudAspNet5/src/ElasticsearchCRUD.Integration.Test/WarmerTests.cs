@@ -67,24 +67,26 @@ namespace ElasticsearchCRUD.Integration.Test
 			}
 		}
 
-		 [Fact]
-		[ExpectedException(typeof(ElasticsearchCrudException))]
+		[Fact]
 		public void DeleteGlobalWarmer()
 		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				const string warmerName = "mywarmerone";
-				var warmer = new Warmer(warmerName)
-				{
-					Query = new Query(new MatchAllQuery())
-				};
-				context.TraceProvider = new ConsoleTraceProvider();
-				var found = context.WarmerCreate(warmer);
-				Assert.True(found);
+            var ex = Assert.Throws<ElasticsearchCrudException>(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+                {
+                    const string warmerName = "mywarmerone";
+                    var warmer = new Warmer(warmerName)
+                    {
+                        Query = new Query(new MatchAllQuery())
+                    };
+                    context.TraceProvider = new ConsoleTraceProvider();
+                    var found = context.WarmerCreate(warmer);
+                    Assert.True(found);
 
-				var ok = context.WarmerDelete(warmerName, "");
-				Assert.True(ok);
-			}
+                    var ok = context.WarmerDelete(warmerName, "");
+                    Assert.True(ok);
+                }
+            }); 
 		}
 
 		 [Fact]
