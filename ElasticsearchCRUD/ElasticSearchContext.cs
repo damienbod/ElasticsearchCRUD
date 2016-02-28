@@ -22,6 +22,9 @@ using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.SearchModel;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Text;
 
 namespace ElasticsearchCRUD
 {
@@ -68,28 +71,43 @@ namespace ElasticsearchCRUD
 		/// </summary>
 		public bool AllowDeleteForIndex { get; set; }
 
+        /// <summary>
+        /// Sets the HttpClient Basic Auth header.
+        /// </summary>
+        /// <param name="credentials">Basic auth credentials for logging into the server.</param>
+        private void SetBasicAuthHeader(NetworkCredential credentials)
+        {
+            _client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(string.Format("{0}:{1}", credentials.UserName, credentials.Password))));
+        }
+
 		/// <summary>
 		/// ctor
 		/// </summary>
 		/// <param name="connectionString">Connection string which is used as ther base URL for the HttpClient</param>
 		/// <param name="elasticsearchSerializerConfiguration">Configuration class for the context. The default settings can be oset here. This 
 		/// class contains an IElasticsearchMappingResolver</param>
-		public ElasticsearchContext(string connectionString, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration)
-		{
-			_elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
+        /// <param name="credentials">Basic auth credentials for logging into the server.</param>
+		public ElasticsearchContext(string connectionString, ElasticsearchSerializerConfiguration elasticsearchSerializerConfiguration, NetworkCredential credentials = null)
+        {
+            if (credentials != null)
+                SetBasicAuthHeader(credentials);
+            _elasticsearchSerializerConfiguration = elasticsearchSerializerConfiguration;
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticsearchContext with connection string: {0}", connectionString, "ElasticsearchContext");
 			InitialContext();
 		}
 
-		/// <summary>
-		/// ctor
-		/// </summary>
-		/// <param name="connectionString">Connection string which is used as ther base URL for the HttpClient</param>
-		/// <param name="elasticsearchMappingResolver">Resolver used for getting the index and type of a document type. The default 
-		/// ElasticsearchSerializerConfiguration is used in this ctor.</param>
-		public ElasticsearchContext(string connectionString, IElasticsearchMappingResolver elasticsearchMappingResolver)
-		{
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="connectionString">Connection string which is used as ther base URL for the HttpClient</param>
+        /// <param name="elasticsearchMappingResolver">Resolver used for getting the index and type of a document type. The default 
+        /// ElasticsearchSerializerConfiguration is used in this ctor.</param>
+        /// <param name="credentials">Basic auth credentials for logging into the server.</param>
+        public ElasticsearchContext(string connectionString, IElasticsearchMappingResolver elasticsearchMappingResolver, NetworkCredential credentials = null)
+        {
+            if (credentials != null)
+                SetBasicAuthHeader(credentials);
 			_elasticsearchSerializerConfiguration = new ElasticsearchSerializerConfiguration(elasticsearchMappingResolver);
 			_connectionString = connectionString;
 			TraceProvider.Trace(TraceEventType.Verbose, "{1}: new ElasticsearchContext with connection string: {0}", connectionString, "ElasticsearchContext");
