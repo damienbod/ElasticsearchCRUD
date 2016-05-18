@@ -1,29 +1,44 @@
 ﻿{
-    "version": "1.0.0-*",
-    "description": "ElasticsearchCRUD.Integration.Test Class Library",
-    "authors": [ "damien.bowden" ],
-    "tags": [ "" ],
-    "projectUrl": "",
-    "licenseUrl": "",
-
+    "testRunner": "xunit",
     "dependencies": {
-        "System.Net.Http": "4.0.1-rc2-23513",
-        "xunit": "2.1.0",
-        "xunit.runner.dnx": "2.1.0-rc1-build204",
-        "ElasticsearchCrud": "2.0.2.1-rc1"
-    },
-    "commands": {
-        "test": "xunit.runner.dnx"
-    },
-    "frameworks": {
-        "dnxcore50": {
-            "dependencies": {
-                
-            }
+        "Microsoft.NETCore.App": {
+            "version": "1.0.0-rc2-3002702",
+            "type": "platform"
         },
-        "dnx451": {
-            "dependencies": {
-            }
+        "ElasticsearchCrud": "2.3.1.1-RC2",
+        "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+        "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc2-final",
+        "System.Diagnostics.TraceSource": "4.0.0-rc2-24027",
+        "xunit": "2.1.0",
+        "dotnet-test-xunit": "1.0.0-rc2-build10015"
+    },
+
+    "tools": {
+        "Microsoft.AspNetCore.Razor.Tools": {
+            "version": "1.0.0-preview1-final",
+            "imports": "portable-net45+win8+dnxcore50"
+        },
+        "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+            "version": "1.0.0-preview1-final",
+            "imports": "portable-net45+win8+dnxcore50"
+        }
+    },
+
+    "frameworks": {
+        "netcoreapp1.0": {
+            "imports": [
+                "dotnet5.6",
+                "dnxcore50",
+                "portable-net45+win8"
+            ]
         }
     }
+
 }

@@ -1,28 +1,50 @@
 ﻿{
-  "version": "1.0.0-*",
-  "description": "ElasticsearchGermanAnalyzer Console Application",
-  "authors": [ "damien.bowden" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
-
     "dependencies": {
-        "ElasticsearchCrud": "2.0.2-rc1"
+        "Microsoft.NETCore.App": {
+            "version": "1.0.0-rc2-3002702",
+            "type": "platform"
+        },
+        "ElasticsearchCrud": "2.3.1.1-RC2",
+        "Microsoft.AspNetCore.Diagnostics": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.Razor.Tools": {
+            "version": "1.0.0-preview1-final",
+            "type": "build"
+        },
+        "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+        "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc2-final",
+        "System.Diagnostics.TraceSource": "4.0.0-rc2-24027",
+        "Newtonsoft.Json": "8.0.3"
     },
 
-  "commands": {
-    "ElasticsearchGermanAnalyzer": "ElasticsearchGermanAnalyzer"
-  },
+    "tools": {
+        "Microsoft.AspNetCore.Razor.Tools": {
+            "version": "1.0.0-preview1-final",
+            "imports": "portable-net45+win8+dnxcore50"
+        },
+        "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+            "version": "1.0.0-preview1-final",
+            "imports": "portable-net45+win8+dnxcore50"
+        }
+    },
 
-  "frameworks": {
-    "dnxcore50": {
-        "dependencies": {
-            "Microsoft.CSharp": "4.0.1-beta-23516",
-            "System.Collections": "4.0.11-beta-23516",
-            "System.Console": "4.0.0-beta-23516",
-            "System.Linq": "4.0.1-beta-23516",
-            "System.Threading": "4.0.11-beta-23516"
+    "frameworks": {
+        "netcoreapp1.0": {
+            "imports": [
+                "dotnet5.6",
+                "dnxcore50",
+                "portable-net45+win8"
+            ]
         }
     }
-  }
+
+
+
 }

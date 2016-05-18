@@ -1,60 +1,68 @@
 ﻿{
-    "version": "2.0.2.1-rc1",
+    "version": "2.3.1.1-RC2",
     "description": "Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easy usage KISS",
     "authors": [ "damienbod" ],
-    "tags": [ "Elasticseach", "HttpClient" ],
-    "projectUrl": "http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/",
-    "licenseUrl": "",
-    "owners": [ "damienbod" ],
-    "requireLicenseAcceptance": false,
-    "iconUrl": "http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png",
-    "language": "en-US",
-    "releaseNotes": "Release Notes: Version 2.0.2-rc1 - for Elasticsearch 2.0.0, ASP.NET 5 rc1 Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
-    "title": "ElasticsearchCRUD",
-    "summary": "Elasticsearch HTTP client",
+    "packOptions": {
+        "summary": "Elasticsearch HTTP client",
+        "tags": [ "Elasticseach", "HttpClient" ],
+        "owners": [ "damienbod" ],
+        "releaseNotes": "Release Notes: Version 2.3.1-RC2 - for Elasticsearch 2.3.1, ASP.NET Core RC2 Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
+        "title": "ElasticsearchCRUD",
+        "iconUrl": "http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png",
+        "projectUrl": "http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/",
+        "licenseUrl": "",
+        "requireLicenseAcceptance": false,
+        "repository": {
+            "type": "git",
+            "url": "https://github.com/exampleorg/example"
+        }
+    },
 
     "dependencies": {
-        "Newtonsoft.Json": "8.0.1-beta2"
-        
+        "Microsoft.NETCore.App": {
+            "version": "1.0.0-rc2-3002702",
+            "type": "platform"
+        },
+        "Microsoft.AspNetCore.Diagnostics": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.Mvc": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.Razor.Tools": {
+            "version": "1.0.0-preview1-final",
+            "type": "build"
+        },
+        "Microsoft.AspNetCore.Server.IISIntegration": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.Server.Kestrel": "1.0.0-rc2-final",
+        "Microsoft.AspNetCore.StaticFiles": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Configuration.Json": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging.Console": "1.0.0-rc2-final",
+        "Microsoft.Extensions.Logging.Debug": "1.0.0-rc2-final",
+        "Microsoft.VisualStudio.Web.BrowserLink.Loader": "14.0.0-rc2-final",
+        "System.Diagnostics.TraceSource": "4.0.0-rc2-24027",
+        "Newtonsoft.Json": "8.0.3"
+    },
+
+    "tools": {
+        "Microsoft.AspNetCore.Razor.Tools": {
+            "version": "1.0.0-preview1-final",
+            "imports": "portable-net45+win8+dnxcore50"
+        },
+        "Microsoft.AspNetCore.Server.IISIntegration.Tools": {
+            "version": "1.0.0-preview1-final",
+            "imports": "portable-net45+win8+dnxcore50"
+        }
     },
 
     "frameworks": {
-        "dnxcore50": {
-            "dependencies": {
-                "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
-                "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
-                "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-                "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
-                "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
-
-                "Microsoft.CSharp": "4.0.1-beta-23516",
-                "System.Collections": "4.0.11-beta-23516",
-                "System.Console": "4.0.0-beta-23516",
-                "System.Linq": "4.0.1-beta-23516",
-                "System.Threading": "4.0.11-beta-23516",
-
-                "System.Net.Http": "4.0.1-rc2-23513",
-
-                "System.Runtime": "4.0.20-beta-23109",
-                "System.Reflection.TypeExtensions": "4.0.1-beta-23409"
-            }
-        },
-        "dnx451": {
-            "dependencies": {
-                "Microsoft.AspNet.Diagnostics": "1.0.0-rc1-final",
-                "Microsoft.AspNet.IISPlatformHandler": "1.0.0-rc1-final",
-                "Microsoft.AspNet.Mvc": "6.0.0-rc1-final",
-                "Microsoft.AspNet.Server.Kestrel": "1.0.0-rc1-final",
-                "Microsoft.AspNet.StaticFiles": "1.0.0-rc1-final",
-
-                "System.Net.Http": "4.0.1-rc2-23513"
-            }
-        },
-        "net451": {
-            "frameworkAssemblies": {
-                "System.ComponentModel.DataAnnotations": "4.0.0.0",
-                "System.Net.Http": "4.0.0.0"
-            }
+        "netcoreapp1.0": {
+            "imports": [
+                "dotnet5.6",
+                "dnxcore50",
+                "portable-net45+win8"
+            ]
         }
     }
+
+
+
 }
