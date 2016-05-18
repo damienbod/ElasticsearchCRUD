@@ -17,405 +17,408 @@ using Xunit;
 
 namespace ElasticsearchCRUD.Integration.Test.OneToN 
 {
-	public class NestedArraysTestsWithFiltersAndQueriesAndAggregations : IDisposable
-	{
-	    public NestedArraysTestsWithFiltersAndQueriesAndAggregations()
-	    {
-	        SetUp();
-	    }
+    public class NestedArraysTestsWithFiltersAndQueriesAndAggregations : IDisposable
+    {
+        public NestedArraysTestsWithFiltersAndQueriesAndAggregations()
+        {
+            SetUp();
+        }
 
-		private List<SkillChild> _entitiesForSkillChild;
-		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private const string ConnectionString = "http://localhost:9200";
+        private List<SkillChild> _entitiesForSkillChild;
+        private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+        private const string ConnectionString = "http://localhost:9200";
 
-		[Fact]
-		public void TestDefaultContextParentWithACollectionOfThreeChildObjectsOfNestedType()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void TestDefaultContextParentWithACollectionOfThreeChildObjectsOfNestedType()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.TraceProvider = new ConsoleTraceProvider();
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.TraceProvider = new ConsoleTraceProvider();
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
 
-				// Save to Elasticsearch
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
+                // Save to Elasticsearch
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
 
-				var roundTripResult = context.GetDocument<NestedCollectionTest>(testSkillParentObject.Id);
-				Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
-				Assert.Equal(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
-				Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
-				Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
-			}
-		}
+                var roundTripResult = context.GetDocument<NestedCollectionTest>(testSkillParentObject.Id);
+                Assert.Equal(roundTripResult.DescriptionSkillParent, testSkillParentObject.DescriptionSkillParent);
+                Assert.Equal(roundTripResult.SkillChildren.First().DescriptionSkillChild, testSkillParentObject.SkillChildren.First().DescriptionSkillChild);
+                Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+                Assert.Equal(roundTripResult.SkillChildren.ToList()[1].DescriptionSkillChild, testSkillParentObject.SkillChildren.ToList()[1].DescriptionSkillChild);
+            }
+        }
 
-		[Fact]
-		public void SearchFilterNestedFilter()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void SearchFilterNestedFilter()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
-			}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
+            }
 
-			Thread.Sleep(1200);
-			var search = new Search
-			{
-				Filter =
-					new Filter(
-					new NestedFilter(
-					new MatchAllFilter(), "skillchildren"))
-			};
+            Thread.Sleep(1200);
+            var search = new Search
+            {
+                Filter =
+                    new Filter(
+                    new NestedFilter(
+                    new MatchAllFilter(), "skillchildren"))
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
-				var items = context.Search<NestedCollectionTest>(search);
-				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<NestedCollectionTest>());
+                var items = context.Search<NestedCollectionTest>(search);
+                Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+            }
+        }
 
-		[Fact]
-		public void SearchFilterNestedFilterWithInnerHitsDefault()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void SearchFilterNestedFilterWithInnerHitsDefault()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
-			}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
+            }
 
-			Thread.Sleep(1200);
-			var search = new Search
-			{
-				Filter =
-					new Filter(
-					new NestedFilter(
-					new MatchAllFilter(), "skillchildren")
-						{
-							InnerHits= new InnerHits()
-						})
-			};
+            Thread.Sleep(1200);
+            var search = new Search
+            {
+                Filter =
+                    new Filter(
+                    new NestedFilter(
+                    new MatchAllFilter(), "skillchildren")
+                        {
+                            InnerHits= new InnerHits()
+                        })
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
-				var items = context.Search<NestedCollectionTest>(search);
-				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<NestedCollectionTest>());
+                var items = context.Search<NestedCollectionTest>(search);
+                Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+            }
+        }
 
-		[Fact]
-		public void SearchFilterNestedQuery()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void SearchFilterNestedQuery()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
-			}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
+            }
 
-			Thread.Sleep(1200);
-			var search = new Search
-			{
-				Query =
-					new Query(
-					new NestedQuery(
-					new MatchAllQuery(), "skillchildren"))
-			};
+            Thread.Sleep(1200);
+            var search = new Search
+            {
+                Query =
+                    new Query(
+                    new NestedQuery(
+                    new MatchAllQuery(), "skillchildren"))
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
-				var items = context.Search<NestedCollectionTest>(search);
-				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<NestedCollectionTest>());
+                var items = context.Search<NestedCollectionTest>(search);
+                Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+            }
+        }
 
-		[Fact]
-		public void SearchFilterNestedQueryInnerHits()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void SearchFilterNestedQueryInnerHits()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
-			}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
+            }
 
-			Thread.Sleep(1200);
-			var search = new Search
-			{
-				Query =
-					new Query(
-					new NestedQuery(
-					new MatchAllQuery(), "skillchildren")
-					{
-						InnerHits = new InnerHits()
-					})
-			};
+            Thread.Sleep(1200);
+            var search = new Search
+            {
+                Query =
+                    new Query(
+                    new NestedQuery(
+                    new MatchAllQuery(), "skillchildren")
+                    {
+                        InnerHits = new InnerHits()
+                    })
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
-				var items = context.Search<NestedCollectionTest>(search);
-				Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<NestedCollectionTest>());
+                var items = context.Search<NestedCollectionTest>(search);
+                Assert.Equal(8, items.PayloadResult.Hits.HitsResult[0].Source.Id);
+            }
+        }
 
-		[Fact]
-		public void SearchAggNestedBucketAggregationWithNoHits()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void SearchAggNestedBucketAggregationWithNoHits()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
-			}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
+            }
 
-			Thread.Sleep(1200);
+            Thread.Sleep(1200);
 
-			var search = new Search
-			{
-				Aggs = new List<IAggs>
-				{
-					new NestedBucketAggregation("nestedagg", "skillchildren")				
-				}
-			};
+            var search = new Search
+            {
+                Size = 0,
+                Aggs = new List<IAggs>
+                {
+                    new NestedBucketAggregation("nestedagg", "skillchildren")				
+                }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
-				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
-				Assert.Equal(3, aggResult.DocCount);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<NestedCollectionTest>());
+                var items = context.Search<NestedCollectionTest>(search);
+                var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
+                Assert.Equal(3, aggResult.DocCount);
+            }
+        }
 
-		[Fact]
-		public void SearchAggNestedBucketAggregationWithSubAggMaxMetricWithNoHits()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void SearchAggNestedBucketAggregationWithSubAggMaxMetricWithNoHits()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
-			}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
+            }
 
-			Thread.Sleep(1200);
+            Thread.Sleep(1200);
 
-			var search = new Search
-			{
-				Aggs = new List<IAggs>
-				{
-					new NestedBucketAggregation("nestedagg", "skillchildren")
-					{
-						Aggs = new List<IAggs>
-						{
-							new MaxMetricAggregation("test", "skillchildren.updatedskillchild")
-						}
-					}
-				}
-			};
+            var search = new Search
+            {
+                Size = 0,
+                Aggs = new List<IAggs>
+                {
+                    new NestedBucketAggregation("nestedagg", "skillchildren")
+                    {
+                        Aggs = new List<IAggs>
+                        {
+                            new MaxMetricAggregation("test", "skillchildren.updatedskillchild")
+                        }
+                    }
+                }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
-				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
-				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
-				Assert.Equal(3, aggResult.DocCount);
-				Assert.InRange(max, 1, 1553210851080);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<NestedCollectionTest>());
+                var items = context.Search<NestedCollectionTest>(search);
+                var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
+                var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
+                Assert.Equal(3, aggResult.DocCount);
+                Assert.InRange(max, 1, 1553210851080);
+            }
+        }
 
-		[Fact]
-		public void SearchAggNestedBucketAggregationWithSubReverseNestedWithNoHits()
-		{
-			var testSkillParentObject = new NestedCollectionTest
-			{
-				CreatedSkillParent = DateTime.UtcNow,
-				UpdatedSkillParent = DateTime.UtcNow,
-				DescriptionSkillParent = "A test entity description",
-				Id = 8,
-				NameSkillParent = "cool",
-				SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
-			};
+        [Fact]
+        public void SearchAggNestedBucketAggregationWithSubReverseNestedWithNoHits()
+        {
+            var testSkillParentObject = new NestedCollectionTest
+            {
+                CreatedSkillParent = DateTime.UtcNow,
+                UpdatedSkillParent = DateTime.UtcNow,
+                DescriptionSkillParent = "A test entity description",
+                Id = 8,
+                NameSkillParent = "cool",
+                SkillChildren = new Collection<SkillChild> { _entitiesForSkillChild[0], _entitiesForSkillChild[1], _entitiesForSkillChild[2] }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.IndexCreate<NestedCollectionTest>();
-				Thread.Sleep(1200);
-				context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
-				var ret = context.SaveChanges();
-				Assert.Equal(ret.Status, HttpStatusCode.OK);
-			}
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.IndexCreate<NestedCollectionTest>();
+                Thread.Sleep(1200);
+                context.AddUpdateDocument(testSkillParentObject, testSkillParentObject.Id);
+                var ret = context.SaveChanges();
+                Assert.Equal(ret.Status, HttpStatusCode.OK);
+            }
 
-			Thread.Sleep(1200);
+            Thread.Sleep(1200);
 
-			var search = new Search
-			{
-				Aggs = new List<IAggs>
-				{
-					new NestedBucketAggregation("nestedagg", "skillchildren")
-					{
-						Aggs = new List<IAggs>
-						{
-							new MaxMetricAggregation("test", "skillchildren.updatedskillchild"),
-							new ReverseNestedBucketAggregation("goingUp")
-							{
-								Aggs = new List<IAggs>
-								{
-									new TermsBucketAggregation("termParent", "descriptionskillparent")
-								}
-							}
-						}
-					}
-				}
-			};
+            var search = new Search
+            {
+                Size = 0,
+                Aggs = new List<IAggs>
+                {
+                    new NestedBucketAggregation("nestedagg", "skillchildren")
+                    {
+                        Aggs = new List<IAggs>
+                        {
+                            new MaxMetricAggregation("test", "skillchildren.updatedskillchild"),
+                            new ReverseNestedBucketAggregation("goingUp")
+                            {
+                                Aggs = new List<IAggs>
+                                {
+                                    new TermsBucketAggregation("termParent", "descriptionskillparent")
+                                }
+                            }
+                        }
+                    }
+                }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<NestedCollectionTest>());
-				var items = context.Search<NestedCollectionTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
-				var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
-				var nesteTestResult = aggResult.GetSubAggregationsFromJTokenName<ReverseNestedBucketAggregationsResult>("goingUp");
-				var termParentAgg = nesteTestResult.GetSubAggregationsFromJTokenName<TermsBucketAggregationsResult>("termParent");
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<NestedCollectionTest>());
+                var items = context.Search<NestedCollectionTest>(search);
+                var aggResult = items.PayloadResult.Aggregations.GetComplexValue<NestedBucketAggregationsResult>("nestedagg");
+                var max = aggResult.GetSingleMetricSubAggregationValue<long>("test");
+                var nesteTestResult = aggResult.GetSubAggregationsFromJTokenName<ReverseNestedBucketAggregationsResult>("goingUp");
+                var termParentAgg = nesteTestResult.GetSubAggregationsFromJTokenName<TermsBucketAggregationsResult>("termParent");
 
-				Assert.Equal(3, aggResult.DocCount);
-				Assert.InRange(max, 1, 1773210851080);
-				Assert.Equal(1, nesteTestResult.DocCount);
-				Assert.Equal("a", termParentAgg.Buckets[0].Key);
-			}
-		}
+                Assert.Equal(3, aggResult.DocCount);
+                Assert.InRange(max, 1, 1773210851080);
+                Assert.Equal(1, nesteTestResult.DocCount);
+                Assert.Equal("a", termParentAgg.Buckets[0].Key);
+            }
+        }
 
-		public void SetUp()
-		{
-			_entitiesForSkillChild = new List<SkillChild>();
+        public void SetUp()
+        {
+            _entitiesForSkillChild = new List<SkillChild>();
 
-			for (int i = 0; i < 3; i++)
-			{
-				var entityTwo = new SkillChild
-				{
-					CreatedSkillChild = DateTime.UtcNow,
-					UpdatedSkillChild = DateTime.UtcNow,
-					DescriptionSkillChild = "A test SkillChild description",
-					Id = i,
-					NameSkillChild = "cool"
-				};
+            for (int i = 0; i < 3; i++)
+            {
+                var entityTwo = new SkillChild
+                {
+                    CreatedSkillChild = DateTime.UtcNow,
+                    UpdatedSkillChild = DateTime.UtcNow,
+                    DescriptionSkillChild = "A test SkillChild description",
+                    Id = i,
+                    NameSkillChild = "cool"
+                };
 
-				_entitiesForSkillChild.Add(entityTwo);
-			}
-		}
+                _entitiesForSkillChild.Add(entityTwo);
+            }
+        }
 
-		public void TearDown()
-		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AllowDeleteForIndex = true;
-				var entityResult14 = context.DeleteIndexAsync<NestedCollectionTest>(); entityResult14.Wait();
-			}
-		}
+        public void TearDown()
+        {
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AllowDeleteForIndex = true;
+                var entityResult14 = context.DeleteIndexAsync<NestedCollectionTest>(); entityResult14.Wait();
+            }
+        }
 
-	    public void Dispose()
-	    {
-	        TearDown();
-	    }
-	}
+        public void Dispose()
+        {
+            TearDown();
+        }
+    }
 
-	public class NestedCollectionTest
-	{
-		public long Id { get; set; }
-		public string NameSkillParent { get; set; }
-		public string DescriptionSkillParent { get; set; }
-		public DateTimeOffset CreatedSkillParent { get; set; }
-		public DateTimeOffset UpdatedSkillParent { get; set; }
+    public class NestedCollectionTest
+    {
+        public long Id { get; set; }
+        public string NameSkillParent { get; set; }
+        public string DescriptionSkillParent { get; set; }
+        public DateTimeOffset CreatedSkillParent { get; set; }
+        public DateTimeOffset UpdatedSkillParent { get; set; }
 
-		[ElasticsearchNested(IncludeInParent = true)]
-		public virtual Collection<SkillChild> SkillChildren { get; set; }
-	}
+        [ElasticsearchNested(IncludeInParent = true)]
+        public virtual Collection<SkillChild> SkillChildren { get; set; }
+    }
 }

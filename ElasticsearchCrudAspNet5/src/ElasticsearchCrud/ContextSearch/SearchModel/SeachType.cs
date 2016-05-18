@@ -39,12 +39,6 @@
 		/// </summary>
 		dfs_query_and_fetch,
 
-		/// <summary>
-		/// A special search type that returns the count that matched the search request without any docs (represented in total_hits), and possibly, including facets as well. 
-		/// In general, this is preferable to the count API as it provides more options.
-		/// </summary>
-		count
-
 
 		//scan, // has its own implemention see the scan and scroll method
 	}

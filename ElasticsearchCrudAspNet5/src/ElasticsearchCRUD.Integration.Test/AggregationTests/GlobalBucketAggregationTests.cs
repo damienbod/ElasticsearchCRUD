@@ -22,61 +22,64 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
         }
 
         [Fact]
-		public void SearchAggGlobalBucketAggregationWithNoHits()
-		{
-			var search = new Search
-			{
-				Aggs = new List<IAggs>
-				{
-					new GlobalBucketAggregation("globalbucket")				
-				}
-			};
+        public void SearchAggGlobalBucketAggregationWithNoHits()
+        {
+            var search = new Search
+            {
+                Size = 0,
+                Aggs = new List<IAggs>
+                {
+                    new GlobalBucketAggregation("globalbucket")				
+                }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<SearchAggTest>());
-				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GlobalBucketAggregationsResult>("globalbucket");
-				Assert.Equal(7, aggResult.DocCount);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<SearchAggTest>());
+                var items = context.Search<SearchAggTest>(search);
+                var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GlobalBucketAggregationsResult>("globalbucket");
+                Assert.Equal(7, aggResult.DocCount);
+            }
+        }
 
-		[Fact]
-		public void SearchAggGlobalBucketAggregationWithChildrenNoHits()
-		{
-			var search = new Search
-			{
-				Aggs = new List<IAggs>
-				{
-					new GlobalBucketAggregation("globalbucket")
-					{
-						Aggs = new List<IAggs>
-						{
-							new MaxMetricAggregation("maxAgg", "lift"),
-							new MinMetricAggregation("minAgg", "lift"),
-						}
-					}
-				}
-			};
+        [Fact]
+        public void SearchAggGlobalBucketAggregationWithChildrenNoHits()
+        {
+            var search = new Search
+            {
+                Size = 0,
+                Aggs = new List<IAggs>
+                {
+                    new GlobalBucketAggregation("globalbucket")
+                    {
+                        Aggs = new List<IAggs>
+                        {
+                            new MaxMetricAggregation("maxAgg", "lift"),
+                            new MinMetricAggregation("minAgg", "lift"),
+                        }
+                    }
+                }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
-			{
-				Assert.True(context.IndexTypeExists<SearchAggTest>());
-				var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
-				var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GlobalBucketAggregationsResult>("globalbucket");
-				var max = aggResult.GetSingleMetricSubAggregationValue<double>("maxAgg");
-				Assert.Equal(7, aggResult.DocCount);
-				Assert.Equal(2.9, max);
-			}
-		}
+            using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
+            {
+                Assert.True(context.IndexTypeExists<SearchAggTest>());
+                var items = context.Search<SearchAggTest>(search);
+                var aggResult = items.PayloadResult.Aggregations.GetComplexValue<GlobalBucketAggregationsResult>("globalbucket");
+                var max = aggResult.GetSingleMetricSubAggregationValue<double>("maxAgg");
+                Assert.Equal(7, aggResult.DocCount);
+                Assert.Equal(2.9, max);
+            }
+        }
 
-		[Fact]
-		public void SearchAggTermsBucketAggregationWithOrderSumSubSumAggNoHits()
-		{
+        [Fact]
+        public void SearchAggTermsBucketAggregationWithOrderSumSubSumAggNoHits()
+        {
             var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
                 var search = new Search
                 {
+                    Size = 0,
                     Aggs = new List<IAggs>
                 {
                     new TermsBucketAggregation("test_min", "lift")
@@ -95,7 +98,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
                 using (var context = new ElasticsearchContext(ConnectionString, ElasticsearchMappingResolver))
                 {
                     Assert.True(context.IndexTypeExists<SearchAggTest>());
-                    var items = context.Search<SearchAggTest>(search, new SearchUrlParameters { SeachType = SeachType.count });
+                    var items = context.Search<SearchAggTest>(search);
                     var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("test_min");
                     var bucketchildAggSum = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggSum");
                     var bucketchildAggAvg = aggResult.Buckets[0].GetSingleMetricSubAggregationValue<double>("childAggAvg");
@@ -109,6 +112,6 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
             Assert.Equal("GlobalBucketAggregation cannot be sub aggregations", ex.Message);
 
             
-		}
+        }
     }
 }
