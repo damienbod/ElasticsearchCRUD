@@ -153,17 +153,17 @@ namespace ElasticsearchCRUD.Integration.Test
                 //    context.DeleteIndex<ClassWithArrayOfStrings>();
                 //}
 
-                //if (context.IndexExists<ClassWithListOfObjects>())
-                //{
-                //    context.AllowDeleteForIndex = true;
-                //    context.DeleteIndex<ClassWithListOfObjects>();
-                //}
+                if (context.IndexExists<ClassWithListOfObjects>())
+                {
+                    context.AllowDeleteForIndex = true;
+                    context.DeleteIndex<ClassWithListOfObjects>();
+                }
 
-                //if (context.IndexExists<ClassWithArrayOfObjects>())
-                //{
-                //    context.AllowDeleteForIndex = true;
-                //    context.DeleteIndex<ClassWithArrayOfObjects>();
-                //}
+                if (context.IndexExists<ClassWithArrayOfObjects>())
+                {
+                    context.AllowDeleteForIndex = true;
+                    context.DeleteIndex<ClassWithArrayOfObjects>();
+                }
 
 
             }
