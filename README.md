@@ -103,6 +103,12 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 2.3.1.1-RC2</strong>
+- support for ASP.NET Core RC2
+- updated to elasticsearch 2.3.1
+- fixed some bugs from previous versions
+- updated Json.NET
+- 
 <strong>Version 2.0.2.1-rc1</strong><em> 2015.11.20</em>
 - Support for ASP.NET 5 rc1, dnxcore50, and net451
 - Elasticsearch client bug fixes
