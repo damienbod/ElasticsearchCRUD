@@ -255,7 +255,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
                 context.TraceProvider = new ConsoleTraceProvider();
                 Assert.True(context.IndexTypeExists<SearchTest>());
                 var items = context.Search<SearchTest>(search);
-                Assert.Equal(0, items.PayloadResult.Hits.Total);
+                Assert.True( items.Description.Contains("invalid radiusMeters"));
             }
         }
 
