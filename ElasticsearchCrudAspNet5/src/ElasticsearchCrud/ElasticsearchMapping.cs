@@ -49,24 +49,6 @@ namespace ElasticsearchCRUD
                 var propertyInfo = entityInfo.Document.GetType().GetProperties();
                 foreach (var prop in propertyInfo)
                 {
-#if NET451 || NET46
-                     if (!Attribute.IsDefined(prop, typeof (JsonIgnoreAttribute)))
-                    {
-                        if (Attribute.IsDefined(prop, typeof (ElasticsearchGeoTypeAttribute))) 
-                        {
-                            var obj = prop.Name.ToLower();
-                            // process GeoTypes
-                            if (createPropertyMappings)
-                            {
-                                object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
-
-                                if ((attrs[0] as ElasticsearchCoreTypes) != null)
-                                {
-                                    elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
-                                    elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
-                                }
-                            }
-#else
                     if (prop.GetCustomAttribute(typeof(JsonIgnoreAttribute)) == null)
                     {
                         if (prop.GetCustomAttribute(typeof(ElasticsearchGeoTypeAttribute)) != null)
@@ -83,7 +65,6 @@ namespace ElasticsearchCRUD
                                     elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs.FirstOrDefault() as ElasticsearchCoreTypes).JsonString());
                                 }
                             }
-#endif
                             else
                             {
                                 var data = prop.GetValue(entityInfo.Document) as IGeoType;
@@ -111,20 +92,6 @@ namespace ElasticsearchCRUD
                                     if (createPropertyMappings)
                                     {
                                         var obj = prop.Name.ToLower();
-
-#if NET451 || NET46
-                                        if (Attribute.IsDefined(prop, typeof (ElasticsearchCoreTypes)))
-                                        {									
-                                            object[] attrs = prop.GetCustomAttributes(typeof (ElasticsearchCoreTypes), true);
-
-                                            if ((attrs[0] as ElasticsearchCoreTypes) != null)
-                                            {
-                                                elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(obj);
-                                                elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
-                                            }
-                                            
-                                        }
-#else
                                         if (prop.GetCustomAttribute(typeof(ElasticsearchCoreTypes)) != null)
                                         {
                                             IEnumerable<Attribute> attrs = prop.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
@@ -136,7 +103,6 @@ namespace ElasticsearchCRUD
                                             }
 
                                         }
-#endif
                                         else
                                         {
                                             // no elasticsearch property defined
@@ -274,13 +240,8 @@ namespace ElasticsearchCRUD
             var propertyInfo = entity.GetType().GetProperties();
             foreach (var property in propertyInfo)
             {
-#if NET451 || NET46
-                if (Attribute.IsDefined(property, typeof(KeyAttribute)) || Attribute.IsDefined(property, typeof(ElasticsearchIdAttribute)))
-                {
-#else
                 if (property.GetCustomAttribute(typeof(KeyAttribute)) != null  || property.GetCustomAttribute(typeof(ElasticsearchIdAttribute)) != null )
                 {
-#endif
                     var obj = property.GetValue(entity);
 
                     if (obj == null && createPropertyMappings)
@@ -486,20 +447,6 @@ namespace ElasticsearchCRUD
                 // collection of Objects
                 elasticsearchCrudJsonWriter.JsonWriter.WriteStartObject();
 
-#if NET451 || NET46
-                if (Attribute.IsDefined(prop, typeof(ElasticsearchNestedAttribute)))
-                {
-                    elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("type");
-                    elasticsearchCrudJsonWriter.JsonWriter.WriteValue("nested");
-
-                    object[] attrs = prop.GetCustomAttributes(typeof(ElasticsearchNestedAttribute), true);
-
-                    if ((attrs[0] as ElasticsearchNestedAttribute) != null)
-                    {
-                        (attrs[0] as ElasticsearchNestedAttribute).WriteJson(elasticsearchCrudJsonWriter);
-                    }
-                }
-#else
                 //if (property.GetCustomAttribute(typeof(ElasticsearchCoreTypes)) != null)
                 //{
                 //    var propertyName = property.Name.ToLower();
@@ -525,8 +472,6 @@ namespace ElasticsearchCRUD
                         (attrs.FirstOrDefault() as ElasticsearchNestedAttribute).WriteJson(elasticsearchCrudJsonWriter);
                     }
                 }
-#endif
-
 
                 // "properties": {
                 elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName("properties");
@@ -636,12 +581,15 @@ namespace ElasticsearchCRUD
             {
                 return false;
             }
-#if NET451 || NET46DNX451
-            return property.PropertyType.GetInterface(typeof(IEnumerable<>).FullName) != null;
-#else
-            return property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable<>));
-#endif
 
+            if(property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable)) ||
+               property.PropertyType.GetInterfaces().Contains(typeof(ICollection)) ||
+               property.PropertyType.GetInterfaces().Contains(typeof(IList)))
+            {
+                return true;
+            }
+
+            return false;
         }
 
 
