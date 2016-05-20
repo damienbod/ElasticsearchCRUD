@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 
 namespace ElasticsearchGermanAnalyzer
 {
-    using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
-
+    
     public class Program
     {
-        public void Main(string[] args)
+        public static void Main(string[] args)
         {
             var elasticsearchGermanSearchProvider = new ElasticsearchGermanSearchProvider();
 
