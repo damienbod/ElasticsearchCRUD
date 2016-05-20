@@ -8,12 +8,10 @@ using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Tracing;
 using ElasticsearchCRUD.Utils;
 using Xunit;
+using System;
 
 namespace ElasticsearchCRUD.Integration.Test
 {
-    using System;
-    using System.Threading.Tasks;
-
     public class MappingTests : IDisposable
     {
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();

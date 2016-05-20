@@ -12,10 +12,11 @@ using ElasticsearchCRUD.Model.GeoModel;
 using ElasticsearchCRUD.Tracing;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace ElasticsearchCRUD
 {
-    using System.Linq;
+
 
     /// <summary>
     /// Default mapping for your Entity. You can implement this clas to implement your specific mapping if required
@@ -641,12 +642,15 @@ namespace ElasticsearchCRUD
             return property.PropertyType.GetInterfaces().Contains(typeof(IEnumerable<>));
 #endif
 
-        } 
+        }
 
 
         public virtual object ParseEntity(JToken source, Type type)
         {
-            return JsonConvert.DeserializeObject(source.ToString(), type);
+            return JsonConvert.DeserializeObject(
+                source.ToString(), 
+                type
+            );
         }
 
         /// <summary>
