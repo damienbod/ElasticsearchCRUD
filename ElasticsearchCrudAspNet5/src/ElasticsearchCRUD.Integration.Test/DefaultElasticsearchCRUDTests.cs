@@ -132,7 +132,7 @@ namespace ElasticsearchCRUD.Integration.Test
         [Fact]
         public void TestDefaultContextAddEntitySaveChangesAsyncBadUrl()
         {
-            var ex = Assert.Throws<HttpRequestException>(() =>
+            var ex = Assert.Throws<System.AggregateException>(() =>
             {
                 using (var context = new ElasticsearchContext("http://locaghghghlhost:9200/", _elasticsearchMappingResolver))
                 {

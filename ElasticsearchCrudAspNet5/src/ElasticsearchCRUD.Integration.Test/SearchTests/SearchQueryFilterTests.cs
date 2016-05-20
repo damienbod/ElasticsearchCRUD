@@ -260,7 +260,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
         }
 
         [Fact]
-        public void SearchQueryGeoDistanceFilter0SortTest()
+        public void SearchQueryGeoDistanceFilter1SortTest()
         {
             var search = new Search
             {
@@ -269,7 +269,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
                     new GeoDistanceFilter(
                     "location",
                     new GeoPoint(43, 43),
-                    new DistanceUnitMeter(0)
+                    new DistanceUnitMeter(1)
                     )
                 ),
                 Sort = new SortHolder(
