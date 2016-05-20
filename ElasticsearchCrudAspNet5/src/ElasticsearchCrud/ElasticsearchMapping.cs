@@ -431,7 +431,11 @@ namespace ElasticsearchCRUD
              EntityContextInfo parentEntityInfo, PropertyInfo prop, bool createPropertyMappings)
         {
             object item;
-            if (prop.PropertyType.GenericTypeArguments.Length == 0)
+            if (prop.PropertyType.FullName == "System.String[]")
+            {
+                item = string.Empty;
+            }
+            else if (prop.PropertyType.GenericTypeArguments.Length == 0)
             {
                 item = Activator.CreateInstance(prop.PropertyType.GetElementType());
             }
