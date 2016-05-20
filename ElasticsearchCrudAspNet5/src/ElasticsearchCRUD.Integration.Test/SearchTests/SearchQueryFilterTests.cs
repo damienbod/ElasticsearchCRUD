@@ -592,7 +592,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
             var search = new Search { Filter = new Filter(
                 new GeohashCellFilter(
                     "location", 
-                    new GeoPoint(43, 43), 
+                    new GeoPoint(45, 45), 
                     3, 
                     true)) 
             };
@@ -602,7 +602,7 @@ namespace ElasticsearchCRUD.Integration.Test.SearchTests
                 context.TraceProvider = new ConsoleTraceProvider();
                 Assert.True(context.IndexTypeExists<SearchTest>());
                 var items = context.Search<SearchTest>(search);
-                Assert.Equal(1, items.PayloadResult.Hits.Total);
+                Assert.Equal(2, items.PayloadResult.Hits.Total);
             }
         }
 
