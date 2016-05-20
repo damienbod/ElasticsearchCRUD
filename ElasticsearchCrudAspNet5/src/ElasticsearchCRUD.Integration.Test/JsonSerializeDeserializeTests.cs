@@ -141,17 +141,17 @@ namespace ElasticsearchCRUD.Integration.Test
         {
             using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
             {
-                //if (context.IndexExists<ClassWithListOfStrings>())
-                //{
-                //    context.AllowDeleteForIndex = true;
-                //    context.DeleteIndex<ClassWithListOfStrings>();
-                //}
+                if (context.IndexExists<ClassWithListOfStrings>())
+                {
+                    context.AllowDeleteForIndex = true;
+                    context.DeleteIndex<ClassWithListOfStrings>();
+                }
 
-                //if (context.IndexExists<ClassWithArrayOfStrings>())
-                //{
-                //    context.AllowDeleteForIndex = true;
-                //    context.DeleteIndex<ClassWithArrayOfStrings>();
-                //}
+                if (context.IndexExists<ClassWithArrayOfStrings>())
+                {
+                    context.AllowDeleteForIndex = true;
+                    context.DeleteIndex<ClassWithArrayOfStrings>();
+                }
 
                 if (context.IndexExists<ClassWithListOfObjects>())
                 {

@@ -7,7 +7,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
     public class SetupSearchAgg
     {
         protected readonly IElasticsearchMappingResolver ElasticsearchMappingResolver = new ElasticsearchMappingResolver();
-        protected const string ConnectionString = "http://localhost.fiddler:9200";
+        protected const string ConnectionString = "http://localhost:9200";
 
         public void Setup()
         {

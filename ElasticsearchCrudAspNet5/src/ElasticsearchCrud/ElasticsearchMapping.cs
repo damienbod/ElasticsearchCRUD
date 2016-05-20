@@ -435,6 +435,10 @@ namespace ElasticsearchCRUD
             {
                 item = Activator.CreateInstance(prop.PropertyType.GetElementType());
             }
+            else if(prop.PropertyType.GenericTypeArguments[0].FullName == "System.String")
+            {
+                item = string.Empty;
+            }
             else
             {
                 item = Activator.CreateInstance(prop.PropertyType.GenericTypeArguments[0]);
