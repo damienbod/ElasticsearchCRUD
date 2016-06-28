@@ -4,7 +4,7 @@
     "authors": [ "damienbod" ],
     "packOptions": {
         "summary": "Elasticsearch HTTP client",
-        "tags": [ "Elasticseach", "HttpClient" ],
+        "tags": [ "Elasticsearch", "HttpClient" ],
         "owners": [ "damienbod" ],
         "releaseNotes": "Release Notes: Version 2.3.1-RC2 - for Elasticsearch 2.3.1, ASP.NET Core RC2 Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
         "title": "ElasticsearchCRUD",
