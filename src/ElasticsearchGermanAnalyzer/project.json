@@ -1,5 +1,5 @@
 ﻿{
-    "version": "1.0.0-*",
+    "version": "1.0.0",
     "buildOptions": {
         "emitEntryPoint": true
     },
@@ -7,14 +7,18 @@
     "dependencies": {
         "Microsoft.NETCore.App": {
             "type": "platform",
-            "version": "1.0.0-rc2-3002702"
+            "version": "1.0.0"
         },
-        "ElasticsearchCrud": "2.3.1.1-RC2"
+        "ElasticsearchCrud": "2.3.3.1"
     },
 
     "frameworks": {
         "netcoreapp1.0": {
-            "imports": "dnxcore50"
+            "imports": [
+                "dotnet5.6",
+                "dnxcore50",
+                "portable-net45+win8"
+            ]
         }
     }
 }

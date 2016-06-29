@@ -55,3 +55,12 @@ ElasticsearchCrudAspNet5/src/ElasticsearchGermanAnalyzer/obj
 .vs/ElasticsearchCrud/v14/.suo
 ElasticsearchCrudAspNet5/.vs/restore.dg
 ElasticsearchCrudAspNet5/src/ElasticsearchGermanAnalyzer/bin
+src/ElasticsearchCRUD.Integration.Test/obj
+src/ElasticsearchCrud/obj
+src/ElasticsearchCrud/bin
+src/ElasticsearchGermanAnalyzer/bin
+src/ElasticsearchGermanAnalyzer/obj
+.vs/restore.dg
+src/ElasticsearchGermanAnalyzer/ElasticsearchGermanAnalyzer.xproj.user
+src/ElasticsearchGermanAnalyzer/project.lock.json
+src/ElasticsearchCRUD.Integration.Test/project.lock.json
