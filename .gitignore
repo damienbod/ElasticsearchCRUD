@@ -64,3 +64,5 @@ src/ElasticsearchGermanAnalyzer/obj
 src/ElasticsearchGermanAnalyzer/ElasticsearchGermanAnalyzer.xproj.user
 src/ElasticsearchGermanAnalyzer/project.lock.json
 src/ElasticsearchCRUD.Integration.Test/project.lock.json
+src/ElasticsearchCRUD.Integration.Test/bin
+src/ElasticsearchCRUDNUnit.Integration.Test/obj
