@@ -9,7 +9,7 @@
             "type": "platform",
             "version": "1.0.0"
         },
-        "ElasticsearchCrud": "2.3.3.1"
+        "ElasticsearchCrud": "2.3.3.1-beta1"
     },
 
     "frameworks": {

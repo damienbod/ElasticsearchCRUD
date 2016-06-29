@@ -322,8 +322,8 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
                 var items = context.Search<SearchAggTest>(search);
                 var aggResult = items.PayloadResult.Aggregations.GetComplexValue<DateHistogramBucketAggregationsResult>("testHistogramBucketAggregation");
                 var tophits = aggResult.Buckets[0].GetSubAggregationsFromJTokenName<TopHitsMetricAggregationsResult<SearchAggTest>>("tophits");
-                Assert.Equal(6, aggResult.Buckets[0].DocCount);
-                Assert.Equal(6, tophits.Hits.Total);
+                Assert.Equal(5, aggResult.Buckets[0].DocCount);
+                Assert.Equal(5, tophits.Hits.Total);
             }
         }
     }

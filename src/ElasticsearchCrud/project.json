@@ -1,5 +1,5 @@
 {
-    "version": "2.3.3.1",
+    "version": "2.3.3.1-beta1",
     "description": "Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easy usage KISS",
     "authors": [ "damienbod" ],
     "packOptions": {
@@ -7,20 +7,20 @@
         "tags": [ "Elasticsearch", "HttpClient" ],
         "owners": [ "damienbod" ],
         "releaseNotes": "Release Notes: Version 2.3.3 - for Elasticsearch 2.3.3, ASP.NET Core RC2 Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
-        "title": "ElasticsearchCRUD",
+        "title": "ElasticsearchCrud",
         "iconUrl": "http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png",
         "projectUrl": "http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/",
         "licenseUrl": "",
         "requireLicenseAcceptance": false,
         "repository": {
             "type": "git",
-            "url": "https://github.com/exampleorg/example"
+            "url": "https://github.com/damienbod/ElasticsearchCRUD"
         }
     },
 
     "dependencies": {
-        "System.ComponentModel.Annotations": "4.1.0",
         "Newtonsoft.Json": "9.0.1",
+        "System.ComponentModel.Annotations": "4.1.0",
         "System.Net.Http": "4.1.0",
         "System.Reflection.TypeExtensions": "4.1.0",
         "System.Console": "4.0.0",
@@ -30,7 +30,7 @@
     "frameworks": {
         "netstandard1.6": {
             "imports": "dnxcore50"
-        },
+        }
     }
 
 }
