@@ -104,6 +104,7 @@ namespace ElasticsearchCRUD.Integration.Test.AggregationTests
             }
         }
 
+        // TODO Damien problem, 2016.06.30: problem with returned values from elasticsearch
         [Fact]
         public void SearchAggGeohashGridBucketAggregationWithSubAggSignificantTermsBucketAggregationWithNoHits()
         {
