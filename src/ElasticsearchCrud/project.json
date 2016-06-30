@@ -1,5 +1,5 @@
 {
-    "version": "2.3.3.1-beta1",
+    "version": "2.3.3.1-beta2",
     "description": "Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easy usage KISS",
     "authors": [ "damienbod" ],
     "packOptions": {
@@ -28,7 +28,7 @@
     },
 
     "frameworks": {
-        "netstandard1.6": {
+        "netstandard1.4": {
             "imports": "dnxcore50"
         }
     }
