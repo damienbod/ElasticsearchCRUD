@@ -36,15 +36,6 @@
                 "System.ComponentModel.Annotations": "4.1.0"
             }
         },
-        "netcoreapp1.6": {
-            "imports": [
-                "dnxcore50",
-                "portable-net45+win8"
-            ],
-            "dependencies": {
-                "System.ComponentModel.Annotations": "4.1.0"
-            }
-        },
         "net46": {
             "dependencies": {
                 "System.ComponentModel.Annotations": "4.0.10.0"
