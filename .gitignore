@@ -68,3 +68,4 @@ src/ElasticsearchCRUD.Integration.Test/bin
 src/ElasticsearchCRUDNUnit.Integration.Test/obj
 src/ElasticsearchCrud/project.lock.json
 .vs/config/applicationhost.config
+src/ElasticsearchCRUD.Integration.Test/ElasticsearchCRUD.Integration.Test.xproj.user
