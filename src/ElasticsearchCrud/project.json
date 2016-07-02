@@ -35,11 +35,6 @@
             "dependencies": {
                 "System.ComponentModel.Annotations": "4.1.0"
             }
-        },
-        "net46": {
-            "dependencies": {
-                "System.ComponentModel.Annotations": "4.0.10.0"
-            }
         }
     }
 
