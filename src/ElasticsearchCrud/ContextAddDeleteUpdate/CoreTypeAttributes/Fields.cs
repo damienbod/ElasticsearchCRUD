@@ -21,19 +21,19 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
             var propertyInfo = FieldClass.GetProperties();
             foreach (var property in propertyInfo)
             {
-#if NET46 || NET451 || NET452
-                if (Attribute.IsDefined(property, typeof(ElasticsearchCoreTypes)))
-                {
-                    var propertyName = property.Name.ToLower(); 
-                    object[] attrs = property.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
+//#if NET46 || NET451 || NET452
+//                if (Attribute.IsDefined(property, typeof(ElasticsearchCoreTypes)))
+//                {
+//                    var propertyName = property.Name.ToLower(); 
+//                    object[] attrs = property.GetCustomAttributes(typeof(ElasticsearchCoreTypes), true);
 
-                    if ((attrs[0] as ElasticsearchCoreTypes) != null)
-                    {
-                        elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(propertyName);
-                        elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
-                    }
-                } 
-#else          
+//                    if ((attrs[0] as ElasticsearchCoreTypes) != null)
+//                    {
+//                        elasticsearchCrudJsonWriter.JsonWriter.WritePropertyName(propertyName);
+//                        elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs[0] as ElasticsearchCoreTypes).JsonString());
+//                    }
+//                } 
+//#else          
                 if (property.GetCustomAttribute(typeof(ElasticsearchCoreTypes)) != null)
                 {
                     var propertyName = property.Name.ToLower();
@@ -46,7 +46,7 @@ namespace ElasticsearchCRUD.ContextAddDeleteUpdate.CoreTypeAttributes
                         elasticsearchCrudJsonWriter.JsonWriter.WriteRawValue((attrs.FirstOrDefault() as ElasticsearchCoreTypes).JsonString());
                     }
                 }
-#endif
+//#endif
 
             }
 
