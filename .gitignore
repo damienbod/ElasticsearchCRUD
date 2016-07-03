@@ -73,3 +73,5 @@ samples/DataTransferEF_SQLToElasticsearch/obj
 samples/Damienbod.AnimalProvider/obj
 samples/ConsoleElasticsearchCrudExample/obj
 samples/ConsoleElasticsearchCrudExample/bin
+samples/Damienbod.AnimalProvider/bin
+samples/DataTransferEF_SQLToElasticsearch/bin
