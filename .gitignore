@@ -72,3 +72,4 @@ src/ElasticsearchCRUD.Integration.Test/ElasticsearchCRUD.Integration.Test.xproj.
 samples/DataTransferEF_SQLToElasticsearch/obj
 samples/Damienbod.AnimalProvider/obj
 samples/ConsoleElasticsearchCrudExample/obj
+samples/ConsoleElasticsearchCrudExample/bin

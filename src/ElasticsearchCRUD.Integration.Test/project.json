@@ -1,4 +1,4 @@
-﻿{
+{
     "testRunner": "xunit",
     "dependencies": {
         "Microsoft.NETCore.App": {
