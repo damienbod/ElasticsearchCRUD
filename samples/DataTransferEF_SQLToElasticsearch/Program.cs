@@ -10,7 +10,7 @@ namespace DataTransferSQLToEl
             Repo repo = new Repo();
             //repo.SaveToElasticsearchPerson();
             
-            //repo.SaveToElasticsearchStateProvince();
+            repo.SaveToElasticsearchStateProvince();
             var addressX = repo.GetAddressFromElasticsearch("37", "14");
             Console.WriteLine(addressX);
 
@@ -18,6 +18,8 @@ namespace DataTransferSQLToEl
 
             Reindexer.ReindexStateProvince(beginDateTime);
             Reindexer.ReindexStateProvinceAddress(beginDateTime);
+
+            // -28 documents because the countryCode was not reindexed.
 
             Console.WriteLine("Created new index from version 1 index");
             Console.ReadLine();
