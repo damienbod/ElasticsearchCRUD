@@ -16,34 +16,34 @@ namespace ElasticsearchCRUD.Integration.Test
 
     public class AliasElasticsearchCrudTests : IDisposable
     {
-		private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-		private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
-		private const string ConnectionString = "http://localhost:9200";
+        private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
+        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+        private const string ConnectionString = "http://localhost:9200";
 
-		private void WaitForDataOrFail()
-		{
-			if (!_resetEvent.WaitOne(5000))
-			{
-				throw new Exception("No data received within specified time");
-			}
-		}
+        private void WaitForDataOrFail()
+        {
+            if (!_resetEvent.WaitOne(5000))
+            {
+                throw new Exception("No data received within specified time");
+            }
+        }
 
-		public void TearDown()
-		{
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AllowDeleteForIndex = true;
-				var entityResult = context.DeleteIndexAsync<IndexAliasDtoTest>();
-				entityResult.Wait();
+        public void TearDown()
+        {
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AllowDeleteForIndex = true;
+                var entityResult = context.DeleteIndexAsync<IndexAliasDtoTest>();
+                entityResult.Wait();
 
-				var secondDelete = context.DeleteIndexAsync<IndexAliasDtoTestTwo>();
-				secondDelete.Wait();		
-			}
-		}
+                var secondDelete = context.DeleteIndexAsync<IndexAliasDtoTestTwo>();
+                secondDelete.Wait();		
+            }
+        }
 
-	    [Fact]
-		public void CreateAliasForNoExistingIndex()
-		{
+        [Fact]
+        public void CreateAliasForNoExistingIndex()
+        {
             var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
                 using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -51,11 +51,11 @@ namespace ElasticsearchCRUD.Integration.Test
                     context.AliasCreateForIndex("test", "doesnotexistindex");
                 }
             });
-		}
+        }
 
-		[Fact]
-		public void CreateAliasForIndexBadIndex()
-		{
+        [Fact]
+        public void CreateAliasForIndexBadIndex()
+        {
             var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
                 using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -67,11 +67,11 @@ namespace ElasticsearchCRUD.Integration.Test
             Assert.Equal("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: doeGGGtindex", ex.Message);
 
            
-		}
+        }
 
-		[Fact]
-		public void CreateAliasForIndexBadAlias()
-		{
+        [Fact]
+        public void CreateAliasForIndexBadAlias()
+        {
             var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
                 using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
@@ -81,60 +81,60 @@ namespace ElasticsearchCRUD.Integration.Test
             });
 
             Assert.Equal("ElasticsearchCrudJsonWriter: index is not allowed in Elasticsearch: tesHHHt", ex.Message);
-		}
+        }
 
-		 [Fact]
-		public void CreateAliasForIndex()
-		{
-			var indexAliasDtoTest = new IndexAliasDtoTest {Id = 1, Description = "Test index for aliases"};
+         [Fact]
+        public void CreateAliasForIndex()
+        {
+            var indexAliasDtoTest = new IndexAliasDtoTest {Id = 1, Description = "Test index for aliases"};
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest,  indexAliasDtoTest.Id);
-				context.SaveChanges();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AddUpdateDocument(indexAliasDtoTest,  indexAliasDtoTest.Id);
+                context.SaveChanges();
 
-				var result = context.AliasCreateForIndex("test", "indexaliasdtotests");
-				Assert.True(result);
+                var result = context.AliasCreateForIndex("test", "indexaliasdtotests");
+                Assert.True(result);
 
-				Thread.Sleep(1200);
+                Thread.Sleep(1200);
 
-				GetResult resultGet = context.Get(new Uri("http://localhost:9200/_alias/test"));
-				Console.WriteLine(resultGet);
-			}
-		}
+                GetResult resultGet = context.Get(new Uri("http://localhost:9200/_alias/test"));
+                Console.WriteLine(resultGet);
+            }
+        }
 
 
-		 [Fact]
-		public void CreateAliasForIndex2()
-		{
-			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+         [Fact]
+        public void CreateAliasForIndex2()
+        {
+            var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			var aliasParameters = new AliasParameters
-			{
-				Actions = new List<AliasBaseParameters>
-				{
-					new AliasAddParameters("test2", "indexaliasdtotests"),
-					new AliasAddParameters("test3", "indexaliasdtotests")
-				}
-			};
+            var aliasParameters = new AliasParameters
+            {
+                Actions = new List<AliasBaseParameters>
+                {
+                    new AliasAddParameters("test2", "indexaliasdtotests"),
+                    new AliasAddParameters("test3", "indexaliasdtotests")
+                }
+            };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
-				context.SaveChanges();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+                context.SaveChanges();
 
-				var result = context.Alias(aliasParameters.ToString());
-				Assert.True(result);
+                var result = context.Alias(aliasParameters.ToString());
+                Assert.True(result);
 
-				Assert.True(context.AliasExists("test2"));
-				Assert.True(context.AliasExists("test3"));
-				
-			}
-		}
+                Assert.True(context.AliasExists("test2"));
+                Assert.True(context.AliasExists("test3"));
+                
+            }
+        }
 
-	    [Fact]
-		public void CreateAliasForIndex3()
-		{
+        [Fact]
+        public void CreateAliasForIndex3()
+        {
 
             var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
@@ -150,7 +150,7 @@ namespace ElasticsearchCRUD.Integration.Test
                     {
                         Routing="newroute",
                         Filter= new TermFilter("description", "boo") // "{ \"term\" : { \"description\" : \"boo\" } }"
-					}
+                    }
                 }
                 };
 
@@ -200,55 +200,55 @@ namespace ElasticsearchCRUD.Integration.Test
             Assert.Equal("ElasticsearchContextSearch: HttpStatusCode.NotFound", ex.Message);
 
           
-		}
+        }
 
-		 [Fact]
-		public void RemoveAliasForIndex()
-		{
-			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+         [Fact]
+        public void RemoveAliasForIndex()
+        {
+            var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
-				context.SaveChanges();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+                context.SaveChanges();
 
-				var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
-				Assert.True(resultCreate);
+                var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
+                Assert.True(resultCreate);
 
-				var resultRemove = context.AliasRemoveForIndex("test", "indexaliasdtotests");
-				Assert.True(resultRemove);
-			}
-		}
+                var resultRemove = context.AliasRemoveForIndex("test", "indexaliasdtotests");
+                Assert.True(resultRemove);
+            }
+        }
 
-		 [Fact]
-		public void RemoveAliasForIndex2()
-		{
-			var aliasParameters = new AliasParameters
-			{
-				Actions = new List<AliasBaseParameters>
-				{
-					new AliasRemoveParameters("test", "indexaliasdtotests")
-				}
-			};
+         [Fact]
+        public void RemoveAliasForIndex2()
+        {
+            var aliasParameters = new AliasParameters
+            {
+                Actions = new List<AliasBaseParameters>
+                {
+                    new AliasRemoveParameters("test", "indexaliasdtotests")
+                }
+            };
 
-			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+            var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
-				context.SaveChanges();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+                context.SaveChanges();
 
-				var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
-				Assert.True(resultCreate);
+                var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
+                Assert.True(resultCreate);
 
-				var resultRemove = context.Alias(aliasParameters);
-				Assert.True(resultRemove);
-			}
-		}
+                var resultRemove = context.Alias(aliasParameters);
+                Assert.True(resultRemove);
+            }
+        }
 
-		[Fact]
-		public void RemoveAliasthatDoesNotExistForIndex()
-		{
+        [Fact]
+        public void RemoveAliasthatDoesNotExistForIndex()
+        {
             var ex = Assert.Throws<ElasticsearchCrudException>(() =>
             {
                 var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
@@ -262,136 +262,136 @@ namespace ElasticsearchCRUD.Integration.Test
                     Assert.True(result);
                 }
             });
-		}
+        }
 
-		[Fact]
-		public void ReplaceIndexForAlias()
-		{
-			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
-			var indexAliasDtoTestTwo = new IndexAliasDtoTestTwo { Id = 1, Description = "Test Doc Type Two index for aliases" };
+        [Fact]
+        public void ReplaceIndexForAlias()
+        {
+            var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+            var indexAliasDtoTestTwo = new IndexAliasDtoTestTwo { Id = 1, Description = "Test Doc Type Two index for aliases" };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
-				context.AddUpdateDocument(indexAliasDtoTestTwo, indexAliasDtoTestTwo.Id);
-				context.SaveChanges();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+                context.AddUpdateDocument(indexAliasDtoTestTwo, indexAliasDtoTestTwo.Id);
+                context.SaveChanges();
 
-				var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
-				Assert.True(resultCreate);
+                var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
+                Assert.True(resultCreate);
 
-				var result = context.AliasReplaceIndex("test", "indexaliasdtotests", "indexaliasdtotesttwos");
-				Assert.True(result);
-			}
-		}
+                var result = context.AliasReplaceIndex("test", "indexaliasdtotests", "indexaliasdtotesttwos");
+                Assert.True(result);
+            }
+        }
 
-		 [Fact]
-		public void ReindexTest()
-		{
-			var indexAliasDtoTestV1 = new IndexAliasDtoTestThree { Id = 1, Description = "V1" };
-			var indexAliasDtoTestV2 = new IndexAliasDtoTestThree { Id = 2, Description = "V2" };
+         [Fact]
+        public void ReindexTest()
+        {
+            var indexAliasDtoTestV1 = new IndexAliasDtoTestThree { Id = 1, Description = "V1" };
+            var indexAliasDtoTestV2 = new IndexAliasDtoTestThree { Id = 2, Description = "V2" };
 
-			IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndex = new ElasticsearchMappingResolver();
-			IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndexV1 = new ElasticsearchMappingResolver();
-			var mappingV1 = new IndexAliasDtoTestThreeMappingV1();
+            IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndex = new ElasticsearchMappingResolver();
+            IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndexV1 = new ElasticsearchMappingResolver();
+            var mappingV1 = new IndexAliasDtoTestThreeMappingV1();
 
-			IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndexV2 = new ElasticsearchMappingResolver();
-			var mappingV2 = new IndexAliasDtoTestThreeMappingV2();
+            IElasticsearchMappingResolver elasticsearchMappingResolverDirectIndexV2 = new ElasticsearchMappingResolver();
+            var mappingV2 = new IndexAliasDtoTestThreeMappingV2();
 
-			elasticsearchMappingResolverDirectIndexV1.AddElasticSearchMappingForEntityType(typeof(IndexAliasDtoTestThree), mappingV1);
-			elasticsearchMappingResolverDirectIndexV2.AddElasticSearchMappingForEntityType(typeof(IndexAliasDtoTestThree), mappingV2);
+            elasticsearchMappingResolverDirectIndexV1.AddElasticSearchMappingForEntityType(typeof(IndexAliasDtoTestThree), mappingV1);
+            elasticsearchMappingResolverDirectIndexV2.AddElasticSearchMappingForEntityType(typeof(IndexAliasDtoTestThree), mappingV2);
 
-			// Step 1 create index V1 and add alias
-			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV1))
-			{
-				// create the index
-				context.AddUpdateDocument(indexAliasDtoTestV1, indexAliasDtoTestV1.Id);
-				context.SaveChanges();
+            // Step 1 create index V1 and add alias
+            using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV1))
+            {
+                // create the index
+                context.AddUpdateDocument(indexAliasDtoTestV1, indexAliasDtoTestV1.Id);
+                context.SaveChanges();
 
-				var resultCreate = context.AliasCreateForIndex("indexaliasdtotestthrees", "indexaliasdtotestthree_v1");
-				Assert.True(resultCreate);
-			}
+                var resultCreate = context.AliasCreateForIndex("indexaliasdtotestthrees", "indexaliasdtotestthree_v1");
+                Assert.True(resultCreate);
+            }
 
-			// Step 2 create index V2 and replace alias
-			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV2))
-			{
-				// create the index
-				context.AddUpdateDocument(indexAliasDtoTestV2, indexAliasDtoTestV2.Id);
-				context.SaveChanges();
+            // Step 2 create index V2 and replace alias
+            using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV2))
+            {
+                // create the index
+                context.AddUpdateDocument(indexAliasDtoTestV2, indexAliasDtoTestV2.Id);
+                context.SaveChanges();
 
-				var result = context.AliasReplaceIndex("indexaliasdtotestthrees", "indexaliasdtotestthree_v1", "indexaliasdtotestthree_v2");
-				Assert.True(result);
-			}
+                var result = context.AliasReplaceIndex("indexaliasdtotestthrees", "indexaliasdtotestthree_v1", "indexaliasdtotestthree_v2");
+                Assert.True(result);
+            }
 
 
-			Task.Run(() =>
-			{
-				using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndex))
-				{
-					while (true)
-					{
-						Thread.Sleep(1000);
-						var itemOk = context.SearchById<IndexAliasDtoTestThree>(2);
-						if (itemOk != null)
-						{
-							_resetEvent.Set();
-						}
-						
-					}
-				}
+            Task.Run(() =>
+            {
+                using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndex))
+                {
+                    while (true)
+                    {
+                        Thread.Sleep(1000);
+                        var itemOk = context.SearchById<IndexAliasDtoTestThree>(2);
+                        if (itemOk != null)
+                        {
+                            _resetEvent.Set();
+                        }
+                        
+                    }
+                }
 // ReSharper disable once FunctionNeverReturns
-			});
+            });
 
 
-			WaitForDataOrFail();
+            WaitForDataOrFail();
 
-			// delete index v1
-			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV1))
-			{
-				context.AllowDeleteForIndex = true;
-				var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
-				thirdDelete.Wait();
-			}
+            // delete index v1
+            using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV1))
+            {
+                context.AllowDeleteForIndex = true;
+                var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
+                thirdDelete.Wait();
+            }
 
-			// delete index v2
-			using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV2))
-			{
-				context.AllowDeleteForIndex = true;
-				var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
-				thirdDelete.Wait();
-			}
+            // delete index v2
+            using (var context = new ElasticsearchContext(ConnectionString, elasticsearchMappingResolverDirectIndexV2))
+            {
+                context.AllowDeleteForIndex = true;
+                var thirdDelete = context.DeleteIndexAsync<IndexAliasDtoTestThree>();
+                thirdDelete.Wait();
+            }
 
-		}
+        }
 
-		 [Fact]
-		public void RenameAliasForIndex()
-		{
-			var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
+         [Fact]
+        public void RenameAliasForIndex()
+        {
+            var indexAliasDtoTest = new IndexAliasDtoTest { Id = 1, Description = "Test index for aliases" };
 
-			using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
-			{
-				context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
-				context.SaveChanges();
+            using (var context = new ElasticsearchContext(ConnectionString, _elasticsearchMappingResolver))
+            {
+                context.AddUpdateDocument(indexAliasDtoTest, indexAliasDtoTest.Id);
+                context.SaveChanges();
 
-				var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
-				Assert.True(resultCreate);
+                var resultCreate = context.AliasCreateForIndex("test", "indexaliasdtotests");
+                Assert.True(resultCreate);
 
-				var result = context.Alias(BuildRenameAliasJsonContent("test", "testNew", "indexaliasdtotests"));
-				Assert.True(result);
-			}
-		}
+                var result = context.Alias(BuildRenameAliasJsonContent("test", "testNew", "indexaliasdtotests"));
+                Assert.True(result);
+            }
+        }
 
-		private string BuildRenameAliasJsonContent(string aliasOld, string aliasNew, string index)
-		{
-			var sb = new StringBuilder();
-			sb.AppendLine("{");
-			sb.AppendLine("\"actions\" : [");
-			sb.AppendLine("{ \"remove\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + aliasOld + "\" } },");
-			sb.AppendLine("{ \"add\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + aliasNew + "\" } }");
-			sb.AppendLine("]");
-			sb.AppendLine("}");
+        private string BuildRenameAliasJsonContent(string aliasOld, string aliasNew, string index)
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("{");
+            sb.AppendLine("\"actions\" : [");
+            sb.AppendLine("{ \"remove\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + aliasOld + "\" } },");
+            sb.AppendLine("{ \"add\" : { \"index\" : \"" + index + "\", \"alias\" : \"" + aliasNew + "\" } }");
+            sb.AppendLine("]");
+            sb.AppendLine("}");
 
-			return sb.ToString();
-		}
+            return sb.ToString();
+        }
 
         public void Dispose()
         {
@@ -399,37 +399,37 @@ namespace ElasticsearchCRUD.Integration.Test
         }
     }
 
-	public class IndexAliasDtoTest
-	{
-		public long Id { get; set; }
-		public string Description { get; set; }
-	}
+    public class IndexAliasDtoTest
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
 
-	public class IndexAliasDtoTestTwo
-	{
-		public long Id { get; set; }
-		public string Description { get; set; }
-	}
+    public class IndexAliasDtoTestTwo
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
 
-	public class IndexAliasDtoTestThree
-	{
-		public long Id { get; set; }
-		public string Description { get; set; }
-	}
+    public class IndexAliasDtoTestThree
+    {
+        public long Id { get; set; }
+        public string Description { get; set; }
+    }
 
-	public class IndexAliasDtoTestThreeMappingV1 : ElasticsearchMapping
-	{
-		public override string GetIndexForType(Type type)
-		{
-			return "indexaliasdtotestthree_v1";
-		}
-	}
+    public class IndexAliasDtoTestThreeMappingV1 : ElasticsearchMapping
+    {
+        public override string GetIndexForType(Type type)
+        {
+            return "indexaliasdtotestthree_v1";
+        }
+    }
 
-	public class IndexAliasDtoTestThreeMappingV2 : ElasticsearchMapping
-	{
-		public override string GetIndexForType(Type type)
-		{
-			return "indexaliasdtotestthree_v2";
-		}
-	}
+    public class IndexAliasDtoTestThreeMappingV2 : ElasticsearchMapping
+    {
+        public override string GetIndexForType(Type type)
+        {
+            return "indexaliasdtotestthree_v2";
+        }
+    }
 }
