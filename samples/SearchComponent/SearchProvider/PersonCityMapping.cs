@@ -7,12 +7,12 @@ namespace SearchComponent
     {
         public override string GetIndexForType(Type type)
         {
-            return "personcity";
+            return "personcitys";
         }
 
         public override string GetDocumentType(Type type)
         {
-            return "personcitys";
+            return "personcity";
         }
     }
 }
