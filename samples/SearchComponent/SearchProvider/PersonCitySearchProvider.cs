@@ -12,7 +12,8 @@ namespace SearchComponent
     public class PersonCitySearchProvider : IPersonCitySearchProvider
     {
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-        private const string ConnectionString = "http://localhost:9200";
+        // private const string ConnectionString = "http://localhost.fiddler:9200";
+        private const string ConnectionString = "http://localhost.fiddler:9200";
         private readonly ElasticsearchContext _context;
 
         public PersonCitySearchProvider()
@@ -31,7 +32,8 @@ namespace SearchComponent
 
         public void CreateMapping()
         {
-            _context.IndexCreateTypeMapping<PersonCityMappingDto>(new MappingDefinition());
+            //_context.IndexCreateTypeMapping<PersonCityMappingDto>(new MappingDefinition() { Index = "personcity"});
+            _context.IndexCreateTypeMapping<PersonCityMappingDto>(new MappingDefinition() {});
         }
 
         private IndexDefinition CreateNewIndexDefinition()
@@ -47,7 +49,7 @@ namespace SearchComponent
                             CustomFilters = new List<AnalysisFilterBase>
                             {
                                 new StemmerTokenFilter("stemmer"),
-                                new ShingleTokenFilter("autocompleteFilter")
+                                new ShingleTokenFilter("autocompletefilter")
                                 {
                                     MaxShingleSize = 5,
                                     MinShingleSize = 2
@@ -59,7 +61,7 @@ namespace SearchComponent
                         {
                             Analyzers = new List<AnalyzerBase>
                             {
-                                new CustomAnalyzer("didYouMean")
+                                new CustomAnalyzer("didyoumean")
                                 {
                                     Tokenizer = DefaultTokenizers.Standard,
                                     Filter = new List<string> {DefaultTokenFilters.Lowercase},
@@ -68,7 +70,7 @@ namespace SearchComponent
                                 new CustomAnalyzer("autocomplete")
                                 {
                                     Tokenizer = DefaultTokenizers.Standard,
-                                    Filter = new List<string> {DefaultTokenFilters.Lowercase, "autocompleteFilter"},
+                                    Filter = new List<string> {DefaultTokenFilters.Lowercase, "autocompletefilter"},
                                     CharFilter = new List<string> {DefaultCharFilters.HtmlStrip}
                                 },
                                 new CustomAnalyzer("default")

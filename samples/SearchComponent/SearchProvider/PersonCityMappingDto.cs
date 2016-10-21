@@ -6,16 +6,16 @@ namespace SearchComponent
     {
         public long Id { get; set; }
 
-        [ElasticsearchString(CopyToList = new[] { "autocomplete", "didYouMean" })]
+        [ElasticsearchString(CopyToList = new[] { "autocomplete", "did_you_mean" })]
         public string Name { get; set; }
 
-        [ElasticsearchString(CopyToList = new[] { "autocomplete", "didYouMean" })]
+        [ElasticsearchString(CopyToList = new[] { "autocomplete", "did_you_mean" })]
         public string FamilyName { get; set; }
 
-        [ElasticsearchString(CopyToList = new[] { "autocomplete", "didYouMean" })]
+        [ElasticsearchString(CopyToList = new[] { "autocomplete", "did_you_mean" })]
         public string Info { get; set; }
 
-        [ElasticsearchString(Analyzer = "didYouMean")]
+        [ElasticsearchString(Analyzer = "didyoumean")]
         public string did_you_mean { get; set; }
 
         [ElasticsearchString(Analyzer = "autocomplete")]
