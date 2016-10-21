@@ -11,13 +11,17 @@ namespace SearchComponent
         public static void Main(string[] args)
         {
             var personCitySearchProvider = new PersonCitySearchProvider();
-
-            // create a new index and type mapping in elasticseach
+            
             personCitySearchProvider.CreateIndex();
-            //Console.ReadLine();
-
-            // create a new index and type mapping in elasticseach
+            Console.ReadLine();
+            
             personCitySearchProvider.CreateMapping();
+            Console.ReadLine();
+
+            personCitySearchProvider.CreateTestData();
+            Console.ReadLine();
+
+            personCitySearchProvider.Search("l");
             Console.ReadLine();
         }
     }
