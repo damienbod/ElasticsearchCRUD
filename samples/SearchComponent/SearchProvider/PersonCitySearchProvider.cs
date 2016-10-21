@@ -4,7 +4,12 @@ using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters;
+using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model;
+using ElasticsearchCRUD.Model.SearchModel;
+using ElasticsearchCRUD.Model.SearchModel.Aggregations;
+using ElasticsearchCRUD.Model.SearchModel.Queries;
+using ElasticsearchCRUD.Model.SearchModel.Sorting;
 using ElasticsearchCRUD.Tracing;
 
 namespace SearchComponent
@@ -121,6 +126,26 @@ namespace SearchComponent
             var id14 = new PersonCity { Id = 14, FamilyName = "Goldi", Info = "Zug", Name = "Ida" };
             _context.AddUpdateDocument(id14, id14.Id);
             _context.SaveChanges();
+        }
+
+        public void Search(string term)
+        {
+            var search = new Search
+            {
+                Size = 10,
+                Aggs = new List<IAggs>
+                {
+                    new TermsBucketAggregation("autocomplete", "autocomplete")
+                    {
+                        Order= new OrderAgg("_count", OrderEnum.desc),
+                        Include = new IncludeExpression(term + ".*")
+                    }
+                },
+                Query = new Query(new PrefixQuery("autocomplete", term))
+            };
+
+            var items = _context.Search<PersonCity>(search);
+            var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("autocomplete");
         }
 
    
