@@ -5,5 +5,7 @@
         void CreateIndex();
 
         void CreateTestData();
+
+        void Search(string term);
     }
 }
