@@ -4,13 +4,13 @@
     "emitEntryPoint": true
   },
 
-  "dependencies": {
-    "ElasticsearchCrud": "2.3.3-2-beta",
-    "Microsoft.NETCore.App": {
-        "type": "platform",
-        "version": "1.0.1"
-    }
-  },
+    "dependencies": {
+        "ElasticsearchCrud": "2.4.1-1-beta",
+        "Microsoft.NETCore.App": {
+            "type": "platform",
+            "version": "1.0.1"
+        }
+    },
 
   "frameworks": {
     "netcoreapp1.0": {

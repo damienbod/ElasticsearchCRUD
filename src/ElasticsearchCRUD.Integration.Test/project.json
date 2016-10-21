@@ -5,7 +5,7 @@
             "version": "1.0.0",
             "type": "platform"
         },
-        "ElasticsearchCrud": "2.3.3-2-beta",
+        "ElasticsearchCrud": "2.4.1-1-beta",
         "Microsoft.AspNetCore.Mvc": "1.0.0",
         "Microsoft.AspNetCore.Server.Kestrel": "1.0.0",
         "Microsoft.AspNetCore.StaticFiles": "1.0.0",
