@@ -10,6 +10,6 @@ namespace SearchComponent
 
         IEnumerable<string> AutocompleteSearch(string term);
 
-        void Search(string term);
+        IEnumerable<PersonCity> Search(string term);
     }
 }

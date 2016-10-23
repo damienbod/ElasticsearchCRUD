@@ -20,8 +20,8 @@ namespace SearchComponent
     public class PersonCitySearchProvider : IPersonCitySearchProvider
     {
         private readonly IElasticsearchMappingResolver _elasticsearchMappingResolver = new ElasticsearchMappingResolver();
-        // private const string ConnectionString = "http://localhost.fiddler:9200";
-        private const string ConnectionString = "http://localhost:9200";
+        private const string ConnectionString = "http://localhost.fiddler:9200";
+        //private const string ConnectionString = "http://localhost:9200";
         private readonly ElasticsearchContext _context;
 
         public PersonCitySearchProvider()
@@ -40,7 +40,6 @@ namespace SearchComponent
 
         public void CreateMapping()
         {
-            //_context.IndexCreateTypeMapping<PersonCityMappingDto>(new MappingDefinition() { Index = "personcity"});
             _context.IndexCreateTypeMapping<PersonCityMappingDto>(new MappingDefinition() {});
         }
 
@@ -62,7 +61,12 @@ namespace SearchComponent
                                     MaxShingleSize = 5,
                                     MinShingleSize = 2
                                 },
-                                new StopTokenFilter("stopwords")
+                                new StopTokenFilter("stopwords"),
+                                new EdgeNGramTokenFilter("edge_ngram_filter")
+                                {
+                                    MaxGram = 20,
+                                    MinGram = 2
+                                }
                             }
                         },
                         Analyzer =
@@ -71,8 +75,8 @@ namespace SearchComponent
                             {
                                 new CustomAnalyzer("didyoumean")
                                 {
-                                    Tokenizer = "ngram_tokenizer",
-                                    Filter = new List<string> {DefaultTokenFilters.Lowercase},
+                                    Tokenizer = DefaultTokenizers.Standard,
+                                    Filter = new List<string> {DefaultTokenFilters.Lowercase, "edge_ngram_filter"},
                                     CharFilter = new List<string> {DefaultCharFilters.HtmlStrip}
                                 },
                                 new CustomAnalyzer("autocomplete")
@@ -164,9 +168,18 @@ namespace SearchComponent
             return results;
         }
 
-        public void Search(string term)
+        public IEnumerable<PersonCity> Search(string term)
         {
-            throw new NotImplementedException();
+            var search = new Search
+            {
+                Size = 0,
+                Query = new Query(new MatchQuery("did_you_mean", term))
+            };
+
+            var results = _context.Search<PersonCity>(term);
+
+            return results.PayloadResult.Hits.HitsResult.Select(t => t.Source);
         }
+
     }
 }

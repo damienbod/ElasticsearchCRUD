@@ -15,15 +15,12 @@ namespace SearchComponent
         public static void Main(string[] args)
         {
             var personCitySearchProvider = new PersonCitySearchProvider();
-            
-            ////personCitySearchProvider.CreateIndex();
-            ////Console.ReadLine();
-            
-            ////personCitySearchProvider.CreateMapping();
-            ////Console.ReadLine();
 
-            ////personCitySearchProvider.CreateTestData();
-            ////Console.ReadLine();
+            personCitySearchProvider.CreateIndex();
+            Console.ReadLine();
+
+            personCitySearchProvider.CreateTestData();
+            Console.ReadLine();
 
             var autocompleteResults = personCitySearchProvider.AutocompleteSearch("l");
             foreach(var item in autocompleteResults)

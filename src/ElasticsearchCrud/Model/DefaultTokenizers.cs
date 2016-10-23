@@ -3,7 +3,7 @@
 	public static class DefaultTokenizers
 	{
 		public const string Standard = "standard";
-		public const string EdgeNGram = "edgeNGram";
+		public const string EdgeNGram = "edge_ngram";
 		public const string NGram = "nGram";
 		public const string Keyword = "keyword";
 		public const string Letter = "letter";
