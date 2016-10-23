@@ -6,6 +6,8 @@
 
         void CreateTestData();
 
+        void AutocompleteSearch();
+
         void Search(string term);
     }
 }

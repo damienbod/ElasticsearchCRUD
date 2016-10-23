@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ElasticsearchCRUD;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Analyzers;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Filters;
+using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel.Tokenizers;
 using ElasticsearchCRUD.ContextSearch.SearchModel.AggModel;
 using ElasticsearchCRUD.Model;
 using ElasticsearchCRUD.Model.SearchModel;
@@ -68,7 +70,7 @@ namespace SearchComponent
                             {
                                 new CustomAnalyzer("didyoumean")
                                 {
-                                    Tokenizer = DefaultTokenizers.Standard,
+                                    Tokenizer = "ngram_tokenizer",
                                     Filter = new List<string> {DefaultTokenFilters.Lowercase},
                                     CharFilter = new List<string> {DefaultCharFilters.HtmlStrip}
                                 },
@@ -87,8 +89,19 @@ namespace SearchComponent
                                 
                                
                             }
+                        },
+                        Tokenizers =
+                        {
+                            CustomTokenizers = new List<AnalysisTokenizerBase>
+                            {
+                                new EdgeNGramTokenizer("ngram_tokenizer")
+                                {
+                                    MaxGram = 4,
+                                    MinGram = 4
+                                }
+                            }
                         }
-                        
+
                     }
                 },
             };
@@ -128,11 +141,11 @@ namespace SearchComponent
             _context.SaveChanges();
         }
 
-        public void Search(string term)
+        public void AutocompleteSearch(string term)
         {
             var search = new Search
             {
-                Size = 10,
+                Size = 0,
                 Aggs = new List<IAggs>
                 {
                     new TermsBucketAggregation("autocomplete", "autocomplete")
@@ -148,6 +161,14 @@ namespace SearchComponent
             var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("autocomplete");
         }
 
-   
+        public void AutocompleteSearch()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Search(string term)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
