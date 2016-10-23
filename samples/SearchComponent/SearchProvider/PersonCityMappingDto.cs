@@ -15,7 +15,7 @@ namespace SearchComponent
         [ElasticsearchString(CopyToList = new[] { "autocomplete", "did_you_mean" })]
         public string Info { get; set; }
 
-        [ElasticsearchString(Analyzer = "didyoumean")]
+        [ElasticsearchString(Analyzer = "didyoumean", TermVector = TermVector.yes)]
         public string did_you_mean { get; set; }
 
         [ElasticsearchString(Analyzer = "autocomplete")]
