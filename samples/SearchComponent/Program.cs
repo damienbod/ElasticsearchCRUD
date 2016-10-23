@@ -16,16 +16,20 @@ namespace SearchComponent
         {
             var personCitySearchProvider = new PersonCitySearchProvider();
             
-            personCitySearchProvider.CreateIndex();
-            Console.ReadLine();
+            ////personCitySearchProvider.CreateIndex();
+            ////Console.ReadLine();
             
-            personCitySearchProvider.CreateMapping();
-            Console.ReadLine();
+            ////personCitySearchProvider.CreateMapping();
+            ////Console.ReadLine();
 
-            personCitySearchProvider.CreateTestData();
-            Console.ReadLine();
+            ////personCitySearchProvider.CreateTestData();
+            ////Console.ReadLine();
 
-            personCitySearchProvider.AutocompleteSearch("l");
+            var autocompleteResults = personCitySearchProvider.AutocompleteSearch("l");
+            foreach(var item in autocompleteResults)
+            {
+                Console.Write(item + " ,");
+            }
             Console.ReadLine();
         }
     }

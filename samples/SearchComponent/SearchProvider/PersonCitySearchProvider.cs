@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ElasticsearchCRUD;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.MappingModel;
 using ElasticsearchCRUD.ContextAddDeleteUpdate.IndexModel.SettingsModel;
@@ -141,7 +142,7 @@ namespace SearchComponent
             _context.SaveChanges();
         }
 
-        public void AutocompleteSearch(string term)
+        public IEnumerable<string> AutocompleteSearch(string term)
         {
             var search = new Search
             {
@@ -159,6 +160,8 @@ namespace SearchComponent
 
             var items = _context.Search<PersonCity>(search);
             var aggResult = items.PayloadResult.Aggregations.GetComplexValue<TermsBucketAggregationsResult>("autocomplete");
+            IEnumerable<string> results = aggResult.Buckets.Select(t =>  t.Key.ToString());
+            return results;
         }
 
         public void AutocompleteSearch()
