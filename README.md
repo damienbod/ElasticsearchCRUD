@@ -103,6 +103,11 @@ Example showing mapping configuration.
 ========================
 <strong>History</strong>
 
+<strong>Version 2.4.1.1</strong>
+- support for ASP.NET Core RTM
+- fixed, create index with mapping
+- updating type for edge_ngram
+
 <strong>Version 2.3.1.1-RC2</strong>
 - support for ASP.NET Core RC2
 - updated to elasticsearch 2.3.1
