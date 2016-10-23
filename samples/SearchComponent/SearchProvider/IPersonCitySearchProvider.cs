@@ -1,4 +1,6 @@
-﻿namespace SearchComponent
+﻿using System.Collections.Generic;
+
+namespace SearchComponent
 {
     public interface IPersonCitySearchProvider
     {
@@ -6,7 +8,7 @@
 
         void CreateTestData();
 
-        void AutocompleteSearch();
+        IEnumerable<string> AutocompleteSearch(string term);
 
         void Search(string term);
     }

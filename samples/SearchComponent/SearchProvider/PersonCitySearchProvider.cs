@@ -164,11 +164,6 @@ namespace SearchComponent
             return results;
         }
 
-        public void AutocompleteSearch()
-        {
-            throw new NotImplementedException();
-        }
-
         public void Search(string term)
         {
             throw new NotImplementedException();
