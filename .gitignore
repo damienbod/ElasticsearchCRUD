@@ -75,3 +75,7 @@ samples/ConsoleElasticsearchCrudExample/obj
 samples/ConsoleElasticsearchCrudExample/bin
 samples/Damienbod.AnimalProvider/bin
 samples/DataTransferEF_SQLToElasticsearch/bin
+samples/SearchComponent/bin
+samples/SearchComponent/obj
+samples/SearchComponent/project.lock.json
+samples/SearchComponent/SearchComponent.xproj.user

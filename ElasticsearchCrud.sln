@@ -24,6 +24,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Damienbod.AnimalProvider", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTransferEF_SQLToElasticsearch", "samples\DataTransferEF_SQLToElasticsearch\DataTransferEF_SQLToElasticsearch.csproj", "{5D2337D7-426B-4DF6-8237-0C7638DF757C}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "SearchComponent", "samples\SearchComponent\SearchComponent.xproj", "{C88DF104-B6F2-4760-8654-D171BDC060FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D2337D7-426B-4DF6-8237-0C7638DF757C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C88DF104-B6F2-4760-8654-D171BDC060FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C88DF104-B6F2-4760-8654-D171BDC060FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C88DF104-B6F2-4760-8654-D171BDC060FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C88DF104-B6F2-4760-8654-D171BDC060FB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -65,5 +71,6 @@ Global
 		{1E850A6D-11E5-45E1-AE91-7930F908554A} = {EFE800DD-34C1-4F16-8F29-9AB44FC1A6D8}
 		{B77C46C2-82AB-4871-8ED3-2521512D30C6} = {EFE800DD-34C1-4F16-8F29-9AB44FC1A6D8}
 		{5D2337D7-426B-4DF6-8237-0C7638DF757C} = {EFE800DD-34C1-4F16-8F29-9AB44FC1A6D8}
+		{C88DF104-B6F2-4760-8654-D171BDC060FB} = {EFE800DD-34C1-4F16-8F29-9AB44FC1A6D8}
 	EndGlobalSection
 EndGlobal
