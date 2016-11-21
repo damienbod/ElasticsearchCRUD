@@ -1,12 +1,12 @@
 {
-    "version": "2.4.1.1",
+    "version": "5.0.0.0",
     "description": "Elasticsearch API CRUD, data transfers, indexing and simple search for nested, child/parent or simple documents, easy usage KISS",
     "authors": [ "damienbod" ],
     "packOptions": {
         "summary": "Elasticsearch HTTP client",
         "tags": [ "Elasticsearch", "HttpClient" ],
         "owners": [ "damienbod" ],
-        "releaseNotes": "Release Notes: Version 2.3.3 - for Elasticsearch 2.4.1.1, ASP.NET Core RTM Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
+        "releaseNotes": "Release Notes: Version 5.0.0 - for Elasticsearch 5.0.0.0, ASP.NET Core RTM Documentation: http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/ Issues: https://github.com/damienbod/ElasticsearchCRUD/issues Code: https://github.com/damienbod/ElasticsearchCRUD NuGet Package: https://www.nuget.org/packages/ElasticsearchCRUD/",
         "title": "ElasticsearchCrud",
         "iconUrl": "http://www.gravatar.com/avatar/61d005637f57b5c3da8ba662cf04a9d6.png",
         "projectUrl": "http://damienbod.com/2014/09/22/elasticsearch-crud-net-provider/",
