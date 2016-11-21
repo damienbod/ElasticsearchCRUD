@@ -11,5 +11,9 @@ namespace SearchComponent
         IEnumerable<string> AutocompleteSearch(string term);
 
         IEnumerable<PersonCity> Search(string term);
+
+        bool GetStatus();
+
+        IEnumerable<PersonCity> QueryString(string term);
     }
 }
