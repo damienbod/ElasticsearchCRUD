@@ -13,7 +13,7 @@ https://www.nuget.org/packages/ElasticsearchCRUD/
 
 <strong>Tutorials:</strong>
 
-<a href="http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/">Part 1: ElasticsearchCRUD introduction</a>
+<a href="http://damienbod.wordpress.com/2014/09/22/elasticsearch-crud-net-provider/">Part 1: ElasticsearchCRUD Introduction</a>
 
 <a href="http://damienbod.wordpress.com/2014/10/01/full-text-search-with-asp-net-mvc-jquery-autocomplete-and-elasticsearch/">Part 2: MVC application search with simple documents using autocomplete, jQuery and jTable</a>
 
